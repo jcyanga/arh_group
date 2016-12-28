@@ -6,7 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Role;
-
+use yii\db\Query;
 /**
  * SearchRole represents the model behind the search form about `common\models\Role`.
  */
@@ -66,4 +66,16 @@ class SearchRole extends Role
 
         return $dataProvider;
     }
+
+    public function searchRole($id,$role) {
+        $rows = new Query();
+
+        $result = $rows->select(['*'])
+                    ->from('role')
+                    ->where(['like', 'role', $role])
+                    ->all();
+
+        return $result;            
+    }
+
 }

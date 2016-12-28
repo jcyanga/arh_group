@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Supplier;
+use yii\db\Query;
 
 /**
  * SearchSupplier represents the model behind the search form about `common\models\Supplier`.
@@ -66,5 +67,17 @@ class SearchSupplier extends Supplier
             ->andFilterWhere(['like', 'supplier_name', $this->supplier_name]);
 
         return $dataProvider;
+    }
+
+    public function searchSupplier($supplier_code,$supplier_name) {
+        $rows = new Query();
+
+        $result = $rows->select(['*'])
+                    ->from('supplier')
+                    ->where(['like', 'supplier_code', $supplier_code])
+                    ->orWhere(['like', 'supplier_name', $supplier_name])
+                    ->all();
+
+        return $result;  
     }
 }

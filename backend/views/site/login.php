@@ -46,10 +46,10 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $form->field($model, 'username')->textInput(['autofocus' => true, 'class' => 'form-username form-control', 'id' => 'form-username', 'placeholder' => 'Username...'])->label(false) ?>
                         </div>
                         <div>
-                            <?= $form->field($model, 'password')->textInput(['autofocus' => true, 'class' => 'form-password form-control', 'id' => 'form-password', 'placeholder' => 'Password...'])->label(false) ?>
+                            <?= $form->field($model, 'password')->passwordInput(['autofocus' => true, 'class' => 'form-password form-control', 'id' => 'form-password', 'placeholder' => 'Password...'])->label(false) ?>
                         </div>
                         <div>
-                            <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                            <?= Html::submitButton('<i class=\'fa fa-sign-in\'></i> Sign-in', ['class' => 'btn btn-success', 'name' => 'login-button']) ?>
                         </div>
                         <div class="clearfix"></div>
                         <div class="separator">
@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                              <div class="clearfix"></div>
                             <br />
                             <div>
-                                <h1><i class="fa fa-paw" style="font-size: 26px;"></i> ARH Group Pte Ltd.! </h1>
+                                <h1><i class="fa fa-car" style="font-size: 26px;"></i> ARH Group Pte Ltd. </h1>
 
                                 <p> © <?php echo date('Y'); ?> All Rights Reserved. </p>
                             </div>

@@ -19,23 +19,24 @@ use yii\helpers\Url;
         </div> 
     </div>
     <br/><br/>
-
+<!-- 'id' => 'demo-form2' -->
+<!-- , 'class' => 'form-inline' -->
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'fullname')->textInput(['autocomplete' => 'off', 'placeholder' => 'Enter Fullname here...'])->label(false) ?>
+        <?= $form->field($model, 'fullname')->textInput(['placeholder' => 'Enter Fullname here...'])->label(false) ?>
     </div>
     
     <div class="col-md-3">
-        <?= $form->field($model, 'model')->textInput(['autocomplete' => 'off', 'placeholder' => 'Enter Model here...'])->label(false) ?>
+        <?= $form->field($model, 'email')->textInput(['placeholder' => 'Enter Email here...'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'carplate')->textInput(['autocomplete' => 'off', 'placeholder' => 'Enter Car-Plate here...'])->label(false) ?>
+        <?= $form->field($model, 'carplate')->textInput(['placeholder' => 'Enter Car-Plate here...'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <?= Html::submitButton('<li class=\'fa fa-search\'></li> Search', ['class' => 'btn btn-primary']) ?>
+        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
     </div>
 
@@ -44,6 +45,8 @@ use yii\helpers\Url;
 
  </div>
 
+
+ 
     <!-- <?= $form->field($model, 'carplate') ?>
 
     <?= $form->field($model, 'address') ?> -->
@@ -81,4 +84,7 @@ use yii\helpers\Url;
     <?php // echo $form->field($model, 'updated_at') ?>
 
     <?php // echo $form->field($model, 'updated_by') ?>
+
+
+
 

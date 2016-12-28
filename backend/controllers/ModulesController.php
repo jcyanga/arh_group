@@ -8,6 +8,12 @@ use common\models\SearchModules;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use Dompdf\Dompdf;
+
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
+use common\models\Role;
+use common\models\UserPermission;
 
 /**
  * ModulesController implements the CRUD actions for Modules model.
@@ -19,14 +25,64 @@ class ModulesController extends Controller
      */
     public function behaviors()
     {
+        $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
+       
+        foreach ( $userRoleArray as $uRId => $uRName ){ 
+            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $actionArray = [];
+            foreach ( $permission as $p )  {
+                $actionArray[] = $p->action;
+            }
+
+            $allow[$uRName] = false;
+            $action[$uRName] = $actionArray;
+            if ( ! empty( $action[$uRName] ) ) {
+                $allow[$uRName] = true;
+            }
+
+        }   
+        // print_r($action['developer']); exit;
         return [
+            // 'access' => [
+            //     'class' => AccessControl::className(),
+            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+            //     'rules' => [
+                    
+            //         [
+            //             'actions' => $action['developer'],
+            //             'allow' => $allow['developer'],
+            //             'roles' => ['developer'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['admin'],
+            //             'allow' => $allow['admin'],
+            //             'roles' => ['admin'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['staff'],
+            //             'allow' => $allow['staff'],
+            //             'roles' => ['staff'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['customer'],
+            //             'allow' => $allow['customer'],
+            //             'roles' => ['customer'],
+            //         ]
+       
+            //     ],
+            // ],
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'logout' => ['post'],
                 ],
             ],
         ];
+
     }
 
     /**
@@ -38,8 +94,21 @@ class ModulesController extends Controller
         $searchModel = new SearchModules();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
+        if( isset(Yii::$app->request->get('SearchModules')['id'] ) || isset(Yii::$app->request->get('SearchModules')['modules'] ) ) {
+
+                $id = Yii::$app->request->get('SearchModules')['id'];
+                $module = Yii::$app->request->get('SearchModules')['modules'];
+
+                $getModule = $searchModel->searchModule($id,$module);
+        }elseif ( Yii::$app->request->get('SearchModules')['id'] == "" || Yii::$app->request->get('SearchModules')['modules'] == "" ) {
+                $getModule = Modules::find()->all();
+        }else {
+                $getModule = Modules::find()->all();
+        }
+
+        return $this->render('index', ['searchModel' => $searchModel, 'getModule' => $getModule, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
         ]);
+
     }
 
     /**
@@ -77,7 +146,9 @@ class ModulesController extends Controller
                 $searchModel = new SearchModules();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-                return $this->render('index', ['searchModel' => $searchModel,
+                $getModule = Modules::find()->all();
+
+                return $this->render('index', ['searchModel' => $searchModel, 'getModule' => $getModule,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
 
             }else {
@@ -104,7 +175,9 @@ class ModulesController extends Controller
             $searchModel = new SearchModules();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             
-            return $this->render('index', ['searchModel' => $searchModel,
+            $getModule = Modules::find()->all();
+
+            return $this->render('index', ['searchModel' => $searchModel, 'getModule' => $getModule,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
         } else {
             return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
@@ -138,7 +211,10 @@ class ModulesController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $this->findModel($id)->delete();
-        return $this->render('index', ['searchModel' => $searchModel,
+
+        $getModule = Modules::find()->all();
+
+        return $this->render('index', ['searchModel' => $searchModel, 'getModule' => $getModule,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
     }
     
@@ -156,5 +232,68 @@ class ModulesController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function actionExportExcel() {
+
+        // $model = new Role();
+
+        $result = Modules::find()->all();
+
+        $objPHPExcel = new \PHPExcel();
+                 
+        $sheet=0;
+          
+        $objPHPExcel->setActiveSheetIndex($sheet);
+        
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+                
+            $objPHPExcel->getActiveSheet()->setTitle('xxx')                     
+             ->setCellValue('A1', 'Id')
+             ->setCellValue('B1', 'Modules');
+                 
+         $row=2;
+                                
+                foreach ($result as $result_row) {  
+                        
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['id']); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['modules']);
+                    $row++ ;
+                }
+                        
+        header('Content-Type: application/vnd.ms-excel');
+        $filename = "CustomerList-".date("d-m-Y").".xls";
+        header('Content-Disposition: attachment;filename='.$filename);
+        header('Cache-Control: max-age=0');
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        $objWriter->save('php://output');                
+
+    }
+
+    public function actionExportPdf() {
+
+        // $model = new Role();
+
+        $result = Modules::find()->all();
+        $content = $this->renderPartial('_pdf', ['result' => $result]);
+        // instantiate and use the dompdf class
+        // $dompdf = new Dompdf();
+
+        $dompdf     = new Dompdf();
+        //return $pdf->stream();
+
+        $dompdf->loadHtml($content);
+
+        // // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'landscape');
+
+        // // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser
+        $dompdf->stream();
+          
+
     }
 }

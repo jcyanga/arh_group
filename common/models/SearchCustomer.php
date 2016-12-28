@@ -7,6 +7,7 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Customer;
 
+use yii\db\Query;
 /**
  * SearchCustomer represents the model behind the search form about `common\models\Customer`.
  */
@@ -89,4 +90,17 @@ class SearchCustomer extends Customer
 
         return $dataProvider;
     }
+
+    public function searchCustomer($fullname,$email,$carplate) {
+        $rows = new Query();
+
+        $result = $rows->select(['*'])
+                    ->from('customer')
+                    ->where(['like', 'fullname', $fullname])
+                    ->andWhere(['like', 'email', $email])
+                    ->andWhere(['like', 'carplate', $carplate])
+                    ->all();
+
+        return $result;            
+    }   
 }

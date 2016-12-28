@@ -8,7 +8,12 @@ use common\models\SearchCustomer;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use Dompdf\Dompdf;
 
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
+use common\models\Role;
+use common\models\UserPermission;
 /**
  * CustomerController implements the CRUD actions for Customer model.
  */
@@ -19,11 +24,60 @@ class CustomerController extends Controller
      */
     public function behaviors()
     {
+        $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
+       
+        foreach ( $userRoleArray as $uRId => $uRName ){ 
+            $permission = UserPermission::find()->where(['controller' => 'Customer'])->andWhere(['role_id' => $uRId ] )->all();
+            $actionArray = [];
+            foreach ( $permission as $p )  {
+                $actionArray[] = $p->action;
+            }
+
+            $allow[$uRName] = false;
+            $action[$uRName] = $actionArray;
+            if ( ! empty( $action[$uRName] ) ) {
+                $allow[$uRName] = true;
+            }
+
+        }   
+        // print_r($action['developer']); exit;
         return [
+            // 'access' => [
+            //     'class' => AccessControl::className(),
+            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+            //     'rules' => [
+                    
+            //         [
+            //             'actions' => $action['developer'],
+            //             'allow' => $allow['developer'],
+            //             'roles' => ['developer'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['admin'],
+            //             'allow' => $allow['admin'],
+            //             'roles' => ['admin'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['staff'],
+            //             'allow' => $allow['staff'],
+            //             'roles' => ['staff'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['customer'],
+            //             'allow' => $allow['customer'],
+            //             'roles' => ['customer'],
+            //         ]
+       
+            //     ],
+            // ],
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -38,7 +92,20 @@ class CustomerController extends Controller
         $searchModel = new SearchCustomer();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
+        if( isset(Yii::$app->request->get('SearchCustomer')['fullname'] ) || isset(Yii::$app->request->get('SearchCustomer')['email'] ) || isset(Yii::$app->request->get('SearchCustomer')['carplate'] )) {
+
+                $fullname = Yii::$app->request->get('SearchCustomer')['fullname'];
+                $email = Yii::$app->request->get('SearchCustomer')['email'];
+                $carplate = Yii::$app->request->get('SearchCustomer')['carplate'];
+
+                $getCustomer = $searchModel->searchCustomer($fullname,$email,$carplate);
+        }elseif ( Yii::$app->request->get('SearchCustomer')['fullname'] == "" || Yii::$app->request->get('SearchCustomer')['email'] == "" || Yii::$app->request->get('SearchCustomer')['carplate'] == "" ) {
+                $getCustomer = Customer::find()->all();
+        }else {
+                $getCustomer = Customer::find()->all();
+        }
+        
+        return $this->render('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'getCustomer' => $getCustomer, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
         ]);
     }
 
@@ -71,28 +138,26 @@ class CustomerController extends Controller
             $result = $model->getNameAndEmail($fullname, $email);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change customer fullname or e-mail.']);
+                
+                return $this->render('create', ['model' => $model, 'getCustomer' => $getCustomer, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change customer fullname or e-mail.']);
             }
-
-            if( isset(Yii::$app->request->post('Customer')['is_member'] )) {
-                Yii::$app->request->post('Customer')['is_member'] = 'Checked';
-            }else {
-                Yii::$app->request->post('Customer')['is_member'] = 'Unchecked';
-            }   
         
             if($model->save()) {
                 $searchModel = new SearchCustomer();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-                return $this->render('index', ['searchModel' => $searchModel,
+                $getCustomer = Customer::find()->all();
+
+                return $this->render('index', ['searchModel' => $searchModel, 'getCustomer' => $getCustomer,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
 
             }else {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
+
+                return $this->render('create', ['model' => $model, 'getCustomer' => $getCustomer, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
             }
 
         } else {
-          
+
             return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
         }
     }
@@ -112,7 +177,9 @@ class CustomerController extends Controller
             $searchModel = new SearchCustomer();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             
-            return $this->render('index', ['searchModel' => $searchModel,
+            $getCustomer = Customer::find()->all();
+
+            return $this->render('index', ['searchModel' => $searchModel, 'getCustomer' => $getCustomer,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
         } else {
             return $this->render('update', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
@@ -146,7 +213,10 @@ class CustomerController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $this->findModel($id)->delete();
-        return $this->render('index', ['searchModel' => $searchModel,
+
+        $getCustomer = Customer::find()->all();
+
+        return $this->render('index', ['searchModel' => $searchModel, 'getCustomer' => $getCustomer,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
     }
 
@@ -166,7 +236,7 @@ class CustomerController extends Controller
         }
     }
 
-    public function actionStatus() {
+    public function actionExportExcel() {
 
         $model = new Customer();
 
@@ -216,4 +286,31 @@ class CustomerController extends Controller
         $objWriter->save('php://output');                
 
     }
+
+    public function actionExportPdf() {
+
+        $model = new Customer();
+
+        $result = $model->getCustomerList();
+        $content = $this->renderPartial('_pdf', ['result' => $result]);
+        // instantiate and use the dompdf class
+        // $dompdf = new Dompdf();
+
+        $dompdf     = new Dompdf();
+        //return $pdf->stream();
+
+        $dompdf->loadHtml($content);
+
+        // // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'landscape');
+
+        // // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser
+        $dompdf->stream();
+          
+
+    }
+
 }

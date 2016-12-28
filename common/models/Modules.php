@@ -59,4 +59,9 @@ class Modules extends \yii\db\ActiveRecord
                 return 0;
             }
     }
+
+    public function getRole()
+    {
+        return $this->hasOne(Role::className(), ['id' => 'role_id']);
+    }
 }

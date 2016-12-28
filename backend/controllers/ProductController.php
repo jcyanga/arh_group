@@ -9,7 +9,12 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use Dompdf\Dompdf;
 
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
+use common\models\Role;
+use common\models\UserPermission;
 /**
  * ProductController implements the CRUD actions for Product model.
  */
@@ -20,11 +25,60 @@ class ProductController extends Controller
      */
     public function behaviors()
     {
+        $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
+       
+        foreach ( $userRoleArray as $uRId => $uRName ){ 
+            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $actionArray = [];
+            foreach ( $permission as $p )  {
+                $actionArray[] = $p->action;
+            }
+
+            $allow[$uRName] = false;
+            $action[$uRName] = $actionArray;
+            if ( ! empty( $action[$uRName] ) ) {
+                $allow[$uRName] = true;
+            }
+
+        }   
+        // print_r($action['developer']); exit;
         return [
+            // 'access' => [
+            //     'class' => AccessControl::className(),
+            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+            //     'rules' => [
+                    
+            //         [
+            //             'actions' => $action['developer'],
+            //             'allow' => $allow['developer'],
+            //             'roles' => ['developer'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['admin'],
+            //             'allow' => $allow['admin'],
+            //             'roles' => ['admin'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['staff'],
+            //             'allow' => $allow['staff'],
+            //             'roles' => ['staff'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['customer'],
+            //             'allow' => $allow['customer'],
+            //             'roles' => ['customer'],
+            //         ]
+       
+            //     ],
+            // ],
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -38,10 +92,25 @@ class ProductController extends Controller
     {
         $searchModel = new SearchProduct();
         $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
-
-        $getResult = new Product();
-        $productResult = $getResult->getProduct();
         
+        if( isset(Yii::$app->request->get('SearchProduct')['category_id'] ) || isset(Yii::$app->request->get('SearchProduct')['product_code'] )  || isset(Yii::$app->request->get('SearchProduct')['product_name'] ) ) {
+
+                $category_id = Yii::$app->request->get('SearchProduct')['category_id'];
+                $product_code = Yii::$app->request->get('SearchProduct')['product_code'];
+                $product_name = Yii::$app->request->get('SearchProduct')['product_name'];
+
+                $productResult = $searchModel->searchProduct($category_id,$product_code,$product_name);
+
+        }elseif ( Yii::$app->request->get('SearchProduct')['category_id'] == "" || Yii::$app->request->get('SearchProduct')['product_code'] == "" || Yii::$app->request->get('SearchProduct')['product_name'] == "" ) {
+                
+                $getResult = new Product();
+                $productResult = $getResult->getProduct();
+        }else {
+
+                $getResult = new Product();
+                $productResult = $getResult->getProduct();
+        }
+
         return $this->render('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'productResult' => $productResult, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
         ]);
     }
@@ -120,17 +189,45 @@ class ProductController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ( $model->load(Yii::$app->request->post()) ) {
             // return $this->redirect(['view', 'id' => $model->id]);
-        
-        $searchModel = new SearchProduct();
-        $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
-
-        $getResult = new Product();
-        $productResult = $getResult->getProduct();;
             
-            return $this->render('index', ['searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider, 'productResult' => $productResult, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+            if( !empty(UploadedFile::getInstances($model, 'product_image')[0]->name) ) {
+                $model->product_image = UploadedFile::getInstances($model, 'product_image')[0]->name;
+                $tempName = UploadedFile::getInstances($model, 'product_image')[0]->tempName;
+                
+                if($model->save()) {
+                
+                    move_uploaded_file($tempName, Yii::$app->basePath . '/web/assets/products/' . $model->product_image);
+
+                    $searchModel = new SearchProduct();
+                    $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
+
+                    $getResult = new Product();
+                    $productResult = $getResult->getProduct();;
+                
+                    return $this->render('index', ['searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider, 'productResult' => $productResult, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+                }   
+
+            }else{
+                $model->product_image = Yii::$app->request->post('before_productImg');
+
+                if($model->save()) {
+                    
+                    $searchModel = new SearchProduct();
+                    $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
+
+                    $getResult = new Product();
+                    $productResult = $getResult->getProduct();;
+                
+                    return $this->render('index', ['searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider, 'productResult' => $productResult, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+                }
+
+            }
+            
+
         } else {
 
             $product_model = new Product();

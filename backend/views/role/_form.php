@@ -8,26 +8,55 @@ use yii\helpers\Url;
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
+$member_list = array('0' => 'No', '1' => 'Yes');
+
 $datetime = date('Y-m-d h:i:s');
+
+$userId = Yii::$app->user->identity->id;
 ?>
 
-<div>
-    <?php $form = ActiveForm::begin(['class' => 'form-inline']); ?>
+<?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
+
+<div class="row">
+
+    <div class="search-label-container">
+        &nbsp;
+        <span class="search-label"><li class="fa fa-edit"></li> Role Information.</span>
+    </div>
+    <br/>
+
+    <div class="col-md-6">
+        <label style="font-size: 12px;">ROLE</label>
+        <?= $form->field($model, 'role')->textInput(['required' => 'required', 'placeholder' => 'Role here...'])->label(false) ?>
+    </div>
     
-        <div class="search-label-container">
-            <span class="search-label"><li class="icon-edit"></li> Fill-up all the field.</span>
-        </div>
+    <div class="col-md-6"></div>
 
-            <div class="floating-box">
-                <?= $form->field($model, 'role')->textInput(['maxlength' => true, 'id' => 'role', 'class' => 'span3 m-wrap', 'placeholder' => 'Role here...']) ?>
-            </div>
+    <div class="col-md-4"></div>
 
-		    <div class="form-group">
-                <?= Html::submitButton($model->isNewRecord ? '<li class=\'icon-save\'></li> Create New Record' : '<li class=\'icon-save\'></li> Update the Record', ['class' => $model->isNewRecord ? 'form-btn btn btn-primary' : 'form-btn btn btn-primary']) ?>
-                <?= Html::resetButton('<li class=\'icon-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
-            </div>
-
-		    <?php ActiveForm::end(); ?>
-		    <br/><br/><br/>
-		</div>
 </div>
+<hr/>
+
+<div class="row">
+
+    <div class="col-md-4">
+        <?= Html::submitButton($model->isNewRecord ? '<li class=\'fa fa-save\'></li> Save New Record' : '<li class=\'fa fa-save\'></li> Update Record', ['class' => $model->isNewRecord ? 'form-btn btn btn-primary' : 'form-btn btn btn-primary']) ?>
+        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
+    </div>
+    
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4"></div>
+
+</div>
+<br/><br/>
+
+<?php ActiveForm::end(); ?>
+
+
+
+
+
+
+
+

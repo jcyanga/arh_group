@@ -9,46 +9,35 @@ use yii\helpers\ArrayHelper;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Create Customer';
-$this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
 
 ?>
 
-<div class="form-container customer-create">
-
-<?php if($msg <> ''){ ?>
-    <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-          <?php echo $msg; ?>
+<div class="row form-container">
+ 
+ <div class="col-md-12 col-sm-12 col-xs-12">
+  
+    <div>
+        <?php if($msg <> ''){ ?>
+            <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+            <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
+                <?php echo $msg; ?>
+            </div>
+        <?php } ?>
     </div>
-<?php } ?>
 
     <div class="form-title-container">
-        <span class="form-header"><h4>Create Customer</h4></span>
-    </div>      
-    <hr/>
-    
-    <div>
-        <p>
-            &nbsp;
-            <?= Html::button('<i class=\'icon-arrow-left\'></i> Back to Previous Page', ['name' => 'btnBack','onclick'=>'js:history.go(-1);returnFalse;','class'=>'uibutton loading confirm form-btn btn btn-default ']) ?>
-        </p>
+        <span style="color: #666;" class="form-header"><h4>Create Customer</h4></span>
     </div>
-    <br/>
+    <hr/>
 
     <div class="form-crud-container">
-    	<?= $this->render('_form', ['model' => $model,]) ?>
-    </div>
+        <?= $this->render('_form', ['model' => $model,]) ?>
+    </div>   
+ 
+ </div>
+
 </div>
+<br/>
 
-<!-- <div class="user-create">
-
-   <h3>
-    Create User -->
-    <!-- <?= Html::encode($this->title) ?> -->   	
-    <!-- </h3>
-    <?= $this->render('_form', [
-        'model' => $model,
-    ]) ?>
-
-</div> -->
 

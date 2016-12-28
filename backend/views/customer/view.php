@@ -7,24 +7,18 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Customer */
 
 $this->title = 'View Customer';
-$this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
 // $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="form-container customer-view">
-    
+<div class="row form-container">
+ 
+ <div class="col-md-12 col-sm-12 col-xs-12">
+  
     <div class="form-title-container">
         <span class="form-header"><h4>View Customer Information</h4></span>
     </div>      
     <hr/>
-    
-    <div>
-        <p>
-            &nbsp;
-            <?= Html::button('<i class=\'icon-arrow-left\'></i> Back to Previous Page', ['name' => 'btnBack','onclick'=>'js:history.go(-1);returnFalse;','class'=>'uibutton loading confirm form-btn btn btn-default ']) ?>
-        </p>
-    </div>
-    <br/>
 
     <div class="tbl-container">
         <?= DetailView::widget([
@@ -55,7 +49,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
         ],
         ]) ?>
         <br/>
-    </div>
+    </div>   
+ 
+ </div>
+
 </div>
 <br/>
 

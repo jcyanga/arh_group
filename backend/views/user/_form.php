@@ -4,43 +4,93 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 
+use yii\helpers\ArrayHelper;
+use common\models\Role;
 /* @var $this yii\web\View */
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
+$member_list = array('0' => 'No', '1' => 'Yes');
+
 $datetime = date('Y-m-d h:i:s');
 
 $userId = Yii::$app->user->identity->id;
+
+$dataRole = ArrayHelper::map(Role::find()->all(), 'id', 'role');
 ?>
 
-<div>
-    <?php $form = ActiveForm::begin(['class' => 'form-inline']); ?>
+<?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
+
+<div class="row">
+
+    <div class="search-label-container">
+        &nbsp;
+        <span class="search-label"><li class="fa fa-edit"></li> User Information.</span>
+    </div>
+    <br/>
+
+    <div class="col-md-3">
+        <label style="font-size: 12px;">User Role</label>
+        <?= $form->field($model, 'role_id')->dropDownList($dataRole)->label(false) ?>
+    </div>
+    <div class="col-md-3"></div>
+    <div class="col-md-3"></div>
+    <div class="col-md-3"></div>
     
-        <div class="search-label-container">
-            <span class="search-label"><li class="icon-edit"></li> Fill-up all the fields.</span>
-        </div>
+    <br/>
 
-             <div class="floating-box">
-                <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'id' => 'c_fullname', 'class' => 'span3 m-wrap', 'placeholder' => 'Username here...']) ?>
-             </div>
-
-             <div class="floating-box">
-                <?= $form->field($model, 'email')->textInput(['maxlength' => true, 'id' => 'c_email', 'class' => 'span3 m-wrap', 'placeholder' => 'E-mail Address here...']) ?>
-             </div> 
-
-             <div class="floating-box">
-                <?= $form->field($model, 'password')->passwordInput(['maxlength' => true, 'id' => 'c_address', 'class' => 'span3 m-wrap', 'placeholder' => 'Password here...']) ?>
-             </div>        
-             <br/>
-
-            <div class="form-group">
-                <?= Html::submitButton($model->isNewRecord ? '<li class=\'icon-save\'></li> Create New Record' : '<li class=\'icon-save\'></li> Update the Record', ['class' => $model->isNewRecord ? 'form-btn btn btn-primary' : 'form-btn btn btn-primary']) ?>
-                <?= Html::resetButton('<li class=\'icon-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
-            </div>
-
-    <?php ActiveForm::end(); ?>
-    <br/><br/><br/>
 </div>
+<br/>
+
+<div class="row">
+
+    <div class="col-md-3">
+        <label style="font-size: 12px;">Fullname</label>
+        <?= $form->field($model, 'fullname')->textInput(['required' => 'required', 'placeholder' => 'Fullname here...'])->label(false) ?>
+    </div>
+    <div class="col-md-3">
+        <label style="font-size: 12px;">E-mail</label>
+        <?= $form->field($model, 'email')->textInput(['required' => 'required', 'placeholder' => 'E-mail here...'])->label(false) ?>
+    </div>
+    <div class="col-md-3"></div>
+    <div class="col-md-3"></div>
+    
+    <br/>
+
+</div>
+<br/>
+
+<div class="row">
+
+    <div class="col-md-3">
+        <label style="font-size: 12px;">Username</label>
+        <?= $form->field($model, 'username')->textInput(['required' => 'required', 'placeholder' => 'Username here...'])->label(false) ?>
+    </div>
+    <div class="col-md-3">
+        <label style="font-size: 12px;">Password</label>
+        <?= $form->field($model, 'password')->passwordInput(['required' => 'required', 'placeholder' => 'Password here...'])->label(false) ?>
+    </div>
+    <div class="col-md-3"></div>
+    <div class="col-md-3"></div>
+
+</div>
+<hr/>
+
+<div class="row">
+
+    <div class="col-md-4">
+        <?= Html::submitButton($model->isNewRecord ? '<li class=\'fa fa-save\'></li> Save New Record' : '<li class=\'fa fa-save\'></li> Update Record', ['class' => $model->isNewRecord ? 'form-btn btn btn-primary' : 'form-btn btn btn-primary']) ?>
+        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
+    </div>
+    
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4"></div>
+
+</div>
+<br/><br/>
+
+<?php ActiveForm::end(); ?>
 
 
 

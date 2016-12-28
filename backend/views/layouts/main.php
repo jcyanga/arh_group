@@ -9,6 +9,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use common\widgets\Alert;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 
@@ -97,14 +98,13 @@ $userName = Yii::$app->user->identity->username;
     <link rel="stylesheet" href="assets/bootstrap/css/custom.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/maps/jquery-jvectormap-2.0.1.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/icheck/flat/green.css" />
-    <link rel="stylesheet" href="assets/bootstrap/css/icheck/flat/green.css" />
+    <link rel="stylesheet" href="assets/bootstrap/css/editor/external/google-code-prettify/prettify.css" />
+    <link rel="stylesheet" href="assets/bootstrap/css/editor/index.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/floatexamples.css" />
-
-    <style type="text/css">
-    	.side-navigator-active{
-    		background-color: #1ABB9C;
-    	}
-    </style>
+    <link rel="stylesheet" href="assets/bootstrap/css/select/select2.min.css" />
+    <link rel="stylesheet" href="assets/bootstrap/css/switchery/switchery.min.css" />
+    <link rel="stylesheet" href="assets/bootstrap/css/datatables/tools/css/dataTables.tableTools.css" />
+    <link rel="stylesheet" href="assets/bootstrap/css/dashboard-styles.css" />
 </head>
 
 <body class="nav-md">
@@ -142,50 +142,36 @@ $userName = Yii::$app->user->identity->username;
             <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
             <div class="menu_section">
-            <h3>General</h3>
+            <h3 style="color: transparent;">-</h3>
 
             <ul class="nav side-menu">
-            	<li><a href="?" class="<?php if( $isDashboard == FALSE ) { echo 'side-navigator-active'; }else{ echo 'link'; } ?>" ><i class="fa fa-home"></i> Dashboard </a>
-                </li>
-                <li><a href="#"><i class="fa fa-user"></i>  User <span class="fa fa-chevron-down"></span></a>
+                <li><span style="color: #E7E7E7 ; padding-left: 15px; font-weight: bold; font-size: 12px; "><i class="fa fa-list"></i> MENU NAVIGATION </span></li>
+                <li><span style="color: red;"><hr/></span></li>
+            	<li><a href="?" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-home"></i> Dashboard </a></li>
+                <li><a href="?r=customer" style=" font-weight: bold; font-size: 12px; "  ><i class="fa fa-users"></i> Customer </a></li>
+                <li><a href="#" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-user"></i>  User <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu" style="display: none">
-                        <li><a href="r=role">User Role</a>
+                        <li ><a href="?r=user" style=" font-weight: bold; font-size: 12px; "  >User List</a></li>
+                        <li><a href="?r=modules" style=" font-weight: bold; font-size: 12px; " >Module List</a></li>
+                        <li><a href="?r=role" style=" font-weight: bold; font-size: 12px; "  >User Role</a></li>
+                        <li><a href="?r=user-permission" style=" font-weight: bold; font-size: 12px; " >User Permission</a></li>
+                    </ul>
+                </li>
+                <li><a href="r=category" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-battery-quarter"></i> Services</a></li>
+                <li><a href="r=product" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-pencil"></i> Quotation</a></li>
+                <li><a href="r=inventory" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-paste"></i> Invoice</a></li>
+                <li><a href="r=inventory" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-database"></i> Inventory</a></li>
+                <li><a href="#" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-cogs"></i> Parts <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu" style="display: none">
+                        <li><a href="?r=category" style=" font-weight: bold; font-size: 12px; " >Category</a>
                         </li>
-                        <li><a href="r=module">Module List</a>
+                        <li><a href="?r=product" style=" font-weight: bold; font-size: 12px; " >Products</a>
                         </li>
-                        <li><a href="index3.html">Module Access</a>
-                        </li>
-                        <li><a href="?r=user">User List</a>
+                        <li><a href="?r=supplier" style=" font-weight: bold; font-size: 12px; " >Supplier</a>
                         </li>
                     </ul>
                 </li>
-                <li><a href="?r=customer" class="<?php if( $isCustomer ) { echo 'side-navigator-active'; } ?>" ><i class="fa fa-users"></i> Customer </a>
-                </li>
-                <li><a href="#"><i class="fa fa-cogs"></i> Parts <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu" style="display: none">
-                        <li><a href="r=category">Category</a>
-                        </li>
-                        <li><a href="r=product">Products</a>
-                        </li>
-                        <li><a href="r=supplier">Supplier</a>
-                        </li>
-                        <li><a href="r=inventory">Inventory</a>
-                        </li>
-                    </ul>
-                </li>
-                <li><a href="#"><i class="fa fa-desktop"></i> Transaction <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu" style="display: none">
-                        <li><a href="r=category">Services</a>
-                        </li>
-                        <li><a href="r=product">Quotation</a>
-                        </li>
-                        <li><a href="r=supplier">Payment</a>
-                        </li>
-                        <li><a href="r=inventory">Invoice</a>
-                        </li>
-                    </ul>
-                </li>
-                <li><a href="#"><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
+                <li><a href="#" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu" style="display: none">
                         <li><a href="general_elements.html">General Elements</a>
                         </li>
@@ -207,6 +193,8 @@ $userName = Yii::$app->user->identity->username;
                         </li>
                     </ul>
                 </li>
+                <li><span style="color: transparent;">-</span></li>
+                <li style="border: solid 1px #4b646f; background: #4b646f; "><span style="color: transparent; ">-</span><br/><span style="color: #E7E7E7 ; padding-left: 15px; font-weight: bold; font-size: 11px; "> &copy; <?php echo date('Y'); ?> | FIRSTCOM SOLUTIONS</span><br/><span style="color: transparent; padding-left: 15px;">-</span></li>
                 <!-- <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu" style="display: none">
                         <li><a href="tables.html">Tables</a>
@@ -318,7 +306,9 @@ $userName = Yii::$app->user->identity->username;
                     <li>
                         <a href="javascript:;">Help</a>
                     </li>
-                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a><?php
+                    echo Html::beginForm(['/site/logout'], 'post',['id' => 'logout-form']) . '<a href="#" onclick="document.getElementById(\'logout-form\').submit(); return false;" class="btn btn-default btn-flat">Sign out</a>'. Html::endForm();
+                  ?>
                     </li>
                 </ul>
             </li>
@@ -415,14 +405,14 @@ $userName = Yii::$app->user->identity->username;
 <br />
 
 <!-- footer content -->
-<footer>
+<!-- <footer>
     <div class="">
         <p class="pull-right"> &copy; <?php echo date('Y'); ?> Powered by <a>FirstCom Solutions</a>. |
             <span class="lead"> <i class="fa fa-car"></i> ARH Group Pte Ltd. </span>
         </p>
     </div>
     <div class="clearfix"></div>
-</footer>
+</footer> -->
 <!-- /footer content -->
 
 </div>
@@ -455,6 +445,7 @@ $userName = Yii::$app->user->identity->username;
     <script src="assets/bootstrap/js/icheck/icheck.min.js"></script>
      <!-- daterangepicker -->
     <script type="text/javascript" src="assets/bootstrap/js/moment.min.js"></script>
+    <script type="text/javascript" src="assets/bootstrap/js/moment.min2.js"></script>
     <script type="text/javascript" src="assets/bootstrap/js/datepicker/daterangepicker.js"></script>
 
     <script src="assets/bootstrap/js/custom.js"></script>
@@ -470,220 +461,54 @@ $userName = Yii::$app->user->identity->username;
     <script type="text/javascript" src="assets/bootstrap/js/flot/curvedLines.js"></script>
     <script type="text/javascript" src="assets/bootstrap/js/flot/jquery.flot.resize.js"></script>
 
+    <!-- tags -->
+    <script type="text/javascript" src="assets/bootstrap/js/tags/jquery.tagsinput.min.js"></script>
+    <!-- switchery -->
+    <script type="text/javascript" src="assets/bootstrap/js/switchery/switchery.min.js"></script>
+    <!-- richtext editor -->
+    <script type="text/javascript" src="assets/bootstrap/js/editor/bootstrap-wysiwyg.js"></script>
+    <script type="text/javascript" src="assets/bootstrap/js/editor/external/jquery.hotkeys.js"></script>
+    <script type="text/javascript" src="assets/bootstrap/js/editor/external/google-code-prettify/prettify.js"></script>
+    <!-- select2 -->
+    <script type="text/javascript" src="assets/bootstrap/js/select/select2.full.js"></script>
+    <!-- form validation -->
+    <script type="text/javascript" src="assets/bootstrap/js/parsley/parsley.min.js"></script>
+    <script type="text/javascript" src="assets/bootstrap/js/form-validation.js"></script>
+    <!-- textarea resize -->
+    <script type="text/javascript" src="assets/bootstrap/js/textarea/autosize.min.js"></script>
+
     <script>
-        NProgress.start();
-
-        $(document).ready(function () {
-            // [17, 74, 6, 39, 20, 85, 7]
-            //[82, 23, 66, 9, 99, 6, 2]
-            var data1 = [[gd(2012, 1, 1), 17], [gd(2012, 1, 2), 74], [gd(2012, 1, 3), 6], [gd(2012, 1, 4), 39], [gd(2012, 1, 5), 20], [gd(2012, 1, 6), 85], [gd(2012, 1, 7), 7]];
-
-            var data2 = [[gd(2012, 1, 1), 82], [gd(2012, 1, 2), 23], [gd(2012, 1, 3), 66], [gd(2012, 1, 4), 9], [gd(2012, 1, 5), 119], [gd(2012, 1, 6), 6], [gd(2012, 1, 7), 9]];
-            $("#canvas_dahs").length && $.plot($("#canvas_dahs"), [
-                data1, data2
-            ], {
-                series: {
-                    lines: {
-                        show: false,
-                        fill: true
-                    },
-                    splines: {
-                        show: true,
-                        tension: 0.4,
-                        lineWidth: 1,
-                        fill: 0.4
-                    },
-                    points: {
-                        radius: 0,
-                        show: true
-                    },
-                    shadowSize: 2
-                },
-                grid: {
-                    verticalLines: true,
-                    hoverable: true,
-                    clickable: true,
-                    tickColor: "#d5d5d5",
-                    borderWidth: 1,
-                    color: '#fff'
-                },
-                colors: ["rgba(38, 185, 154, 0.38)", "rgba(3, 88, 106, 0.38)"],
-                xaxis: {
-                    tickColor: "rgba(51, 51, 51, 0.06)",
-                    mode: "time",
-                    tickSize: [1, "day"],
-                    //tickLength: 10,
-                    axisLabel: "Date",
-                    axisLabelUseCanvas: true,
-                    axisLabelFontSizePixels: 12,
-                    axisLabelFontFamily: 'Verdana, Arial',
-                    axisLabelPadding: 10
-                        //mode: "time", timeformat: "%m/%d/%y", minTickSize: [1, "day"]
-                },
-                yaxis: {
-                    ticks: 8,
-                    tickColor: "rgba(51, 51, 51, 0.06)",
-                },
-                tooltip: false
-            });
-
-            function gd(year, month, day) {
-                return new Date(year, month - 1, day).getTime();
-            }
-        });
-
+            autosize($('.resizable_textarea'));
     </script>
+
+     <!-- Autocomplete -->
+    <script type="text/javascript" src="assets/bootstrap/js/autocomplete/countries.js"></script>
+    <script type="text/javascript" src="assets/bootstrap/js/autocomplete/jquery.autocomplete.js"></script>
+
+    <!-- Datatables -->
+    <script type="text/javascript" src="assets/bootstrap/js/datatables/js/jquery.dataTables.js"></script>
+    <!-- <script type="text/javascript" src="assets/bootstrap/js/datatables/tools/js/dataTables.tableTools.js"></script> -->
+    <script type="text/javascript" src="assets/bootstrap/js/table-design.js"></script>
+
+    <script type="text/javascript" src="assets/bootstrap/js/confirmation.js"></script>
+    <script type="text/javascript" src="assets/bootstrap/js/datepicker.js"></script>
     
-    <!-- worldmap -->
-    <script type="text/javascript" src="assets/bootstrap/js/maps/jquery-jvectormap-2.0.1.min.js"></script>
-    <script type="text/javascript" src="assets/bootstrap/js/maps/gdp-data.js"></script>
-    <script type="text/javascript" src="assets/bootstrap/js/maps/jquery-jvectormap-world-mill-en.js"></script>
-    <script type="text/javascript" src="assets/bootstrap/js/maps/jquery-jvectormap-us-aea-en.js"></script>
-
-    <script>
-        $(function () {
-            $('#world-map-gdp').vectorMap({
-                map: 'world_mill_en',
-                backgroundColor: 'transparent',
-                zoomOnScroll: false,
-                series: {
-                    regions: [{
-                        values: gdpData,
-                        scale: ['#E6F2F0', '#149B7E'],
-                        normalizeFunction: 'polynomial'
-                    }]
-                },
-                onRegionTipShow: function (e, el, code) {
-                    el.html(el.html() + ' (GDP - ' + gdpData[code] + ')');
-                }
-            });
-        });
-    </script>
-
-    <!-- skycons -->
-    <script src="assets/bootstrap/js/skycons/skycons.js"></script>
-
-    <script>
-        var icons = new Skycons({
-                "color": "#73879C"
-            }),
-            list = [
-                "clear-day", "clear-night", "partly-cloudy-day",
-                "partly-cloudy-night", "cloudy", "rain", "sleet", "snow", "wind",
-                "fog"
-            ],
-            i;
-
-        for (i = list.length; i--;)
-            icons.set(list[i], list[i]);
-
-        icons.play();
-    </script>
-
-    <!-- dashbord linegraph -->
-    <script>
-        var doughnutData = [
-            {
-                value: 30,
-                color: "#455C73"
-            },
-            {
-                value: 30,
-                color: "#9B59B6"
-            },
-            {
-                value: 60,
-                color: "#BDC3C7"
-            },
-            {
-                value: 100,
-                color: "#26B99A"
-            },
-            {
-                value: 120,
-                color: "#3498DB"
-            }
-    ];
-        var myDoughnut = new Chart(document.getElementById("canvas1").getContext("2d")).Doughnut(doughnutData);
-    </script>
-    <!-- /dashbord linegraph -->
-    <!-- datepicker -->
     <script type="text/javascript">
-        $(document).ready(function () {
+        $
+            $('#userRole').change(function(){
+            $('#w0').submit();
+            });
 
-            var cb = function (start, end, label) {
-                console.log(start.toISOString(), end.toISOString(), label);
-                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-                //alert("Callback has fired: [" + start.format('MMMM D, YYYY') + " to " + end.format('MMMM D, YYYY') + ", label = " + label + "]");
-            }
+            $('#controllerName').change(function(){
+                $('#w0').submit();
+            });
 
-            var optionSet1 = {
-                startDate: moment().subtract(29, 'days'),
-                endDate: moment(),
-                minDate: '01/01/2012',
-                maxDate: '12/31/2015',
-                dateLimit: {
-                    days: 60
-                },
-                showDropdowns: true,
-                showWeekNumbers: true,
-                timePicker: false,
-                timePickerIncrement: 1,
-                timePicker12Hour: true,
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                },
-                opens: 'left',
-                buttonClasses: ['btn btn-default'],
-                applyClass: 'btn-small btn-primary',
-                cancelClass: 'btn-small',
-                format: 'MM/DD/YYYY',
-                separator: ' to ',
-                locale: {
-                    applyLabel: 'Submit',
-                    cancelLabel: 'Clear',
-                    fromLabel: 'From',
-                    toLabel: 'To',
-                    customRangeLabel: 'Custom',
-                    daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
-                    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-                    firstDay: 1
-                }
-            };
-            $('#reportrange span').html(moment().subtract(29, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
-            $('#reportrange').daterangepicker(optionSet1, cb);
-            $('#reportrange').on('show.daterangepicker', function () {
-                console.log("show event fired");
+            $('#select-all').click(function(event) {   
+                $(':checkbox').each(function() {
+                    this.checked = true;                        
+                });
             });
-            $('#reportrange').on('hide.daterangepicker', function () {
-                console.log("hide event fired");
-            });
-            $('#reportrange').on('apply.daterangepicker', function (ev, picker) {
-                console.log("apply event fired, start/end dates are " + picker.startDate.format('MMMM D, YYYY') + " to " + picker.endDate.format('MMMM D, YYYY'));
-            });
-            $('#reportrange').on('cancel.daterangepicker', function (ev, picker) {
-                console.log("cancel event fired");
-            });
-            $('#options1').click(function () {
-                $('#reportrange').data('daterangepicker').setOptions(optionSet1, cb);
-            });
-            $('#options2').click(function () {
-                $('#reportrange').data('daterangepicker').setOptions(optionSet2, cb);
-            });
-            $('#destroy').click(function () {
-                $('#reportrange').data('daterangepicker').remove();
-            });
-        });
     </script>
-    <script>
-        NProgress.done();
-    </script>
-
     </body>   
 
 </html>

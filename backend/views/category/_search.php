@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\SearchCustomer */
@@ -10,31 +11,45 @@ use yii\widgets\ActiveForm;
 
 </style>
 
-<div  class="category-search">
-    <div class="search-label-container">
-        <span class="search-label"><li class="icon-edit"></li> Enter Keyword here</span>
-    </div>  
+ <div class="row">
 
+    <div class="col-md-12">
+        <div class="search-label-container">
+            <span class="search-label"><li class="fa fa-edit"></li> Enter Keyword here</span>
+        </div> 
+    </div>
+    <br/><br/>
+<!-- 'id' => 'demo-form2' -->
+<!-- , 'class' => 'form-inline' -->
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
-     
-     <div class="floating-box">
-        <?= $form->field($model, 'id')->textInput(['autocomplete' => 'off', 'class' => 'form-input', 'placeholder' => 'Enter ID here...'])->label(false) ?>
-     </div>
 
-     <div class="floating-box">
-        <?= $form->field($model, 'category')->textInput(['autocomplete' => 'off', 'class' => 'form-input', 'placeholder' => 'Enter Category here...'])->label(false) ?>
-     </div>
-     <br/>
-     
-     <div class="floating-box">
-        <?= Html::submitButton('<li class=\'icon-search\'></li> Search', ['class' => 'form-btn btn btn-primary']) ?>
-        <?= Html::resetButton('<li class=\'icon-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
+    <div class="col-md-3">
+        <?= $form->field($model, 'id')->textInput(['placeholder' => 'Enter ID here...'])->label(false) ?>
+    </div>
 
-     </div>
+    <div class="col-md-3">
+        <?= $form->field($model, 'category')->textInput(['placeholder' => 'Enter Category here...'])->label(false) ?>
+    </div>
 
+    <div class="col-md-3">
+        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
+    </div>
+
+    <div class="col-md-3"></div>
+    
     <?php ActiveForm::end(); ?>
+    <br/><br/>
 
-</div>
+ </div>
+
+
+
+
+
+
+
+
 
 
 

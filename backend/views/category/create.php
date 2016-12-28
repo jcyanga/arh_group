@@ -8,36 +8,38 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel common\models\SearchCustomer */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Category Module';
-$this->params['breadcrumbs'][] = ['label' => 'Categories', 'url' => ['index']];
+$this->title = 'Create Category';
+// $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
 
 ?>
 
-<div class="form-container category-create">
-
-<?php if($msg <> ''){ ?>
-    <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-          <?php echo $msg; ?>
+<div class="row form-container">
+ 
+ <div class="col-md-12 col-sm-12 col-xs-12">
+  
+    <div>
+        <?php if($msg <> ''){ ?>
+            <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+            <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
+                <?php echo $msg; ?>
+            </div>
+        <?php } ?>
     </div>
-<?php } ?>
 
     <div class="form-title-container">
-        <span class="form-header"><h4>Create Category</h4></span>
-    </div>      
-    <hr/>
-    
-    <div>
-        <p>
-            &nbsp;
-            <?= Html::button('<i class=\'icon-arrow-left\'></i> Back to Previous Page', ['name' => 'btnBack','onclick'=>'js:history.go(-1);returnFalse;','class'=>'uibutton loading confirm form-btn btn btn-default ']) ?>
-        </p>
+        <span style="color: #666;" class="form-header"><h4>Create Module</h4></span>
     </div>
-    <br/>
+    <hr/>
 
     <div class="form-crud-container">
-    	<?= $this->render('_form', ['model' => $model,]) ?>
-    </div>
+        <?= $this->render('_form', ['model' => $model,]) ?>
+    </div>   
+ 
+ </div>
+
 </div>
+<br/>
+
+
 
 

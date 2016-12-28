@@ -116,4 +116,18 @@ class SearchProduct extends Product
         return $query;
     }
 
+    public function searchProduct($category_id,$product_code,$product_name) {
+        $rows = new Query();
+
+        $result = $rows->select(['product.id', 'category.category', 'product.product_code', 'product.product_name', 'product.unit_of_measure', 'product.category_id', 'product.product_image', 'product.status', 'product.created_at', 'product.created_by'])
+            ->from('product')
+            ->join('INNER JOIN', 'category', 'product.category_id = category.id')
+            ->where(['product.category_id' => $category_id])
+            ->orWhere(['product.product_code' => $product_code])
+            ->orWhere(['product.product_name' => $product_name])
+            ->all();
+
+        return $result;            
+    }
+
 }

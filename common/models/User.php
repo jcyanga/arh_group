@@ -50,6 +50,8 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    public $confirm_password;
+
     /**
      * @inheritdoc
      */
@@ -60,7 +62,7 @@ class User extends ActiveRecord implements IdentityInterface
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
             ['role', 'default', 'value' => 20],
             ['role', 'in', 'range' => [self::ROLE_USER, self::ROLE_ADMIN]],
-            [['username', 'email'], 'required'],
+            [['fullname', 'username', 'email', 'role_id'], 'required'],
             ['password', 'validatePassword'],
             ['password', 'string', 'min' => 6],
             ['email', 'email'],
@@ -68,7 +70,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['photo'], 'string'],
             [['file'], 'file'],
             [['created_at', 'updated_at','last_login','confirm_password', 'photo'], 'safe'],
-            // ['confirm_password', 'compare', 'compareAttribute'=>'password', 'message'=>"Passwords don't match"]
+            ['confirm_password', 'compare', 'compareAttribute'=>'password', 'message'=>"Passwords don't match"]
         ];
     }
 

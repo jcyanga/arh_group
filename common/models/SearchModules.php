@@ -6,12 +6,14 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Modules;
+use yii\db\Query;
 
 /**
  * SearchModules represents the model behind the search form about `common\models\Modules`.
  */
 class SearchModules extends Modules
 {
+    public $Role;
     /**
      * @inheritdoc
      */
@@ -65,5 +67,16 @@ class SearchModules extends Modules
         $query->andFilterWhere(['like', 'modules', $this->modules]);
 
         return $dataProvider;
+    }
+
+    public function searchModule($id,$module) {
+        $rows = new Query();
+
+        $result = $rows->select(['*'])
+                    ->from('modules')
+                    ->where(['like', 'modules', $module])
+                    ->all();
+
+        return $result;  
     }
 }

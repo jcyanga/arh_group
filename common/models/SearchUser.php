@@ -6,7 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\User;
-
+use yii\db\Query;
 /**
  * SearchUser represents the model behind the search form about `common\models\User`.
  */
@@ -18,8 +18,8 @@ class SearchUser extends User
     public function rules()
     {
         return [
-            [['id', 'user_group_id', 'role', 'status', 'created_by', 'updated_by', 'deleted'], 'integer'],
-            [['username', 'password', 'password_hash', 'password_reset_token', 'email', 'photo', 'auth_key', 'login', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'role_id', 'role', 'status', 'created_by', 'updated_by', 'deleted'], 'integer'],
+            [['fullname', 'username', 'password', 'password_hash', 'password_reset_token', 'email', 'photo', 'auth_key', 'login', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -60,7 +60,6 @@ class SearchUser extends User
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'user_group_id' => $this->user_group_id,
             'role' => $this->role,
             'status' => $this->status,
             'login' => $this->login,
@@ -81,4 +80,30 @@ class SearchUser extends User
 
         return $dataProvider;
     }
+
+    public function searchUser($fullname,$username,$email) {
+        $rows = new Query();
+
+        $result = $rows->select(['user.id', 'role.role', 'user.fullname', 'user.username', 'user.email', 'user.status'])
+                    ->from('user')
+                    ->join('INNER JOIN', 'role', 'user.role_id = role.id')
+                    ->where(['like', 'user.fullname', $fullname])
+                    ->andWhere(['like', 'user.username', $username])
+                    ->andWhere(['like', 'user.email', $email])
+                    ->all();
+
+        return $result;            
+    }
+
+    public function getUser() {
+        $rows = new Query();
+
+        $result = $rows->select(['user.id', 'role.role', 'user.fullname', 'user.username', 'user.email', 'user.status', 'user.created_at', 'user.updated_at'])
+                    ->from('user')
+                    ->join('INNER JOIN', 'role', 'user.role_id = role.id')
+                    ->all();
+
+        return $result;   
+    }
+
 }
