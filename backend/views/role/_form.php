@@ -25,12 +25,12 @@ $userId = Yii::$app->user->identity->id;
     </div>
     <br/>
 
-    <div class="col-md-6">
+    <div class="col-md-4">
         <label style="font-size: 12px;">ROLE</label>
         <?= $form->field($model, 'role')->textInput(['required' => 'required', 'placeholder' => 'Role here...'])->label(false) ?>
     </div>
     
-    <div class="col-md-6"></div>
+    <div class="col-md-4"></div>
 
     <div class="col-md-4"></div>
 

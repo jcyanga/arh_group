@@ -68,7 +68,7 @@ $this->title = 'Suppliers';
 
     <table id="tblrole" class="table table-striped responsive-utilities jambo_table">
     <thead>
-        <tr style="font-size: 12px;" class="headings">
+        <tr style="font-size: 11px;" class="headings">
             <th> # </th>
             <th style="text-align: center;"> SUPPLIER CODE </th>
             <th style="text-align: center;"> SUPPLIER NAME </th>
@@ -81,7 +81,7 @@ $this->title = 'Suppliers';
 
     <tbody>
         <?php foreach( $getSupplier as $row){ ?>
-            <tr style="font-size: 12px; text-transform: uppercase;" class="even_odd pointer">
+            <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                 <td class=" "><?php echo $row['id'];  ?></td>
                 <td style="text-align: center;" class=" "><?php echo $row['supplier_code'];  ?></td>
                 <td style="text-align: center;" class=" "><?php echo $row['supplier_name'];  ?></td>

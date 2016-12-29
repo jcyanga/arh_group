@@ -16,24 +16,36 @@ $this->title = 'Create User Permission';
 
 <div class="row form-container">
  
- <div class="col-md-12 col-sm-12 col-xs-12">
+<div class="col-md-12 col-sm-12 col-xs-12">
 
-    <div class="form-title-container">
-        <span style="color: #666;" class="form-header"><h4>Create User Permission</h4></span>
-    </div>
+	<div class="form-title-container">
+	    <span style="color: #666;" class="form-header"><h4>Create User Permission</h4></span>
+	</div>
+	<hr/>
+</div>
+ <br/>
 
-  </div>
- <hr/>
+<div class="col-md-12 col-sm-12 col-xs-12">
+  <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
 
-<?php $form = ActiveForm::begin(['class' => 'form-inline']); ?>
-	
-<div class="search-label-container">
-    &nbsp;
-    <span class="search-label"><li class="fa fa-edit"></li> User Permission Information.</span>
 </div>
 <br/>
 
-<div class="col-md-4">
+<?php $form = ActiveForm::begin(['class' => 'form-inline']); ?>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+<br/>
+
+	<div class="search-label-container">
+	    <span class="search-label"><li class="fa fa-edit"></li> User Permission Information.</span>
+	</div>
+
+</div>
+<br/>
+
+<div class="col-md-12 col-sm-12 col-xs-12"><br/></div>
+
+<div class="col-md-3">
     <label style="font-size: 12px;">Controller List</label>
     <select id="controllerName" name="controllerName" class="form-control">
     	<option vale="0">Please select</option>
@@ -44,7 +56,7 @@ $this->title = 'Create User Permission';
 		</select>
 </div>
 
-<div class="col-md-4">
+<div class="col-md-3">
 	<label style="font-size: 12px;">Role List</label>
     <select id="userRole" name="userRole" class="form-control">
 			<option vale="0">Please select</option>
@@ -55,14 +67,13 @@ $this->title = 'Create User Permission';
 		</select>
 </div>
 
-<div class="col-md-4"></div>
+<div class="col-md-3"></div>
+<div class="col-md-3"></div>
 
 <?php ActiveForm::end(); ?>
+<br/>
 
-<br/><br/><br/>
-<hr/>
-
-<div class="col-md-4">
+<div class="col-md-12">
 
 <?php $form = ActiveForm::begin(); ?>
 
@@ -84,19 +95,21 @@ $this->title = 'Create User Permission';
 			<input type="checkbox" name="checkBox[<?= $cA ?>]" <?= $checked ?> > <?= $cA ?> <br>
 		<?php } /* foreach */ ?>
 	<input type="hidden" name="controllerNameChosen" value="<?= $controllerNameChosen ?>">
-	<div class=" col-sm-12 text-right">
-	    <div class="form-group">
-			<input type="button" id="select-all" value="Select All" class="btn btn-success">
-	        <?= Html::submitButton('<i class=\'fa fa-save\'></i> Save', ['class' => 'btn btn-primary']) ?>
-	    </div>
+	<hr/>
+
+<div class=" col-sm-12 text-right">
+    <div class="form-group">
+		<input type="button" id="select-all" value='Select All' class="form-btn btn btn-success">
+        <?= Html::submitButton('<i class=\'fa fa-save\'></i> Save New Record', ['class' => 'form-btn btn btn-primary']) ?>
     </div>
+</div>
 	<?php } /* if */ ?>
 
 <?php ActiveForm::end(); ?>
 
 </div>
-
  <br/>
+
 </div>
 
 

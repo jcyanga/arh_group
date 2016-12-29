@@ -25,12 +25,13 @@ $userId = Yii::$app->user->identity->id;
     </div>
     <br/>
 
-    <div class="col-md-6">
+    <div class="col-md-4">
         <label style="font-size: 12px;">Category</label>
         <?= $form->field($model, 'category')->textInput(['required' => 'required', 'placeholder' => 'Category here...'])->label(false) ?>
     </div>
     
-    <div class="col-md-6"></div>
+    <div class="col-md-4"></div>
+    <div class="col-md-4"></div>
 
 </div>
 <hr/>

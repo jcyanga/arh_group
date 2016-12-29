@@ -31,6 +31,9 @@ $this->title = 'Create Module';
     </div>
     <hr/>
 
+    <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
+    <br/><br/>
+
     <div class="form-crud-container">
         <?= $this->render('_form', ['model' => $model,]) ?>
     </div>   

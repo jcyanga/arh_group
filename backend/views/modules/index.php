@@ -68,7 +68,7 @@ $this->title = 'Modules';
 
     <table id="tblrole" class="table table-striped responsive-utilities jambo_table">
     <thead>
-        <tr style="font-size: 12px;" class="headings">
+        <tr style="font-size: 11px;" class="headings">
             <th> # </th>
             <th style="text-align: center;"> MODULES </th>
             <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
@@ -78,7 +78,7 @@ $this->title = 'Modules';
 
     <tbody>
         <?php foreach( $getModule as $row){ ?>
-            <tr style="font-size: 12px; text-transform: uppercase;" class="even_odd pointer">
+            <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                 <td class=" "><?php echo $row['id'];  ?></td>
                 <td style="text-align: center;" class=" "><?php echo $row['modules'];  ?></td>
                 <td style="text-align: center; font-size: 12px;" class=" last">

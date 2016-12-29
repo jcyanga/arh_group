@@ -68,7 +68,7 @@ $this->title = 'Customers';
 
     <table id="tblcustomer" class="table table-striped responsive-utilities jambo_table">
     <thead>
-        <tr style="font-size: 12px;" class="headings">
+        <tr style="font-size: 11px;" class="headings">
             <th>
                 <input type="checkbox" class="tableflat">
             </th>
@@ -84,7 +84,7 @@ $this->title = 'Customers';
 
     <tbody>
         <?php foreach( $getCustomer as $row){ ?>
-            <tr style="font-size: 12px; text-transform: uppercase;" class="even_odd pointer">
+            <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                 <td class="a-center ">
                     <input type="checkbox" class="tableflat" value="<?php echo $row['id']; ?>">
                 </td>

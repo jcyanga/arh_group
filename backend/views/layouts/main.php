@@ -145,33 +145,35 @@ $userName = Yii::$app->user->identity->username;
             <h3 style="color: transparent;">-</h3>
 
             <ul class="nav side-menu">
-                <li><span style="color: #E7E7E7 ; padding-left: 15px; font-weight: bold; font-size: 12px; "><i class="fa fa-list"></i> MENU NAVIGATION </span></li>
-                <li><span style="color: red;"><hr/></span></li>
-            	<li><a href="?" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-home"></i> Dashboard </a></li>
-                <li><a href="?r=customer" style=" font-weight: bold; font-size: 12px; "  ><i class="fa fa-users"></i> Customer </a></li>
-                <li><a href="#" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-user"></i>  User <span class="fa fa-chevron-down"></span></a>
+                <li><span id="nav-menu-header" > <i class="fa fa-list"></i> MENU NAVIGATION - </span></li>
+                <!-- <li><span style="color: #ffffff;"><hr/></span></li> -->
+            	<li><a href="?" id="nav-dashboard" ><i class="fa fa-home"></i> Dashboard </a></li>
+                <li><a href="r=product" id="nav-quotation" ><i class="fa fa-pencil"></i> Quotation</a></li>
+                <li><a href="r=inventory" id="nav-invoice" ><i class="fa fa-paste"></i> Invoice</a></li>
+                <li><a href="#" id="nav-services" ><i class="fa fa-battery-quarter"></i> Services <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu" style="display: none">
-                        <li ><a href="?r=user" style=" font-weight: bold; font-size: 12px; "  >User List</a></li>
-                        <li><a href="?r=modules" style=" font-weight: bold; font-size: 12px; " >Module List</a></li>
-                        <li><a href="?r=role" style=" font-weight: bold; font-size: 12px; "  >User Role</a></li>
-                        <li><a href="?r=user-permission" style=" font-weight: bold; font-size: 12px; " >User Permission</a></li>
+                        <li><a href="?r=category"  id="nav-category" >Category</a></li>
+                        <li><a href="?r=product"  id="nav-product" >Service List</a></li>
                     </ul>
                 </li>
-                <li><a href="r=category" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-battery-quarter"></i> Services</a></li>
-                <li><a href="r=product" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-pencil"></i> Quotation</a></li>
-                <li><a href="r=inventory" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-paste"></i> Invoice</a></li>
-                <li><a href="r=inventory" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-database"></i> Inventory</a></li>
-                <li><a href="#" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-cogs"></i> Parts <span class="fa fa-chevron-down"></span></a>
+                <li><a href="#" id="nav-parts" ><i class="fa fa-cogs"></i> Parts <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu" style="display: none">
-                        <li><a href="?r=category" style=" font-weight: bold; font-size: 12px; " >Category</a>
-                        </li>
-                        <li><a href="?r=product" style=" font-weight: bold; font-size: 12px; " >Products</a>
-                        </li>
-                        <li><a href="?r=supplier" style=" font-weight: bold; font-size: 12px; " >Supplier</a>
-                        </li>
+                        <li><a href="?r=category"  id="nav-category" >Category</a></li>
+                        <li><a href="?r=product"  id="nav-product" >Products</a></li>
+                        <li><a href="?r=supplier" id="nav-supplier" >Supplier</a></li>
+                        <li><a href="?r=inventory" id="nav-inventory" > Inventory</a></li>
                     </ul>
                 </li>
-                <li><a href="#" style=" font-weight: bold; font-size: 12px; " ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
+                <li><a href="?r=customer" id="nav-customer"  ><i class="fa fa-users"></i> Customer </a></li>
+                <li><a href="#" id="nav-user" ><i class="fa fa-user"></i>  User <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu" style="display: none">
+                        <li ><a href="?r=user" id="nav-userList"  >User List</a></li>
+                        <li><a href="?r=modules" id="nav-modules" >Module List</a></li>
+                        <li><a href="?r=role" id="nav-role"  >User Role</a></li>
+                        <li><a href="?r=user-permission" id="nav-userPermission" >User Permission</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" id="nav-reports" ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu" style="display: none">
                         <li><a href="general_elements.html">General Elements</a>
                         </li>
@@ -193,8 +195,7 @@ $userName = Yii::$app->user->identity->username;
                         </li>
                     </ul>
                 </li>
-                <li><span style="color: transparent;">-</span></li>
-                <li style="border: solid 1px #4b646f; background: #4b646f; "><span style="color: transparent; ">-</span><br/><span style="color: #E7E7E7 ; padding-left: 15px; font-weight: bold; font-size: 11px; "> &copy; <?php echo date('Y'); ?> | FIRSTCOM SOLUTIONS</span><br/><span style="color: transparent; padding-left: 15px;">-</span></li>
+                <li id="footer-container"><span style="color: transparent;" >-</span><br/><span id="footer-content"> &copy; <?php echo date('Y'); ?> | FIRSTCOM SOLUTIONS</span><br/><span style="color: transparent;" >-</span></li>
                 <!-- <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu" style="display: none">
                         <li><a href="tables.html">Tables</a>
@@ -290,7 +291,7 @@ $userName = Yii::$app->user->identity->username;
 
         <ul class="nav navbar-nav navbar-right">
             <li class="">
-                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                <a href="javascript:;" id="top-nav-right" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     <img src="assets/bootstrap/photos/user.png" alt=""> <?php echo $userName; ?>
                     <span class=" fa fa-angle-down"></span>
                 </a>
@@ -504,11 +505,56 @@ $userName = Yii::$app->user->identity->username;
             });
 
             $('#select-all').click(function(event) {   
-                $(':checkbox').each(function() {
-                    this.checked = true;                        
+                $('.actionChkbox').each(function() {
+                    this.checked = true;
+                
                 });
             });
     </script>
+
+    <!-- select2 -->
+    <script>
+        $(document).ready(function () {
+            $(".select2_single").select2({
+                placeholder: "Select a state",
+                allowClear: true
+            });
+            $(".select3_single").select2({
+                placeholder: "Select a state",
+                allowClear: true
+            });
+            $(".select2_group").select2({});
+            $(".select2_multiple").select2({
+                maximumSelectionLength: 4,
+                placeholder: "With Max Selection limit 4",
+                allowClear: true
+            });
+        });
+
+        $(document).ready(function() {
+
+
+          $(".add-more").click(function(){ 
+
+              var html = $(".copy").html();
+
+              $(".after-add-more").after(html);
+
+          });
+
+
+          $(".remove").click(function(){
+
+              $(this).parents(".control-group").remove();
+
+          });
+
+
+        });
+
+    </script>
+    <!-- /select2 -->
+
     </body>   
 
 </html>

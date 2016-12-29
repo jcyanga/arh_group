@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 28, 2016 at 03:46 PM
+-- Generation Time: Dec 29, 2016 at 10:49 AM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -174,7 +174,27 @@ INSERT INTO `inventory` (`id`, `product_id`, `supplier_id`, `quantity`, `cost_pr
 (2, 4, 5, 1000, 5000, 7500, '2016-12-22', 1, '2016-12-22', 1),
 (3, 5, 5, 10, 5000, 10000, '2016-12-22', 1, '2016-12-22', 1),
 (4, 8, 4, 100, 1000, 2000, '2016-12-22', 1, '2016-12-22', 1),
-(5, 14, 4, 50, 5000, 6500, '2016-12-22', 1, '2016-12-22', 1);
+(5, 14, 4, 50, 5000, 6500, '2016-12-22', 1, '2016-12-22', 1),
+(6, 7, 4, 10, 5, 7, '2016-12-29', 0, '2016-12-29', 1),
+(7, 2000, 4, 150, 1000, 2000, '2016-12-29', 0, '2016-12-29', 1),
+(8, 100, 5, 50, 75, 100, '2016-12-29', 0, '2016-12-29', 1),
+(9, 150, 5, 100, 120, 150, '2016-12-29', 0, '2016-12-29', 1),
+(10, 12, 4, 100, 10, 12, '2016-12-29', 0, '2016-12-29', 1),
+(11, 9, 4, 10, 7, 9, '2016-12-29', 0, '2016-12-29', 1),
+(12, 7, 4, 10, 6, 7, '2016-12-29', 0, '2016-12-29', 1),
+(13, 6, 6, 100, 10, 11, '2016-12-29', 0, '2016-12-29', 1),
+(14, 13, 6, 50, 25, 35, '2016-12-29', 0, '2016-12-29', 1),
+(15, 13, 6, 40, 400, 500, '2016-12-29', 0, '2016-12-29', 1),
+(16, 8, 6, 75, 750, 850, '2016-12-29', 0, '2016-12-29', 1),
+(17, 10, 5, 1, 1, 1, '2016-12-29', 0, '2016-12-29', 1),
+(18, 2, 5, 2, 2, 2, '2016-12-29', 0, '2016-12-29', 1),
+(19, 10, 5, 1, 1, 1, '2016-12-29', 0, '2016-12-29', 1),
+(20, 13, 5, 1, 1, 1, '2016-12-29', 0, '2016-12-29', 1),
+(21, 16, 4, 123, 213, 123, '2016-12-29', 0, '2016-12-29', 1),
+(22, 11, 5, 123, 12, 213, '2016-12-29', 0, '2016-12-29', 1),
+(23, 14, 6, 123, 213, 12, '2016-12-29', 0, '2016-12-29', 1),
+(24, 5, 6, 12, 12, 21, '2016-12-29', 0, '2016-12-29', 1),
+(25, 7, 6, 23, 2323, 2323, '2016-12-29', 0, '2016-12-29', 1);
 
 -- --------------------------------------------------------
 
@@ -507,7 +527,7 @@ ALTER TABLE `customer`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT for table `modules`
 --
@@ -517,7 +537,7 @@ ALTER TABLE `modules`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `role`
 --
@@ -527,12 +547,12 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT for table `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `user_permission`
 --

@@ -68,7 +68,7 @@ $this->title = 'Users';
 
     <table id="tblcustomer" class="table table-striped responsive-utilities jambo_table">
     <thead>
-        <tr style="font-size: 12px;" class="headings">
+        <tr style="font-size: 11px;" class="headings">
             <th> ROLE </th>
             <th> FULLNAME </th>
             <th> USERNAME </th>
@@ -81,7 +81,7 @@ $this->title = 'Users';
 
     <tbody>
         <?php foreach( $getUser as $row){ ?>
-            <tr style="font-size: 12px; text-transform: uppercase;" class="even_odd pointer">
+            <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                 <td class=" "><?php echo $row['role'];  ?></td>
                 <td class=" "><?php echo $row['fullname'];  ?></td>
                 <td class=" "><?php echo $row['username'];  ?></td>
