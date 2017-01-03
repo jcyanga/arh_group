@@ -18,7 +18,7 @@ class SearchUser extends User
     public function rules()
     {
         return [
-            [['id', 'role_id', 'role', 'status', 'created_by', 'updated_by', 'deleted'], 'integer'],
+            [['id', 'role_id', 'branch_id', 'role', 'status', 'created_by', 'updated_by', 'deleted'], 'integer'],
             [['fullname', 'username', 'password', 'password_hash', 'password_reset_token', 'email', 'photo', 'auth_key', 'login', 'created_at', 'updated_at'], 'safe'],
         ];
     }

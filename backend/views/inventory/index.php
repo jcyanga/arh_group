@@ -35,7 +35,7 @@ $this->title = 'Inventories';
 
     <p>
         <a href="?r=inventory/create" id="option-list-link" class="btn btn-app">
-            <i class="fa fa-clipboard"></i> <b> New Item in Inventory </b>
+            <i class="fa fa-cogs"></i> <b> New Item in Inventory </b>
         </a>
 
         <a href="?r=product/create" id="option-list-link" class="btn btn-app">
@@ -79,7 +79,7 @@ $this->title = 'Inventories';
  <div class="col-md-12 col-sm-12 col-xs-12">
  <br/><br/>
 
-    <table id="tblrole" class="table table-striped responsive-utilities jambo_table">
+    <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
         <tr style="font-size: 11px;" class="headings">
             <th> # </th>
@@ -95,22 +95,28 @@ $this->title = 'Inventories';
     </thead>
 
     <tbody>
-        <?php foreach( $getProductInInventory as $row){ ?>
-            <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
-                <td class=" "><?php echo $row['id'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['supplier_name'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['product_code'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['product_name'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['quantity'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['cost_price'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['selling_price'];  ?></td>
-                <td style="text-align: center; font-size: 12px;" class=" last">
-                    <a href="?r=modules/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
-                    <a href="?r=modules/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> | 
-                    <a href="?r=modules/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
-                </td>
+        <?php if(count($getProductInInventory) > 0 ): ?>
+            <?php foreach( $getProductInInventory as $row){ ?>
+                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
+                    <td class=" "><?php echo $row['id'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['supplier_name'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['product_code'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['product_name'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['quantity'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['cost_price'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['selling_price'];  ?></td>
+                    <td style="text-align: center; font-size: 12px;" class=" last">
+                        <a href="?r=modules/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
+                        <a href="?r=modules/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> | 
+                        <a href="?r=inventory/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
+                    </td>
+                </tr>
+            <?php } ?> 
+        <?php else: ?>
+            <tr>
+                <td><span>No Record Found.</span></td>
             </tr>
-        <?php } ?> 
+        <?php endif; ?> 
     </tbody>
     </table>
  

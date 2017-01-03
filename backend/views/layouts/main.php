@@ -145,15 +145,15 @@ $userName = Yii::$app->user->identity->username;
             <h3 style="color: transparent;">-</h3>
 
             <ul class="nav side-menu">
-                <li><span id="nav-menu-header" > <i class="fa fa-list"></i> MENU NAVIGATION - </span></li>
-                <!-- <li><span style="color: #ffffff;"><hr/></span></li> -->
-            	<li><a href="?" id="nav-dashboard" ><i class="fa fa-home"></i> Dashboard </a></li>
-                <li><a href="r=product" id="nav-quotation" ><i class="fa fa-pencil"></i> Quotation</a></li>
-                <li><a href="r=inventory" id="nav-invoice" ><i class="fa fa-paste"></i> Invoice</a></li>
+            	<li><a> <span id="nav-menu-header"> <i class="fa fa-list"></i> MENU NAVIGATION -- </span> </a></li>
+                <li><a href="?" id="nav-dashboard" ><i class="fa fa-home"></i> Dashboard </a></li>
+                <li><a href="?r=quotation" id="nav-quotation" ><i class="fa fa-pencil"></i> Quotation</a></li>
+                <li><a href="?r=inventory" id="nav-invoice" ><i class="fa fa-paste"></i> Invoice</a></li>
+                <li><a href="?r=stocks" id="nav-services" ><i class="fa fa-database"></i> Stocks </a></li>
                 <li><a href="#" id="nav-services" ><i class="fa fa-battery-quarter"></i> Services <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu" style="display: none">
-                        <li><a href="?r=category"  id="nav-category" >Category</a></li>
-                        <li><a href="?r=product"  id="nav-product" >Service List</a></li>
+                        <li><a href="?r=service-category"  id="nav-serviceCategory" >Category</a></li>
+                        <li><a href="?r=service"  id="nav-serviceList" >Service List</a></li>
                     </ul>
                 </li>
                 <li><a href="#" id="nav-parts" ><i class="fa fa-cogs"></i> Parts <span class="fa fa-chevron-down"></span></a>
@@ -164,6 +164,7 @@ $userName = Yii::$app->user->identity->username;
                         <li><a href="?r=inventory" id="nav-inventory" > Inventory</a></li>
                     </ul>
                 </li>
+                <li><a href="?r=branch" id="nav-branch" ><i class="fa fa-globe"></i> Branch </a></li>
                 <li><a href="?r=customer" id="nav-customer"  ><i class="fa fa-users"></i> Customer </a></li>
                 <li><a href="#" id="nav-user" ><i class="fa fa-user"></i>  User <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu" style="display: none">
@@ -193,6 +194,11 @@ $userName = Yii::$app->user->identity->username;
                         </li>
                         <li><a href="calender.html">Calender</a>
                         </li>
+                    </ul>
+                </li>
+                <li><a href="#" id="nav-reports" ><i class="fa fa-gear"></i> Utilities <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu" style="display: none">
+                        <li><a href="?r=gst">GST</a></li>
                     </ul>
                 </li>
                 <li id="footer-container"><span style="color: transparent;" >-</span><br/><span id="footer-content"> &copy; <?php echo date('Y'); ?> | FIRSTCOM SOLUTIONS</span><br/><span style="color: transparent;" >-</span></li>
@@ -554,6 +560,53 @@ $userName = Yii::$app->user->identity->username;
 
     </script>
     <!-- /select2 -->
+
+    <script>
+        $(function () {
+            var cnt = 10; //$("#custom_notifications ul.notifications li").length + 1;
+            TabbedNotification = function (options) {
+                var message = "<div id='ntf" + cnt + "' class='text alert-" + options.type + "' style='display:none'><h2><i class='fa fa-bell'></i> " + options.title + "</h2><div class='close'><a href='javascript:;' class='notification_close'><i class='fa fa-close'></i></a></div><p>" + options.text + "</p></div>";
+
+                if (document.getElementById('custom_notifications') == null) {
+                    alert('doesnt exists');
+                } else {
+                    $('#custom_notifications ul.notifications').append("<li><a id='ntlink" + cnt + "' class='alert-" + options.type + "' href='#ntf" + cnt + "'><i class='fa fa-bell animated shake'></i></a></li>");
+                    $('#custom_notifications #notif-group').append(message);
+                    cnt++;
+                    CustomTabs(options);
+                }
+            }
+
+            CustomTabs = function (options) {
+                $('.tabbed_notifications > div').hide();
+                $('.tabbed_notifications > div:first-of-type').show();
+                $('#custom_notifications').removeClass('dsp_none');
+                $('.notifications a').click(function (e) {
+                    e.preventDefault();
+                    var $this = $(this),
+                        tabbed_notifications = '#' + $this.parents('.notifications').data('tabbed_notifications'),
+                        others = $this.closest('li').siblings().children('a'),
+                        target = $this.attr('href');
+                    others.removeClass('active');
+                    $this.addClass('active');
+                    $(tabbed_notifications).children('div').hide();
+                    $(target).show();
+                });
+            }
+
+            CustomTabs();
+
+            var tabid = idname = '';
+            $(document).on('click', '.notification_close', function (e) {
+                idname = $(this).parent().parent().attr("id");
+                tabid = idname.substr(-2);
+                $('#ntf' + tabid).remove();
+                $('#ntlink' + tabid).parent().remove();
+                $('.notifications a').first().addClass('active');
+                $('#notif-group div').first().css('display','block');
+            });
+        })
+    </script>
 
     </body>   
 

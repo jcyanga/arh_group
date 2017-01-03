@@ -216,6 +216,26 @@ class InventoryController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionDeleteColumn($id)
+    {
+        // $this->findModel($id)->delete();
+        // $model = $this->findModel($id);
+        // $model->deleted = 1;
+        // if ( $model->save() ) {
+        //     Yii::$app->getSession()->setFlash('success', 'Customer deleted');
+        // } else {
+        //     Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
+        // }
+        $searchModel = new SearchInventory();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $this->findModel($id)->delete();
+
+        $getProductInInventory = $searchModel->getProductInInventory();
+
+        return $this->render('index', ['searchModel' => $searchModel, 'getProductInInventory' => $getProductInInventory, 'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+    }
+
     /**
      * Finds the Inventory model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

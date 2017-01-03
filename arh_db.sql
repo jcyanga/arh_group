@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 29, 2016 at 10:49 AM
+-- Generation Time: Jan 03, 2017 at 12:04 PM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -87,6 +87,33 @@ CREATE TABLE `auth_rule` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `branch`
+--
+
+CREATE TABLE `branch` (
+  `id` int(11) NOT NULL,
+  `code` varchar(50) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `address` varchar(50) NOT NULL,
+  `contact_no` varchar(50) NOT NULL,
+  `status` int(5) NOT NULL,
+  `created_at` date NOT NULL,
+  `created_by` int(10) NOT NULL,
+  `updated_at` date NOT NULL,
+  `updated_by` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `branch`
+--
+
+INSERT INTO `branch` (`id`, `code`, `name`, `address`, `contact_no`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 'arh-001', 'Singapore', 'Kallang way singapore', '09087894561', 1, '2017-01-03', 1, '2017-01-03', 1),
+(2, 'arh-002', 'Philippines', 'BPI Buendia Center Makati Ave. Makati City', '09957896541', 1, '2017-01-03', 1, '2017-01-03', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `category`
 --
 
@@ -145,6 +172,24 @@ INSERT INTO `customer` (`id`, `ic`, `fullname`, `race`, `carplate`, `address`, `
 (1, '', 'Jose Czar Yanga', 'Filipino', 'JCY-028', '148 Sanchez street manggahan commonwealth quezon city', '9515747', '09959575415', 'jcyanga412060@gmail.com', 'red', 'rolls royce', '2 seaters', 'motolite', 'pumbelt', 0, '1', 100, '2017-01-14', 1, '2016-12-14 18:41:00', 1, '2016-12-14 18:41:00', 1),
 (4, '', 'mary gracielle samonte', 'Filipino', 'bot-602', '123 bagong barrio caloocan city', '9515747', '09959575415', 'mariagraciasamonte@yahoo.com', 'white', 'ferrari', '6x2x3', 'motolite', 'belt', 0, '0', 1000, '0000-00-00', 1, '2016-12-16 04:18:11', 0, '2016-12-16 04:18:11', 0),
 (7, 'phi', 'Jaybee Lamsin', 'filipino', 'DCE-017', 'east avenue medical center', '9515747', '09987894565', 'dice17@yahoo.com', 'Red', 'Mitsubishi GT-X', '2x3x4', 'Motolite', 'Pumbelt', 0, '0', 500, '2017-01-06', 1, '2016-12-27 07:47:10', 1, '2016-12-27 07:47:10', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gst`
+--
+
+CREATE TABLE `gst` (
+  `id` int(11) NOT NULL,
+  `gst` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `gst`
+--
+
+INSERT INTO `gst` (`id`, `gst`) VALUES
+(1, '7%');
 
 -- --------------------------------------------------------
 
@@ -230,7 +275,13 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m161228_053452_create_auth_item_table', 1482903625),
 ('m161228_053844_create_auth_assignment_table', 1482903625),
 ('m161228_054548_create_auth_item_table', 1482904001),
-('m161228_060720_create_auth_rule_table', 1482905289);
+('m161228_060720_create_auth_rule_table', 1482905289),
+('m170103_013357_create_service_category_table', 1483407428),
+('m170103_020957_create_service_table', 1483409549),
+('m170103_040608_create_branch_table', 1483416549),
+('m170103_064043_create_gst_table', 1483425696),
+('m170103_071512_create_quotation_table', 1483429651),
+('m170103_072328_create_quotation_subtotal_table', 1483429651);
 
 -- --------------------------------------------------------
 
@@ -297,6 +348,49 @@ INSERT INTO `product` (`id`, `product_code`, `product_name`, `product_image`, `u
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `quotation`
+--
+
+CREATE TABLE `quotation` (
+  `id` int(11) NOT NULL,
+  `quotation_code` varchar(50) NOT NULL,
+  `user_id` int(10) NOT NULL,
+  `customer_id` int(10) NOT NULL,
+  `branch_id` int(10) NOT NULL,
+  `date_issue` date NOT NULL,
+  `type` varchar(50) NOT NULL,
+  `no_of_services` int(10) NOT NULL,
+  `no_of_parts` int(10) NOT NULL,
+  `grand_total` double NOT NULL,
+  `remarks` text NOT NULL,
+  `created_at` date NOT NULL,
+  `created_by` int(10) NOT NULL,
+  `updated_at` date NOT NULL,
+  `updated_by` int(10) NOT NULL,
+  `delete` int(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `quotation_subtotal`
+--
+
+CREATE TABLE `quotation_subtotal` (
+  `id` int(11) NOT NULL,
+  `quotation_id` int(10) NOT NULL,
+  `item_id` int(10) NOT NULL,
+  `qty` int(10) NOT NULL,
+  `price` double NOT NULL,
+  `subTotal` double NOT NULL,
+  `type` int(5) NOT NULL,
+  `created_at` date NOT NULL,
+  `created_by` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `role`
 --
 
@@ -314,6 +408,60 @@ INSERT INTO `role` (`id`, `role`) VALUES
 (2, 'admin'),
 (3, 'staff'),
 (4, 'customer');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `service`
+--
+
+CREATE TABLE `service` (
+  `id` int(11) NOT NULL,
+  `service_category_id` int(10) NOT NULL,
+  `service_name` varchar(50) NOT NULL,
+  `description` text NOT NULL,
+  `default_price` double NOT NULL,
+  `status` int(5) NOT NULL,
+  `created_at` date NOT NULL,
+  `created_by` int(10) NOT NULL,
+  `updated_at` date NOT NULL,
+  `updated_by` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `service`
+--
+
+INSERT INTO `service` (`id`, `service_category_id`, `service_name`, `description`, `default_price`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 1, 'Normal General Servicing', 'Servicing for Part 5', 80, 1, '2017-01-03', 1, '2017-01-03', 1),
+(2, 1, 'Extreme General Servicing', 'Servicing for Part 6', 110, 1, '2017-01-03', 1, '2017-01-03', 1),
+(3, 2, 'Normal General Servicing', 'Servicing for Part 6', 220, 1, '2017-01-03', 1, '2017-01-03', 1),
+(5, 2, 'Extreme General Servicing', 'Servicing for Part 6', 120, 1, '2017-01-03', 1, '2017-01-03', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `service_category`
+--
+
+CREATE TABLE `service_category` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `description` text NOT NULL,
+  `status` int(5) NOT NULL,
+  `created_at` date NOT NULL,
+  `created_by` int(10) NOT NULL,
+  `updated_at` date NOT NULL,
+  `updated_by` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `service_category`
+--
+
+INSERT INTO `service_category` (`id`, `name`, `description`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 'Contract', 'Service for Contract', 1, '2017-01-03', 1, '2017-01-03', 1),
+(2, 'Ad Hoc', ' Service for Ad Hoc', 1, '2017-01-03', 1, '2017-01-03', 1);
 
 -- --------------------------------------------------------
 
@@ -347,6 +495,7 @@ INSERT INTO `supplier` (`id`, `supplier_code`, `supplier_name`, `address`, `cont
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `role_id` int(10) NOT NULL,
+  `branch_id` int(10) NOT NULL,
   `role` int(10) NOT NULL,
   `fullname` varchar(50) NOT NULL,
   `username` varchar(50) NOT NULL,
@@ -369,10 +518,16 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`id`, `role_id`, `role`, `fullname`, `username`, `password`, `password_hash`, `password_reset_token`, `email`, `photo`, `auth_key`, `status`, `login`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted`) VALUES
-(1, 1, 20, 'JC Yanga Jr', 'jcyanga', 'password', '$2y$13$KLYNdyN9n.CXY4uELu9Td.6LJ1BoXrXQY0dmrnb9HUMegb1dPw.YK', '', 'jcyanga28@yahoo.com', '', 'R5BJVsB83hg7xshurVUaXb6qYn4HrFi8', 1, '2016-12-28 20:11:00', '2016-12-28 20:15:00', 0, '2016-12-28 20:20:00', 0, 0),
-(3, 2, 20, 'jose czar yanga', 'admin', '', '$2y$13$eFUYWik87rrQA7vk9m10IOFXOf5/ZPGXLxGpFYnvGBfd74eBBClyW', '', 'jcyanga412060@gmail.com', '', '7w_3S8S4z9LY6VZKfCzCVWRSQQJAEdz6', 1, '0000-00-00 00:00:00', '2016-12-28 20:29:32', 1, '0000-00-00 00:00:00', 0, 0),
-(4, 3, 20, 'gracielle samonte', 'mariagracia', '', '$2y$13$3G6MliSJcoQG1J.G2n/2n.5x0Aigc6ZNd5nJG7sXO1QcF7JEz.gdS', '', 'mariagracia@yahoo.com', '', 'PgXtxT0pGLD4NgEOMIEYwbQ8HTAf_voC', 1, '0000-00-00 00:00:00', '2016-12-28 20:35:30', 1, '0000-00-00 00:00:00', 0, 0);
+INSERT INTO `user` (`id`, `role_id`, `branch_id`, `role`, `fullname`, `username`, `password`, `password_hash`, `password_reset_token`, `email`, `photo`, `auth_key`, `status`, `login`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted`) VALUES
+(1, 1, 2, 20, 'JC Yanga Jr', 'jcyanga', 'password', '$2y$13$KLYNdyN9n.CXY4uELu9Td.6LJ1BoXrXQY0dmrnb9HUMegb1dPw.YK', '', 'jcyanga28@yahoo.com', '', 'R5BJVsB83hg7xshurVUaXb6qYn4HrFi8', 1, '2016-12-28 20:11:00', '2016-12-28 20:15:00', 0, '2016-12-28 20:20:00', 0, 0),
+(3, 2, 2, 20, 'jose czar yanga', 'admin', '', '$2y$13$eFUYWik87rrQA7vk9m10IOFXOf5/ZPGXLxGpFYnvGBfd74eBBClyW', '', 'jcyanga412060@gmail.com', '', '7w_3S8S4z9LY6VZKfCzCVWRSQQJAEdz6', 1, '0000-00-00 00:00:00', '2016-12-28 20:29:32', 1, '0000-00-00 00:00:00', 0, 0),
+(4, 3, 2, 20, 'gracielle samonte', 'mariagracia', '', '$2y$13$3G6MliSJcoQG1J.G2n/2n.5x0Aigc6ZNd5nJG7sXO1QcF7JEz.gdS', '', 'mariagracia@yahoo.com', '', 'PgXtxT0pGLD4NgEOMIEYwbQ8HTAf_voC', 1, '0000-00-00 00:00:00', '2016-12-28 20:35:30', 1, '0000-00-00 00:00:00', 0, 0),
+(5, 4, 2, 20, 'mark legazpi', 'marklegazpi01', '', '$2y$13$Tyd6/WyBVRoZ3YLxsPUf0eeeJCERw7gBcGrCawVgL/3w3b8GQJUaa', '', 'marklegazpi@yahoo.com', '', '2_rnP_5ykKIpTXAPdJlunIkH6WDhVkDT', 1, '0000-00-00 00:00:00', '2017-01-03 13:24:17', 1, '0000-00-00 00:00:00', 0, 0),
+(6, 1, 1, 20, 'test', 'test123', '', '$2y$13$D55YSKtgO6t3v6s5NiUcc.uAGy186y3Qtqns78r4Tn1Co4cXKqhCK', '', 'test@gmail.com', '', 'uVstnHrnUnczsuD2aGNYF5XRTXYy8Bia', 1, '0000-00-00 00:00:00', '2017-01-03 13:25:58', 1, '0000-00-00 00:00:00', 0, 0),
+(7, 1, 1, 20, 'test2', 'test2', '', '$2y$13$qWP686cxXBpZXrHPS0llsuyG943lGXo3whayWwHt90axusz8YGhUG', '', 'test2@yahoo.com', '', '9llNGkK9_93euoiJE05jNbN5xNMZN041', 1, '0000-00-00 00:00:00', '2017-01-03 13:49:56', 1, '0000-00-00 00:00:00', 0, 0),
+(8, 4, 1, 20, 'test3', 'test3', '', '$2y$13$MTILA1yYuwS1TEDMlapj7u383kyLMtN.Qx1iMRf.n4jpNpoXpo54O', '', 'test3@yahoo.com', '', 'WY-5-AQVNiatTzgmmUvZOTF4MooIqzhv', 1, '0000-00-00 00:00:00', '2017-01-03 13:50:25', 1, '0000-00-00 00:00:00', 0, 0),
+(9, 1, 1, 20, 'test4', 'test4', '', '$2y$13$XPONNjHNglINzCGnBy19h.W3kcfR70gnSPnFDwWm6rJ64TQfG5f0e', '', 'test4@ymail.com', '', '863OffnV8tIAnqL0Epr-k__2gjL-AM1w', 1, '0000-00-00 00:00:00', '2017-01-03 13:53:35', 1, '0000-00-00 00:00:00', 0, 0),
+(10, 1, 1, 20, 'JB Lamsin', 'asd', '', '$2y$13$y0VLb/6xMKFWmfmhTFzjzODibleIg5mfwX3fdkXw1uXVqnmAFJWlO', '', 'test7@yahoo.com', '', 'EHQOXm0tWm1CsECKVx9DrzU2Nme5vj5g', 1, '0000-00-00 00:00:00', '2017-01-03 14:32:07', 1, '0000-00-00 00:00:00', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -430,6 +585,12 @@ ALTER TABLE `auth_rule`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `branch`
+--
+ALTER TABLE `branch`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `category`
 --
 ALTER TABLE `category`
@@ -439,6 +600,12 @@ ALTER TABLE `category`
 -- Indexes for table `customer`
 --
 ALTER TABLE `customer`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `gst`
+--
+ALTER TABLE `gst`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -466,9 +633,33 @@ ALTER TABLE `product`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `quotation`
+--
+ALTER TABLE `quotation`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `quotation_subtotal`
+--
+ALTER TABLE `quotation_subtotal`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `role`
 --
 ALTER TABLE `role`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `service`
+--
+ALTER TABLE `service`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `service_category`
+--
+ALTER TABLE `service_category`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -514,6 +705,11 @@ ALTER TABLE `auth_item_child`
 ALTER TABLE `auth_rule`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `branch`
+--
+ALTER TABLE `branch`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
@@ -523,6 +719,11 @@ ALTER TABLE `category`
 --
 ALTER TABLE `customer`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+--
+-- AUTO_INCREMENT for table `gst`
+--
+ALTER TABLE `gst`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `inventory`
 --
@@ -539,10 +740,30 @@ ALTER TABLE `modules`
 ALTER TABLE `product`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
+-- AUTO_INCREMENT for table `quotation`
+--
+ALTER TABLE `quotation`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `quotation_subtotal`
+--
+ALTER TABLE `quotation_subtotal`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `service`
+--
+ALTER TABLE `service`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
+-- AUTO_INCREMENT for table `service_category`
+--
+ALTER TABLE `service_category`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `supplier`
 --
@@ -552,7 +773,7 @@ ALTER TABLE `supplier`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `user_permission`
 --

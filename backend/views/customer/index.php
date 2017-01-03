@@ -66,7 +66,7 @@ $this->title = 'Customers';
  <div class="col-md-12 col-sm-12 col-xs-12">
  <br/><br/>
 
-    <table id="tblcustomer" class="table table-striped responsive-utilities jambo_table">
+    <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
         <tr style="font-size: 11px;" class="headings">
             <th>
@@ -83,23 +83,29 @@ $this->title = 'Customers';
     </thead>
 
     <tbody>
-        <?php foreach( $getCustomer as $row){ ?>
-            <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
-                <td class="a-center ">
-                    <input type="checkbox" class="tableflat" value="<?php echo $row['id']; ?>">
-                </td>
-                <td class=" "><?php echo $row['fullname'];  ?></td>
-                <td class=" "><?php echo $row['hanphone_no'];  ?></td>
-                <td class=" "><?php echo $row['carplate'];  ?></td>
-                <td class=" "><?php echo date('m-d-Y', strtotime($row['member_expiry']));  ?></td>
-                <td class=" "><?php echo ( $row['status'] == 1 ) ? 'Active' : 'Inactive'; ?></td>
-                <td style="text-align: center; font-size: 12px;" class=" last">
-                    <a href="?r=customer/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
-                    <a href="?r=customer/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> | 
-                    <a href="?r=customer/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
-                </td>
+        <?php if(count($getCustomer) > 0 ): ?>
+            <?php foreach( $getCustomer as $row){ ?>
+                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
+                    <td class="a-center ">
+                        <input type="checkbox" class="tableflat" value="<?php echo $row['id']; ?>">
+                    </td>
+                    <td class=" "><?php echo $row['fullname'];  ?></td>
+                    <td class=" "><?php echo $row['hanphone_no'];  ?></td>
+                    <td class=" "><?php echo $row['carplate'];  ?></td>
+                    <td class=" "><?php echo date('m-d-Y', strtotime($row['member_expiry']));  ?></td>
+                    <td class=" "><?php echo ( $row['status'] == 1 ) ? 'Active' : 'Inactive'; ?></td>
+                    <td style="text-align: center; font-size: 12px;" class=" last">
+                        <a href="?r=customer/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
+                        <a href="?r=customer/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> | 
+                        <a href="?r=customer/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
+                    </td>
+                </tr>
+            <?php } ?> 
+        <?php else: ?>
+            <tr>
+                <td><span>No Record Found.</span></td>
             </tr>
-        <?php } ?> 
+        <?php endif; ?>    
     </tbody>
     </table>
  

@@ -101,7 +101,7 @@ class UserController extends Controller
 
             if($model->save()) {
 
-                $userRoleId = $model->role_id;
+               $userRoleId = $model->role_id;
 
                 if ( $userRoleId == 1) {
                     $userRole = $auth->getRole('developer');

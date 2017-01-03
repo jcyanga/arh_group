@@ -66,7 +66,7 @@ $this->title = 'Products';
  <div class="col-md-12 col-sm-12 col-xs-12">
  <br/><br/>
 
-    <table id="tblrole" class="table table-striped responsive-utilities jambo_table">
+    <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
         <tr style="font-size: 11px;" class="headings">
             <th> # </th>
@@ -80,20 +80,26 @@ $this->title = 'Products';
     </thead>
 
     <tbody>
-        <?php foreach( $productResult as $row){ ?>
-            <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
-                <td class=" "><?php echo $row['id'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['category'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['product_code'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['product_name'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['unit_of_measure'];  ?></td>
-                <td style="text-align: center; font-size: 12px;" class=" last">
-                    <a href="?r=product/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
-                    <a href="?r=product/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> | 
-                    <a href="?r=product/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
-                </td>
+        <?php if(count($productResult) > 0 ): ?>
+            <?php foreach( $productResult as $row){ ?>
+                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
+                    <td class=" "><?php echo $row['id'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['category'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['product_code'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['product_name'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['unit_of_measure'];  ?></td>
+                    <td style="text-align: center; font-size: 12px;" class=" last">
+                        <a href="?r=product/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
+                        <a href="?r=product/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> | 
+                        <a href="?r=product/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
+                    </td>
+                </tr>
+            <?php } ?> 
+        <?php else: ?>
+            <tr>
+                <td><span>No Record Found.</span></td>
             </tr>
-        <?php } ?> 
+        <?php endif; ?>   
     </tbody>
     </table>
  

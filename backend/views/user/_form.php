@@ -6,6 +6,7 @@ use yii\helpers\Url;
 
 use yii\helpers\ArrayHelper;
 use common\models\Role;
+use common\models\Branch;
 /* @var $this yii\web\View */
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
@@ -17,6 +18,7 @@ $datetime = date('Y-m-d h:i:s');
 $userId = Yii::$app->user->identity->id;
 
 $dataRole = ArrayHelper::map(Role::find()->all(), 'id', 'role');
+$dataBranch = ArrayHelper::map(Branch::find()->all(), 'id', 'name');
 ?>
 
 <?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
@@ -32,6 +34,21 @@ $dataRole = ArrayHelper::map(Role::find()->all(), 'id', 'role');
     <div class="col-md-3">
         <label style="font-size: 12px;">User Role</label>
         <?= $form->field($model, 'role_id')->dropDownList($dataRole)->label(false) ?>
+    </div>
+    <div class="col-md-3"></div>
+    <div class="col-md-3"></div>
+    <div class="col-md-3"></div>
+    
+    <br/>
+
+</div>
+<br/>
+
+<div class="row">
+
+    <div class="col-md-3">
+        <label style="font-size: 12px;">User Branch</label>
+        <?= $form->field($model, 'branch_id')->dropDownList($dataBranch)->label(false) ?>
     </div>
     <div class="col-md-3"></div>
     <div class="col-md-3"></div>
