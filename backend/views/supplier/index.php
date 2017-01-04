@@ -30,7 +30,7 @@ $this->title = 'Suppliers';
     </div>
 
     <div class="form-title-container">
-        <span class="form-header"><h4>Supplier Maintenance</h4></span>
+        <span class="form-header"><h4>Parts-Supplier Maintenance</h4></span>
     </div>
     <hr/>
 
@@ -98,6 +98,11 @@ $this->title = 'Suppliers';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         <?php endif; ?>  
     </tbody>

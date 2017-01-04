@@ -17,7 +17,7 @@ class m161219_112411_create_supplier_table extends Migration
             'supplier_code' => $this->string(50)->notNull(),
             'supplier_name' => $this->string(50)->notNull(),
             'address' => $this->text()->notNull(),
-            'contact_number' => $this->integer(10)->notNull(),
+            'contact_number' => $this->string(50)->notNull(),
         ]);
     }
 

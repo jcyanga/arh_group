@@ -27,7 +27,8 @@ $userId = Yii::$app->user->identity->id;
 
     <div class="col-md-3">
         <label style="font-size: 12px;">Supplier Code</label>
-        <?= $form->field($model, 'supplier_code')->textInput(['required' => 'required', 'placeholder' => 'Supplier Code here...'])->label(false) ?>
+        <?php $supplierCode = 'SUPPLIERS' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5); ?>
+        <?= $form->field($model, 'supplier_code')->textInput(['readonly' => 'readonly', 'value' => $supplierCode])->label(false) ?>
     </div>
     
     <div class="col-md-3">

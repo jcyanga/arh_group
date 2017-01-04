@@ -30,7 +30,7 @@ $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
     <br/>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Product Category</label>
+        <label style="font-size: 12px;">Parts Category</label>
         <?= $form->field($model, 'category_id')->dropDownList($dataCategory)->label(false) ?>
     </div>
     
@@ -45,7 +45,8 @@ $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
 
     <div class="col-md-3">
         <label style="font-size: 12px;">Product Code</label>
-        <?= $form->field($model, 'product_code')->textInput(['required' => 'required', 'placeholder' => 'Product Code here...'])->label(false) ?>
+        <?php $productCode = 'PARTS' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5); ?>
+        <?= $form->field($model, 'product_code')->textInput(['readonly' => 'readonly', 'value' => $productCode])->label(false) ?>
     </div>
     
     <div class="col-md-3">

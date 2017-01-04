@@ -3,6 +3,7 @@
 namespace common\models;
 
 use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "user_permission".
@@ -45,5 +46,24 @@ class UserPermission extends \yii\db\ActiveRecord
             'action' => 'Action',
             'role_id' => 'Role ID',
         ];
+    }
+
+    public function getUserPermission() {
+        $rows = new Query();
+
+        $result = $rows->select(['user_permission.id', 'role.role', 'user_permission.controller', 'user_permission.action', 'user_permission.role_id'])
+            ->from('user_permission')
+            ->join('INNER JOIN', 'role', 'user_permission.role_id = role.id')
+            ->where('user_permission.role_id > 1')
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+
+        }else{
+            return 0;
+
+        }   
+
     }
 }

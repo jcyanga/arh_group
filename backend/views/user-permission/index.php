@@ -50,14 +50,6 @@ $this->title = 'User Permission';
         <a href="?r=user-permission/set-permission" id="option-list-link" class="btn btn-app">
             <i class="fa fa-plus-circle"></i> <b> New User Permission </b>
         </a>
-
-        <a href="?r=user-permission/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-excel-o"></i> <b> Export to Excel </b>
-        </a>
-
-        <a href="?r=user-permission/export-pdf" id="option-list-link" onclick="return pdfPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-pdf-o"></i> <b> Export to PDF </b>
-        </a>
     </p>
 </div>
 
@@ -83,7 +75,7 @@ $this->title = 'User Permission';
             <?php foreach( $getUserPermission as $row){ ?>
                 <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                     <td class=" "><?php echo $row['id'];  ?></td>
-                    <td style="text-align: center;" class=" "><?php echo $row['role_id'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['role'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['controller'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['action'];  ?></td>
                     <td style="text-align: center; font-size: 12px;" class=" last">
@@ -96,6 +88,10 @@ $this->title = 'User Permission';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         <?php endif; ?> 
     </tbody>

@@ -13,8 +13,11 @@ use yii\helpers\Url;
 				<td style="background: #eee; text-align: center;" > # </td>
 				<td style=" background: #eee;" > Supplier Code </td>
 				<td style=" background: #eee;" > Supplier Name </td>
-				<td style=" background: #eee;" > Address </td>
-				<td style=" background: #eee;" > Contact Number </td>
+				<td style=" background: #eee;" > Product Code </td>
+				<td style=" background: #eee;" > Product Name </td>
+				<td style=" background: #eee;" > Quantity </td>
+				<td style=" background: #eee;" > Cost Price </td>
+				<td style=" background: #eee;" > Selling Price </td>
 			</tr>
 		</thead>
 		<tbody>
@@ -23,8 +26,11 @@ use yii\helpers\Url;
 				<td ><?php echo $row['id']; ?></td>
 				<td ><?php echo $row['supplier_code']; ?></td>
 				<td ><?php echo $row['supplier_name']; ?></td>
-				<td ><?php echo $row['address']; ?></td>
-				<td ><?php echo $row['contact_number']; ?></td>
+				<td ><?php echo $row['product_code']; ?></td>
+				<td ><?php echo $row['product_name']; ?></td>
+				<td ><?php echo $row['quantity']; ?></td>
+				<td ><?php echo $row['cost_price']; ?></td>
+				<td ><?php echo $row['selling_price']; ?></td>
 			</tr>
 			<?php } ?>
 		</tbody>

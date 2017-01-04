@@ -7,11 +7,11 @@ use yii\helpers\Url;
 ?>
 
 <div>
-	<table class="table table-striped">
+	<table border="1" >
 		<thead>
 			<tr>
-				<td>ID</td>
-				<td>ROLE</td>
+				<td style="background: #eee; text-align: center;" > # </td>
+				<td style=" background: #eee;" > User-Role </td>
 			</tr>
 		</thead>
 		<tbody>

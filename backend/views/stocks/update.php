@@ -18,9 +18,7 @@ $this->title = 'Inventories';
 ?>
 
 <div class="row">
- <div class="col-md-12 col-sm-12 col-xs-12">
- <br/>
- </div>
+ 	<div class="col-md-12 col-sm-12 col-xs-12"><br/></div>
 </div>
 
 <div class="row table-container">
@@ -29,15 +27,15 @@ $this->title = 'Inventories';
  <br/>
  
  <div class="form-title-container">
-        <span class="form-header"><h4>PRODUCT STOCKS</h4></span>
+        <span class="form-header"><h4><i class="fa fa-database"></i> UPDATE PARTS STOCKS</h4></span>
  </div>
  <br/>
 
  <div class="" role="tabpanel" data-example-id="togglable-tabs">
             <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true"><b>Stock-In</b></a>
+                <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true"><b><i class="fa fa-sign-in"></i> Stock-In</b></a>
                 </li>
-                <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab"  aria-expanded="false"><b>Stock-out</b></a>
+                <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab"  aria-expanded="false"><b><i class="fa fa-sign-out"></i> Stock-Out</b></a>
                 </li>
             </ul>
             <div id="myTabContent" class="tab-content">
@@ -49,30 +47,30 @@ $this->title = 'Inventories';
 
 	<div class="row">
 
-	    <div class="search-label-container">
-	        &nbsp;
-	        <span class="search-label"><li class="fa fa-edit"></li> Item Information.</span>
-	    </div>
-	    <br/>
+	    <div class="col-md-8">
 
-	    <div class="col-md-12">
-
-	        <table>
+	        <table style="border: solid 1px #eee;" class="table table-hover table-striped" >
+	        	<thead>
+	        		<tr>
+	        			<td style="font-weight: bold;"><i class="fa fa-cogs"></i> PARTS NAME</td>
+	        			<td style="text-align: center; font-weight: bold;"><i class="fa fa-upload"></i> ADDED STOCKS</td>
+	        			<td style="text-align: center; font-weight: bold;"><i class="fa fa-database"></i> QUANTITY</td>
+	        		</tr>
+	        	</thead>
 	        	<?php foreach($data as $key => $value): ?>
 	        	<tr>
 	        		<td>
-	        			<label style="font-size: 12px; text-transform: uppercase;"><?php echo $value['itemName']; ?></label>
+	        			<label style="font-size: 12px; text-transform: uppercase; margin-top: 30px;"><?php echo $value['itemName']; ?></label>
 	        		</td>
 	        		<td>
 	        			&nbsp;
-	        			<input type="text" class="qtyValue form-control" id="<?php echo $value['itemId']; ?>" />
+	        			<input type="text" class="qtyValue form-control" value="" id="<?php echo $value['itemId']; ?>" >
 	        		</td>
 	        		<td>
 	        			&nbsp;
-	        			<label style="font-size: 12px;"><?php echo $value['itemQty']; ?></label>
+	        			<input type="text" readonly="readonly" style="text-align: center;" class="qtyS form-control" value="<?php echo $value['itemQty']; ?>" id="<?php echo $value['itemId']; ?>" >
 	        		</td>
 	        	</tr>
-	        	<tr><td><br/></td></tr>
 	        	<?php endforeach; ?>	
 	        </table>
 
@@ -112,29 +110,7 @@ $this->title = 'Inventories';
  </div>
 
 </div>
-
 <br/>
-
-<script>
-	
-	$(document).ready(function () {
-
-		if( $('.qtyValue').length ) {
-			$('.qtyValue').each(function(){
-
-				$(this).change(function(){
-
-					console.log( $(this).val() );
-
-				});
-
-			});
-		
-		}
-
-	});
-</script>>
-
 
 
 

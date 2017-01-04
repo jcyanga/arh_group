@@ -104,16 +104,33 @@ class StocksController extends Controller
 
         $updateQty = Yii::$app->request->post('updateQty');
 
-        foreach($updateQty as $key => $value) {
+        if( !empty($updateQty) ) {
+            foreach($updateQty as $key => $value) {
+                 $result = explode('|', $value);
 
-             $result = explode('|', $value);
+                 $array = array('itemId' => $result[0], 'itemName' => $result[1], 'itemQty' => $result[2]);
+                 
+                 $data[] = $array;    
+            }
 
-             $array = array('itemId' => $result[0], 'itemName' => $result[1], 'itemQty' => $result[2]);
-             
-             $data[] = $array;    
+            return $this->render('update', ['data' => $data]);
+
+        }else {
+
+                $model = new Inventory();
+
+                $searchModel = new SearchInventory();
+                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+                $getProductInInventory = $model->getProductInInventory();
+
+                return $this->render('index', ['model' => $model, 'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'getProductInInventory' => $getProductInInventory, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
+                ]);
+
+
         }
 
-        return $this->render('update', ['data' => $data]);
+
     
     }
 

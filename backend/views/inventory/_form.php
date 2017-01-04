@@ -28,12 +28,12 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 
     <div class="search-label-container">
         &nbsp;
-        <span class="search-label"><li class="fa fa-edit"></li> Item Information.</span>
+        <span class="search-label"><li class="fa fa-edit"></li> Parts Information.</span>
     </div>
     <br/>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Product Supplier</label>
+        <label style="font-size: 12px;">Parts-Supplier</label>
         <?= $form->field($model, 'supplier_id')->dropDownList($dataSupplier, ['class' => 'select2_single', 'style' => 'width: 100%;'])->label(false) ?>
     </div>
     
@@ -48,7 +48,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 
     <div class="col-md-3">
         <label style="font-size: 12px;">Product Name</label>
-        <select name="product_id[]" class="select3_single" style="width: 100%;">
+        <select name="product_id[]" class="select2_single" style="width: 100%;">
             <?php foreach( $getProductList as $row ): ?>
                 <option value="<?php echo $row['id']; ?>"><?php echo $row['product_name']; ?></option>
             <?php endforeach; ?>
@@ -81,8 +81,9 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
     </div>
 
     <div class="col-md-3">
-    <br/>
-        <button type="button" class="form-btn add btn btn-link add-more" ><i class='fa fa-plus'></i> Add </button>   
+        <div style="padding-top: 30px;">
+        <a href="#" class="form-btn add-more"><i class="fa fa-plus"></i> Add</a>
+        </div>  
     </div>
 
     <div >
@@ -92,9 +93,91 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
     </div>
 
 </div>
+<hr/>
 
 <div class="input-group control-group after-add-more"></div>
 
+<div class="copy hide " >
+
+<div class="control-group" >
+
+<div class="row">
+
+    <div class="col-md-3">
+        
+        <label style="font-size: 12px;">Product Name</label>
+        <br/>
+        <select name="product_id[]" class="form-control" style="width: 100%;">
+            <option value="0">Select Product</option>
+            <?php foreach( $getProductList as $row ): ?>
+                <option value="<?php echo $row['id']; ?>"><?php echo $row['product_name']; ?></option>
+            <?php endforeach; ?>
+        </select>
+
+    </div>  
+
+    <div class="col-md-3"></div>
+    <div class="col-md-3"></div>
+    <div class="col-md-3"></div>
+
+</div>
+<br/>
+
+<div class="row">  
+
+    <div class="col-md-3">
+        <label style="font-size: 12px;">Quantity</label>
+        <input type="text" name="quantity[]" class="form-control" placeholder="Quantity Here" />
+    </div>
+
+    <div class="col-md-3">
+        <label style="font-size: 12px;">Cost Price</label>
+        <input type="text" name="cost_price[]" class="form-control" placeholder="Cost Price Here" />
+    </div>
+
+    <div class="col-md-3">
+        <label style="font-size: 12px;">Selling Price</label>
+        <input type="text" name="selling_price[]" class="form-control" placeholder="Selling Price Here" />
+    </div>
+
+    <div class="col-md-3">
+        <div style="padding-top: 30px;">
+        <a href="#" class="form-btn remove"><i class="fa fa-trash"></i> Remove</a>
+        </div>  
+    </div>
+    
+</div>
+<hr/>
+
+</div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-4">
+        <?= Html::submitButton($model->isNewRecord ? '<li class=\'fa fa-save\'></li> Save New Record' : '<li class=\'fa fa-save\'></li> Update Record', ['class' => $model->isNewRecord ? 'form-btn btn btn-primary' : 'form-btn btn btn-primary']) ?>
+        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
+    </div>
+    
+    <div class="col-md-4"></div>
+
+    <div class="col-md-4"></div>
+
+</div>
+<br/><br/>
+
+<?php ActiveForm::end(); ?>
+
+
+
+
+<!-- <button type="button" class="form-btn add btn btn-link add-more" ><i class='fa fa-plus'></i> Add </button>  -->
+
+
+<!-- <div class="input-group control-group after-add-more"></div>
+
+        
 <div class="copy hide">
 
 <div class="control-group input-group" style="margin-top:10px">
@@ -149,45 +232,4 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 </div>
 
 </div>   
-<hr/>
-
-<div class="row">
-
-    <div class="col-md-4">
-        <?= Html::submitButton($model->isNewRecord ? '<li class=\'fa fa-save\'></li> Save New Record' : '<li class=\'fa fa-save\'></li> Update Record', ['class' => $model->isNewRecord ? 'form-btn btn btn-primary' : 'form-btn btn btn-primary']) ?>
-        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
-    </div>
-    
-    <div class="col-md-4"></div>
-
-    <div class="col-md-4"></div>
-
-</div>
-<br/><br/>
-
-<?php ActiveForm::end(); ?>
-
-
-
-
-
-
-        
-
-        <!-- Copy Fields -->
-
-        <!-- <div class="copy hide">
-
-          <div class="control-group input-group" style="margin-top:10px">
-
-            <input type="text" name="addmore[]" class="form-control inputbox1" placeholder="Enter Name Here">
-            <input type="text" name="addmore[]" class="form-control inputbox2" placeholder="Enter Name Here">
-
-        
-
-              <button class="btn btn-danger remove" type="button"><i class="glyphicon glyphicon-remove"></i> Remove</button>
-
-
-          </div>
-
-        </div> -->
+<hr/> -->

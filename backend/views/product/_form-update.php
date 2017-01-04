@@ -45,7 +45,7 @@ $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
 
     <div class="col-md-3">
         <label style="font-size: 12px;">Product Code</label>
-        <?= $form->field($model, 'product_code')->textInput(['required' => 'required', 'placeholder' => 'Product Code here...'])->label(false) ?>
+        <?= $form->field($model, 'product_code')->textInput(['readonly' => 'readonly'])->label(false) ?>
     </div>
     
     <div class="col-md-3">
@@ -68,7 +68,7 @@ $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
     <div class="col-md-3">
         <label style="font-size: 12px;">Product Image</label>
         <br/>
-        <img src="assets/products/<?php echo $model->product_image; ?>" style="border: solid 1px #eee; height: 90px; width: 100px; " alt="<?php echo $model->product_image; ?>" class="img-square "></img>
+        <img src="assets/products/<?php echo $model->product_image; ?>" style="border: double 5px #666; border-radius: 10px; height: 150px; width: 175px; " alt="<?php echo $model->product_image; ?>" class="img-square "></img>
         <hr/>
         <?= $form->field($model, 'product_image')->fileInput(['value' => $model->product_image, 'accept' => 'jpg|jpeg|gif|png'])->label(false) ?>
     </div>

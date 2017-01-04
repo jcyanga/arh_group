@@ -7,20 +7,22 @@ use yii\helpers\Url;
 ?>
 
 <div>
-	<table class="table table-striped">
+	<table border="1" >
 		<thead>
 			<tr>
-				<td>BRANCH CODE</td>
-				<td>BRANCH NAME</td>
-				<td>ADDRESS</td>
-				<td>CONTACT NUMBER</td>
-				<td>DATE CREATED</td>
-				<td>STATUS</td>
+				<td style="background: #eee; text-align: center;" > # </td>
+				<td style=" background: #eee;" > Branch Code </td>
+				<td style=" background: #eee;" > Branch Name </td>
+				<td style=" background: #eee;" > Address </td>
+				<td style=" background: #eee;" > Contact Number </td>
+				<td style=" background: #eee;" > Date Created </td>
+				<td style=" background: #eee;" > Status </td>
 			</tr>
 		</thead>
 		<tbody>
 			<?php foreach($result as $row ){ ?>
 			<tr>
+				<td><?php echo $row['id']; ?></td>
 				<td><?php echo $row['code']; ?></td>
 				<td><?php echo $row['name']; ?></td>
 				<td><?php echo $row['address']; ?></td>

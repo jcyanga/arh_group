@@ -73,6 +73,7 @@ class SearchRole extends Role
         $result = $rows->select(['*'])
                     ->from('role')
                     ->where(['like', 'role', $role])
+                    ->andWhere('id > 1')
                     ->all();
 
         return $result;            

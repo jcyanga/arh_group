@@ -95,4 +95,21 @@ class Service extends \yii\db\ActiveRecord
         }
     }
 
+    public function getServicesById($id) {
+        $rows = new Query();
+
+        $result = $rows->select(['service.id','service.service_category_id','service_category.name','service.service_name','service.description','service.default_price','service.status','service.created_at','service.created_by'])
+            ->from('service')
+            ->join('INNER JOIN', 'service_category', 'service.service_category_id = service_category.id')
+            ->where(['service.id' => $id])
+            ->one();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        }
+
+    }
+
 }

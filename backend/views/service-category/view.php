@@ -40,7 +40,6 @@ $this->title = 'View Supplier';
             'name',
             'description',
             'created_at',
-            'status'
             // 'created_at',
             // 'created_by',
             // 'updated_at',

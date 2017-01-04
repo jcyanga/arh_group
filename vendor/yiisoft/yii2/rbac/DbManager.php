@@ -815,9 +815,10 @@ class DbManager extends BaseManager
      */
     public function assign($role, $userId)
     {
+        // $role->name
         $assignment = new Assignment([
             'userId' => $userId,
-            'roleName' => $role->name,
+            'roleName' => $role,
             'createdAt' => time(),
         ]);
 

@@ -92,14 +92,14 @@ $this->title = 'Create User Permission';
 			}
 
 			?>
-			<input type="checkbox" name="checkBox[<?= $cA ?>]" <?= $checked ?> > <?= $cA ?> <br>
+			<input type="checkbox" class="actionChkbox" name="checkBox[<?= $cA ?>]" <?= $checked ?> > <?= $cA ?> <br>
 		<?php } /* foreach */ ?>
 	<input type="hidden" name="controllerNameChosen" value="<?= $controllerNameChosen ?>">
 	<hr/>
 
 <div class=" col-sm-12 text-right">
     <div class="form-group">
-		<input type="button" id="select-all" value='Select All' class="form-btn btn btn-success">
+		<button type="button" id="select-all" class="form-btn btn btn-success"><i class="fa fa-check-square"></i> Select All </button>
         <?= Html::submitButton('<i class=\'fa fa-save\'></i> Save New Record', ['class' => 'form-btn btn btn-primary']) ?>
     </div>
 </div>

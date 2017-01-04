@@ -70,7 +70,7 @@ $this->title = 'Inventories';
     </div>
 
     <div class="form-title-container">
-        <span class="form-header"><h4>PRODUCT INVENTORY</h4></span>
+        <span class="form-header"><h4>PARTS INVENTORY</h4></span>
     </div>
     <hr/>
 
@@ -95,7 +95,7 @@ $this->title = 'Inventories';
     </thead>
 
     <tbody>
-        <?php if(count($getProductInInventory) > 0 ): ?>
+        <?php if( !empty($getProductInInventory) ): ?>
             <?php foreach( $getProductInInventory as $row){ ?>
                 <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                     <td class=" "><?php echo $row['id'];  ?></td>
@@ -106,8 +106,7 @@ $this->title = 'Inventories';
                     <td style="text-align: center;" class=" "><?php echo $row['cost_price'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['selling_price'];  ?></td>
                     <td style="text-align: center; font-size: 12px;" class=" last">
-                        <a href="?r=modules/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
-                        <a href="?r=modules/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> | 
+                        <a href="?r=inventory/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
                         <a href="?r=inventory/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
                     </td>
                 </tr>
@@ -115,6 +114,13 @@ $this->title = 'Inventories';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         <?php endif; ?> 
     </tbody>

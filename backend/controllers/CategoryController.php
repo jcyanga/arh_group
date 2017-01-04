@@ -238,7 +238,14 @@ class CategoryController extends Controller
         $result = Category::find()->all();
 
         $objPHPExcel = new \PHPExcel();
-                 
+        $styleHeadingArray = array(
+            'font'  => array(
+            'bold'  => true,
+            'color' => array('rgb' => '000000'),
+            'size'  => 11,
+            'name'  => 'Calibri'
+        ));
+
         $sheet=0;
           
         $objPHPExcel->setActiveSheetIndex($sheet);
@@ -247,8 +254,11 @@ class CategoryController extends Controller
             $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
                 
             $objPHPExcel->getActiveSheet()->setTitle('xxx')                     
-             ->setCellValue('A1', 'Id')
-             ->setCellValue('B1', 'Category');
+             ->setCellValue('A1', '#')
+             ->setCellValue('B1', 'Parts-Category');
+
+            $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeadingArray);
+            $objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeadingArray);
                  
          $row=2;
                                 
@@ -256,11 +266,13 @@ class CategoryController extends Controller
                         
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['id']); 
                     $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['category']);
+
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
                     $row++ ;
                 }
                         
         header('Content-Type: application/vnd.ms-excel');
-        $filename = "CustomerList-".date("d-m-Y").".xls";
+        $filename = "Parts-CategoryList-".date("m-d-Y").".xls";
         header('Content-Disposition: attachment;filename='.$filename);
         header('Cache-Control: max-age=0');
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
@@ -289,7 +301,7 @@ class CategoryController extends Controller
         $dompdf->render();
 
         // Output the generated PDF to Browser
-        $dompdf->stream();
+        $dompdf->stream('Parts-CategoryList-' . date('m-d-Y'));
           
 
     }

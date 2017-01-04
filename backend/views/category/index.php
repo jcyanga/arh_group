@@ -92,6 +92,8 @@ $this->title = 'Categories';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
             </tr>
         <?php endif; ?> 
     </tbody>

@@ -19,7 +19,7 @@ $this->title = 'Branches';
 <div class="row form-container">
  
  <div class="col-md-12 col-sm-12 col-xs-12">
-  
+
     <div>
         <?php if($msg <> ''){ ?>
             <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
@@ -98,6 +98,11 @@ $this->title = 'Branches';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         <?php endif; ?> 
     </tbody>

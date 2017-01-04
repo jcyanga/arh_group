@@ -78,6 +78,7 @@ class SearchUserPermission extends UserPermission
                     ->where(['like', 'role_id', $role_id])
                     ->andWhere(['like', 'controller', $controller])
                     ->andWhere(['like', 'action', $action])
+                    ->andWhere('role_id > 1')
                     ->all();
 
         return $result;            

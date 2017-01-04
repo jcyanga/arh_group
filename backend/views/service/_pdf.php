@@ -7,20 +7,22 @@ use yii\helpers\Url;
 ?>
 
 <div>
-	<table class="table table-striped">
+	<table border="1" >
 		<thead>
 			<tr>
-				<td>SERVICE CATEGORY</td>
-				<td>SERVICE NAME</td>
-				<td>DESCRIPTION</td>
-				<td>DEFAULT PRICE</td>
-				<td>DATE CREATED</td>
-				<td>STATUS</td>
+				<td style="background: #eee; text-align: center;" > # </td>
+				<td style=" background: #eee;" > Service Category </td>
+				<td style=" background: #eee;" > Service Name </td>
+				<td style=" background: #eee;" > Description </td>
+				<td style=" background: #eee;" > Default Price </td>
+				<td style=" background: #eee;" > Date Created </td>
+				<td style=" background: #eee;" > Status </td>
 			</tr>
 		</thead>
 		<tbody>
 			<?php foreach($result as $row ){ ?>
 			<tr>
+				<td><?php echo $row['id']; ?></td>
 				<td><?php echo $row['name']; ?></td>
 				<td><?php echo $row['service_name']; ?></td>
 				<td><?php echo $row['description']; ?></td>

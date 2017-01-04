@@ -9,6 +9,10 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Dompdf\Dompdf;
+
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
+use common\models\UserPermission;
 /**
  * RoleController implements the CRUD actions for Role model.
  */
@@ -19,11 +23,60 @@ class RoleController extends Controller
      */
     public function behaviors()
     {
+        $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
+       
+        foreach ( $userRoleArray as $uRId => $uRName ){ 
+            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $actionArray = [];
+            foreach ( $permission as $p )  {
+                $actionArray[] = $p->action;
+            }
+
+            $allow[$uRName] = false;
+            $action[$uRName] = $actionArray;
+            if ( ! empty( $action[$uRName] ) ) {
+                $allow[$uRName] = true;
+            }
+
+        }   
+        // print_r($action['developer']); exit;
         return [
+            // 'access' => [
+            //     'class' => AccessControl::className(),
+            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+            //     'rules' => [
+                    
+            //         [
+            //             'actions' => $action['developer'],
+            //             'allow' => $allow['developer'],
+            //             'roles' => ['developer'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['admin'],
+            //             'allow' => $allow['admin'],
+            //             'roles' => ['admin'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['staff'],
+            //             'allow' => $allow['staff'],
+            //             'roles' => ['staff'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['customer'],
+            //             'allow' => $allow['customer'],
+            //             'roles' => ['customer'],
+            //         ]
+       
+            //     ],
+            // ],
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -45,9 +98,9 @@ class RoleController extends Controller
 
                 $getRole = $searchModel->searchRole($id,$role);
         }elseif ( Yii::$app->request->get('SearchRole')['id'] == "" || Yii::$app->request->get('SearchRole')['role'] == "" ) {
-                $getRole = Role::find()->all();
+                $getRole = Role::find()->where('id > 1')->all();
         }else {
-                $getRole = Role::find()->all();
+                $getRole = Role::find()->where('id > 1')->all();
         }
 
         return $this->render('index', ['searchModel' => $searchModel, 'getRole' => $getRole, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
@@ -89,7 +142,7 @@ class RoleController extends Controller
                 $searchModel = new SearchRole();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-                $getRole = Role::find()->all();
+                $getRole = Role::find()->where('id > 1')->all();;
 
                 return $this->render('index', ['searchModel' => $searchModel, 'getRole' => $getRole,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
@@ -118,7 +171,7 @@ class RoleController extends Controller
             $searchModel = new SearchRole();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             
-            $getRole = Role::find()->all();
+            $getRole = Role::find()->where('id > 1')->all();;
 
             return $this->render('index', ['searchModel' => $searchModel, 'getRole' => $getRole,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
@@ -155,7 +208,7 @@ class RoleController extends Controller
 
         $this->findModel($id)->delete();
 
-        $getRole = Role::find()->all();
+        $getRole = Role::find()->where('id > 1')->all();;
 
         return $this->render('index', ['searchModel' => $searchModel, 'getRole' => $getRole,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
@@ -181,10 +234,17 @@ class RoleController extends Controller
 
         // $model = new Role();
 
-        $result = Role::find()->all();
+        $result = Role::find()->where('id > 1')->all();;
 
         $objPHPExcel = new \PHPExcel();
-                 
+        $styleHeadingArray = array(
+            'font'  => array(
+            'bold'  => true,
+            'color' => array('rgb' => '000000'),
+            'size'  => 11,
+            'name'  => 'Calibri'
+        ));
+
         $sheet=0;
           
         $objPHPExcel->setActiveSheetIndex($sheet);
@@ -193,8 +253,11 @@ class RoleController extends Controller
             $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
                 
             $objPHPExcel->getActiveSheet()->setTitle('xxx')                     
-             ->setCellValue('A1', 'Id')
+             ->setCellValue('A1', '#')
              ->setCellValue('B1', 'Role');
+
+             $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeadingArray);
                  
          $row=2;
                                 
@@ -202,11 +265,13 @@ class RoleController extends Controller
                         
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['id']); 
                     $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['role']);
+
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
                     $row++ ;
                 }
                         
         header('Content-Type: application/vnd.ms-excel');
-        $filename = "CustomerList-".date("d-m-Y").".xls";
+        $filename = "User-RoleList-".date("m-d-Y").".xls";
         header('Content-Disposition: attachment;filename='.$filename);
         header('Cache-Control: max-age=0');
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
@@ -218,7 +283,7 @@ class RoleController extends Controller
 
         // $model = new Role();
 
-        $result = Role::find()->all();
+        $result = Role::find()->where('id > 1')->all();;
         $content = $this->renderPartial('_pdf', ['result' => $result]);
         // instantiate and use the dompdf class
         // $dompdf = new Dompdf();
@@ -235,7 +300,7 @@ class RoleController extends Controller
         $dompdf->render();
 
         // Output the generated PDF to Browser
-        $dompdf->stream();
+        $dompdf->stream('User-RoleList-' . date('m-d-Y'));
           
 
     }

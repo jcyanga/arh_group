@@ -239,7 +239,14 @@ class BranchController extends Controller
         $result = Branch::find()->all();
 
         $objPHPExcel = new \PHPExcel();
-                 
+        $styleHeadingArray = array(
+            'font'  => array(
+            'bold'  => true,
+            'color' => array('rgb' => '000000'),
+            'size'  => 11,
+            'name'  => 'Calibri'
+        ));
+
         $sheet=0;
           
         $objPHPExcel->setActiveSheetIndex($sheet);
@@ -248,13 +255,21 @@ class BranchController extends Controller
             $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
                 
             $objPHPExcel->getActiveSheet()->setTitle('xxx')                     
-             ->setCellValue('A1', 'Id')
+             ->setCellValue('A1', '#')
              ->setCellValue('B1', 'Branch Code')
              ->setCellValue('C1', 'Branch Name')
              ->setCellValue('D1', 'Address')
              ->setCellValue('E1', 'Contact Number')
              ->setCellValue('F1', 'Date Created')
              ->setCellValue('G1', 'Status');
+
+             $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('C1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('D1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('E1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('F1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('G1')->applyFromArray($styleHeadingArray);
                  
          $row=2;
                                 
@@ -268,11 +283,13 @@ class BranchController extends Controller
                     $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,$result_row['contact_no']);
                     $objPHPExcel->getActiveSheet()->setCellValue('F'.$row,$dateCreated);
                     $objPHPExcel->getActiveSheet()->setCellValue('G'.$row,$status);
+
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
                     $row++ ;
                 }
                         
         header('Content-Type: application/vnd.ms-excel');
-        $filename = "CustomerList-".date("d-m-Y").".xls";
+        $filename = "BranchList-".date("m-d-Y").".xls";
         header('Content-Disposition: attachment;filename='.$filename);
         header('Cache-Control: max-age=0');
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
@@ -301,7 +318,7 @@ class BranchController extends Controller
         $dompdf->render();
 
         // Output the generated PDF to Browser
-        $dompdf->stream();
+        $dompdf->stream('BranchList-' . date('m-d-Y'));
           
 
     }

@@ -27,7 +27,7 @@ $this->title = 'Create Item in Inventory';
     </div>
 
     <div class="form-title-container">
-        <span style="color: #666;" class="form-header"><h4>Create Item in Inventory</h4></span>
+        <span style="color: #666;" class="form-header"><h4>Create Parts in Inventory</h4></span>
     </div>
     <hr/>
 

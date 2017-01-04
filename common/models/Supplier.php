@@ -29,8 +29,7 @@ class Supplier extends \yii\db\ActiveRecord
     {
         return [
             [['supplier_code', 'supplier_name', 'address', 'contact_number'], 'required'],
-            [['contact_number'], 'integer'],
-            [['supplier_code', 'supplier_name', 'address'], 'string', 'max' => 50],
+            [['supplier_code', 'supplier_name'], 'string', 'max' => 50],
         ];
     }
 

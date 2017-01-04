@@ -7,18 +7,20 @@ use yii\helpers\Url;
 ?>
 
 <div>
-	<table class="table table-striped">
+	<table border="1" >
 		<thead>
 			<tr>
-				<td>NAME</td>
-				<td>DESCRIPTION</td>
-				<td>DATE CREATED</td>
-				<td>STATUS</td>
+				<td style="background: #eee; text-align: center;" > # </td>
+				<td style=" background: #eee;" > Name </td>
+				<td style=" background: #eee;" > Description </td>
+				<td style=" background: #eee;" > Date Created </td>
+				<td style=" background: #eee;" > Status </td>
 			</tr>
 		</thead>
 		<tbody>
 			<?php foreach($result as $row ){ ?>
 			<tr>
+				<td><?php echo $row['id']; ?></td>
 				<td><?php echo $row['name']; ?></td>
 				<td><?php echo $row['description']; ?></td>
 				<td><?php echo date('m-d-Y', strtotime($row['created_at']) ); ?></td>

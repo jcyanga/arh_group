@@ -3,13 +3,15 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\UserPermission;
 use common\models\SearchUserPermission;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use common\models\Role;
+use common\models\UserPermission;
 /**
  * UserPermissionController implements the CRUD actions for UserPermission model.
  */
@@ -20,11 +22,60 @@ class UserPermissionController extends Controller
      */
     public function behaviors()
     {
+        $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
+       
+        foreach ( $userRoleArray as $uRId => $uRName ){ 
+            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $actionArray = [];
+            foreach ( $permission as $p )  {
+                $actionArray[] = $p->action;
+            }
+
+            $allow[$uRName] = false;
+            $action[$uRName] = $actionArray;
+            if ( ! empty( $action[$uRName] ) ) {
+                $allow[$uRName] = true;
+            }
+
+        }   
+        // print_r($action['developer']); exit;
         return [
+            // 'access' => [
+            //     'class' => AccessControl::className(),
+            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+            //     'rules' => [
+                    
+            //         [
+            //             'actions' => $action['developer'],
+            //             'allow' => $allow['developer'],
+            //             'roles' => ['developer'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['admin'],
+            //             'allow' => $allow['admin'],
+            //             'roles' => ['admin'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['staff'],
+            //             'allow' => $allow['staff'],
+            //             'roles' => ['staff'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['customer'],
+            //             'allow' => $allow['customer'],
+            //             'roles' => ['customer'],
+            //         ]
+       
+            //     ],
+            // ],
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -47,9 +98,13 @@ class UserPermissionController extends Controller
 
                 $getUserPermission = $searchModel->searchUserPermission($role_id,$controller,$action);
         }elseif ( Yii::$app->request->get('SearchUserPermission')['role_id'] == "" || Yii::$app->request->get('SearchUserPermission')['controller'] == ""  || Yii::$app->request->get('SearchUserPermission')['action'] == "" ) {
-                $getUserPermission = UserPermission::find()->all();
+                $model = new UserPermission();
+                $getUserPermission = $model->getUserPermission();
+        
         }else {
-                $getUserPermission = UserPermission::find()->all();
+                $model = new UserPermission();
+                $getUserPermission = $model->getUserPermission();
+
         }
 
         return $this->render('index', ['searchModel' => $searchModel, 'getUserPermission' => $getUserPermission, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
@@ -169,7 +224,7 @@ class UserPermissionController extends Controller
         $userRoleId = 0;
         $controllerNameChosen = '';
         $controllerNameLong = '';
-        $userRole = Role::find()->all();
+        $userRole = Role::find()->where('id > 1')->all();
         $permission = [];
 
 

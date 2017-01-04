@@ -25,33 +25,36 @@ $userId = Yii::$app->user->identity->id;
     </div>
     <br/>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label style="font-size: 12px;">Branch Code</label>
-        <?= $form->field($model, 'code')->textInput(['required' => 'required', 'placeholder' => 'Branch Code here...'])->label(false) ?>
+        <?php $branchCode = 'BRANCH' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5); ?>
+        <?= $form->field($model, 'code')->textInput(['readonly' => 'readonly', 'value' => $branchCode])->label(false) ?>
     </div>
     
-    <div class="col-md-4">
-        <label style="font-size: 12px;">Branch Name</label>
-        <?= $form->field($model, 'name')->textInput(['required' => 'required', 'placeholder' => 'Branch Name here...'])->label(false) ?>
-    </div>
-
-    <div class="col-md-4"></div>
+    <div class="col-md-3"></div>
+    <div class="col-md-3"></div>
+    <div class="col-md-3"></div>
 </div>
 <br/>
 
 <div class="row">
 
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <label style="font-size: 12px;">Branch Name</label>
+        <?= $form->field($model, 'name')->textInput(['required' => 'required', 'placeholder' => 'Branch Name here...'])->label(false) ?>
+    </div>
+
+    <div class="col-md-3">
         <label style="font-size: 12px;">Address</label>
         <?= $form->field($model, 'address')->textInput(['required' => 'required', 'placeholder' => 'Address here...'])->label(false) ?>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label style="font-size: 12px;">Contact Number</label>
         <?= $form->field($model, 'contact_no')->textInput(['required' => 'required', 'placeholder' => 'Contact Number here...'])->label(false) ?>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label style="font-size: 12px;">Status</label>
         <?= $form->field($model, 'status')->dropDownList($dataStatus,['required' => 'required'])->label(false) ?>
     </div>

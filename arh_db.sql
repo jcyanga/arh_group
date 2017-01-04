@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 03, 2017 at 12:04 PM
+-- Generation Time: Jan 04, 2017 at 12:13 PM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -38,8 +38,9 @@ CREATE TABLE `auth_assignment` (
 --
 
 INSERT INTO `auth_assignment` (`id`, `item_name`, `user_id`, `created_at`) VALUES
-(1, 'developer', '1', 1),
-(2, 'admin', '5', 1482928719);
+(1, 'developer', '1', 123456),
+(2, 'admin', '2', 1483521785),
+(4, 'staff', '3', 1483524639);
 
 -- --------------------------------------------------------
 
@@ -108,8 +109,8 @@ CREATE TABLE `branch` (
 --
 
 INSERT INTO `branch` (`id`, `code`, `name`, `address`, `contact_no`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'arh-001', 'Singapore', 'Kallang way singapore', '09087894561', 1, '2017-01-03', 1, '2017-01-03', 1),
-(2, 'arh-002', 'Philippines', 'BPI Buendia Center Makati Ave. Makati City', '09957896541', 1, '2017-01-03', 1, '2017-01-03', 1);
+(1, 'BRANCH-2017-89327', 'FCS-Singapore', 'Kallang way singapore', '09497894561', 1, '2017-01-04', 1, '2017-01-04', 1),
+(2, 'BRANCH-2017-25310', 'FCS-Philippines', '27th floor, BPI Buendia Center', '09991234567', 1, '2017-01-04', 1, '2017-01-04', 1);
 
 -- --------------------------------------------------------
 
@@ -127,10 +128,18 @@ CREATE TABLE `category` (
 --
 
 INSERT INTO `category` (`id`, `category`) VALUES
-(1, 'Foods'),
-(3, 'Beverages'),
-(7, 'Clothes'),
-(8, 'Appliances');
+(1, 'body'),
+(2, 'doors'),
+(3, 'windows'),
+(4, 'audio/video devices'),
+(5, 'cameras'),
+(6, 'charging system'),
+(7, 'electrical supply system'),
+(8, 'gauges and meters'),
+(9, 'ignition electronic system'),
+(10, 'lighting and signaling system'),
+(11, 'sensors'),
+(12, 'starting system');
 
 -- --------------------------------------------------------
 
@@ -215,31 +224,10 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`id`, `product_id`, `supplier_id`, `quantity`, `cost_price`, `selling_price`, `date_imported`, `status`, `created_at`, `created_by`) VALUES
-(1, 3, 4, 10, 1000, 1500, '0000-00-00', 0, '0000-00-00', 0),
-(2, 4, 5, 1000, 5000, 7500, '2016-12-22', 1, '2016-12-22', 1),
-(3, 5, 5, 10, 5000, 10000, '2016-12-22', 1, '2016-12-22', 1),
-(4, 8, 4, 100, 1000, 2000, '2016-12-22', 1, '2016-12-22', 1),
-(5, 14, 4, 50, 5000, 6500, '2016-12-22', 1, '2016-12-22', 1),
-(6, 7, 4, 10, 5, 7, '2016-12-29', 0, '2016-12-29', 1),
-(7, 2000, 4, 150, 1000, 2000, '2016-12-29', 0, '2016-12-29', 1),
-(8, 100, 5, 50, 75, 100, '2016-12-29', 0, '2016-12-29', 1),
-(9, 150, 5, 100, 120, 150, '2016-12-29', 0, '2016-12-29', 1),
-(10, 12, 4, 100, 10, 12, '2016-12-29', 0, '2016-12-29', 1),
-(11, 9, 4, 10, 7, 9, '2016-12-29', 0, '2016-12-29', 1),
-(12, 7, 4, 10, 6, 7, '2016-12-29', 0, '2016-12-29', 1),
-(13, 6, 6, 100, 10, 11, '2016-12-29', 0, '2016-12-29', 1),
-(14, 13, 6, 50, 25, 35, '2016-12-29', 0, '2016-12-29', 1),
-(15, 13, 6, 40, 400, 500, '2016-12-29', 0, '2016-12-29', 1),
-(16, 8, 6, 75, 750, 850, '2016-12-29', 0, '2016-12-29', 1),
-(17, 10, 5, 1, 1, 1, '2016-12-29', 0, '2016-12-29', 1),
-(18, 2, 5, 2, 2, 2, '2016-12-29', 0, '2016-12-29', 1),
-(19, 10, 5, 1, 1, 1, '2016-12-29', 0, '2016-12-29', 1),
-(20, 13, 5, 1, 1, 1, '2016-12-29', 0, '2016-12-29', 1),
-(21, 16, 4, 123, 213, 123, '2016-12-29', 0, '2016-12-29', 1),
-(22, 11, 5, 123, 12, 213, '2016-12-29', 0, '2016-12-29', 1),
-(23, 14, 6, 123, 213, 12, '2016-12-29', 0, '2016-12-29', 1),
-(24, 5, 6, 12, 12, 21, '2016-12-29', 0, '2016-12-29', 1),
-(25, 7, 6, 23, 2323, 2323, '2016-12-29', 0, '2016-12-29', 1);
+(1, 1, 1, 10, 1000, 1200, '2017-01-04', 0, '2017-01-04', 1),
+(2, 4, 1, 100, 500, 700, '2017-01-04', 0, '2017-01-04', 1),
+(3, 3, 1, 20, 1500, 1800, '2017-01-04', 0, '2017-01-04', 1),
+(4, 2, 1, 10, 900, 1000, '2017-01-04', 0, '2017-01-04', 1);
 
 -- --------------------------------------------------------
 
@@ -300,10 +288,21 @@ CREATE TABLE `modules` (
 
 INSERT INTO `modules` (`id`, `modules`) VALUES
 (1, 'Dashboard Module'),
-(4, 'Customer Module'),
-(5, 'Role Module'),
-(6, 'Category Module'),
-(8, 'User Module');
+(2, 'quotation module'),
+(3, 'invoice module'),
+(4, 'stocks module'),
+(5, 'service-category module'),
+(6, 'services module'),
+(7, 'parts-category module'),
+(8, 'parts module'),
+(9, 'parts-supplier module'),
+(10, 'parts-inventory module'),
+(11, 'branch module'),
+(12, 'Customer Module'),
+(13, 'User-Role Module'),
+(14, 'Modules List Module'),
+(15, 'User-Permission Module'),
+(16, 'User Module');
 
 -- --------------------------------------------------------
 
@@ -328,22 +327,29 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `product_code`, `product_name`, `product_image`, `unit_of_measure`, `status`, `category_id`, `created_at`, `created_by`) VALUES
-(1, 'prod_001', 'piatos', 'piatos.png', 'grams', 1, 1, '2016-12-21', 1),
-(2, 'prod_002', 'nova', 'nova.png', 'grams', 1, 1, '2016-12-21', 1),
-(3, 'prod_003', 'san miguel beer', 'smb.png', 'liters', 1, 2, '2016-12-21', 1),
-(4, 'prod_004', 'cervesa negra', 'cervesa.png', 'liters', 1, 2, '2016-12-21', 1),
-(5, 'prod_005', 'polo shirt', 'polo.png', 'Medium', 1, 3, '2016-12-21', 1),
-(6, 'prod_006', 'white shirt', 'shirt.png', 'Small', 1, 3, '2016-12-21', 1),
-(7, 'prod-007', 'v-cut', 'default.png', 'grams', 1, 1, '2016-12-21', 1),
-(8, 'prod-008', 'black label', 'default.png', 'liters', 1, 3, '2016-12-21', 1),
-(9, 'prod-009', 'sando', 'default.png', 'Large', 1, 4, '2016-12-21', 1),
-(10, 'prod-010', 'tortillos', 'default.png', 'grams', 1, 1, '2016-12-21', 1),
-(11, 'prod-011', 'emperador', 'default.png', 'liters', 1, 3, '2016-12-21', 1),
-(12, 'prod-012', 'polo', 'default.png', 'small', 1, 4, '2016-12-21', 1),
-(13, 'prod-013', 'mang juan', 'default.png', 'grams', 1, 1, '2016-12-21', 1),
-(14, 'prod-014', 'tanduay', 'default.png', 'liters', 1, 3, '2016-12-21', 1),
-(15, 'prod-015', 'pantalon', '', 'long', 1, 4, '2016-12-21', 1),
-(16, 'prod-016', 'kenny rogers', '', 'medium', 1, 1, '2016-12-21', 1);
+(1, 'PARTS-2017-93490', 'bonnet/hood', '4.jpg', 'big', 1, 1, '2017-01-04', 1),
+(2, 'PARTS-2017-44268', 'bumper', 'american-express.png', 'medium', 1, 1, '2017-01-04', 1),
+(3, 'PARTS-2017-90457', 'cowl screen', 'mastercard.png', 'small', 1, 1, '2017-01-04', 1),
+(4, 'PARTS-2017-80694', 'decklid', 'forward_enabled.png', 'medium', 1, 1, '2017-01-04', 1),
+(5, 'PARTS-2017-09315', 'fascia', '', 'small', 1, 1, '2017-01-04', 1),
+(6, 'PARTS-2017-31812', 'Front Right Outer door handles', 'sprite-skin-flat.png', 'small', 1, 2, '2017-01-04', 1),
+(7, 'PARTS-2017-99031', 'Front Left Side Outer door handles', '1.png', 'medium', 1, 2, '2017-01-04', 1),
+(8, 'PARTS-2017-86564', 'Rear Right Side Outer door handles', 'picture-2.jpg', 'small', 1, 2, '2017-01-04', 1),
+(9, 'PARTS-2017-84942', 'Rear Left Side Outer door handles', 'prod3.jpg', 'big', 1, 2, '2017-01-04', 1),
+(10, 'PARTS-2017-28295', 'Front Right Side Inner door handles', 'prod5.jpg', 'small', 1, 2, '2017-01-04', 1),
+(11, 'PARTS-2017-93813', 'Glass', 'sort_both.png', 'pieces', 1, 3, '2017-01-04', 1),
+(12, 'PARTS-2017-99275', 'Front Right Side Door Glass', 'data.png', 'pieces', 1, 3, '2017-01-04', 1),
+(13, 'PARTS-2017-24204', 'Front Left Side Door Glass', 'prod2.jpg', 'pieces', 1, 3, '2017-01-04', 1),
+(14, 'PARTS-2017-81929', 'Rear Right Side Door Glass', 'data.png', 'pieces', 1, 3, '2017-01-04', 1),
+(15, 'PARTS-2017-85939', 'Rear Left Side Door Glass', '', 'pieces', 1, 3, '2017-01-04', 1),
+(16, 'PARTS-2017-59390', 'Antenna assembly ', 'back_disabled.png', 'meters', 1, 4, '2017-01-04', 1),
+(17, 'PARTS-2017-25824', 'Radio and media player', 'picture-2.jpg', 'meters', 1, 4, '2017-01-04', 1),
+(18, 'PARTS-2017-47125', 'Speaker', 'picture2.jpg', 'pieces', 1, 4, '2017-01-04', 1),
+(19, 'PARTS-2017-93699', 'Backup camera', 'sort_asc_disabled.png', 'pieces', 1, 5, '2017-01-04', 1),
+(20, 'PARTS-2017-18750', 'Dashcam', 'sort_desc_disabled.png', 'pieces', 1, 5, '2017-01-04', 1),
+(21, 'PARTS-2017-70885', 'Alternator', 'sprite-skin-simple.png', 'volts', 1, 6, '2017-01-04', 1),
+(22, 'PARTS-2017-32538', 'Battery', 'sprite-skin-simple.png', 'volts', 1, 7, '2017-01-04', 1),
+(23, 'PARTS-2017-61216', 'Ammeter', 'sprite-skin-flat.png', 'long', 1, 8, '2017-01-04', 1);
 
 -- --------------------------------------------------------
 
@@ -406,8 +412,7 @@ CREATE TABLE `role` (
 INSERT INTO `role` (`id`, `role`) VALUES
 (1, 'developer'),
 (2, 'admin'),
-(3, 'staff'),
-(4, 'customer');
+(3, 'staff');
 
 -- --------------------------------------------------------
 
@@ -433,10 +438,19 @@ CREATE TABLE `service` (
 --
 
 INSERT INTO `service` (`id`, `service_category_id`, `service_name`, `description`, `default_price`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 1, 'Normal General Servicing', 'Servicing for Part 5', 80, 1, '2017-01-03', 1, '2017-01-03', 1),
-(2, 1, 'Extreme General Servicing', 'Servicing for Part 6', 110, 1, '2017-01-03', 1, '2017-01-03', 1),
-(3, 2, 'Normal General Servicing', 'Servicing for Part 6', 220, 1, '2017-01-03', 1, '2017-01-03', 1),
-(5, 2, 'Extreme General Servicing', 'Servicing for Part 6', 120, 1, '2017-01-03', 1, '2017-01-03', 1);
+(1, 1, 'Air Conditioning', 'Maintain a comfortable temperature for you and your vehicle', 150, 1, '2017-01-04', 1, '2017-01-04', 1),
+(2, 1, 'Brake-system repair', 'Feel confident in your vehicle''s stopping power with regular brake checks.', 200, 1, '2017-01-04', 1, '2017-01-04', 1),
+(3, 1, 'Fluid-exchange services', 'A vehicle''s fluids must be maintained for it to run properly.', 300, 1, '2017-01-04', 1, '2017-01-04', 1),
+(4, 1, 'Oil, Lube & Filter', 'Drive smoothly by maintaining your vehicle''s oil.', 299, 1, '2017-01-04', 1, '2017-01-04', 1),
+(5, 1, 'Batteries', 'he performance of the engine, alternator, and secondary electrical systems depend on the battery.', 500, 1, '2017-01-04', 1, '2017-01-04', 1),
+(6, 1, 'Check-engine light', 'Keep your ignition, fuel, and emission-control systems doing what they should by maintaining your engine diagnostics.', 750, 1, '2017-01-04', 1, '2017-01-04', 1),
+(7, 1, 'Heating & Cooling System', 'Maintain a comfortable temperature for you and your vehicle.', 350, 1, '2017-01-04', 1, '2017-01-04', 1),
+(8, 1, 'Steering & Suspension', 'Experience a smooth, controlled ride with a properly functioning suspension system.', 150, 1, '2017-01-04', 1, '2017-01-04', 1),
+(9, 1, 'Belts & Hoses', 'Avoid breaking down in your vehicle by maintaining its belts and hoses.', 200, 1, '2017-01-04', 1, '2017-01-04', 1),
+(10, 1, 'Mufflers & Exhaust', 'Failing an emissions test is usually the fault of either the muffler or the exhaust system.', 450, 1, '2017-01-04', 1, '2017-01-04', 1),
+(11, 1, 'Tune-Up', 'Help your vehicle last longer by scheduling regular tune-ups.', 499, 1, '2017-01-04', 1, '2017-01-04', 1),
+(12, 2, 'Tire installation', 'Proper installation enables tires to function fully and correctly.', 299, 1, '2017-01-04', 1, '2017-01-04', 1),
+(13, 2, 'Wheel Alignment', 'Proper wheel alignment helps you maintain control of your car.', 99, 1, '2017-01-04', 1, '2017-01-04', 1);
 
 -- --------------------------------------------------------
 
@@ -460,8 +474,8 @@ CREATE TABLE `service_category` (
 --
 
 INSERT INTO `service_category` (`id`, `name`, `description`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'Contract', 'Service for Contract', 1, '2017-01-03', 1, '2017-01-03', 1),
-(2, 'Ad Hoc', ' Service for Ad Hoc', 1, '2017-01-03', 1, '2017-01-03', 1);
+(1, 'Automotive Services', 'All car-parts services aside tire services', 1, '2017-01-04', 1, '2017-01-04', 1),
+(2, 'Tire services', 'all tire services aside car parts services', 1, '2017-01-04', 1, '2017-01-04', 1);
 
 -- --------------------------------------------------------
 
@@ -474,7 +488,7 @@ CREATE TABLE `supplier` (
   `supplier_code` varchar(50) NOT NULL,
   `supplier_name` varchar(50) NOT NULL,
   `address` text NOT NULL,
-  `contact_number` int(10) NOT NULL
+  `contact_number` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -482,9 +496,17 @@ CREATE TABLE `supplier` (
 --
 
 INSERT INTO `supplier` (`id`, `supplier_code`, `supplier_name`, `address`, `contact_number`) VALUES
-(4, 'supp-0001', 'San Miguel Corporation', '123 San Miguel Ave. Ortigas Center Pasig City', 4323556),
-(5, 'supp-0002', 'Ace Hardware', '3rd floor Glorietta Mall Makati City', 2147483647),
-(6, 'supp-010', 'FirstCom Solutions', '27th floor BPI Buendia Center Makati Ave.', 9514263);
+(1, 'SUPPLIERS-2017-73680', ' SM Oil Seal Parts Center', '1044 G. Masangkay Street Manila, 1006 Metro Manila ', '02-2447804'),
+(2, 'SUPPLIERS-2017-77059', 'Cabasal Trading', '649 Evangelista Street Manila, Metro Manila', '09097894561'),
+(3, 'SUPPLIERS-2017-72327', 'A-1 Auto Supply', 'G/F, Ina Ng Awa Building, 1064 C. M. Recto Avenue Manila, 1000 Metro Manila ', '02-2447353 '),
+(4, 'SUPPLIERS-2017-75671', 'Jcsc Enterprises', '944 Gandara Street Manila, Metro Manila ', '09087894561'),
+(5, 'SUPPLIERS-2017-48286', 'Autowide Automotive CTR', ' 1114 Arlegui Street Manila, Metro Manila Phone number', '09097894561'),
+(6, 'SUPPLIERS-2017-00828', 'Ng, Tin Si Auto Parts and Supplies', '1114 Artegui Street Manila, 1000 Metro Manila', '02-7339197'),
+(7, 'SUPPLIERS-2017-54497', 'Joaquin’s Auto Supply', '753 Gandara Street Manila, 1100 Metro Manila ', '02-7337441 '),
+(8, 'SUPPLIERS-2017-58915', 'Silicon Electrical Supply', '678 Evangelista Street Manila, Metro Manila', '02-7338341'),
+(9, 'SUPPLIERS-2017-94490', ' Commander Auto Supply', '408 C M Recto Avenue Manila, 1000 Metro Manila', '02-2450581'),
+(10, 'SUPPLIERS-2017-94168', ' Giap Gue Second Auto Supply', '920 Gandara Street Manila, 1000 Metro Manila', '02-2441895 '),
+(11, 'SUPPLIERS-2017-50875', ' Jm Auto Parts & General Merchandise', ' 1053 Pgil Street Manila, Metro Manila Phone number', '09981234567');
 
 -- --------------------------------------------------------
 
@@ -519,15 +541,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `role_id`, `branch_id`, `role`, `fullname`, `username`, `password`, `password_hash`, `password_reset_token`, `email`, `photo`, `auth_key`, `status`, `login`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted`) VALUES
-(1, 1, 2, 20, 'JC Yanga Jr', 'jcyanga', 'password', '$2y$13$KLYNdyN9n.CXY4uELu9Td.6LJ1BoXrXQY0dmrnb9HUMegb1dPw.YK', '', 'jcyanga28@yahoo.com', '', 'R5BJVsB83hg7xshurVUaXb6qYn4HrFi8', 1, '2016-12-28 20:11:00', '2016-12-28 20:15:00', 0, '2016-12-28 20:20:00', 0, 0),
-(3, 2, 2, 20, 'jose czar yanga', 'admin', '', '$2y$13$eFUYWik87rrQA7vk9m10IOFXOf5/ZPGXLxGpFYnvGBfd74eBBClyW', '', 'jcyanga412060@gmail.com', '', '7w_3S8S4z9LY6VZKfCzCVWRSQQJAEdz6', 1, '0000-00-00 00:00:00', '2016-12-28 20:29:32', 1, '0000-00-00 00:00:00', 0, 0),
-(4, 3, 2, 20, 'gracielle samonte', 'mariagracia', '', '$2y$13$3G6MliSJcoQG1J.G2n/2n.5x0Aigc6ZNd5nJG7sXO1QcF7JEz.gdS', '', 'mariagracia@yahoo.com', '', 'PgXtxT0pGLD4NgEOMIEYwbQ8HTAf_voC', 1, '0000-00-00 00:00:00', '2016-12-28 20:35:30', 1, '0000-00-00 00:00:00', 0, 0),
-(5, 4, 2, 20, 'mark legazpi', 'marklegazpi01', '', '$2y$13$Tyd6/WyBVRoZ3YLxsPUf0eeeJCERw7gBcGrCawVgL/3w3b8GQJUaa', '', 'marklegazpi@yahoo.com', '', '2_rnP_5ykKIpTXAPdJlunIkH6WDhVkDT', 1, '0000-00-00 00:00:00', '2017-01-03 13:24:17', 1, '0000-00-00 00:00:00', 0, 0),
-(6, 1, 1, 20, 'test', 'test123', '', '$2y$13$D55YSKtgO6t3v6s5NiUcc.uAGy186y3Qtqns78r4Tn1Co4cXKqhCK', '', 'test@gmail.com', '', 'uVstnHrnUnczsuD2aGNYF5XRTXYy8Bia', 1, '0000-00-00 00:00:00', '2017-01-03 13:25:58', 1, '0000-00-00 00:00:00', 0, 0),
-(7, 1, 1, 20, 'test2', 'test2', '', '$2y$13$qWP686cxXBpZXrHPS0llsuyG943lGXo3whayWwHt90axusz8YGhUG', '', 'test2@yahoo.com', '', '9llNGkK9_93euoiJE05jNbN5xNMZN041', 1, '0000-00-00 00:00:00', '2017-01-03 13:49:56', 1, '0000-00-00 00:00:00', 0, 0),
-(8, 4, 1, 20, 'test3', 'test3', '', '$2y$13$MTILA1yYuwS1TEDMlapj7u383kyLMtN.Qx1iMRf.n4jpNpoXpo54O', '', 'test3@yahoo.com', '', 'WY-5-AQVNiatTzgmmUvZOTF4MooIqzhv', 1, '0000-00-00 00:00:00', '2017-01-03 13:50:25', 1, '0000-00-00 00:00:00', 0, 0),
-(9, 1, 1, 20, 'test4', 'test4', '', '$2y$13$XPONNjHNglINzCGnBy19h.W3kcfR70gnSPnFDwWm6rJ64TQfG5f0e', '', 'test4@ymail.com', '', '863OffnV8tIAnqL0Epr-k__2gjL-AM1w', 1, '0000-00-00 00:00:00', '2017-01-03 13:53:35', 1, '0000-00-00 00:00:00', 0, 0),
-(10, 1, 1, 20, 'JB Lamsin', 'asd', '', '$2y$13$y0VLb/6xMKFWmfmhTFzjzODibleIg5mfwX3fdkXw1uXVqnmAFJWlO', '', 'test7@yahoo.com', '', 'EHQOXm0tWm1CsECKVx9DrzU2Nme5vj5g', 1, '0000-00-00 00:00:00', '2017-01-03 14:32:07', 1, '0000-00-00 00:00:00', 0, 0);
+(1, 1, 2, 20, 'Jose Czar Yanga', 'jcyanga28', 'password', '$2y$13$KLYNdyN9n.CXY4uELu9Td.6LJ1BoXrXQY0dmrnb9HUMegb1dPw.YK', '', 'jcyanga28@yahoo.com', 'user.png', 'R5BJVsB83hg7xshurVUaXb6qYn4HrFi8', 1, '2017-01-04 16:40:00', '2017-01-04 16:40:00', 1, '2017-01-04 16:40:00', 1, 0),
+(2, 2, 2, 20, 'administrator', 'admin', '', '$2y$13$98.o8NdkBbhzY1ELvvHVdelGcvB3U2zSTCoFD4N5M/f9JOjBAe3uG', '', 'admin@gmail.com', '', 'viyVZjUz2hjXiClcTalZNwYwGmytOTtU', 1, '0000-00-00 00:00:00', '2017-01-04 18:09:39', 1, '0000-00-00 00:00:00', 0, 0),
+(3, 3, 2, 20, 'staffing', 'staff123', '', '$2y$13$cHflrvsu1MhlC7d827xx2uo4v3iz04lz6q2J0lMnSI/6JWTihS49i', '', 'staff123@gmail.com', '', 'D5oLLn5HQ3tEYrQfBM1Li6kB_hgSyBIN', 1, '0000-00-00 00:00:00', '2017-01-04 18:10:39', 1, '0000-00-00 00:00:00', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -547,14 +563,246 @@ CREATE TABLE `user_permission` (
 --
 
 INSERT INTO `user_permission` (`id`, `controller`, `action`, `role_id`) VALUES
-(1, 'Modules', 'index', 1),
-(2, 'Modules', 'view', 1),
-(3, 'Modules', 'create', 1),
-(4, 'Modules', 'update', 1),
-(5, 'Modules', 'delete', 1),
-(6, 'Modules', 'delete-column', 1),
-(7, 'Modules', 'export-excel', 1),
-(8, 'Modules', 'export-pdf', 1);
+(1, 'Branch', 'index', 1),
+(2, 'Branch', 'view', 1),
+(3, 'Branch', 'create', 1),
+(4, 'Branch', 'update', 1),
+(5, 'Branch', 'delete', 1),
+(6, 'Branch', 'delete-column', 1),
+(7, 'Branch', 'export-excel', 1),
+(8, 'Branch', 'export-pdf', 1),
+(9, 'Category', 'index', 1),
+(10, 'Category', 'view', 1),
+(11, 'Category', 'create', 1),
+(12, 'Category', 'update', 1),
+(13, 'Category', 'delete', 1),
+(14, 'Category', 'delete-column', 1),
+(15, 'Category', 'export-excel', 1),
+(16, 'Category', 'export-pdf', 1),
+(17, 'Customer', 'index', 1),
+(18, 'Customer', 'view', 1),
+(19, 'Customer', 'create', 1),
+(20, 'Customer', 'update', 1),
+(21, 'Customer', 'delete', 1),
+(22, 'Customer', 'delete-column', 1),
+(23, 'Customer', 'export-excel', 1),
+(24, 'Customer', 'export-pdf', 1),
+(25, 'Gst', 'index', 1),
+(26, 'Gst', 'view', 1),
+(27, 'Gst', 'create', 1),
+(28, 'Gst', 'update', 1),
+(29, 'Gst', 'delete', 1),
+(30, 'Inventory', 'index', 1),
+(31, 'Inventory', 'view', 1),
+(32, 'Inventory', 'create', 1),
+(33, 'Inventory', 'update', 1),
+(34, 'Inventory', 'delete', 1),
+(35, 'Inventory', 'delete-column', 1),
+(36, 'Inventory', 'export-excel', 1),
+(37, 'Inventory', 'export-pdf', 1),
+(38, 'Modules', 'index', 1),
+(39, 'Modules', 'view', 1),
+(40, 'Modules', 'create', 1),
+(41, 'Modules', 'update', 1),
+(42, 'Modules', 'delete', 1),
+(43, 'Modules', 'delete-column', 1),
+(44, 'Modules', 'export-excel', 1),
+(45, 'Modules', 'export-pdf', 1),
+(46, 'Product', 'index', 1),
+(47, 'Product', 'view', 1),
+(48, 'Product', 'create', 1),
+(49, 'Product', 'update', 1),
+(50, 'Product', 'delete', 1),
+(51, 'Product', 'delete-column', 1),
+(52, 'Product', 'export-excel', 1),
+(53, 'Product', 'export-pdf', 1),
+(54, 'Quotation', 'index', 1),
+(55, 'Quotation', 'view', 1),
+(56, 'Quotation', 'create', 1),
+(57, 'Quotation', 'update', 1),
+(58, 'Quotation', 'delete', 1),
+(59, 'QuotationSubtotal', 'index', 1),
+(60, 'QuotationSubtotal', 'view', 1),
+(61, 'QuotationSubtotal', 'create', 1),
+(62, 'QuotationSubtotal', 'update', 1),
+(63, 'QuotationSubtotal', 'delete', 1),
+(64, 'Role', 'index', 1),
+(65, 'Role', 'view', 1),
+(66, 'Role', 'create', 1),
+(67, 'Role', 'update', 1),
+(68, 'Role', 'delete', 1),
+(69, 'Role', 'delete-column', 1),
+(70, 'Role', 'export-excel', 1),
+(71, 'Role', 'export-pdf', 1),
+(72, 'ServiceCategory', 'index', 1),
+(73, 'ServiceCategory', 'view', 1),
+(74, 'ServiceCategory', 'create', 1),
+(75, 'ServiceCategory', 'update', 1),
+(76, 'ServiceCategory', 'delete', 1),
+(77, 'ServiceCategory', 'delete-column', 1),
+(78, 'ServiceCategory', 'export-excel', 1),
+(79, 'ServiceCategory', 'export-pdf', 1),
+(80, 'Service', 'index', 1),
+(81, 'Service', 'view', 1),
+(82, 'Service', 'create', 1),
+(83, 'Service', 'update', 1),
+(84, 'Service', 'delete', 1),
+(85, 'Service', 'delete-column', 1),
+(86, 'Service', 'export-excel', 1),
+(87, 'Service', 'export-pdf', 1),
+(88, 'Site', 'index', 1),
+(89, 'Site', 'login', 1),
+(90, 'Site', 'logout', 1),
+(91, 'Stocks', 'index', 1),
+(92, 'Stocks', 'create', 1),
+(93, 'Supplier', 'index', 1),
+(94, 'Supplier', 'view', 1),
+(95, 'Supplier', 'create', 1),
+(96, 'Supplier', 'update', 1),
+(97, 'Supplier', 'delete', 1),
+(98, 'Supplier', 'delete-column', 1),
+(99, 'Supplier', 'export-excel', 1),
+(100, 'Supplier', 'export-pdf', 1),
+(101, 'User', 'index', 1),
+(102, 'User', 'view', 1),
+(103, 'User', 'create', 1),
+(104, 'User', 'update', 1),
+(105, 'User', 'delete', 1),
+(106, 'User', 'delete-column', 1),
+(107, 'User', 'export-excel', 1),
+(108, 'User', 'export-pdf', 1),
+(109, 'UserPermission', 'index', 1),
+(110, 'UserPermission', 'view', 1),
+(111, 'UserPermission', 'create', 1),
+(112, 'UserPermission', 'update', 1),
+(113, 'UserPermission', 'delete', 1),
+(114, 'UserPermission', 'set-permission', 1),
+(115, 'Branch', 'index', 2),
+(116, 'Branch', 'view', 2),
+(117, 'Branch', 'create', 2),
+(118, 'Branch', 'update', 2),
+(119, 'Branch', 'delete', 2),
+(120, 'Branch', 'delete-column', 2),
+(121, 'Branch', 'export-excel', 2),
+(122, 'Branch', 'export-pdf', 2),
+(123, 'Category', 'index', 2),
+(124, 'Category', 'view', 2),
+(125, 'Category', 'create', 2),
+(126, 'Category', 'update', 2),
+(127, 'Category', 'delete', 2),
+(128, 'Category', 'delete-column', 2),
+(129, 'Category', 'export-excel', 2),
+(130, 'Category', 'export-pdf', 2),
+(131, 'Customer', 'index', 2),
+(132, 'Customer', 'view', 2),
+(133, 'Customer', 'create', 2),
+(134, 'Customer', 'update', 2),
+(135, 'Customer', 'delete', 2),
+(136, 'Customer', 'delete-column', 2),
+(137, 'Customer', 'export-excel', 2),
+(138, 'Customer', 'export-pdf', 2),
+(139, 'Gst', 'index', 2),
+(140, 'Gst', 'view', 2),
+(141, 'Gst', 'create', 2),
+(142, 'Gst', 'update', 2),
+(143, 'Gst', 'delete', 2),
+(144, 'Inventory', 'index', 2),
+(145, 'Inventory', 'view', 2),
+(146, 'Inventory', 'create', 2),
+(147, 'Inventory', 'update', 2),
+(148, 'Inventory', 'delete', 2),
+(149, 'Inventory', 'delete-column', 2),
+(150, 'Inventory', 'export-excel', 2),
+(151, 'Inventory', 'export-pdf', 2),
+(152, 'Modules', 'index', 2),
+(153, 'Modules', 'view', 2),
+(154, 'Modules', 'create', 2),
+(155, 'Modules', 'update', 2),
+(156, 'Modules', 'delete', 2),
+(157, 'Modules', 'delete-column', 2),
+(158, 'Modules', 'export-excel', 2),
+(159, 'Modules', 'export-pdf', 2),
+(160, 'Product', 'index', 2),
+(161, 'Product', 'view', 2),
+(162, 'Product', 'create', 2),
+(163, 'Product', 'update', 2),
+(164, 'Product', 'delete', 2),
+(165, 'Product', 'delete-column', 2),
+(166, 'Product', 'export-excel', 2),
+(167, 'Product', 'export-pdf', 2),
+(168, 'Quotation', 'index', 2),
+(169, 'Quotation', 'view', 2),
+(170, 'Quotation', 'create', 2),
+(171, 'Quotation', 'update', 2),
+(172, 'Quotation', 'delete', 2),
+(173, 'QuotationSubtotal', 'index', 2),
+(174, 'QuotationSubtotal', 'view', 2),
+(175, 'QuotationSubtotal', 'create', 2),
+(176, 'QuotationSubtotal', 'update', 2),
+(177, 'QuotationSubtotal', 'delete', 2),
+(178, 'Role', 'index', 2),
+(179, 'Role', 'view', 2),
+(180, 'Role', 'create', 2),
+(181, 'Role', 'update', 2),
+(182, 'Role', 'delete', 2),
+(183, 'Role', 'delete-column', 2),
+(184, 'Role', 'export-excel', 2),
+(185, 'Role', 'export-pdf', 2),
+(186, 'ServiceCategory', 'index', 2),
+(187, 'ServiceCategory', 'view', 2),
+(188, 'ServiceCategory', 'create', 2),
+(189, 'ServiceCategory', 'update', 2),
+(190, 'ServiceCategory', 'delete', 2),
+(191, 'ServiceCategory', 'delete-column', 2),
+(192, 'ServiceCategory', 'export-excel', 2),
+(193, 'ServiceCategory', 'export-pdf', 2),
+(194, 'Service', 'index', 2),
+(195, 'Service', 'view', 2),
+(196, 'Service', 'create', 2),
+(197, 'Service', 'update', 2),
+(198, 'Service', 'delete', 2),
+(199, 'Service', 'delete-column', 2),
+(200, 'Service', 'export-excel', 2),
+(201, 'Service', 'export-pdf', 2),
+(202, 'Site', 'index', 2),
+(203, 'Site', 'login', 2),
+(204, 'Site', 'logout', 2),
+(205, 'Stocks', 'index', 2),
+(206, 'Stocks', 'create', 2),
+(207, 'Supplier', 'index', 2),
+(208, 'Supplier', 'view', 2),
+(209, 'Supplier', 'create', 2),
+(210, 'Supplier', 'update', 2),
+(211, 'Supplier', 'delete', 2),
+(212, 'Supplier', 'delete-column', 2),
+(213, 'Supplier', 'export-excel', 2),
+(214, 'Supplier', 'export-pdf', 2),
+(215, 'User', 'index', 2),
+(216, 'User', 'view', 2),
+(217, 'User', 'create', 2),
+(218, 'User', 'update', 2),
+(219, 'User', 'delete', 2),
+(220, 'User', 'delete-column', 2),
+(221, 'User', 'export-excel', 2),
+(222, 'User', 'export-pdf', 2),
+(223, 'Customer', 'index', 3),
+(224, 'Customer', 'view', 3),
+(225, 'Customer', 'create', 3),
+(226, 'Customer', 'update', 3),
+(227, 'Customer', 'delete', 3),
+(228, 'Customer', 'delete-column', 3),
+(229, 'Customer', 'export-excel', 3),
+(230, 'Customer', 'export-pdf', 3),
+(231, 'Quotation', 'index', 3),
+(232, 'Quotation', 'view', 3),
+(233, 'Quotation', 'create', 3),
+(234, 'Quotation', 'update', 3),
+(235, 'Quotation', 'delete', 3),
+(236, 'QuotationSubtotal', 'index', 3),
+(237, 'QuotationSubtotal', 'view', 3),
+(238, 'QuotationSubtotal', 'create', 3),
+(239, 'QuotationSubtotal', 'update', 3),
+(240, 'QuotationSubtotal', 'delete', 3);
 
 --
 -- Indexes for dumped tables
@@ -688,7 +936,7 @@ ALTER TABLE `user_permission`
 -- AUTO_INCREMENT for table `auth_assignment`
 --
 ALTER TABLE `auth_assignment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `auth_item`
 --
@@ -708,12 +956,12 @@ ALTER TABLE `auth_rule`
 -- AUTO_INCREMENT for table `branch`
 --
 ALTER TABLE `branch`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `customer`
 --
@@ -728,17 +976,17 @@ ALTER TABLE `gst`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `modules`
 --
 ALTER TABLE `modules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 --
 -- AUTO_INCREMENT for table `quotation`
 --
@@ -753,32 +1001,32 @@ ALTER TABLE `quotation_subtotal`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `service`
 --
 ALTER TABLE `service`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT for table `service_category`
 --
 ALTER TABLE `service_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `user_permission`
 --
 ALTER TABLE `user_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=241;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

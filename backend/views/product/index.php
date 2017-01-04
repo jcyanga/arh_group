@@ -30,7 +30,7 @@ $this->title = 'Products';
     </div>
 
     <div class="form-title-container">
-        <span class="form-header"><h4>Product Maintenance</h4></span>
+        <span class="form-header"><h4>Parts Maintenance</h4></span>
     </div>
     <hr/>
 
@@ -70,7 +70,7 @@ $this->title = 'Products';
     <thead>
         <tr style="font-size: 11px;" class="headings">
             <th> # </th>
-            <th style="text-align: center;"> CATEGORY </th>
+            <th style="text-align: center;"> PARTS-CATEGORY </th>
             <th style="text-align: center;"> PRODUCT CODE </th>
             <th style="text-align: center;"> PRODUCT NAME </th>
             <th style="text-align: center;"> UNIT OF MEASURE </th>
@@ -80,8 +80,8 @@ $this->title = 'Products';
     </thead>
 
     <tbody>
-        <?php if(count($productResult) > 0 ): ?>
-            <?php foreach( $productResult as $row){ ?>
+        <?php if( !empty($getProduct) ): ?>
+            <?php foreach( $getProduct as $row){ ?>
                 <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                     <td class=" "><?php echo $row['id'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['category'];  ?></td>
@@ -98,8 +98,13 @@ $this->title = 'Products';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
-        <?php endif; ?>   
+        <?php endif; ?>
     </tbody>
     </table>
  

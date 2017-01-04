@@ -4,41 +4,58 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Inventory */
+/* @var $model common\models\Customer */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Inventories', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'View Supplier';
+// $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
+// $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="inventory-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="row form-container">
+<br/>
 
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
-    </p>
+ <div class="col-md-12 col-sm-12 col-xs-12">
+    
+ <div class="form-title-container">
+    <span class="form-header"><h4>View Supplier Information</h4></span>
+ </div>      
+ <hr/>
 
-    <?= DetailView::widget([
+ <div class="col-md-12">
+    <div style="text-align: right;">
+        <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
+
+        <?= Html::a( '<i class="fa fa-pencil-square"></i> Update', '?r=supplier/update&id=' . $model['id'], ['class' => 'form-btn btn btn-info']); ?>
+
+        <?= Html::a( '<i class="fa fa-trash"></i> Delete', '?r=supplier/delete-column&id=' . $model['id'], ['class' => 'form-btn btn btn-danger', 'onclick' => 'return deleteConfirmation()']); ?>
+    </div>
+ </div>    
+ <br/>
+
+    <div class="tbl-container">
+        <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
-            'product_id',
-            'supplier_id',
+            'supplier_code',
+            'supplier_name',
+            'product_code',
+            'product_name',
             'quantity',
             'cost_price',
             'selling_price',
             'date_imported',
-            'status',
             'created_at',
-            'created_by',
         ],
-    ]) ?>
+        ]) ?>
+        <br/>
+    </div>   
+ 
+ </div>
 
 </div>
+<br/>
+
+
+
+

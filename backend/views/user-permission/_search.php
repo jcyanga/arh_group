@@ -9,7 +9,7 @@ use common\models\Role;
 /* @var $this yii\web\View */
 /* @var $model common\models\SearchCustomer */
 /* @var $form yii\widgets\ActiveForm */
-$dataRole = ArrayHelper::map(Role::find()->all(), 'id', 'role');
+$dataRole = ArrayHelper::map(Role::find()->where('id > 1')->all(), 'id', 'role');
 ?>
 
 </style>

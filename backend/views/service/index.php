@@ -81,13 +81,13 @@ $this->title = 'Service Categories';
     </thead>
 
     <tbody>
-        <?php if(count($getProductInInventory) > 0 ): ?>
+        <?php if( !empty($getService) ): ?>
             <?php foreach( $getService as $row){ ?>
                 <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                     <td class=" "><?php echo $row['id'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['name'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['service_name'];  ?></td>
-                    <td style="text-align: center;" class=" "><?php echo $row['description'];  ?></td>
+                    <td style="text-align: center; width: 40%;" class=" "><?php echo $row['description'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['default_price'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo ( $row['status'] == 1 ) ? 'Active' : 'Inactive' ;  ?></td>
                     <td style="text-align: center; font-size: 12px;" class=" last">
@@ -100,6 +100,12 @@ $this->title = 'Service Categories';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         <?php endif; ?> 
     </tbody>

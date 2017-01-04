@@ -9,6 +9,12 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Dompdf\Dompdf;
+
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
+use common\models\Role;
+use common\models\UserPermission;
+
 /**
  * UserController implements the CRUD actions for User model.
  */
@@ -19,11 +25,60 @@ class UserController extends Controller
      */
     public function behaviors()
     {
+        $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
+       
+        foreach ( $userRoleArray as $uRId => $uRName ){ 
+            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $actionArray = [];
+            foreach ( $permission as $p )  {
+                $actionArray[] = $p->action;
+            }
+
+            $allow[$uRName] = false;
+            $action[$uRName] = $actionArray;
+            if ( ! empty( $action[$uRName] ) ) {
+                $allow[$uRName] = true;
+            }
+
+        }   
+        // print_r($action['developer']); exit;
         return [
+            // 'access' => [
+            //     'class' => AccessControl::className(),
+            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+            //     'rules' => [
+                    
+            //         [
+            //             'actions' => $action['developer'],
+            //             'allow' => $allow['developer'],
+            //             'roles' => ['developer'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['admin'],
+            //             'allow' => $allow['admin'],
+            //             'roles' => ['admin'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['staff'],
+            //             'allow' => $allow['staff'],
+            //             'roles' => ['staff'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['customer'],
+            //             'allow' => $allow['customer'],
+            //             'roles' => ['customer'],
+            //         ]
+       
+            //     ],
+            // ],
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -63,8 +118,11 @@ class UserController extends Controller
      */
     public function actionView($id)
     {
+        $model = new SearchUser();
+        $getUserById = $model->getUserById($id);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $getUserById,
         ]);
     }
 
@@ -76,7 +134,7 @@ class UserController extends Controller
     public function actionCreate()
     {
         $model = new User();
-        $auth = Yii::$app->authManager;
+        
 
         if ($model->load(Yii::$app->request->post())) {
 
@@ -100,24 +158,22 @@ class UserController extends Controller
             }
 
             if($model->save()) {
+            
+               $auth = \Yii::$app->authManager;
 
                $userRoleId = $model->role_id;
 
                 if ( $userRoleId == 1) {
-                    $userRole = $auth->getRole('developer');
-                    $auth->assign($userRole, $model->id);
+                    // $userRole = $auth->getRole('developer');
+                    $auth->assign('developer', $model->id);
                 }
                 if ( $userRoleId == 2) {
-                    $userRole = $auth->getRole('admin');
-                    $auth->assign($userRole, $model->id);
+                    // $userRole = $auth->getRole('admin');
+                    $auth->assign('admin', $model->id);
                 }
                 if ( $userRoleId == 3) {
-                    $userRole = $auth->getRole('staff');
-                    $auth->assign($userRole, $model->id);
-                }
-                if ( $userRoleId == 4) {
-                    $userRole = $auth->getRole('customer');
-                    $auth->assign($userRole, $model->id);
+                    // $userRole = $auth->getRole('staff');
+                    $auth->assign('staff', $model->id);
                 }
 
                 $searchModel = new SearchUser();
@@ -131,6 +187,7 @@ class UserController extends Controller
             }else {
                 return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
             }
+
         } else {
             return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
         }
@@ -219,7 +276,14 @@ class UserController extends Controller
         $result = $searchModel->getUser();
 
         $objPHPExcel = new \PHPExcel();
-                 
+        $styleHeadingArray = array(
+            'font'  => array(
+            'bold'  => true,
+            'color' => array('rgb' => '000000'),
+            'size'  => 11,
+            'name'  => 'Calibri'
+        ));
+
         $sheet=0;
           
         $objPHPExcel->setActiveSheetIndex($sheet);
@@ -228,30 +292,44 @@ class UserController extends Controller
             $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
                 
             $objPHPExcel->getActiveSheet()->setTitle('xxx')                     
-             ->setCellValue('A1', 'Id')
-             ->setCellValue('B1', 'Role')
-             ->setCellValue('C1', 'Fullname')
-             ->setCellValue('D1', 'Username')
-             ->setCellValue('E1', 'Email')
-             ->setCellValue('F1', 'Status')
-             ->setCellValue('G1', 'Date Created');
+             ->setCellValue('A1', '#')
+             ->setCellValue('B1', 'Branch')
+             ->setCellValue('C1', 'Role')
+             ->setCellValue('D1', 'Fullname')
+             ->setCellValue('E1', 'Username')
+             ->setCellValue('F1', 'Email')
+             ->setCellValue('G1', 'Status')
+             ->setCellValue('H1', 'Date Created');
+
+             $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('C1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('D1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('E1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('F1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('G1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('H1')->applyFromArray($styleHeadingArray);
                  
          $row=2;
                                 
                 foreach ($result as $result_row) {  
-                        
+                    $datetimeCreated = date('m-d-Y H:i:s', strtotime($result_row['created_at']) );    
+                    $status = ( $result_row['status'] == 1 ) ? 'Active' : 'Inactive';     
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['id']); 
-                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['role']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row['fullname']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$row,$result_row['username']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,$result_row['email']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$row,$result_row['status']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$row,$result_row['created_at']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row['role']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$row,$result_row['fullname']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,$result_row['username']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$row,$result_row['email']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$row,$status);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$row,$datetimeCreated);
+
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
                     $row++ ;
                 }
                         
         header('Content-Type: application/vnd.ms-excel');
-        $filename = "CustomerList-".date("d-m-Y").".xls";
+        $filename = "UserList-".date("m-d-Y").".xls";
         header('Content-Disposition: attachment;filename='.$filename);
         header('Cache-Control: max-age=0');
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
@@ -285,7 +363,7 @@ class UserController extends Controller
         $dompdf->render();
 
         // Output the generated PDF to Browser
-        $dompdf->stream();
+        $dompdf->stream('UserList-' . date('m-d-Y'));
           
 
     }

@@ -29,15 +29,15 @@ $this->title = 'Inventories';
  <br/>
  
  <div class="form-title-container">
-        <span class="form-header"><h4>PRODUCT STOCKS</h4></span>
+        <span class="form-header"><h4><i class="fa fa-database"></i> PARTS STOCKS</h4></span>
  </div>
  <br/>
 
  <div class="" role="tabpanel" data-example-id="togglable-tabs">
             <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true"><b>Stock-In</b></a>
+                <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true"><b><i class="fa fa-sign-in"></i> Stock-In</b></a>
                 </li>
-                <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab"  aria-expanded="false"><b>Stock-out</b></a>
+                <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab"  aria-expanded="false"><b><i class="fa fa-sign-out"></i> Stock-Out</b></a>
                 </li>
             </ul>
             <div id="myTabContent" class="tab-content">
@@ -45,22 +45,22 @@ $this->title = 'Inventories';
     <br/>
 
     <div>
-        <label>*Check Item you want to Update Quantity.</label>
+        <label style="font-size: 12px; font-style: italic;">*Check Item you want to Update Quantity.</label>
     </div>
     <br/> 
 
     <?php $form = ActiveForm::begin(['action' => '?r=stocks/create', 'method' => 'POST', 'class' => 'form-inline']); ?>
 
     <div style="text-align: right;">
-        <button type="submit" name="btn-updateQty" class="updateStocks"><i class="fa fa-edit"></i> Update Item/s Quantity</button>
-        <button type="submit" name="btn-checkAll" class="form-btn btn btn-danger"><i class="fa fa-check-square"></i> Select All</button>
+        <button type="submit" name="btn-updateQty" class="form-btn btn btn-default"><i class="fa fa-edit"></i> Update Parts Quantity</button>
+        <button type="button" name="btn-checkAll" class="form-btn btn btn-info " id="checkAllParts" ><i class="fa fa-check-square"></i> Select All</button>
     </div>
+    <br/>
 
-    <table id="tblrole" class="table table-striped responsive-utilities jambo_table">
+    <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
         <tr style="font-size: 11px;" class="headings">
             <th style="text-align: center;" > <i class="fa fa-check-square"></i> </th>
-            <th> # </th>
             <th style="text-align: center;" ><b>SUPPLIER</b></th>
             <th style="text-align: center;" ><b>PRODUCT CODE</b></th>
             <th style="text-align: center;" ><b>PRODUCT NAME</b></th>
@@ -71,23 +71,36 @@ $this->title = 'Inventories';
     </thead>
 
     <tbody>
-        <?php foreach( $getProductInInventory as $row){ ?>
-            <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
-                <td style="text-align: center;" class=" "><input type="checkbox" name="updateQty[]" value="<?php echo $row['id'] . '|' . $row['product_name'] . '|' . $row['quantity'];  ?>" id="updateQty" /></td>
-                <td class=" "><?php echo $row['id'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['supplier_name'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['product_code'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['product_name'];  ?></td>
-                <td style="text-align: center;" class=" "><b><?php echo $row['quantity'];  ?></b></td>
-                <td style="text-align: center;" class=" "><?php echo $row['cost_price'];  ?></td>
-                <td style="text-align: center;" class=" "><?php echo $row['selling_price'];  ?></td>
-            </tr>
-        <?php } ?> 
+        <?php if( !empty($getProductInInventory) ): ?>
+            <?php foreach( $getProductInInventory as $row){ ?>
+                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
+                    <td style="text-align: center;" class=" ">
+                        <input type="checkbox" name="updateQty[]" value="<?php echo $row['id'] . '|' . $row['product_name'] . '|' . $row['quantity'];  ?>" id="updateQty" class="updateQty" /></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['supplier_name'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['product_code'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['product_name'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['quantity'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['cost_price'];  ?></td>
+                    <td style="text-align: center;" class=" "><?php echo $row['selling_price'];  ?></td>
+                </tr>
+            <?php } ?>    
+            <?php else: ?>
+                <tr>
+                    <td>No Record Found.</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td> 
+                </tr> 
+        <?php endif; ?>
     </tbody>
     </table>
 
     <?php ActiveForm::end(); ?>
-    <br/>
+    <br/><br/>
 
     </div>
     

@@ -159,19 +159,19 @@ $userName = Yii::$app->user->identity->username;
                 <li><a href="#" id="nav-parts" ><i class="fa fa-cogs"></i> Parts <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu" style="display: none">
                         <li><a href="?r=category"  id="nav-category" >Category</a></li>
-                        <li><a href="?r=product"  id="nav-product" >Products</a></li>
-                        <li><a href="?r=supplier" id="nav-supplier" >Supplier</a></li>
-                        <li><a href="?r=inventory" id="nav-inventory" > Inventory</a></li>
+                        <li><a href="?r=product"  id="nav-product" >Parts</a></li>
+                        <li><a href="?r=supplier" id="nav-supplier" >Parts-Supplier</a></li>
+                        <li><a href="?r=inventory" id="nav-inventory" > Parts-Inventory</a></li>
                     </ul>
                 </li>
                 <li><a href="?r=branch" id="nav-branch" ><i class="fa fa-globe"></i> Branch </a></li>
                 <li><a href="?r=customer" id="nav-customer"  ><i class="fa fa-users"></i> Customer </a></li>
                 <li><a href="#" id="nav-user" ><i class="fa fa-user"></i>  User <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu" style="display: none">
-                        <li ><a href="?r=user" id="nav-userList"  >User List</a></li>
-                        <li><a href="?r=modules" id="nav-modules" >Module List</a></li>
                         <li><a href="?r=role" id="nav-role"  >User Role</a></li>
+                        <li><a href="?r=modules" id="nav-modules" >Module List</a></li>
                         <li><a href="?r=user-permission" id="nav-userPermission" >User Permission</a></li>
+                        <li ><a href="?r=user" id="nav-userList"  >User </a></li>
                     </ul>
                 </li>
                 <li><a href="#" id="nav-reports" ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
@@ -516,17 +516,24 @@ $userName = Yii::$app->user->identity->username;
                 
                 });
             });
+
+            $('#checkAllParts').click(function(event) {   
+                $('.updateQty').each(function() {
+                    this.checked = true;
+                
+                });
+            });
     </script>
 
     <!-- select2 -->
     <script>
         $(document).ready(function () {
             $(".select2_single").select2({
-                placeholder: "Select a state",
+                placeholder: "Choose here",
                 allowClear: true
             });
             $(".select3_single").select2({
-                placeholder: "Select a state",
+                placeholder: "Choose here",
                 allowClear: true
             });
             $(".select2_group").select2({});
@@ -549,9 +556,13 @@ $userName = Yii::$app->user->identity->username;
           });
 
 
-          $(".remove").click(function(){
+          $(".remove").each(function(){
+            $(this).click(function(){
 
-              $(this).parents(".control-group").remove();
+                alert(2);
+              // $(this).parents(".control-group").remove();
+
+            });
 
           });
 
@@ -607,6 +618,41 @@ $userName = Yii::$app->user->identity->username;
             });
         })
     </script>
+
+    <script>
+    
+    $(document).ready(function () {
+
+            $('.qtyValue').each(function(){
+
+                $('.qtyValue').change(function(){
+
+                    var qtyValueId = $(this).attr('id');
+                    var qtyValue = $(this).val();
+
+                    $('.qtyS').each(function(){
+
+                        if( $(this).attr('id') === qtyValueId ) {
+                                var qtySvalue = $(this).val();
+                                var total = parseInt(qtySvalue) + parseInt(qtyValue);
+                                console.log(parseInt(total));
+
+                    
+                                // // $(this).val(total);    
+
+                                // // return true;                        
+                        
+                        }
+
+                    });
+
+                });
+
+            });
+        
+
+    });
+</script>
 
     </body>   
 

@@ -31,11 +31,11 @@ $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
     </div>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'product_code')->textInput(['placeholder' => 'Enter Product Code here...'])->label(false) ?>
+        <?= $form->field($model, 'product_code')->textInput(['placeholder' => 'Enter Parts Code here...'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'product_name')->textInput(['placeholder' => 'Enter Product Name here...'])->label(false) ?>
+        <?= $form->field($model, 'product_name')->textInput(['placeholder' => 'Enter Parts Name here...'])->label(false) ?>
     </div>
 
     <div class="col-md-3">

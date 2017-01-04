@@ -79,7 +79,7 @@ $this->title = 'Service Categories';
     </thead>
 
     <tbody>
-        <?php if(count($getProductInInventory) > 0 ): ?>
+        <?php if(count($getServiceCategory) > 0 ): ?>
             <?php foreach( $getServiceCategory as $row){ ?>
                 <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                     <td class=" "><?php echo $row['id'];  ?></td>
@@ -96,6 +96,10 @@ $this->title = 'Service Categories';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         <?php endif; ?> 
     </tbody>

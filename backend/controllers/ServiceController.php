@@ -120,9 +120,12 @@ class ServiceController extends Controller
      * @return mixed
      */
     public function actionView($id)
-    {
+    {   
+        $model = new Service();
+        $getServicesById = $model->getServicesById($id);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $getServicesById,
         ]);
     }
 
@@ -246,7 +249,14 @@ class ServiceController extends Controller
         $result = $model->getServices();
 
         $objPHPExcel = new \PHPExcel();
-                 
+        $styleHeadingArray = array(
+            'font'  => array(
+            'bold'  => true,
+            'color' => array('rgb' => '000000'),
+            'size'  => 11,
+            'name'  => 'Calibri'
+        ));
+
         $sheet=0;
           
         $objPHPExcel->setActiveSheetIndex($sheet);
@@ -255,13 +265,21 @@ class ServiceController extends Controller
             $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
                 
             $objPHPExcel->getActiveSheet()->setTitle('xxx')                     
-             ->setCellValue('A1', 'Id')
+             ->setCellValue('A1', '#')
              ->setCellValue('B1', 'Service Category')
              ->setCellValue('C1', 'Service Name')
              ->setCellValue('D1', 'Description')
              ->setCellValue('E1', 'Default Price')
              ->setCellValue('F1', 'Date Created')
              ->setCellValue('G1', 'Status');
+
+             $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('C1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('D1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('E1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('F1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('G1')->applyFromArray($styleHeadingArray);
                  
          $row=2;
                                 
@@ -276,11 +294,13 @@ class ServiceController extends Controller
                     $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,$result_row['default_price']);
                     $objPHPExcel->getActiveSheet()->setCellValue('F'.$row,$dateCreated);
                     $objPHPExcel->getActiveSheet()->setCellValue('G'.$row,$status);
+
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
                     $row++ ;
                 }
                         
         header('Content-Type: application/vnd.ms-excel');
-        $filename = "CustomerList-".date("d-m-Y").".xls";
+        $filename = "ServicesList-".date("m-d-Y").".xls";
         header('Content-Disposition: attachment;filename='.$filename);
         header('Cache-Control: max-age=0');
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');

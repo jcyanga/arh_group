@@ -84,12 +84,14 @@ class SearchUser extends User
     public function searchUser($fullname,$username,$email) {
         $rows = new Query();
 
-        $result = $rows->select(['user.id', 'role.role', 'user.fullname', 'user.username', 'user.email', 'user.status'])
+        $result = $rows->select(['user.id', 'role.role', 'branch.name', 'user.fullname', 'user.username', 'user.email', 'user.status'])
                     ->from('user')
                     ->join('INNER JOIN', 'role', 'user.role_id = role.id')
+                    ->join('INNER JOIN', 'branch', 'user.branch_id = branch.id')
                     ->where(['like', 'user.fullname', $fullname])
-                    ->andWhere(['like', 'user.username', $username])
-                    ->andWhere(['like', 'user.email', $email])
+                    ->orWhere(['like', 'user.username', $username])
+                    ->orWhere(['like', 'user.email', $email])
+                    ->where('user.role_id > 1')
                     ->all();
 
         return $result;            
@@ -98,10 +100,26 @@ class SearchUser extends User
     public function getUser() {
         $rows = new Query();
 
-        $result = $rows->select(['user.id', 'role.role', 'user.fullname', 'user.username', 'user.email', 'user.status', 'user.created_at', 'user.updated_at'])
+        $result = $rows->select(['user.id', 'role.role', 'branch.name', 'user.fullname', 'user.username', 'user.email', 'user.status', 'user.created_at', 'user.updated_at'])
                     ->from('user')
                     ->join('INNER JOIN', 'role', 'user.role_id = role.id')
+                    ->join('INNER JOIN', 'branch', 'user.branch_id = branch.id')
+                    ->where('user.role_id > 1')
                     ->all();
+
+        return $result;   
+    }
+
+    public function getUserById($id) {
+        $rows = new Query();
+
+        $result = $rows->select(['user.id', 'role.role', 'branch.name', 'user.fullname', 'user.username', 'user.email', 'user.status', 'user.created_at', 'user.updated_at'])
+                    ->from('user')
+                    ->join('INNER JOIN', 'role', 'user.role_id = role.id')
+                    ->join('INNER JOIN', 'branch', 'user.branch_id = branch.id')
+                    ->where('user.role_id > 1')
+                    ->andWhere(['user.id' => $id])
+                    ->one();
 
         return $result;   
     }

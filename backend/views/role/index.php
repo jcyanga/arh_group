@@ -48,7 +48,7 @@ $this->title = 'Roles';
 
     <p>
         <a href="?r=role/create" id="option-list-link" class="btn btn-app">
-            <i class="fa fa-plus-circle"></i> <b> New Customer </b>
+            <i class="fa fa-plus-circle"></i> <b> New Role </b>
         </a>
 
         <a href="?r=role/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
@@ -92,6 +92,8 @@ $this->title = 'Roles';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
             </tr>
         <?php endif; ?>  
     </tbody>

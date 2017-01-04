@@ -69,9 +69,9 @@ $this->title = 'Users';
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
         <tr style="font-size: 11px;" class="headings">
+            <th> BRANCH </th>
             <th> ROLE </th>
             <th> FULLNAME </th>
-            <th> USERNAME </th>
             <th> E-MAIL </th>
             <th> STATUS </th>
             <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
@@ -80,12 +80,12 @@ $this->title = 'Users';
     </thead>
 
     <tbody>
-        <?php if(count($getUser) > 0 ): ?>
+        <?php if( !empty($getUser) ): ?>
             <?php foreach( $getUser as $row){ ?>
                 <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
+                    <td class=" "><?php echo $row['name'];  ?></td>
                     <td class=" "><?php echo $row['role'];  ?></td>
                     <td class=" "><?php echo $row['fullname'];  ?></td>
-                    <td class=" "><?php echo $row['username'];  ?></td>
                     <td class=" "><?php echo $row['email'];  ?></td>
                     <td class=" "><?php echo ( $row['status'] == 1 ) ? 'Active' : 'Inactive'; ?></td>
                     <td style="text-align: center; font-size: 12px;" class=" last">
@@ -98,6 +98,11 @@ $this->title = 'Users';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         <?php endif; ?> 
     </tbody>

@@ -8,6 +8,12 @@ use common\models\SearchInventory;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use Dompdf\Dompdf;
+
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
+use common\models\Role;
+use common\models\UserPermission;
 
 use yii\web\Response;
 use common\models\Product;
@@ -23,11 +29,60 @@ class InventoryController extends Controller
 
     public function behaviors()
     {
+        $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
+       
+        foreach ( $userRoleArray as $uRId => $uRName ){ 
+            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $actionArray = [];
+            foreach ( $permission as $p )  {
+                $actionArray[] = $p->action;
+            }
+
+            $allow[$uRName] = false;
+            $action[$uRName] = $actionArray;
+            if ( ! empty( $action[$uRName] ) ) {
+                $allow[$uRName] = true;
+            }
+
+        }   
+        // print_r($action['developer']); exit;
         return [
+            // 'access' => [
+            //     'class' => AccessControl::className(),
+            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+            //     'rules' => [
+                    
+            //         [
+            //             'actions' => $action['developer'],
+            //             'allow' => $allow['developer'],
+            //             'roles' => ['developer'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['admin'],
+            //             'allow' => $allow['admin'],
+            //             'roles' => ['admin'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['staff'],
+            //             'allow' => $allow['staff'],
+            //             'roles' => ['staff'],
+            //         ],
+
+            //         [
+            //             'actions' => $action['customer'],
+            //             'allow' => $allow['customer'],
+            //             'roles' => ['customer'],
+            //         ]
+       
+            //     ],
+            // ],
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -57,8 +112,12 @@ class InventoryController extends Controller
      */
     public function actionView($id)
     {
+        $model = new Inventory();
+
+        $getProductInInventoryById = $model->getProductInInventoryById($id);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $getProductInInventoryById,
         ]);
     }
 
@@ -69,35 +128,6 @@ class InventoryController extends Controller
      */
     public function actionCreate()
     {
-       // $model = new Inventory();
-        
-       // Yii::$app->response->format = Response::FORMAT_JSON;
-       
-       // $supplier_id = Yii::$app->request->post('supplier_id');
-       // $product_id = Yii::$app->request->post('product_id');
-       // $quantity = Yii::$app->request->post('quantity');
-       // $cost_price = Yii::$app->request->post('cost_price');
-       // $selling_price = Yii::$app->request->post('selling_price');
-
-       // $getItem = $model->selectSupplierNameandProductName($supplier_id,$product_id);
-
-       // if( $getItem == 1 ) {
-       //      return ['message' => 'warning' , 'content' => 'You already enter an existing product, Please! Change supplier or product.'];
-       // }
-
-       // $model->supplier_id = $supplier_id;
-       // $model->product_id = $product_id;
-       // $model->quantity = $quantity;
-       // $model->cost_price = $cost_price;
-       // $model->selling_price = $selling_price;
-       // $model->status = 1;
-       // $model->created_at = date('Y-m-d');
-       // $model->date_imported = date('Y-m-d');
-       // $model->created_by = Yii::$app->user->identity->id;
-
-       // if( $model->save() ) {
-       //      return ['message' => 'success' , 'content' => 'Your record was successfully added in the database.'];
-       // }
 
         $model = new Inventory();
 
@@ -150,27 +180,7 @@ class InventoryController extends Controller
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
 
 
-            }            
-            
-
-            // if( $result == 1 ) {
-                
-            //     return $this->render('create', ['model' => $model, 'getCustomer' => $getCustomer, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change customer fullname or e-mail.']);
-            // }
-        
-            // if($model->save()) {
-            //     $searchModel = new SearchCustomer();
-            //     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-            //     $getCustomer = Customer::find()->all();
-
-            //     return $this->render('index', ['searchModel' => $searchModel, 'getCustomer' => $getCustomer,
-            //         'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
-
-            // }else {
-
-            //     return $this->render('create', ['model' => $model, 'getCustomer' => $getCustomer, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
-            // }
+            }           
 
         } else {
 
@@ -251,4 +261,98 @@ class InventoryController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    public function actionExportExcel() {
+
+        $getResult = new Inventory();
+        $result = $getResult->getProductInInventory();
+
+        $objPHPExcel = new \PHPExcel();
+        $styleHeadingArray = array(
+            'font'  => array(
+            'bold'  => true,
+            'color' => array('rgb' => '000000'),
+            'size'  => 11,
+            'name'  => 'Calibri'
+        ));
+
+        $sheet=0;
+          
+        $objPHPExcel->setActiveSheetIndex($sheet);
+        
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+                
+            $objPHPExcel->getActiveSheet()->setTitle('xxx')                     
+             ->setCellValue('A1', '#')
+             ->setCellValue('B1', 'Supplier Code')
+             ->setCellValue('C1', 'Supplier Name')
+             ->setCellValue('D1', 'Product Code')
+             ->setCellValue('E1', 'Product Name')
+             ->setCellValue('F1', 'Quantity')
+             ->setCellValue('G1', 'Cost Price')
+             ->setCellValue('H1', 'Selling Price');
+
+            $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeadingArray);
+            $objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeadingArray);
+            $objPHPExcel->getActiveSheet()->getStyle('C1')->applyFromArray($styleHeadingArray);
+            $objPHPExcel->getActiveSheet()->getStyle('D1')->applyFromArray($styleHeadingArray);
+            $objPHPExcel->getActiveSheet()->getStyle('E1')->applyFromArray($styleHeadingArray);
+            $objPHPExcel->getActiveSheet()->getStyle('F1')->applyFromArray($styleHeadingArray);
+            $objPHPExcel->getActiveSheet()->getStyle('G1')->applyFromArray($styleHeadingArray);
+            $objPHPExcel->getActiveSheet()->getStyle('H1')->applyFromArray($styleHeadingArray);
+
+         $row=2;
+                                
+                foreach ($result as $result_row) {  
+                        
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['id']); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['supplier_code']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row['supplier_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$row,$result_row['product_code']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,$result_row['product_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$row,$result_row['quantity']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$row,$result_row['cost_price']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$row,$result_row['selling_price']);
+
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
+                    $row++ ;
+                }
+                        
+        header('Content-Type: application/vnd.ms-excel');
+        $filename = "PartsInventory-".date("m-d-Y").".xls";
+        header('Content-Disposition: attachment;filename='.$filename);
+        header('Cache-Control: max-age=0');
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        $objWriter->save('php://output');                
+
+    }
+
+    public function actionExportPdf() {
+
+        $getResult = new Inventory();
+        $result = $getResult->getProductInInventory();
+
+        $content = $this->renderPartial('_pdf', ['result' => $result]);
+        // instantiate and use the dompdf class
+        // $dompdf = new Dompdf();
+
+        $dompdf     = new Dompdf();
+        //return $pdf->stream();
+
+        $dompdf->loadHtml($content);
+
+        // // (Optional) Setup the paper size and orientation
+        $dompdf->setPaper('A4', 'landscape');
+
+        // // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser
+        $dompdf->stream('PartsInventory-' . date('m-d-Y'));
+          
+
+    }
+
+
 }
