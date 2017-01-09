@@ -17,17 +17,17 @@ $this->title = 'Customers';
 ?>
 
 <div class="row form-container">
- 
+
+<div>
+    <?php if($msg <> ''){ ?>
+        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
+            <?php echo $msg; ?>
+        </div>
+    <?php } ?>
+</div>
+
  <div class="col-md-12 col-sm-12 col-xs-12">
-  
-    <div>
-        <?php if($msg <> ''){ ?>
-            <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-            <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-                <?php echo $msg; ?>
-            </div>
-        <?php } ?>
-    </div>
 
     <div class="form-title-container">
         <span class="form-header"><h4>Customer Maintenance</h4></span>
@@ -76,7 +76,7 @@ $this->title = 'Customers';
             <th> PHONE NUMBER </th>
             <th> CAR-PLATE </th>
             <th> MEMBER EXPIRY </th>
-            <th> STATUS </th>
+            <th> REWARD POINTS </th>
             <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
@@ -93,11 +93,11 @@ $this->title = 'Customers';
                     <td class=" "><?php echo $row['hanphone_no'];  ?></td>
                     <td class=" "><?php echo $row['carplate'];  ?></td>
                     <td class=" "><?php echo date('m-d-Y', strtotime($row['member_expiry']));  ?></td>
-                    <td class=" "><?php echo ( $row['status'] == 1 ) ? 'Active' : 'Inactive'; ?></td>
-                    <td style="text-align: center; font-size: 12px;" class=" last">
-                        <a href="?r=customer/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
-                        <a href="?r=customer/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> | 
-                        <a href="?r=customer/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
+                    <td class=" "><?php echo $row['points']; ?></td>
+                    <td style="text-align: center; font-size: 13px;" class=" last">
+                        <a href="?r=customer/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a> |
+                        <a href="?r=customer/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-pencil-square"><span class="actionTooltiptext">Update record</span></li> </a> | 
+                        <a href="?r=customer/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
                     </td>
                 </tr>
             <?php } ?> 

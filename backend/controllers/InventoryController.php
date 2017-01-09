@@ -17,7 +17,7 @@ use common\models\UserPermission;
 
 use yii\web\Response;
 use common\models\Product;
-
+use common\models\StockIn;
 /**
  * InventoryController implements the CRUD actions for Inventory model.
  */
@@ -32,7 +32,7 @@ class InventoryController extends Controller
         $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
        
         foreach ( $userRoleArray as $uRId => $uRName ){ 
-            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $permission = UserPermission::find()->where(['controller' => 'Inventory'])->andWhere(['role_id' => $uRId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
                 $actionArray[] = $p->action;
@@ -47,37 +47,31 @@ class InventoryController extends Controller
         }   
         // print_r($action['developer']); exit;
         return [
-            // 'access' => [
-            //     'class' => AccessControl::className(),
-            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
-            //     'rules' => [
+            'access' => [
+                'class' => AccessControl::className(),
+                // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
                     
-            //         [
-            //             'actions' => $action['developer'],
-            //             'allow' => $allow['developer'],
-            //             'roles' => ['developer'],
-            //         ],
+                    [
+                        'actions' => $action['developer'],
+                        'allow' => $allow['developer'],
+                        'roles' => ['developer'],
+                    ],
 
-            //         [
-            //             'actions' => $action['admin'],
-            //             'allow' => $allow['admin'],
-            //             'roles' => ['admin'],
-            //         ],
+                    [
+                        'actions' => $action['admin'],
+                        'allow' => $allow['admin'],
+                        'roles' => ['admin'],
+                    ],
 
-            //         [
-            //             'actions' => $action['staff'],
-            //             'allow' => $allow['staff'],
-            //             'roles' => ['staff'],
-            //         ],
-
-            //         [
-            //             'actions' => $action['customer'],
-            //             'allow' => $allow['customer'],
-            //             'roles' => ['customer'],
-            //         ]
+                    [
+                        'actions' => $action['staff'],
+                        'allow' => $allow['staff'],
+                        'roles' => ['staff'],
+                    ]
        
-            //     ],
-            // ],
+                ],
+            ],
 
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -167,7 +161,22 @@ class InventoryController extends Controller
 
                     if( $result != 1) { 
                         $inventory->save();  
-                    }    
+                    }
+
+                    $stockin = new StockIn();
+                    $stockin->supplier_id = $supplier_id;
+                    $stockin->product_id = $product_id[$key];
+                    $stockin->quantity = $quantity[$key];
+                    $stockin->cost_price = $cost_price[$key];
+                    $stockin->selling_price = $selling_price[$key];
+                    $stockin->date_imported = date("Y-m-d");
+                    $stockin->time_imported = date("H:i:s");
+                    $stockin->created_at = date("Y-m-d");
+                    $stockin->created_by = Yii::$app->user->identity->id;
+
+                    if( $result != 1) { 
+                        $stockin->save();  
+                    }
                         
                 }
                 
@@ -226,7 +235,7 @@ class InventoryController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionDeleteColumn($id)
+    public function actionDeleteColumn($id,$product_id,$date_imported)
     {
         // $this->findModel($id)->delete();
         // $model = $this->findModel($id);
@@ -240,6 +249,10 @@ class InventoryController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $this->findModel($id)->delete();
+
+        Yii::$app->db->createCommand()
+            ->delete('stock_in', ['product_id' => $product_id, 'date_imported' => $date_imported])
+            ->execute();
 
         $getProductInInventory = $searchModel->getProductInInventory();
 

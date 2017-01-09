@@ -11,12 +11,8 @@ use common\models\Product;
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
-$member_list = array('0' => 'No', '1' => 'Yes');
-
 $datetime = date('Y-m-d h:i:s');
-
 $userId = Yii::$app->user->identity->id;
-
 $dataSupplier = ArrayHelper::map(Supplier::find()->all(), 'id', 'supplier_name');
 $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 
@@ -32,55 +28,44 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
     </div>
     <br/>
 
-    <div class="col-md-3">
-        <label style="font-size: 12px;">Parts-Supplier</label>
-        <?= $form->field($model, 'supplier_id')->dropDownList($dataSupplier, ['class' => 'select2_single', 'style' => 'width: 100%;'])->label(false) ?>
+    <div class="col-md-4">
+        <label class="form_label">Parts-Supplier</label>
+        <?= $form->field($model, 'supplier_id')->dropDownList($dataSupplier, ['class' => 'form_input form-control', 'class' => 'select2_single', 'style' => 'width: 100%;'])->label(false) ?>
     </div>
-    
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
 
 </div>
 <br/>
 
 <div class="row">
 
-    <div class="col-md-3">
-        <label style="font-size: 12px;">Product Name</label>
-        <select name="product_id[]" class="select2_single" style="width: 100%;">
+    <div class="col-md-4">
+        <label class="form_label">Product Name</label>
+        <br/>
+        <select name="product_id[]" class="form_input form-control" id="inventoryProduct" required="required" >
+            <option value="">CHOOSE PARTS HERE</option>
             <?php foreach( $getProductList as $row ): ?>
-                <option value="<?php echo $row['id']; ?>"><?php echo $row['product_name']; ?></option>
+                <option value="<?php echo $row['id']; ?>">[ <?php echo $row['category']; ?> ] <?php echo $row['product_name']; ?></option>
             <?php endforeach; ?>
         </select>
 
     </div>
-    
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
 
-</div>
-<br/>
-
-<div class="row">
-
-    <div class="col-md-3">
-        <label style="font-size: 12px;">Quantity</label>
-        <input type="text" name="quantity[]" class="form-control" required="required" placeholder="Quantity Here" />
+    <div class="col-md-2">
+        <label class="form_label">Quantity</label>
+        <input type="text" name="quantity[]" class="form_input form-control" required="required" placeholder="Write Quantity Here." />
     </div>
 
-    <div class="col-md-3">
-        <label style="font-size: 12px;">Cost Price</label>
-        <input type="text" name="cost_price[]" class="form-control" required="required" placeholder="Cost Price Here" />
+    <div class="col-md-2">
+        <label class="form_label">Cost Price</label>
+        <input type="text" name="cost_price[]" class="form_input form-control" required="required" placeholder="Write Cost Price Here." />
     </div>
 
-    <div class="col-md-3">
-        <label style="font-size: 12px;">Selling Price</label>
-        <input type="text" name="selling_price[]" class="form-control" required="required" placeholder="Selling Price Here" />
+    <div class="col-md-2">
+        <label class="form_label">Selling Price</label>
+        <input type="text" name="selling_price[]" class="form_input form-control" required="required" placeholder="Write Selling Price Here." />
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div style="padding-top: 30px;">
         <a href="#" class="form-btn add-more"><i class="fa fa-plus"></i> Add</a>
         </div>  
@@ -93,7 +78,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
     </div>
 
 </div>
-<hr/>
+<br/>
 
 <div class="input-group control-group after-add-more"></div>
 
@@ -103,55 +88,47 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 
 <div class="row">
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         
-        <label style="font-size: 12px;">Product Name</label>
+        <label class="form_label">Product Name</label>
         <br/>
-        <select name="product_id[]" class="form-control" style="width: 100%;">
-            <option value="0">Select Product</option>
+        <select name="product_id[]" class="form_input form-control" id="inventoryProduct" >
+            <option value="">CHOOSE PARTS HERE</option>
             <?php foreach( $getProductList as $row ): ?>
-                <option value="<?php echo $row['id']; ?>"><?php echo $row['product_name']; ?></option>
+                <option value="<?php echo $row['id']; ?>">[ <?php echo $row['category']; ?> ] <?php echo $row['product_name']; ?></option>
             <?php endforeach; ?>
         </select>
 
     </div>  
 
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-
-</div>
-<br/>
-
-<div class="row">  
-
-    <div class="col-md-3">
-        <label style="font-size: 12px;">Quantity</label>
-        <input type="text" name="quantity[]" class="form-control" placeholder="Quantity Here" />
+    <div class="col-md-2">
+        <label class="form_label">Quantity</label>
+        <input type="text" name="quantity[]" class="form_input form-control" placeholder="Write Quantity Here." />
     </div>
 
-    <div class="col-md-3">
-        <label style="font-size: 12px;">Cost Price</label>
-        <input type="text" name="cost_price[]" class="form-control" placeholder="Cost Price Here" />
+    <div class="col-md-2">
+        <label class="form_label">Cost Price</label>
+        <input type="text" name="cost_price[]" class="form_input form-control" placeholder="Write Cost Price Here." />
     </div>
 
-    <div class="col-md-3">
-        <label style="font-size: 12px;">Selling Price</label>
-        <input type="text" name="selling_price[]" class="form-control" placeholder="Selling Price Here" />
+    <div class="col-md-2">
+        <label class="form_label">Selling Price</label>
+        <input type="text" name="selling_price[]" class="form_input form-control" placeholder="Write Selling Price Here." />
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
         <div style="padding-top: 30px;">
         <a href="#" class="form-btn remove"><i class="fa fa-trash"></i> Remove</a>
         </div>  
     </div>
     
 </div>
+<br/>
+
+</div>
+
+</div>
 <hr/>
-
-</div>
-
-</div>
 
 <div class="row">
 
@@ -159,10 +136,6 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
         <?= Html::submitButton($model->isNewRecord ? '<li class=\'fa fa-save\'></li> Save New Record' : '<li class=\'fa fa-save\'></li> Update Record', ['class' => $model->isNewRecord ? 'form-btn btn btn-primary' : 'form-btn btn btn-primary']) ?>
         <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
     </div>
-    
-    <div class="col-md-4"></div>
-
-    <div class="col-md-4"></div>
 
 </div>
 <br/><br/>
@@ -170,66 +143,3 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 <?php ActiveForm::end(); ?>
 
 
-
-
-<!-- <button type="button" class="form-btn add btn btn-link add-more" ><i class='fa fa-plus'></i> Add </button>  -->
-
-
-<!-- <div class="input-group control-group after-add-more"></div>
-
-        
-<div class="copy hide">
-
-<div class="control-group input-group" style="margin-top:10px">
-
-<div class="row">
-
-    <div class="col-md-3">
-        
-        <label style="font-size: 12px;">Product Name</label>
-        <br/>
-        <select name="product_id[]" class="form-control" style="width: 100%;">
-            <option value="0">Select Product</option>
-            <?php foreach( $getProductList as $row ): ?>
-                <option value="<?php echo $row['id']; ?>"><?php echo $row['product_name']; ?></option>
-            <?php endforeach; ?>
-        </select>
-
-    </div>  
-
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-
-</div>
-<br/>
-
-<div class="row">  
-
-    <div class="col-md-3">
-        <label style="font-size: 12px;">Quantity</label>
-        <input type="text" name="quantity[]" class="form-control" placeholder="Quantity Here" />
-    </div>
-
-    <div class="col-md-3">
-        <label style="font-size: 12px;">Cost Price</label>
-        <input type="text" name="cost_price[]" class="form-control" placeholder="Cost Price Here" />
-    </div>
-
-    <div class="col-md-3">
-        <label style="font-size: 12px;">Selling Price</label>
-        <input type="text" name="selling_price[]" class="form-control" placeholder="Selling Price Here" />
-    </div>
-
-    <div class="col-md-3">
-        <br/>
-        <button type="button" class="form-btn btn btn-link remove" ><i class='fa fa-minus-circle'></i> Remove </button>
-    </div>
-    
-</div>
-<hr/>
-
-</div>
-
-</div>   
-<hr/> -->

@@ -17,17 +17,17 @@ $this->title = 'User Permission';
 ?>
 
 <div class="row form-container">
- 
+
+<div>
+    <?php if($msg <> ''){ ?>
+        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
+            <?php echo $msg; ?>
+        </div>
+    <?php } ?>
+</div>
+
  <div class="col-md-12 col-sm-12 col-xs-12">
-  
-    <div>
-        <?php if($msg <> ''){ ?>
-            <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-            <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-                <?php echo $msg; ?>
-            </div>
-        <?php } ?>
-    </div>
 
     <div class="form-title-container">
         <span class="form-header"><h4>User Permission Maintenance</h4></span>
@@ -62,16 +62,16 @@ $this->title = 'User Permission';
     <thead>
         <tr style="font-size: 11px;" class="headings">
             <th> # </th>
-            <th style="text-align: center;"> ROLE </th>
-            <th style="text-align: center;"> CONTROLLER </th>
-            <th style="text-align: center;"> ACTION </th>
+            <th class="tblalign_center"> ROLES </th>
+            <th class="tblalign_center"> CONTROLLERS </th>
+            <th class="tblalign_center"> CONTROLLER ACTIONS </th>
             <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
     </thead>
 
     <tbody>
-        <?php if(count($getUserPermission) > 0 ): ?>
+        <?php if( !empty($getUserPermission) ): ?>
             <?php foreach( $getUserPermission as $row){ ?>
                 <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                     <td class=" "><?php echo $row['id'];  ?></td>
@@ -81,7 +81,7 @@ $this->title = 'User Permission';
                     <td style="text-align: center; font-size: 12px;" class=" last">
                         <!-- <a href="?r=modules/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> |  -->
                         <!-- <a href="?r=modules/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> |  -->
-                        <a href="?r=modules/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
+                        <a href="?r=user-permission/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
                     </td>
                 </tr>
             <?php } ?> 

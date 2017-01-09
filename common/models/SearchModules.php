@@ -69,7 +69,7 @@ class SearchModules extends Modules
         return $dataProvider;
     }
 
-    public function searchModule($id,$module) {
+    public function searchModule($module) {
         $rows = new Query();
 
         $result = $rows->select(['*'])

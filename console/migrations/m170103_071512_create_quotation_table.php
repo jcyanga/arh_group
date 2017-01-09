@@ -19,9 +19,6 @@ class m170103_071512_create_quotation_table extends Migration
             'customer_id' => $this->integer(10)->notNull(),
             'branch_id' => $this->integer(10)->notNull(),
             'date_issue' => $this->date()->notNull(),
-            'type' => $this->string(50)->notNull(),
-            'no_of_services' => $this->integer(10)->notNull(),
-            'no_of_parts' => $this->integer(10)->notNull(),
             'grand_total' => $this->double(10,2)->notNull(),
             'remarks' => $this->text()->notNull(),
             'created_at' => $this->date()->notNull(),
@@ -29,7 +26,7 @@ class m170103_071512_create_quotation_table extends Migration
             'updated_at' => $this->date()->notNull(),
             'updated_by' => $this->integer(10)->notNull(),
             'delete' => $this->integer(5)->notNull(),
-
+            'task' => $this->integer(5)->notNull(),
         ]);
     }
 

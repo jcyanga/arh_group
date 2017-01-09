@@ -5,12 +5,12 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\QuotationSubtotal;
+use common\models\QuotationDetail;
 
 /**
- * SearchQuotationSubtotal represents the model behind the search form about `common\models\QuotationSubtotal`.
+ * SearchQuotationDetail represents the model behind the search form about `common\models\QuotationDetail`.
  */
-class SearchQuotationSubtotal extends QuotationSubtotal
+class SearchQuotationDetail extends QuotationDetail
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class SearchQuotationSubtotal extends QuotationSubtotal
     public function rules()
     {
         return [
-            [['id', 'quotation_id', 'item_id', 'qty', 'type', 'created_by'], 'integer'],
-            [['price', 'subTotal'], 'number'],
+            [['id', 'quotation_id', 'service_part_id', 'quantity', 'created_by', 'type', 'task'], 'integer'],
+            [['selling_price', 'subTotal'], 'number'],
             [['created_at'], 'safe'],
         ];
     }
@@ -42,7 +42,7 @@ class SearchQuotationSubtotal extends QuotationSubtotal
      */
     public function search($params)
     {
-        $query = QuotationSubtotal::find();
+        $query = QuotationDetail::find();
 
         // add conditions that should always apply here
 
@@ -62,13 +62,13 @@ class SearchQuotationSubtotal extends QuotationSubtotal
         $query->andFilterWhere([
             'id' => $this->id,
             'quotation_id' => $this->quotation_id,
-            'item_id' => $this->item_id,
-            'qty' => $this->qty,
-            'price' => $this->price,
+            'service_part_id' => $this->service_part_id,
+            'quantity' => $this->quantity,
+            'selling_price' => $this->selling_price,
             'subTotal' => $this->subTotal,
-            'type' => $this->type,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
+            'type' => $this->type,
         ]);
 
         return $dataProvider;

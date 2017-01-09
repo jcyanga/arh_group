@@ -38,7 +38,8 @@ class Branch extends \yii\db\ActiveRecord
             [['code', 'name', 'address', 'contact_no', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'required'],
             [['status', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
-            [['code', 'name', 'address', 'contact_no'], 'string', 'max' => 50],
+            [['code', 'name', 'contact_no'], 'string', 'max' => 50],
+            [['address'], 'string', 'max' => 150],
         ];
     }
 
@@ -62,13 +63,12 @@ class Branch extends \yii\db\ActiveRecord
     }
 
     // Search if with same name.
-    public function getBranch($code,$name) {
+    public function getBranch($name) {
            $rows = new Query();
         
-           $result = $rows->select(['code','name'])
+           $result = $rows->select(['name'])
             ->from('branch')
-            ->where(['code' => $code])
-            ->andWhere(['name' => $name])
+            ->where(['name' => $name])
             ->all();
             
             if( count($result) > 0 ) {

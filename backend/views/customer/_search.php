@@ -23,20 +23,12 @@ use yii\helpers\Url;
 <!-- , 'class' => 'form-inline' -->
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
-    <div class="col-md-3">
-        <?= $form->field($model, 'fullname')->textInput(['placeholder' => 'Enter Fullname here...'])->label(false) ?>
-    </div>
-    
-    <div class="col-md-3">
-        <?= $form->field($model, 'email')->textInput(['placeholder' => 'Enter Email here...'])->label(false) ?>
+    <div class="col-md-4">
+        <?= $form->field($model, 'fullname')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Write Customer Fullname here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'carplate')->textInput(['placeholder' => 'Enter Car-Plate here...'])->label(false) ?>
-    </div>
-
-    <div class="col-md-3">
-        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'btn btn-primary']) ?>
+        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
         <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
     </div>
 

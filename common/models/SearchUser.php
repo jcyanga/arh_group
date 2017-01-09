@@ -81,7 +81,7 @@ class SearchUser extends User
         return $dataProvider;
     }
 
-    public function searchUser($fullname,$username,$email) {
+    public function searchUser($fullname) {
         $rows = new Query();
 
         $result = $rows->select(['user.id', 'role.role', 'branch.name', 'user.fullname', 'user.username', 'user.email', 'user.status'])
@@ -89,9 +89,7 @@ class SearchUser extends User
                     ->join('INNER JOIN', 'role', 'user.role_id = role.id')
                     ->join('INNER JOIN', 'branch', 'user.branch_id = branch.id')
                     ->where(['like', 'user.fullname', $fullname])
-                    ->orWhere(['like', 'user.username', $username])
-                    ->orWhere(['like', 'user.email', $email])
-                    ->where('user.role_id > 1')
+                    ->andWhere('user.role_id > 1')                    
                     ->all();
 
         return $result;            

@@ -12,17 +12,17 @@ $this->title = 'Update Customer ';
 ?>
 
 <div class="row form-container">
- 
+
+<div>
+    <?php if($msg <> ''){ ?>
+        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
+            <?php echo $msg; ?>
+        </div>
+    <?php } ?>
+</div>
+    
  <div class="col-md-12 col-sm-12 col-xs-12">
-  
-    <div>
-        <?php if($msg <> ''){ ?>
-            <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-            <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-                <?php echo $msg; ?>
-            </div>
-        <?php } ?>
-    </div>
 
     <div class="form-title-container">
         <span class="form-header"><h4>Update Customer</h4></span>

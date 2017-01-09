@@ -18,16 +18,16 @@ $this->title = 'Suppliers';
 
 <div class="row form-container">
  
- <div class="col-md-12 col-sm-12 col-xs-12">
-  
-    <div>
-        <?php if($msg <> ''){ ?>
-            <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-            <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-                <?php echo $msg; ?>
-            </div>
-        <?php } ?>
-    </div>
+<div>
+    <?php if($msg <> ''){ ?>
+        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
+            <?php echo $msg; ?>
+        </div>
+    <?php } ?>
+</div>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
         <span class="form-header"><h4>Parts-Supplier Maintenance</h4></span>
@@ -70,10 +70,9 @@ $this->title = 'Suppliers';
     <thead>
         <tr style="font-size: 11px;" class="headings">
             <th> # </th>
-            <th style="text-align: center;"> SUPPLIER CODE </th>
-            <th style="text-align: center;"> SUPPLIER NAME </th>
-            <th style="text-align: center;"> ADDRESS </th>
-            <th style="text-align: center;"> CONTACT NUMBER </th>
+            <th class="tblalign_center"> SUPPLIER CODE </th>
+            <th class="tblalign_center"> SUPPLIER NAME </th>
+            <th class="tblalign_center"> CONTACT NUMBER </th>
             <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
@@ -86,12 +85,11 @@ $this->title = 'Suppliers';
                     <td class=" "><?php echo $row['id'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['supplier_code'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['supplier_name'];  ?></td>
-                    <td style="text-align: center;" class=" "><?php echo $row['address'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['contact_number'];  ?></td>
-                    <td style="text-align: center; font-size: 12px;" class=" last">
-                        <a href="?r=supplier/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
-                        <a href="?r=supplier/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> | 
-                        <a href="?r=supplier/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
+                    <td style="text-align: center; font-size: 13px;" class=" last">
+                        <a href="?r=supplier/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a> |
+                        <a href="?r=supplier/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-pencil-square"><span class="actionTooltiptext">Update record</span></li> </a> | 
+                        <a href="?r=supplier/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
                     </td>
                 </tr>
             <?php } ?> 

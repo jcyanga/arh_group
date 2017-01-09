@@ -48,13 +48,12 @@ class Supplier extends \yii\db\ActiveRecord
     }
 
     // Search if with same name.
-    public function getSuppliers($supplier_code,$supplier_name) {
+    public function getSuppliers($supplier_name) {
            $rows = new Query();
         
-           $result = $rows->select(['supplier_code', 'supplier_name'])
+           $result = $rows->select(['supplier_name'])
             ->from('supplier')
-            ->where(['supplier_code' => $supplier_code])
-            ->andWhere(['supplier_name' => $supplier_name])
+            ->where(['supplier_name' => $supplier_name])
             ->all();
             
             if( count($result) > 0 ) {

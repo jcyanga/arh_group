@@ -77,7 +77,7 @@ class SearchService extends Service
         return $dataProvider;
     }
 
-    public function searchService($service_category_id,$service_name,$description) {
+    public function searchService($service_category_id,$service_name) {
         $rows = new Query();
 
         $result = $rows->select(['service.id','service.service_category_id','service_category.name','service.service_name','service.description','service.default_price','service.status','service.created_at','service.created_by'])
@@ -85,7 +85,6 @@ class SearchService extends Service
             ->join('INNER JOIN', 'service_category', 'service.service_category_id = service_category.id')
             ->where(['like', 'service.service_category_id', $service_category_id])
             ->orWhere(['like', 'service.service_name', $service_name])
-            ->orWhere(['like', 'service.description', $description])
             ->all();
 
         return $result;  

@@ -14,6 +14,7 @@ use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use common\models\Role;
 use common\models\UserPermission;
+
 /**
  * BranchController implements the CRUD actions for Branch model.
  */
@@ -25,12 +26,14 @@ class BranchController extends Controller
     public function behaviors()
     {
         $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
-       
+        // $userRole = Role::find()->all();
+
         foreach ( $userRoleArray as $uRId => $uRName ){ 
-            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $permission = UserPermission::find()->where(['controller' => 'Branch'])->andWhere(['role_id' => $uRId ])->all();
+            
             $actionArray = [];
             foreach ( $permission as $p )  {
-                $actionArray[] = $p->action;
+               $actionArray[] = $p->action;
             }
 
             $allow[$uRName] = false;
@@ -42,37 +45,31 @@ class BranchController extends Controller
         }   
         // print_r($action['developer']); exit;
         return [
-            // 'access' => [
-            //     'class' => AccessControl::className(),
-            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
-            //     'rules' => [
+            'access' => [
+                'class' => AccessControl::className(),
+                // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
                     
-            //         [
-            //             'actions' => $action['developer'],
-            //             'allow' => $allow['developer'],
-            //             'roles' => ['developer'],
-            //         ],
+                    [
+                        'actions' => $action['developer'],
+                        'allow' => $allow['developer'],
+                        'roles' => ['developer'],
+                    ],
 
-            //         [
-            //             'actions' => $action['admin'],
-            //             'allow' => $allow['admin'],
-            //             'roles' => ['admin'],
-            //         ],
+                    [
+                        'actions' => $action['admin'],
+                        'allow' => $allow['admin'],
+                        'roles' => ['admin'],
+                    ],
 
-            //         [
-            //             'actions' => $action['staff'],
-            //             'allow' => $allow['staff'],
-            //             'roles' => ['staff'],
-            //         ],
-
-            //         [
-            //             'actions' => $action['customer'],
-            //             'allow' => $allow['customer'],
-            //             'roles' => ['customer'],
-            //         ]
+                    [
+                        'actions' => $action['staff'],
+                        'allow' => $allow['staff'],
+                        'roles' => ['staff'],
+                    ]
        
-            //     ],
-            // ],
+                ],
+            ],
 
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -92,13 +89,12 @@ class BranchController extends Controller
         $searchModel = new SearchBranch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchBranch')['code'] ) || isset(Yii::$app->request->get('SearchBranch')['name'] ) ) {
+        if( isset(Yii::$app->request->get('SearchBranch')['name'] ) ) {
 
-                $code = Yii::$app->request->get('SearchBranch')['code'];
                 $name = Yii::$app->request->get('SearchBranch')['name'];
+                $getBranch = $searchModel->searchBranch($name);
 
-                $getBranch = $searchModel->searchBranch($code,$name);
-        }elseif ( Yii::$app->request->get('SearchBranch')['code'] == "" || Yii::$app->request->get('SearchBranch')['name'] == "" ) {
+        }elseif ( Yii::$app->request->get('SearchBranch')['name'] == "" ) {
                 $getBranch = Branch::find()->all();
         }else {
                 $getBranch = Branch::find()->all();
@@ -131,13 +127,11 @@ class BranchController extends Controller
 
         if ($model->load(Yii::$app->request->post())) {
 
-            $code = Yii::$app->request->post('Branch') ['code'];
             $name = Yii::$app->request->post('Branch') ['name'];
-
-            $result = $model->getBranch($code,$name);
+            $result = $model->getBranch($name);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change the branch code or branch name.']);
+                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change the branch name.']);
             }
 
             if($model->save()) {

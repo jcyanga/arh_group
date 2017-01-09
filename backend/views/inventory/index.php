@@ -57,17 +57,17 @@ $this->title = 'Inventories';
 </div>
 
 <div class="row table-container">
- 
- <div class="col-md-12 col-sm-12 col-xs-12">
-  
-    <div>
-        <?php if($msg <> ''){ ?>
-            <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-            <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-                <?php echo $msg; ?>
-            </div>
-        <?php } ?>
-    </div>
+
+<div>
+    <?php if($msg <> ''){ ?>
+        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
+            <?php echo $msg; ?>
+        </div>
+    <?php } ?>
+</div>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
         <span class="form-header"><h4>PARTS INVENTORY</h4></span>
@@ -83,12 +83,12 @@ $this->title = 'Inventories';
     <thead>
         <tr style="font-size: 11px;" class="headings">
             <th> # </th>
-            <th style="text-align: center;" ><b>SUPPLIER</b></th>
-            <th style="text-align: center;" ><b>PRODUCT CODE</b></th>
-            <th style="text-align: center;" ><b>PRODUCT NAME</b></th>
-            <th style="text-align: center;" ><b>QUANTITY</b></th>
-            <th style="text-align: center;" ><b>COST PRICE</b></th>
-            <th style="text-align: center;" ><b>SELLING PRICE</b></th>
+            <th class="tblalign_center" ><b>SUPPLIER</b></th>
+            <th class="tblalign_center" ><b>PRODUCT CODE</b></th>
+            <th class="tblalign_center" ><b>PRODUCT NAME</b></th>
+            <th class="tblalign_center" ><b>QUANTITY</b></th>
+            <th class="tblalign_center" ><b>COST PRICE</b></th>
+            <th class="tblalign_center" ><b>SELLING PRICE</b></th>
             <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
@@ -105,9 +105,9 @@ $this->title = 'Inventories';
                     <td style="text-align: center;" class=" "><?php echo $row['quantity'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['cost_price'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['selling_price'];  ?></td>
-                    <td style="text-align: center; font-size: 12px;" class=" last">
-                        <a href="?r=inventory/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
-                        <a href="?r=inventory/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
+                    <td style="text-align: center; font-size: 13px;" class=" last">
+                       <a href="?r=inventory/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a> |
+                       <a href="?r=inventory/delete-column&id=<?php echo $row['id']; ?>&product_id=<?php echo $row['product_id']; ?>&date_imported=<?php echo $row['date_imported']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
                     </td>
                 </tr>
             <?php } ?> 

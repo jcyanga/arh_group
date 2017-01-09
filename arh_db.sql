@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 04, 2017 at 12:13 PM
+-- Generation Time: Jan 09, 2017 at 01:19 PM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -27,20 +27,19 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `auth_assignment` (
-  `id` int(11) NOT NULL,
-  `item_name` varchar(50) NOT NULL,
-  `user_id` varchar(50) NOT NULL,
-  `created_at` int(10) NOT NULL
+  `item_name` varchar(64) NOT NULL,
+  `user_id` varchar(64) NOT NULL,
+  `created_at` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `auth_assignment`
 --
 
-INSERT INTO `auth_assignment` (`id`, `item_name`, `user_id`, `created_at`) VALUES
-(1, 'developer', '1', 123456),
-(2, 'admin', '2', 1483521785),
-(4, 'staff', '3', 1483524639);
+INSERT INTO `auth_assignment` (`item_name`, `user_id`, `created_at`) VALUES
+('admin', '2', 1483941731),
+('developer', '1', 123456789),
+('staff', '3', 1483941758);
 
 -- --------------------------------------------------------
 
@@ -49,15 +48,23 @@ INSERT INTO `auth_assignment` (`id`, `item_name`, `user_id`, `created_at`) VALUE
 --
 
 CREATE TABLE `auth_item` (
-  `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `type` int(10) NOT NULL,
-  `description` text NOT NULL,
-  `rule_name` varchar(50) NOT NULL,
-  `data` text NOT NULL,
-  `created_at` int(10) NOT NULL,
-  `updated_at` int(10) NOT NULL
+  `name` varchar(64) NOT NULL,
+  `type` int(11) NOT NULL,
+  `description` text,
+  `rule_name` varchar(64) DEFAULT NULL,
+  `data` text,
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `auth_item`
+--
+
+INSERT INTO `auth_item` (`name`, `type`, `description`, `rule_name`, `data`, `created_at`, `updated_at`) VALUES
+('admin', 1, 'Admin', NULL, NULL, 1483927743, 1483927743),
+('developer', 1, 'Developer', NULL, NULL, 1483927743, 1483927743),
+('staff', 1, 'Staff', NULL, NULL, 1483927743, 1483927743);
 
 -- --------------------------------------------------------
 
@@ -66,9 +73,8 @@ CREATE TABLE `auth_item` (
 --
 
 CREATE TABLE `auth_item_child` (
-  `id` int(11) NOT NULL,
-  `parent` varchar(50) NOT NULL,
-  `child` varchar(50) NOT NULL
+  `parent` varchar(64) NOT NULL,
+  `child` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -78,11 +84,10 @@ CREATE TABLE `auth_item_child` (
 --
 
 CREATE TABLE `auth_rule` (
-  `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `data` text NOT NULL,
-  `created_at` int(10) NOT NULL,
-  `updated_at` int(10) NOT NULL
+  `name` varchar(64) NOT NULL,
+  `data` text,
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -109,8 +114,8 @@ CREATE TABLE `branch` (
 --
 
 INSERT INTO `branch` (`id`, `code`, `name`, `address`, `contact_no`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'BRANCH-2017-89327', 'FCS-Singapore', 'Kallang way singapore', '09497894561', 1, '2017-01-04', 1, '2017-01-04', 1),
-(2, 'BRANCH-2017-25310', 'FCS-Philippines', '27th floor, BPI Buendia Center', '09991234567', 1, '2017-01-04', 1, '2017-01-04', 1);
+(1, 'BRANCH-2017-32021', 'FCS-Singapore', '158 Kallang Way, #03-05, Performance Building, Kal', '+65 6848 4984', 1, '2017-01-08', 1, '2017-01-08', 1),
+(2, 'BRANCH-2017-06549', 'FCS-Philippines', '27th floor, BPI Buendia Center', '09959575415', 1, '2017-01-08', 1, '2017-01-08', 1);
 
 -- --------------------------------------------------------
 
@@ -159,9 +164,6 @@ CREATE TABLE `customer` (
   `email` varchar(50) NOT NULL,
   `make` varchar(50) NOT NULL,
   `model` varchar(50) NOT NULL,
-  `tyre_size` varchar(50) NOT NULL,
-  `batteries` varchar(50) NOT NULL,
-  `belt` varchar(50) NOT NULL,
   `is_blacklist` tinyint(1) NOT NULL,
   `is_member` varchar(10) NOT NULL,
   `points` int(10) NOT NULL,
@@ -177,10 +179,11 @@ CREATE TABLE `customer` (
 -- Dumping data for table `customer`
 --
 
-INSERT INTO `customer` (`id`, `ic`, `fullname`, `race`, `carplate`, `address`, `hanphone_no`, `office_no`, `email`, `make`, `model`, `tyre_size`, `batteries`, `belt`, `is_blacklist`, `is_member`, `points`, `member_expiry`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, '', 'Jose Czar Yanga', 'Filipino', 'JCY-028', '148 Sanchez street manggahan commonwealth quezon city', '9515747', '09959575415', 'jcyanga412060@gmail.com', 'red', 'rolls royce', '2 seaters', 'motolite', 'pumbelt', 0, '1', 100, '2017-01-14', 1, '2016-12-14 18:41:00', 1, '2016-12-14 18:41:00', 1),
-(4, '', 'mary gracielle samonte', 'Filipino', 'bot-602', '123 bagong barrio caloocan city', '9515747', '09959575415', 'mariagraciasamonte@yahoo.com', 'white', 'ferrari', '6x2x3', 'motolite', 'belt', 0, '0', 1000, '0000-00-00', 1, '2016-12-16 04:18:11', 0, '2016-12-16 04:18:11', 0),
-(7, 'phi', 'Jaybee Lamsin', 'filipino', 'DCE-017', 'east avenue medical center', '9515747', '09987894565', 'dice17@yahoo.com', 'Red', 'Mitsubishi GT-X', '2x3x4', 'Motolite', 'Pumbelt', 0, '0', 500, '2017-01-06', 1, '2016-12-27 07:47:10', 1, '2016-12-27 07:47:10', 0);
+INSERT INTO `customer` (`id`, `ic`, `fullname`, `race`, `carplate`, `address`, `hanphone_no`, `office_no`, `email`, `make`, `model`, `is_blacklist`, `is_member`, `points`, `member_expiry`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, '', 'Jose Czar Yanga', 'Filipino', 'JCY-028', '148 Sanchez street manggahan commonwealth quezon city', '9515747', '09959575415', 'jcyanga412060@gmail.com', 'red', 'rolls royce', 0, '1', 100, '2017-01-14', 1, '2016-12-14 18:41:00', 1, '2016-12-14 18:41:00', 1),
+(4, '', 'mary gracielle samonte', 'Filipino', 'bot-602', '123 bagong barrio caloocan city', '9515747', '09959575415', 'mariagraciasamonte@yahoo.com', 'white', 'ferrari', 0, '0', 1000, '0000-00-00', 1, '2016-12-16 04:18:11', 0, '2016-12-16 04:18:11', 0),
+(7, 'phi', 'Jaybee Lamsin', 'filipino', 'DCE-017', 'east avenue medical center', '9515747', '09987894565', 'dice17@yahoo.com', 'Red', 'Mitsubishi GT-X', 0, '1', 500, '2017-01-06', 1, '2017-01-09 11:01:02', 1, '2017-01-09 11:01:02', 0),
+(8, 'ronald20', 'ronald patawaran', 'filipino', 'RND-010', '27th floor bpi buendia center makati city', '09297894561', '9515664', 'ronaldbente@yahoo.com', 'blue', 'Hyundai Accent', 0, '1', 10000, '2017-01-11', 1, '2017-01-09 10:56:26', 1, '2017-01-09 10:56:26', 0);
 
 -- --------------------------------------------------------
 
@@ -190,15 +193,17 @@ INSERT INTO `customer` (`id`, `ic`, `fullname`, `race`, `carplate`, `address`, `
 
 CREATE TABLE `gst` (
   `id` int(11) NOT NULL,
-  `gst` varchar(10) NOT NULL
+  `gst` varchar(10) NOT NULL,
+  `branch_id` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `gst`
 --
 
-INSERT INTO `gst` (`id`, `gst`) VALUES
-(1, '7%');
+INSERT INTO `gst` (`id`, `gst`, `branch_id`) VALUES
+(1, '1.12', 1),
+(2, '1.12', 2);
 
 -- --------------------------------------------------------
 
@@ -224,10 +229,17 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`id`, `product_id`, `supplier_id`, `quantity`, `cost_price`, `selling_price`, `date_imported`, `status`, `created_at`, `created_by`) VALUES
-(1, 1, 1, 10, 1000, 1200, '2017-01-04', 0, '2017-01-04', 1),
-(2, 4, 1, 100, 500, 700, '2017-01-04', 0, '2017-01-04', 1),
-(3, 3, 1, 20, 1500, 1800, '2017-01-04', 0, '2017-01-04', 1),
-(4, 2, 1, 10, 900, 1000, '2017-01-04', 0, '2017-01-04', 1);
+(1, 1, 1, 19, 1000, 1200, '2017-01-04', 0, '2017-01-04', 1),
+(2, 4, 1, 25, 500, 700, '2017-01-04', 0, '2017-01-04', 1),
+(3, 3, 1, 38, 1500, 1800, '2017-01-04', 0, '2017-01-04', 1),
+(4, 2, 1, 27, 900, 1000, '2017-01-04', 0, '2017-01-04', 1),
+(5, 19, 11, 14, 150, 170, '2017-01-08', 0, '2017-01-08', 1),
+(6, 11, 6, 32, 250, 275, '2017-01-08', 0, '2017-01-08', 1),
+(7, 3, 9, 12, 100, 250, '2017-01-08', 0, '2017-01-08', 1),
+(8, 19, 9, 11, 175, 200, '2017-01-08', 0, '2017-01-08', 1),
+(9, 16, 11, 7, 99, 110, '2017-01-09', 0, '2017-01-09', 1),
+(10, 11, 11, 10, 75, 100, '2017-01-09', 0, '2017-01-09', 1),
+(11, 18, 11, 9, 100, 125, '2017-01-09', 0, '2017-01-09', 1);
 
 -- --------------------------------------------------------
 
@@ -246,6 +258,7 @@ CREATE TABLE `migration` (
 
 INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m130524_201442_init', 1481699090),
+('m140506_102106_rbac_init', 1483925225),
 ('m161213_060531_create_user_table', 1481699091),
 ('m161214_063225_create_customer_table', 1481699091),
 ('m161216_080528_create_role_table', 1481875655),
@@ -269,7 +282,13 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m170103_040608_create_branch_table', 1483416549),
 ('m170103_064043_create_gst_table', 1483425696),
 ('m170103_071512_create_quotation_table', 1483429651),
-('m170103_072328_create_quotation_subtotal_table', 1483429651);
+('m170103_072328_create_quotation_subtotal_table', 1483429651),
+('m170106_034508_create_quotation_detail_table', 1483674403),
+('m170106_090029_create_quotation_detail_table', 1483693268),
+('m170108_035631_create_stock_in_table', 1483848207),
+('m170108_133828_create_module_access_table', 1483882809),
+('m170109_012416_rbac_init', 1483925300),
+('m170109_015349_rbac_init', 1483927743);
 
 -- --------------------------------------------------------
 
@@ -303,6 +322,20 @@ INSERT INTO `modules` (`id`, `modules`) VALUES
 (14, 'Modules List Module'),
 (15, 'User-Permission Module'),
 (16, 'User Module');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `module_access`
+--
+
+CREATE TABLE `module_access` (
+  `id` int(11) NOT NULL,
+  `modules_id` varchar(50) NOT NULL,
+  `role_id` varchar(50) NOT NULL,
+  `created_by` int(10) NOT NULL,
+  `created_at` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -364,35 +397,80 @@ CREATE TABLE `quotation` (
   `customer_id` int(10) NOT NULL,
   `branch_id` int(10) NOT NULL,
   `date_issue` date NOT NULL,
-  `type` varchar(50) NOT NULL,
-  `no_of_services` int(10) NOT NULL,
-  `no_of_parts` int(10) NOT NULL,
   `grand_total` double NOT NULL,
   `remarks` text NOT NULL,
   `created_at` date NOT NULL,
   `created_by` int(10) NOT NULL,
   `updated_at` date NOT NULL,
   `updated_by` int(10) NOT NULL,
-  `delete` int(5) NOT NULL
+  `delete` int(5) NOT NULL,
+  `task` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `quotation`
+--
+
+INSERT INTO `quotation` (`id`, `quotation_code`, `user_id`, `customer_id`, `branch_id`, `date_issue`, `grand_total`, `remarks`, `created_at`, `created_by`, `updated_at`, `updated_by`, `delete`, `task`) VALUES
+(1, 'QUO-2017-820141', 3, 8, 2, '2017-01-10', 0, 'god is good and god bless us.', '2017-01-09', 1, '2017-01-09', 1, 0, 0),
+(2, 'QUO-2017-688042', 3, 4, 2, '2017-01-10', 0, 'god bless us and keep safe', '2017-01-09', 1, '2017-01-09', 1, 0, 0),
+(3, 'QUO-2017-197253', 3, 8, 2, '2017-01-10', 0, 'god is good all the time.', '2017-01-09', 1, '2017-01-09', 1, 0, 1),
+(4, 'QUO-2017-409114', 3, 8, 2, '2017-01-11', 0, 'all is well and god bless us.', '2017-01-09', 1, '2017-01-09', 1, 0, 1),
+(5, 'QUO-2017-748435', 3, 7, 2, '2017-01-12', 0, 'god bless us and keep safe.', '2017-01-09', 1, '2017-01-09', 1, 0, 1),
+(6, 'QUO-2017-179306', 3, 4, 2, '2017-01-12', 0, 'keep safe and god bless us.', '2017-01-09', 1, '2017-01-09', 1, 0, 1),
+(7, 'QUO-2017-861617', 3, 1, 2, '2017-01-17', 0, 'god bless us', '2017-01-09', 1, '2017-01-09', 1, 0, 1),
+(8, 'QUO-2017-956128', 3, 0, 2, '2017-01-15', 0, 'here i am along.', '2017-01-09', 1, '2017-01-09', 1, 0, 1),
+(9, 'QUO-2017-670059', 2, 1, 2, '2017-01-16', 0, 'just always pray at night.', '2017-01-09', 1, '2017-01-09', 1, 0, 1),
+(10, 'QUO-2017-3181210', 3, 4, 2, '2017-01-12', 3584, 'for testing only.', '2017-01-09', 1, '2017-01-09', 1, 0, 0);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `quotation_subtotal`
+-- Table structure for table `quotation_detail`
 --
 
-CREATE TABLE `quotation_subtotal` (
+CREATE TABLE `quotation_detail` (
   `id` int(11) NOT NULL,
   `quotation_id` int(10) NOT NULL,
-  `item_id` int(10) NOT NULL,
-  `qty` int(10) NOT NULL,
-  `price` double NOT NULL,
+  `service_part_id` int(10) NOT NULL,
+  `quantity` int(10) NOT NULL,
+  `selling_price` double NOT NULL,
   `subTotal` double NOT NULL,
-  `type` int(5) NOT NULL,
   `created_at` date NOT NULL,
-  `created_by` int(10) NOT NULL
+  `created_by` int(10) NOT NULL,
+  `type` int(5) NOT NULL,
+  `task` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `quotation_detail`
+--
+
+INSERT INTO `quotation_detail` (`id`, `quotation_id`, `service_part_id`, `quantity`, `selling_price`, `subTotal`, `created_at`, `created_by`, `type`, `task`) VALUES
+(1, 1, 1, 1, 1200, 1200, '2017-01-09', 1, 0, 1),
+(2, 1, 4, 3, 700, 2100, '2017-01-09', 1, 0, 1),
+(3, 3, 1, 1, 1200, 1200, '2017-01-09', 1, 0, 1),
+(4, 3, 2, 2, 1000, 2000, '2017-01-09', 1, 0, 1),
+(5, 3, 1, 1, 1200, 1200, '2017-01-09', 1, 1, 1),
+(6, 4, 2, 1, 1000, 1000, '2017-01-09', 1, 0, 0),
+(7, 4, 2, 2, 1000, 2000, '2017-01-09', 1, 1, 0),
+(8, 5, 1, 1, 1200, 1200, '2017-01-09', 1, 0, 1),
+(9, 5, 2, 2, 1000, 2000, '2017-01-09', 1, 0, 1),
+(10, 5, 2, 2, 1000, 2000, '2017-01-09', 1, 1, 1),
+(11, 6, 4, 1, 700, 700, '2017-01-09', 1, 0, 1),
+(12, 6, 3, 3, 1800, 5400, '2017-01-09', 1, 1, 1),
+(13, 6, 3, 2, 1800, 3600, '2017-01-09', 1, 0, 1),
+(14, 7, 4, 1, 700, 700, '2017-01-09', 1, 0, 1),
+(15, 7, 1, 1, 1200, 1200, '2017-01-09', 1, 0, 0),
+(16, 7, 1, 2, 1200, 2400, '2017-01-09', 1, 1, 0),
+(17, 8, 2, 1, 1000, 1000, '2017-01-09', 1, 0, 1),
+(18, 8, 2, 1, 1000, 1000, '2017-01-09', 1, 0, 1),
+(19, 9, 1, 1, 1200, 1200, '2017-01-09', 1, 1, 1),
+(20, 9, 2, 1, 1000, 1000, '2017-01-09', 1, 1, 0),
+(21, 9, 2, 1, 1000, 1000, '2017-01-09', 1, 0, 0),
+(22, 9, 3, 1, 1800, 1800, '2017-01-09', 1, 0, 0),
+(23, 10, 1, 1, 1200, 1200, '2017-01-09', 1, 0, 0),
+(24, 10, 2, 2, 1000, 2000, '2017-01-09', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -480,6 +558,87 @@ INSERT INTO `service_category` (`id`, `name`, `description`, `status`, `created_
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `stock_in`
+--
+
+CREATE TABLE `stock_in` (
+  `id` int(11) NOT NULL,
+  `product_id` int(5) NOT NULL,
+  `supplier_id` int(5) NOT NULL,
+  `quantity` int(50) NOT NULL,
+  `cost_price` double NOT NULL,
+  `selling_price` double NOT NULL,
+  `date_imported` date NOT NULL,
+  `time_imported` time NOT NULL,
+  `created_at` date NOT NULL,
+  `created_by` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `stock_in`
+--
+
+INSERT INTO `stock_in` (`id`, `product_id`, `supplier_id`, `quantity`, `cost_price`, `selling_price`, `date_imported`, `time_imported`, `created_at`, `created_by`) VALUES
+(1, 19, 11, 10, 150, 170, '2017-01-08', '00:00:00', '0000-00-00', 1),
+(2, 11, 6, 25, 250, 275, '2017-01-08', '08:14:51', '2017-01-08', 1),
+(3, 3, 9, 5, 100, 250, '2017-01-08', '09:17:55', '2017-01-08', 1),
+(4, 19, 9, 7, 175, 200, '2017-01-08', '09:17:55', '2017-01-08', 1),
+(5, 10, 9, 10, 150, 175, '2017-01-08', '09:17:55', '2017-01-08', 1),
+(7, 1, 1, 22, 1000, 1200, '2017-01-08', '09:55:56', '2017-01-08', 1),
+(8, 4, 1, 28, 500, 700, '2017-01-08', '09:55:56', '2017-01-08', 1),
+(9, 3, 1, 42, 1500, 1800, '2017-01-08', '09:55:56', '2017-01-08', 1),
+(10, 2, 1, 36, 900, 1000, '2017-01-08', '09:55:56', '2017-01-08', 1),
+(11, 19, 11, 12, 150, 170, '2017-01-08', '09:55:56', '2017-01-08', 1),
+(12, 11, 6, 28, 250, 275, '2017-01-08', '09:55:57', '2017-01-08', 1),
+(13, 3, 9, 7, 100, 250, '2017-01-08', '09:55:57', '2017-01-08', 1),
+(14, 19, 9, 10, 175, 200, '2017-01-08', '09:55:57', '2017-01-08', 1),
+(15, 16, 11, 5, 99, 110, '2017-01-09', '12:09:37', '2017-01-09', 1),
+(16, 11, 11, 7, 75, 100, '2017-01-09', '12:09:37', '2017-01-09', 1),
+(17, 18, 11, 9, 100, 125, '2017-01-09', '12:09:37', '2017-01-09', 1),
+(19, 1, 1, 23, 1000, 1200, '2017-01-09', '13:47:14', '2017-01-09', 1),
+(20, 4, 1, 30, 500, 700, '2017-01-09', '13:47:14', '2017-01-09', 1),
+(21, 3, 1, 42, 1500, 1800, '2017-01-09', '13:47:14', '2017-01-09', 1),
+(22, 2, 1, 27, 900, 1000, '2017-01-09', '13:47:14', '2017-01-09', 1),
+(23, 19, 11, 14, 150, 170, '2017-01-09', '13:47:15', '2017-01-09', 1),
+(24, 11, 6, 32, 250, 275, '2017-01-09', '13:47:15', '2017-01-09', 1),
+(25, 3, 9, 12, 100, 250, '2017-01-09', '13:47:15', '2017-01-09', 1),
+(26, 19, 9, 11, 175, 200, '2017-01-09', '13:47:15', '2017-01-09', 1),
+(27, 16, 11, 7, 99, 110, '2017-01-09', '13:47:15', '2017-01-09', 1),
+(28, 11, 11, 10, 75, 100, '2017-01-09', '13:47:15', '2017-01-09', 1),
+(29, 1, 1, 23, 1000, 1200, '2017-01-09', '13:50:22', '2017-01-09', 1),
+(30, 4, 1, 30, 500, 700, '2017-01-09', '13:50:23', '2017-01-09', 1),
+(31, 3, 1, 42, 1500, 1800, '2017-01-09', '13:50:23', '2017-01-09', 1),
+(32, 2, 1, 27, 900, 1000, '2017-01-09', '13:50:23', '2017-01-09', 1),
+(33, 19, 11, 14, 150, 170, '2017-01-09', '13:50:23', '2017-01-09', 1),
+(34, 11, 6, 32, 250, 275, '2017-01-09', '13:50:23', '2017-01-09', 1),
+(35, 3, 9, 12, 100, 250, '2017-01-09', '13:50:23', '2017-01-09', 1),
+(36, 19, 9, 11, 175, 200, '2017-01-09', '13:50:23', '2017-01-09', 1),
+(37, 16, 11, 7, 99, 110, '2017-01-09', '13:50:24', '2017-01-09', 1),
+(38, 11, 11, 10, 75, 100, '2017-01-09', '13:50:24', '2017-01-09', 1),
+(39, 1, 1, 23, 1000, 1200, '2017-01-09', '13:50:25', '2017-01-09', 1),
+(40, 4, 1, 30, 500, 700, '2017-01-09', '13:50:25', '2017-01-09', 1),
+(41, 3, 1, 42, 1500, 1800, '2017-01-09', '13:50:25', '2017-01-09', 1),
+(42, 2, 1, 27, 900, 1000, '2017-01-09', '13:50:25', '2017-01-09', 1),
+(43, 19, 11, 14, 150, 170, '2017-01-09', '13:50:25', '2017-01-09', 1),
+(44, 11, 6, 32, 250, 275, '2017-01-09', '13:50:26', '2017-01-09', 1),
+(45, 3, 9, 12, 100, 250, '2017-01-09', '13:50:26', '2017-01-09', 1),
+(46, 19, 9, 11, 175, 200, '2017-01-09', '13:50:26', '2017-01-09', 1),
+(47, 16, 11, 7, 99, 110, '2017-01-09', '13:50:26', '2017-01-09', 1),
+(48, 11, 11, 10, 75, 100, '2017-01-09', '13:50:26', '2017-01-09', 1),
+(49, 1, 1, 23, 1000, 1200, '2017-01-09', '13:50:43', '2017-01-09', 1),
+(50, 4, 1, 30, 500, 700, '2017-01-09', '13:50:43', '2017-01-09', 1),
+(51, 3, 1, 42, 1500, 1800, '2017-01-09', '13:50:43', '2017-01-09', 1),
+(52, 2, 1, 27, 900, 1000, '2017-01-09', '13:50:43', '2017-01-09', 1),
+(53, 19, 11, 14, 150, 170, '2017-01-09', '13:50:44', '2017-01-09', 1),
+(54, 11, 6, 32, 250, 275, '2017-01-09', '13:50:44', '2017-01-09', 1),
+(55, 3, 9, 12, 100, 250, '2017-01-09', '13:50:44', '2017-01-09', 1),
+(56, 19, 9, 11, 175, 200, '2017-01-09', '13:50:44', '2017-01-09', 1),
+(57, 16, 11, 7, 99, 110, '2017-01-09', '13:50:45', '2017-01-09', 1),
+(58, 11, 11, 10, 75, 100, '2017-01-09', '13:50:45', '2017-01-09', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `supplier`
 --
 
@@ -541,9 +700,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `role_id`, `branch_id`, `role`, `fullname`, `username`, `password`, `password_hash`, `password_reset_token`, `email`, `photo`, `auth_key`, `status`, `login`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted`) VALUES
-(1, 1, 2, 20, 'Jose Czar Yanga', 'jcyanga28', 'password', '$2y$13$KLYNdyN9n.CXY4uELu9Td.6LJ1BoXrXQY0dmrnb9HUMegb1dPw.YK', '', 'jcyanga28@yahoo.com', 'user.png', 'R5BJVsB83hg7xshurVUaXb6qYn4HrFi8', 1, '2017-01-04 16:40:00', '2017-01-04 16:40:00', 1, '2017-01-04 16:40:00', 1, 0),
-(2, 2, 2, 20, 'administrator', 'admin', '', '$2y$13$98.o8NdkBbhzY1ELvvHVdelGcvB3U2zSTCoFD4N5M/f9JOjBAe3uG', '', 'admin@gmail.com', '', 'viyVZjUz2hjXiClcTalZNwYwGmytOTtU', 1, '0000-00-00 00:00:00', '2017-01-04 18:09:39', 1, '0000-00-00 00:00:00', 0, 0),
-(3, 3, 2, 20, 'staffing', 'staff123', '', '$2y$13$cHflrvsu1MhlC7d827xx2uo4v3iz04lz6q2J0lMnSI/6JWTihS49i', '', 'staff123@gmail.com', '', 'D5oLLn5HQ3tEYrQfBM1Li6kB_hgSyBIN', 1, '0000-00-00 00:00:00', '2017-01-04 18:10:39', 1, '0000-00-00 00:00:00', 0, 0);
+(1, 1, 2, 20, 'Jose Czar L Yanga', 'jcyanga28', 'password', '$2y$13$KLYNdyN9n.CXY4uELu9Td.6LJ1BoXrXQY0dmrnb9HUMegb1dPw.YK', '', 'jcyanga412060@gmail.com', 'user.png', 'R5BJVsB83hg7xshurVUaXb6qYn4HrFi8', 1, '2017-01-09 10:25:00', '2017-01-09 10:25:00', 1, '2017-01-09 10:25:00', 1, 0),
+(2, 2, 2, 20, 'administrator', 'admin02', '', '$2y$13$CFVuI8rWieiEpY8l/UE6iufRW5E5iuQG5FFnq.zrHQJEHEzpQ9sDG', '', 'admin02@gmail.com', '', 'zV4R0IdpVy3NPDaGp6HabuE5eroU3i1c', 1, '0000-00-00 00:00:00', '2017-01-09 14:02:11', 1, '0000-00-00 00:00:00', 0, 0),
+(3, 3, 2, 20, 'mystaff', 'mystaff02', '', '$2y$13$Nrdp18n8eoOOEMwf97e5Bu4dc1w/I1g2vgkhNAl77m60jruC/m7W.', '', 'mystaff02@gmail.com', '', 'JEp_A3vFmIAsvBoBeUctw4VOHfJpwLGP', 1, '0000-00-00 00:00:00', '2017-01-09 14:02:38', 1, '0000-00-00 00:00:00', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -616,193 +775,242 @@ INSERT INTO `user_permission` (`id`, `controller`, `action`, `role_id`) VALUES
 (51, 'Product', 'delete-column', 1),
 (52, 'Product', 'export-excel', 1),
 (53, 'Product', 'export-pdf', 1),
-(54, 'Quotation', 'index', 1),
-(55, 'Quotation', 'view', 1),
-(56, 'Quotation', 'create', 1),
-(57, 'Quotation', 'update', 1),
-(58, 'Quotation', 'delete', 1),
-(59, 'QuotationSubtotal', 'index', 1),
-(60, 'QuotationSubtotal', 'view', 1),
-(61, 'QuotationSubtotal', 'create', 1),
-(62, 'QuotationSubtotal', 'update', 1),
-(63, 'QuotationSubtotal', 'delete', 1),
-(64, 'Role', 'index', 1),
-(65, 'Role', 'view', 1),
-(66, 'Role', 'create', 1),
-(67, 'Role', 'update', 1),
-(68, 'Role', 'delete', 1),
-(69, 'Role', 'delete-column', 1),
-(70, 'Role', 'export-excel', 1),
-(71, 'Role', 'export-pdf', 1),
-(72, 'ServiceCategory', 'index', 1),
-(73, 'ServiceCategory', 'view', 1),
-(74, 'ServiceCategory', 'create', 1),
-(75, 'ServiceCategory', 'update', 1),
-(76, 'ServiceCategory', 'delete', 1),
-(77, 'ServiceCategory', 'delete-column', 1),
-(78, 'ServiceCategory', 'export-excel', 1),
-(79, 'ServiceCategory', 'export-pdf', 1),
-(80, 'Service', 'index', 1),
-(81, 'Service', 'view', 1),
-(82, 'Service', 'create', 1),
-(83, 'Service', 'update', 1),
-(84, 'Service', 'delete', 1),
-(85, 'Service', 'delete-column', 1),
-(86, 'Service', 'export-excel', 1),
-(87, 'Service', 'export-pdf', 1),
-(88, 'Site', 'index', 1),
-(89, 'Site', 'login', 1),
-(90, 'Site', 'logout', 1),
-(91, 'Stocks', 'index', 1),
-(92, 'Stocks', 'create', 1),
-(93, 'Supplier', 'index', 1),
-(94, 'Supplier', 'view', 1),
-(95, 'Supplier', 'create', 1),
-(96, 'Supplier', 'update', 1),
-(97, 'Supplier', 'delete', 1),
-(98, 'Supplier', 'delete-column', 1),
-(99, 'Supplier', 'export-excel', 1),
-(100, 'Supplier', 'export-pdf', 1),
-(101, 'User', 'index', 1),
-(102, 'User', 'view', 1),
-(103, 'User', 'create', 1),
-(104, 'User', 'update', 1),
-(105, 'User', 'delete', 1),
-(106, 'User', 'delete-column', 1),
-(107, 'User', 'export-excel', 1),
-(108, 'User', 'export-pdf', 1),
-(109, 'UserPermission', 'index', 1),
-(110, 'UserPermission', 'view', 1),
-(111, 'UserPermission', 'create', 1),
-(112, 'UserPermission', 'update', 1),
-(113, 'UserPermission', 'delete', 1),
-(114, 'UserPermission', 'set-permission', 1),
-(115, 'Branch', 'index', 2),
-(116, 'Branch', 'view', 2),
-(117, 'Branch', 'create', 2),
-(118, 'Branch', 'update', 2),
-(119, 'Branch', 'delete', 2),
-(120, 'Branch', 'delete-column', 2),
-(121, 'Branch', 'export-excel', 2),
-(122, 'Branch', 'export-pdf', 2),
-(123, 'Category', 'index', 2),
-(124, 'Category', 'view', 2),
-(125, 'Category', 'create', 2),
-(126, 'Category', 'update', 2),
-(127, 'Category', 'delete', 2),
-(128, 'Category', 'delete-column', 2),
-(129, 'Category', 'export-excel', 2),
-(130, 'Category', 'export-pdf', 2),
-(131, 'Customer', 'index', 2),
-(132, 'Customer', 'view', 2),
-(133, 'Customer', 'create', 2),
-(134, 'Customer', 'update', 2),
-(135, 'Customer', 'delete', 2),
-(136, 'Customer', 'delete-column', 2),
-(137, 'Customer', 'export-excel', 2),
-(138, 'Customer', 'export-pdf', 2),
-(139, 'Gst', 'index', 2),
-(140, 'Gst', 'view', 2),
-(141, 'Gst', 'create', 2),
-(142, 'Gst', 'update', 2),
-(143, 'Gst', 'delete', 2),
-(144, 'Inventory', 'index', 2),
-(145, 'Inventory', 'view', 2),
-(146, 'Inventory', 'create', 2),
-(147, 'Inventory', 'update', 2),
-(148, 'Inventory', 'delete', 2),
-(149, 'Inventory', 'delete-column', 2),
-(150, 'Inventory', 'export-excel', 2),
-(151, 'Inventory', 'export-pdf', 2),
-(152, 'Modules', 'index', 2),
-(153, 'Modules', 'view', 2),
-(154, 'Modules', 'create', 2),
-(155, 'Modules', 'update', 2),
-(156, 'Modules', 'delete', 2),
-(157, 'Modules', 'delete-column', 2),
-(158, 'Modules', 'export-excel', 2),
-(159, 'Modules', 'export-pdf', 2),
-(160, 'Product', 'index', 2),
-(161, 'Product', 'view', 2),
-(162, 'Product', 'create', 2),
-(163, 'Product', 'update', 2),
-(164, 'Product', 'delete', 2),
-(165, 'Product', 'delete-column', 2),
-(166, 'Product', 'export-excel', 2),
-(167, 'Product', 'export-pdf', 2),
-(168, 'Quotation', 'index', 2),
-(169, 'Quotation', 'view', 2),
-(170, 'Quotation', 'create', 2),
-(171, 'Quotation', 'update', 2),
-(172, 'Quotation', 'delete', 2),
-(173, 'QuotationSubtotal', 'index', 2),
-(174, 'QuotationSubtotal', 'view', 2),
-(175, 'QuotationSubtotal', 'create', 2),
-(176, 'QuotationSubtotal', 'update', 2),
-(177, 'QuotationSubtotal', 'delete', 2),
-(178, 'Role', 'index', 2),
-(179, 'Role', 'view', 2),
-(180, 'Role', 'create', 2),
-(181, 'Role', 'update', 2),
-(182, 'Role', 'delete', 2),
-(183, 'Role', 'delete-column', 2),
-(184, 'Role', 'export-excel', 2),
-(185, 'Role', 'export-pdf', 2),
-(186, 'ServiceCategory', 'index', 2),
-(187, 'ServiceCategory', 'view', 2),
-(188, 'ServiceCategory', 'create', 2),
-(189, 'ServiceCategory', 'update', 2),
-(190, 'ServiceCategory', 'delete', 2),
-(191, 'ServiceCategory', 'delete-column', 2),
-(192, 'ServiceCategory', 'export-excel', 2),
-(193, 'ServiceCategory', 'export-pdf', 2),
-(194, 'Service', 'index', 2),
-(195, 'Service', 'view', 2),
-(196, 'Service', 'create', 2),
-(197, 'Service', 'update', 2),
-(198, 'Service', 'delete', 2),
-(199, 'Service', 'delete-column', 2),
-(200, 'Service', 'export-excel', 2),
-(201, 'Service', 'export-pdf', 2),
-(202, 'Site', 'index', 2),
-(203, 'Site', 'login', 2),
-(204, 'Site', 'logout', 2),
-(205, 'Stocks', 'index', 2),
-(206, 'Stocks', 'create', 2),
-(207, 'Supplier', 'index', 2),
-(208, 'Supplier', 'view', 2),
-(209, 'Supplier', 'create', 2),
-(210, 'Supplier', 'update', 2),
-(211, 'Supplier', 'delete', 2),
-(212, 'Supplier', 'delete-column', 2),
-(213, 'Supplier', 'export-excel', 2),
-(214, 'Supplier', 'export-pdf', 2),
-(215, 'User', 'index', 2),
-(216, 'User', 'view', 2),
-(217, 'User', 'create', 2),
-(218, 'User', 'update', 2),
-(219, 'User', 'delete', 2),
-(220, 'User', 'delete-column', 2),
-(221, 'User', 'export-excel', 2),
-(222, 'User', 'export-pdf', 2),
-(223, 'Customer', 'index', 3),
-(224, 'Customer', 'view', 3),
-(225, 'Customer', 'create', 3),
-(226, 'Customer', 'update', 3),
-(227, 'Customer', 'delete', 3),
-(228, 'Customer', 'delete-column', 3),
-(229, 'Customer', 'export-excel', 3),
-(230, 'Customer', 'export-pdf', 3),
-(231, 'Quotation', 'index', 3),
-(232, 'Quotation', 'view', 3),
-(233, 'Quotation', 'create', 3),
-(234, 'Quotation', 'update', 3),
-(235, 'Quotation', 'delete', 3),
-(236, 'QuotationSubtotal', 'index', 3),
-(237, 'QuotationSubtotal', 'view', 3),
-(238, 'QuotationSubtotal', 'create', 3),
-(239, 'QuotationSubtotal', 'update', 3),
-(240, 'QuotationSubtotal', 'delete', 3);
+(61, 'QuotationSubtotal', 'index', 1),
+(62, 'QuotationSubtotal', 'view', 1),
+(63, 'QuotationSubtotal', 'create', 1),
+(64, 'QuotationSubtotal', 'update', 1),
+(65, 'QuotationSubtotal', 'delete', 1),
+(66, 'Role', 'index', 1),
+(67, 'Role', 'view', 1),
+(68, 'Role', 'create', 1),
+(69, 'Role', 'update', 1),
+(70, 'Role', 'delete', 1),
+(71, 'Role', 'delete-column', 1),
+(72, 'Role', 'export-excel', 1),
+(73, 'Role', 'export-pdf', 1),
+(74, 'ServiceCategory', 'index', 1),
+(75, 'ServiceCategory', 'view', 1),
+(76, 'ServiceCategory', 'create', 1),
+(77, 'ServiceCategory', 'update', 1),
+(78, 'ServiceCategory', 'delete', 1),
+(79, 'ServiceCategory', 'delete-column', 1),
+(80, 'ServiceCategory', 'export-excel', 1),
+(81, 'ServiceCategory', 'export-pdf', 1),
+(82, 'Service', 'index', 1),
+(83, 'Service', 'view', 1),
+(84, 'Service', 'create', 1),
+(85, 'Service', 'update', 1),
+(86, 'Service', 'delete', 1),
+(87, 'Service', 'delete-column', 1),
+(88, 'Service', 'export-excel', 1),
+(89, 'Service', 'export-pdf', 1),
+(90, 'Site', 'index', 1),
+(91, 'Site', 'login', 1),
+(92, 'Site', 'logout', 1),
+(93, 'Stocks', 'index', 1),
+(94, 'Stocks', 'create', 1),
+(95, 'Stocks', 'update', 1),
+(96, 'Supplier', 'index', 1),
+(97, 'Supplier', 'view', 1),
+(98, 'Supplier', 'create', 1),
+(99, 'Supplier', 'update', 1),
+(100, 'Supplier', 'delete', 1),
+(101, 'Supplier', 'delete-column', 1),
+(102, 'Supplier', 'export-excel', 1),
+(103, 'Supplier', 'export-pdf', 1),
+(104, 'User', 'index', 1),
+(105, 'User', 'view', 1),
+(106, 'User', 'create', 1),
+(107, 'User', 'update', 1),
+(108, 'User', 'delete', 1),
+(109, 'User', 'delete-column', 1),
+(110, 'User', 'export-excel', 1),
+(111, 'User', 'export-pdf', 1),
+(118, 'Branch', 'index', 2),
+(119, 'Branch', 'view', 2),
+(120, 'Branch', 'create', 2),
+(121, 'Branch', 'update', 2),
+(122, 'Branch', 'delete', 2),
+(123, 'Branch', 'delete-column', 2),
+(124, 'Branch', 'export-excel', 2),
+(125, 'Branch', 'export-pdf', 2),
+(126, 'Category', 'index', 2),
+(127, 'Category', 'view', 2),
+(128, 'Category', 'create', 2),
+(129, 'Category', 'update', 2),
+(130, 'Category', 'delete', 2),
+(131, 'Category', 'delete-column', 2),
+(132, 'Category', 'export-excel', 2),
+(133, 'Category', 'export-pdf', 2),
+(134, 'Customer', 'index', 2),
+(135, 'Customer', 'view', 2),
+(136, 'Customer', 'create', 2),
+(137, 'Customer', 'update', 2),
+(138, 'Customer', 'delete', 2),
+(139, 'Customer', 'delete-column', 2),
+(140, 'Customer', 'export-excel', 2),
+(141, 'Customer', 'export-pdf', 2),
+(142, 'Gst', 'index', 2),
+(143, 'Gst', 'view', 2),
+(144, 'Gst', 'create', 2),
+(145, 'Gst', 'update', 2),
+(146, 'Gst', 'delete', 2),
+(147, 'Inventory', 'index', 2),
+(148, 'Inventory', 'view', 2),
+(149, 'Inventory', 'create', 2),
+(150, 'Inventory', 'update', 2),
+(151, 'Inventory', 'delete', 2),
+(152, 'Inventory', 'delete-column', 2),
+(153, 'Inventory', 'export-excel', 2),
+(154, 'Inventory', 'export-pdf', 2),
+(155, 'Modules', 'index', 2),
+(156, 'Modules', 'view', 2),
+(157, 'Modules', 'create', 2),
+(158, 'Modules', 'update', 2),
+(159, 'Modules', 'delete', 2),
+(160, 'Modules', 'delete-column', 2),
+(161, 'Modules', 'export-excel', 2),
+(162, 'Modules', 'export-pdf', 2),
+(163, 'Product', 'index', 2),
+(164, 'Product', 'view', 2),
+(165, 'Product', 'create', 2),
+(166, 'Product', 'update', 2),
+(167, 'Product', 'delete', 2),
+(168, 'Product', 'delete-column', 2),
+(169, 'Product', 'export-excel', 2),
+(170, 'Product', 'export-pdf', 2),
+(178, 'QuotationSubtotal', 'index', 2),
+(179, 'QuotationSubtotal', 'view', 2),
+(180, 'QuotationSubtotal', 'create', 2),
+(181, 'QuotationSubtotal', 'update', 2),
+(182, 'QuotationSubtotal', 'delete', 2),
+(183, 'Role', 'index', 2),
+(184, 'Role', 'view', 2),
+(185, 'Role', 'create', 2),
+(186, 'Role', 'update', 2),
+(187, 'Role', 'delete', 2),
+(188, 'Role', 'delete-column', 2),
+(189, 'Role', 'export-excel', 2),
+(190, 'Role', 'export-pdf', 2),
+(191, 'ServiceCategory', 'index', 2),
+(192, 'ServiceCategory', 'view', 2),
+(193, 'ServiceCategory', 'create', 2),
+(194, 'ServiceCategory', 'update', 2),
+(195, 'ServiceCategory', 'delete', 2),
+(196, 'ServiceCategory', 'delete-column', 2),
+(197, 'ServiceCategory', 'export-excel', 2),
+(198, 'ServiceCategory', 'export-pdf', 2),
+(199, 'Service', 'index', 2),
+(200, 'Service', 'view', 2),
+(201, 'Service', 'create', 2),
+(202, 'Service', 'update', 2),
+(203, 'Service', 'delete', 2),
+(204, 'Service', 'delete-column', 2),
+(205, 'Service', 'export-excel', 2),
+(206, 'Service', 'export-pdf', 2),
+(207, 'Site', 'index', 2),
+(208, 'Site', 'login', 2),
+(209, 'Site', 'logout', 2),
+(210, 'Stocks', 'index', 2),
+(211, 'Stocks', 'create', 2),
+(212, 'Stocks', 'update', 2),
+(213, 'Supplier', 'index', 2),
+(214, 'Supplier', 'view', 2),
+(215, 'Supplier', 'create', 2),
+(216, 'Supplier', 'update', 2),
+(217, 'Supplier', 'delete', 2),
+(218, 'Supplier', 'delete-column', 2),
+(219, 'Supplier', 'export-excel', 2),
+(220, 'Supplier', 'export-pdf', 2),
+(221, 'User', 'index', 2),
+(222, 'User', 'view', 2),
+(223, 'User', 'create', 2),
+(224, 'User', 'update', 2),
+(225, 'User', 'delete', 2),
+(226, 'User', 'delete-column', 2),
+(227, 'User', 'export-excel', 2),
+(228, 'User', 'export-pdf', 2),
+(242, 'Customer', 'index', 3),
+(243, 'Customer', 'view', 3),
+(244, 'Customer', 'create', 3),
+(245, 'Customer', 'update', 3),
+(246, 'Customer', 'delete', 3),
+(247, 'Customer', 'delete-column', 3),
+(248, 'Customer', 'export-excel', 3),
+(249, 'Customer', 'export-pdf', 3),
+(250, 'UserPermission', 'index', 1),
+(251, 'UserPermission', 'view', 1),
+(252, 'UserPermission', 'create', 1),
+(253, 'UserPermission', 'update', 1),
+(254, 'UserPermission', 'delete', 1),
+(255, 'UserPermission', 'delete-column', 1),
+(256, 'UserPermission', 'set-permission', 1),
+(257, 'StockIn', 'index', 1),
+(258, 'StockIn', 'view', 1),
+(259, 'StockIn', 'create', 1),
+(260, 'StockIn', 'update', 1),
+(261, 'StockIn', 'delete', 1),
+(262, 'QuotationDetail', 'index', 1),
+(263, 'QuotationDetail', 'view', 1),
+(264, 'QuotationDetail', 'create', 1),
+(265, 'QuotationDetail', 'update', 1),
+(266, 'QuotationDetail', 'delete', 1),
+(267, 'Quotation', 'index', 1),
+(268, 'Quotation', 'view', 1),
+(269, 'Quotation', 'create', 1),
+(270, 'Quotation', 'preview', 1),
+(271, 'Quotation', 'update', 1),
+(272, 'Quotation', 'delete', 1),
+(273, 'Quotation', 'price', 1),
+(274, 'Quotation', 'insert-in-list', 1),
+(275, 'ModuleAccess', 'index', 1),
+(276, 'ModuleAccess', 'view', 1),
+(277, 'ModuleAccess', 'create', 1),
+(278, 'ModuleAccess', 'update', 1),
+(279, 'ModuleAccess', 'delete', 1),
+(280, 'ModuleAccess', 'index', 2),
+(281, 'ModuleAccess', 'view', 2),
+(282, 'ModuleAccess', 'create', 2),
+(283, 'ModuleAccess', 'update', 2),
+(284, 'ModuleAccess', 'delete', 2),
+(285, 'Quotation', 'index', 2),
+(286, 'Quotation', 'view', 2),
+(287, 'Quotation', 'create', 2),
+(288, 'Quotation', 'preview', 2),
+(289, 'Quotation', 'update', 2),
+(290, 'Quotation', 'delete', 2),
+(291, 'Quotation', 'price', 2),
+(292, 'Quotation', 'insert-in-list', 2),
+(293, 'QuotationDetail', 'index', 2),
+(294, 'QuotationDetail', 'view', 2),
+(295, 'QuotationDetail', 'create', 2),
+(296, 'QuotationDetail', 'update', 2),
+(297, 'QuotationDetail', 'delete', 2),
+(298, 'StockIn', 'index', 2),
+(299, 'StockIn', 'view', 2),
+(300, 'StockIn', 'create', 2),
+(301, 'StockIn', 'update', 2),
+(302, 'StockIn', 'delete', 2),
+(303, 'UserPermission', 'index', 2),
+(304, 'UserPermission', 'view', 2),
+(305, 'UserPermission', 'create', 2),
+(306, 'UserPermission', 'update', 2),
+(307, 'UserPermission', 'delete', 2),
+(308, 'UserPermission', 'delete-column', 2),
+(309, 'UserPermission', 'set-permission', 2),
+(310, 'QuotationDetail', 'index', 3),
+(311, 'QuotationDetail', 'view', 3),
+(312, 'QuotationDetail', 'create', 3),
+(313, 'QuotationDetail', 'update', 3),
+(314, 'QuotationDetail', 'delete', 3),
+(315, 'Quotation', 'index', 3),
+(316, 'Quotation', 'view', 3),
+(317, 'Quotation', 'create', 3),
+(318, 'Quotation', 'preview', 3),
+(319, 'Quotation', 'update', 3),
+(320, 'Quotation', 'delete', 3),
+(321, 'Quotation', 'price', 3),
+(322, 'Quotation', 'insert-in-list', 3);
 
 --
 -- Indexes for dumped tables
@@ -812,25 +1020,28 @@ INSERT INTO `user_permission` (`id`, `controller`, `action`, `role_id`) VALUES
 -- Indexes for table `auth_assignment`
 --
 ALTER TABLE `auth_assignment`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`item_name`,`user_id`);
 
 --
 -- Indexes for table `auth_item`
 --
 ALTER TABLE `auth_item`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`name`),
+  ADD KEY `rule_name` (`rule_name`),
+  ADD KEY `type` (`type`);
 
 --
 -- Indexes for table `auth_item_child`
 --
 ALTER TABLE `auth_item_child`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`parent`,`child`),
+  ADD KEY `child` (`child`);
 
 --
 -- Indexes for table `auth_rule`
 --
 ALTER TABLE `auth_rule`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`name`);
 
 --
 -- Indexes for table `branch`
@@ -875,6 +1086,12 @@ ALTER TABLE `modules`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `module_access`
+--
+ALTER TABLE `module_access`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `product`
 --
 ALTER TABLE `product`
@@ -887,9 +1104,9 @@ ALTER TABLE `quotation`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `quotation_subtotal`
+-- Indexes for table `quotation_detail`
 --
-ALTER TABLE `quotation_subtotal`
+ALTER TABLE `quotation_detail`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -908,6 +1125,12 @@ ALTER TABLE `service`
 -- Indexes for table `service_category`
 --
 ALTER TABLE `service_category`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `stock_in`
+--
+ALTER TABLE `stock_in`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -933,26 +1156,6 @@ ALTER TABLE `user_permission`
 --
 
 --
--- AUTO_INCREMENT for table `auth_assignment`
---
-ALTER TABLE `auth_assignment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `auth_item`
---
-ALTER TABLE `auth_item`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `auth_item_child`
---
-ALTER TABLE `auth_item_child`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `auth_rule`
---
-ALTER TABLE `auth_rule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
 -- AUTO_INCREMENT for table `branch`
 --
 ALTER TABLE `branch`
@@ -961,42 +1164,47 @@ ALTER TABLE `branch`
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `gst`
 --
 ALTER TABLE `gst`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `modules`
 --
 ALTER TABLE `modules`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
+-- AUTO_INCREMENT for table `module_access`
+--
+ALTER TABLE `module_access`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT for table `quotation`
 --
 ALTER TABLE `quotation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
--- AUTO_INCREMENT for table `quotation_subtotal`
+-- AUTO_INCREMENT for table `quotation_detail`
 --
-ALTER TABLE `quotation_subtotal`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `quotation_detail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT for table `role`
 --
@@ -1006,17 +1214,22 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT for table `service`
 --
 ALTER TABLE `service`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT for table `service_category`
 --
 ALTER TABLE `service_category`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
+-- AUTO_INCREMENT for table `stock_in`
+--
+ALTER TABLE `stock_in`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+--
 -- AUTO_INCREMENT for table `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `user`
 --
@@ -1026,7 +1239,30 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `user_permission`
 --
 ALTER TABLE `user_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=241;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=323;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `auth_assignment`
+--
+ALTER TABLE `auth_assignment`
+  ADD CONSTRAINT `auth_assignment_ibfk_1` FOREIGN KEY (`item_name`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `auth_item`
+--
+ALTER TABLE `auth_item`
+  ADD CONSTRAINT `auth_item_ibfk_1` FOREIGN KEY (`rule_name`) REFERENCES `auth_rule` (`name`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `auth_item_child`
+--
+ALTER TABLE `auth_item_child`
+  ADD CONSTRAINT `auth_item_child_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `auth_item_child_ibfk_2` FOREIGN KEY (`child`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

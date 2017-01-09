@@ -11,14 +11,11 @@ use common\models\Branch;
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
-$member_list = array('0' => 'No', '1' => 'Yes');
-
 $datetime = date('Y-m-d h:i:s');
-
 $userId = Yii::$app->user->identity->id;
-
 $dataRole = ArrayHelper::map(Role::find()->where('id > 1')->all(), 'id', 'role');
 $dataBranch = ArrayHelper::map(Branch::find()->all(), 'id', 'name');
+
 ?>
 
 <?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
@@ -32,14 +29,9 @@ $dataBranch = ArrayHelper::map(Branch::find()->all(), 'id', 'name');
     <br/>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">User Role</label>
-        <?= $form->field($model, 'role_id')->dropDownList($dataRole)->label(false) ?>
+        <label class="form_label">User Role</label>
+        <?= $form->field($model, 'role_id')->dropDownList($dataRole,['class' => 'form_input form-control' ])->label(false) ?>
     </div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-    
-    <br/>
 
 </div>
 <br/>
@@ -47,14 +39,9 @@ $dataBranch = ArrayHelper::map(Branch::find()->all(), 'id', 'name');
 <div class="row">
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">User Branch</label>
-        <?= $form->field($model, 'branch_id')->dropDownList($dataBranch)->label(false) ?>
+        <label class="form_label">User Branch</label>
+        <?= $form->field($model, 'branch_id')->dropDownList($dataBranch,['class' => 'form_input form-control' ])->label(false) ?>
     </div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-    
-    <br/>
 
 </div>
 <br/>
@@ -62,17 +49,13 @@ $dataBranch = ArrayHelper::map(Branch::find()->all(), 'id', 'name');
 <div class="row">
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Fullname</label>
-        <?= $form->field($model, 'fullname')->textInput(['required' => 'required', 'placeholder' => 'Fullname here...'])->label(false) ?>
+        <label class="form_label">Fullname</label>
+        <?= $form->field($model, 'fullname')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Fullname here.'])->label(false) ?>
     </div>
     <div class="col-md-3">
-        <label style="font-size: 12px;">E-mail</label>
-        <?= $form->field($model, 'email')->textInput(['required' => 'required', 'placeholder' => 'E-mail here...'])->label(false) ?>
+        <label class="form_label">E-mail</label>
+        <?= $form->field($model, 'email')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write E-mail here...'])->label(false) ?>
     </div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-    
-    <br/>
 
 </div>
 <br/>
@@ -80,15 +63,13 @@ $dataBranch = ArrayHelper::map(Branch::find()->all(), 'id', 'name');
 <div class="row">
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Username</label>
-        <?= $form->field($model, 'username')->textInput(['required' => 'required', 'placeholder' => 'Username here...'])->label(false) ?>
+        <label class="form_label">Username</label>
+        <?= $form->field($model, 'username')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Username here...'])->label(false) ?>
     </div>
     <div class="col-md-3">
-        <label style="font-size: 12px;">Password</label>
-        <?= $form->field($model, 'password')->passwordInput(['required' => 'required', 'placeholder' => 'Password here...'])->label(false) ?>
+        <label class="form_label">Password</label>
+        <?= $form->field($model, 'password')->passwordInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Password here...'])->label(false) ?>
     </div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
 
 </div>
 <hr/>

@@ -4,13 +4,13 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model common\models\QuotationSubtotal */
+/* @var $model common\models\ModuleAccess */
 
-$this->title = 'Create Quotation Subtotal';
-$this->params['breadcrumbs'][] = ['label' => 'Quotation Subtotals', 'url' => ['index']];
+$this->title = 'Create Module Access';
+$this->params['breadcrumbs'][] = ['label' => 'Module Accesses', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="quotation-subtotal-create">
+<div class="module-access-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

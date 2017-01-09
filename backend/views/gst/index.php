@@ -1,45 +1,41 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use yii\grid\GridView;
+use yii\helpers\ArrayHelper;
+
+use common\models\Customer;
+
+// use kartik\export\ExportMenu;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Customer */
+/* @var $searchModel common\models\SearchCustomer */
+/* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'View Gst';
-// $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
-// $this->params['breadcrumbs'][] = $this->title;
+$this->title = 'GST';
+
 ?>
 
 <div class="row form-container">
-<br/>
 
- <div class="col-md-12 col-sm-12 col-xs-12">
-    
- <div class="form-title-container">
-    <span class="form-header"><h4>GST Information</h4></span>
- </div>      
- <hr/>
+<div>
+    <?php if($msg <> ''){ ?>
+        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
+            <?php echo $msg; ?>
+        </div>
+    <?php } ?>
+</div>
 
- <div class="col-md-12">
-    <div>
-        <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
+<div class="col-md-12 col-sm-12 col-xs-12">
 
-        <?= Html::a( '<i class="fa fa-pencil-square"></i> Update', '?r=branch/update&id=' . $model->id, ['class' => 'form-btn btn btn-info']); ?>
-
-        <?= Html::a( '<i class="fa fa-trash"></i> Delete', '?r=branch/delete-column&id=' . $model->id, ['class' => 'form-btn btn btn-danger', 'onclick' => 'return deleteConfirmation()']); ?>
+    <div class="form-title-container">
+        <span class="form-header"><h4>Set GST</h4></span>
     </div>
- </div>    
- <br/>
+    <hr/>
 
-    <div style="font-size: 16px;" class="tbl-container">
-        <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'gst',
-        ],
-        ]) ?>
-        <br/>
+    <div class="form-search-container">    
+      <?php echo $this->render('_search', ['model' => $searchModel]); ?>
     </div>   
  
  </div>
@@ -47,8 +43,67 @@ $this->title = 'View Gst';
 </div>
 <br/>
 
+<div style="text-align: right;" class="other-btns-container">
+<br/>
 
+    <p>
+        <a href="?r=gst/create" id="option-list-link" class="btn btn-app">
+            <i class="fa fa-plus-circle"></i> <b> New GST </b>
+        </a>
 
+        <a href="?r=gst/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
+            <i class="fa fa-file-excel-o"></i> <b> Export to Excel </b>
+        </a>
 
+        <a href="?r=gst/export-pdf" id="option-list-link" onclick="return pdfPrintConfirmation()" class="btn btn-app">
+            <i class="fa fa-file-pdf-o"></i> <b> Export to PDF </b>
+        </a>
+    </p>
+</div>
 
-    
+<div class="row table-container">
+ 
+ <div class="col-md-12 col-sm-12 col-xs-12">
+ <br/><br/>
+
+    <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
+    <thead>
+        <tr style="font-size: 11px;" class="headings">
+            <th> # </th>
+            <th> GST </th>
+            <th> BRANCH NAME </th>
+            <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <?php if( !empty($getGst) ): ?>
+            <?php foreach( $getGst as $row){ ?>
+                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
+                    <td class=" "><?php echo $row['id'];  ?></td>
+                    <td class=" "><?php echo $row['gst'];  ?></td>
+                    <td class=" "><?php echo $row['name'];  ?></td>
+                    <td style="text-align: center; font-size: 13px;" class=" last">
+                        <a href="?r=gst/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
+                    </td>
+                </tr>
+            <?php } ?> 
+        <?php else: ?>
+            <tr>
+                <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        <?php endif; ?> 
+    </tbody>
+    </table>
+ 
+</div>
+
+<div style="color:#fff">|<br/>|<br/>|<br/></div>
+
+</div>
+
+<br/>

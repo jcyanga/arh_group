@@ -65,7 +65,7 @@ class Inventory extends \yii\db\ActiveRecord
     public function getProductInInventory() {
         $rows = new Query();
 
-        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price'])
+        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price', 'inventory.date_imported'])
             ->from('inventory')
             ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
             ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')

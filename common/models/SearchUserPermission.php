@@ -73,12 +73,13 @@ class SearchUserPermission extends UserPermission
     public function searchUserPermission($role_id,$controller,$action) {
         $rows = new Query();
 
-        $result = $rows->select(['*'])
+                $result = $rows->select(['user_permission.id', 'role.role', 'user_permission.controller', 'user_permission.action', 'user_permission.role_id'])
                     ->from('user_permission')
-                    ->where(['like', 'role_id', $role_id])
-                    ->andWhere(['like', 'controller', $controller])
-                    ->andWhere(['like', 'action', $action])
-                    ->andWhere('role_id > 1')
+                    ->join('INNER JOIN', 'role', 'user_permission.role_id = role.id')
+                    ->where(['like', 'user_permission.role_id', $role_id])
+                    ->andWhere(['like', 'user_permission.controller', $controller])
+                    ->andWhere(['like', 'user_permission.action', $action])
+                    ->andWhere('user_permission.role_id > 1')
                     ->all();
 
         return $result;            

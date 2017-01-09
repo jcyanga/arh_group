@@ -25,27 +25,20 @@ $userId = Yii::$app->user->identity->id;
     </div>
     <br/>
 
-    <div class="col-md-4">
-        <label style="font-size: 12px;">Module</label>
-        <?= $form->field($model, 'modules')->textInput(['required' => 'required', 'placeholder' => 'Module here...'])->label(false) ?>
+    <div class="col-md-3">
+        <label class="form_label">Module</label>
+        <?= $form->field($model, 'modules')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Module Name here.'])->label(false) ?>
     </div>
-    
-    <div class="col-md-4"></div>
-    <div class="col-md-4"></div>
 
 </div>
 <hr/>
 
 <div class="row">
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <?= Html::submitButton($model->isNewRecord ? '<li class=\'fa fa-save\'></li> Save New Record' : '<li class=\'fa fa-save\'></li> Update Record', ['class' => $model->isNewRecord ? 'form-btn btn btn-primary' : 'form-btn btn btn-primary']) ?>
         <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
     </div>
-    
-    <div class="col-md-4"></div>
-
-    <div class="col-md-4"></div>
 
 </div>
 <br/><br/>

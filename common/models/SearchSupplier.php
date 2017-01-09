@@ -69,13 +69,12 @@ class SearchSupplier extends Supplier
         return $dataProvider;
     }
 
-    public function searchSupplier($supplier_code,$supplier_name) {
+    public function searchSupplier($supplier_name) {
         $rows = new Query();
 
         $result = $rows->select(['*'])
                     ->from('supplier')
-                    ->where(['like', 'supplier_code', $supplier_code])
-                    ->orWhere(['like', 'supplier_name', $supplier_name])
+                    ->Where(['like', 'supplier_name', $supplier_name])
                     ->all();
 
         return $result;  

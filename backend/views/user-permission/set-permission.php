@@ -47,8 +47,8 @@ $this->title = 'Create User Permission';
 
 <div class="col-md-3">
     <label style="font-size: 12px;">Controller List</label>
-    <select id="controllerName" name="controllerName" class="form-control">
-    	<option vale="0">Please select</option>
+    <select id="controllerName" name="controllerName" class="form_input form-control">
+    	<option vale="0">CHOOSE CONTROLLER HERE</option>
     	<?php foreach ( $controllerList as $cName => $cL ) {  ?>
     		<?php  $selected = $controllerNameChosen == $cName ?  'selected' : ''?>
     		<option <?= $selected ?>><?= $cName ?></option>
@@ -58,8 +58,8 @@ $this->title = 'Create User Permission';
 
 <div class="col-md-3">
 	<label style="font-size: 12px;">Role List</label>
-    <select id="userRole" name="userRole" class="form-control">
-			<option vale="0">Please select</option>
+    <select id="userRole" name="userRole" class="form_input form-control">
+			<option vale="0">CHOOSE ROLE HERE</option>
 			<?php foreach ( $userRole as $uR ) { ?>
 				<?php  $selected = $userRoleId == $uR->id ?  'selected' : ''?>
 				<option value="<?= $uR->id ?>" <?= $selected ?>><?= $uR->role ?></option>
@@ -80,9 +80,11 @@ $this->title = 'Create User Permission';
 	<input type="hidden" name="controllerName" value="<?= $controllerNameLong ?>">
 	<input type="hidden" name="controllerNameChosen" value="<?= $controllerNameChosen ?>">
 	<input type="hidden" name="userRole" value="<?= $userRoleId ?>">
+
 	<?php if ( $controllerActions ) {  ?>
 
 		<?php 
+			echo '<b>Role assigned Controller actions.</b>' . '<br/>';
 			foreach ( $controllerActions as $cA ) { ?>
 			<?php 
 			/* if within the permission table */
@@ -92,7 +94,7 @@ $this->title = 'Create User Permission';
 			}
 
 			?>
-			<input type="checkbox" class="actionChkbox" name="checkBox[<?= $cA ?>]" <?= $checked ?> > <?= $cA ?> <br>
+			<input type="checkbox" class="actionChkbox form_input" name="checkBox[<?= $cA ?>]" <?= $checked ?> > <?= $cA ?> <br>
 		<?php } /* foreach */ ?>
 	<input type="hidden" name="controllerNameChosen" value="<?= $controllerNameChosen ?>">
 	<hr/>

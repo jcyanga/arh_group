@@ -9,21 +9,76 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use common\models\Service;
+use common\models\Inventory;
+use common\models\QuotationDetail;
+use common\models\Product;
+use common\models\Gst;
+
+use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
+use common\models\Role;
+use common\models\UserPermission;
+
 /**
  * QuotationController implements the CRUD actions for Quotation model.
  */
 class QuotationController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
+        $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
+       
+        foreach ( $userRoleArray as $uRId => $uRName ){ 
+            $permission = UserPermission::find()->where(['controller' => 'Quotation'])->andWhere(['role_id' => $uRId ] )->all();
+            $actionArray = [];
+            foreach ( $permission as $p )  {
+                $actionArray[] = $p->action;
+            }
+
+            $allow[$uRName] = false;
+            $action[$uRName] = $actionArray;
+            if ( ! empty( $action[$uRName] ) ) {
+                $allow[$uRName] = true;
+            }
+
+        }   
+        // print_r($action['developer']); exit;
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
+                    
+                    [
+                        'actions' => $action['developer'],
+                        'allow' => $allow['developer'],
+                        'roles' => ['developer'],
+                    ],
+
+                    [
+                        'actions' => $action['admin'],
+                        'allow' => $allow['admin'],
+                        'roles' => ['admin'],
+                    ],
+
+                    [
+                        'actions' => $action['staff'],
+                        'allow' => $allow['staff'],
+                        'roles' => ['staff'],
+                    ]
+       
+                ],
+            ],
+
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -38,9 +93,12 @@ class QuotationController extends Controller
         $searchModel = new SearchQuotation();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $getQuotation = $searchModel->getQuotation();
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'getQuotation' => $getQuotation
         ]);
     }
 
@@ -64,13 +122,105 @@ class QuotationController extends Controller
     public function actionCreate()
     {
         $model = new Quotation();
+        $details = new QuotationDetail();
+
         $quotationId = $this->_getQuotationId();
         $getBranchList = $model->getBranch();
         $getUserList = $model->getUser();
         $getCustomerList = $model->getCustomer();
+        $getServicesList = $model->getServicesList();
+        $getPartsList = $model->getPartsList();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ( $model->load(Yii::$app->request->post()) ) {
+            
+            $quotationCode = Yii::$app->request->post('Quotation')['quotationCode'];
+            $dateIssue = Yii::$app->request->post('Quotation')['dateIssue'];
+            $selectedBranch = Yii::$app->request->post('Quotation')['selectedBranch'];
+            $selectedCustomer = Yii::$app->request->post('Quotation')['selectedCustomer'];
+            $selectedUser = Yii::$app->request->post('Quotation')['selectedUser'];
+            $remarks = Yii::$app->request->post('Quotation')['remarks'];
+
+            $grand_total = Yii::$app->request->post('Quotation')['grand_total'] . '<br/>';
+            $getGst = Gst::find()->where(['branch_id' => $selectedBranch])->one();
+
+            if( isset($getGst) ) {
+                $totalWithGst = ($grand_total * $getGst->gst);
+            }else {
+                $totalWithGst = ($grand_total + 0);
+            }
+
+            $created_by = Yii::$app->user->identity->id;
+            $created_at = date("Y-m-d");
+            $delete = 0;
+
+            $model->quotation_code = $quotationCode;
+            $model->user_id = $selectedUser;
+            $model->customer_id = $selectedCustomer;
+            $model->branch_id = $selectedBranch;
+            $model->date_issue = $dateIssue;
+            $model->grand_total = $totalWithGst;
+            $model->remarks = $remarks;
+            $model->created_by = $created_by;
+            $model->created_at = $created_at;
+            $model->updated_at = $created_at;
+            $model->updated_by = $created_by;
+            $model->delete = $delete;
+            $model->task = 0;
+
+            if ( $model->save() ) {
+                
+                $quotationId = $model->id;
+
+                if( $details->load(Yii::$app->request->post()) ) {
+                
+                    $arrLen = count( Yii::$app->request->post('QuotationDetail')['quantity'] );
+                    $service_part_id = Yii::$app->request->post('QuotationDetail')['service_part_id'];
+                    $quantity = Yii::$app->request->post('QuotationDetail')['quantity'];
+                    $selling_price = Yii::$app->request->post('QuotationDetail')['selling_price'];
+                    $subTotal = Yii::$app->request->post('QuotationDetail')['subTotal'];
+                    
+                    foreach ($quantity as $key => $value) {
+                        $quoD = new QuotationDetail();
+
+                        $getServicePart = explode('-', $service_part_id[$key]);
+                        $getType = $getServicePart[0];
+                        $getServicePartId = $getServicePart[1];
+
+                        if( $getType == 1 ) {
+                            $partQty = Inventory::find()->where(['product_id' => $getServicePartId])->one();
+                            $totalQty = $partQty->quantity - $value;
+                            
+                            Yii::$app->db->createCommand()
+                                ->update('inventory', ['quantity' => $totalQty ], "id = $getServicePartId" )
+                                ->execute();
+                        }
+
+                        $quoD->quotation_id = $quotationId;
+                        $quoD->service_part_id = $getServicePartId;
+                        $quoD->quantity = $value;
+                        $quoD->selling_price = $selling_price[$key];
+                        $quoD->subTotal = $subTotal[$key];
+                        $quoD->created_at = $created_at;
+                        $quoD->created_by = $created_by;
+                        $quoD->type = $getType;
+                        
+                        if ( isset(Yii::$app->request->post('QuotationDetail')['task'][$key]) ) {
+                            $quoD->task = 1;
+
+                        }else{
+                            $quoD->task = 0;
+                            
+                        }
+
+                        $quoD->save();
+
+                    }
+                 
+                 return $this->redirect(['preview', 'id' => $model->id]);
+
+                }
+            }
+            
         } else {
 
             return $this->render('create', [
@@ -79,9 +229,26 @@ class QuotationController extends Controller
                 'getBranchList' => $getBranchList,
                 'getUserList' => $getUserList,
                 'getCustomerList' => $getCustomerList,
+                'getServicesList' => $getServicesList,
+                'getPartsList' => $getPartsList
             ]);
         }
     }
+
+    public function actionPreview($id) {
+         $model = new Quotation();
+         $getLastInsertQuotation = $model->getLastInsertQuotation($id); 
+         $getLastInsertQuotationServiceDetail = $model->getLastInsertQuotationServiceDetail($id); 
+         $getLastInsertQuotationPartDetail = $model->getLastInsertQuotationPartDetail($id);
+
+        return $this->render('preview',[
+                'model' => $this->findModel($id),
+                'customerInfo' => $getLastInsertQuotation,
+                'services' => $getLastInsertQuotationServiceDetail,
+                'parts' => $getLastInsertQuotationPartDetail
+            ]);
+    }
+
 
     public function _getQuotationId() {
         $model = new Quotation();
@@ -137,4 +304,84 @@ class QuotationController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    public function actionPrice() {
+
+        $this->layout = false;
+
+        if( Yii::$app->request->post() ) {
+
+            $getItemType = explode('-', Yii::$app->request->post()['services_parts']);
+            $ItemType = $getItemType[0];
+            $ItemId = $getItemType[1];
+
+            $itemSellingPrice = false;
+
+            if( $getItemType == '0' ) {
+                $service = Service::find()->where(['id' => $ItemId])->one();
+                $itemSellingPrice = $service->default_price;
+            
+            }else{
+                $part = Inventory::find()->where(['product_id' => $ItemId])->one();
+                $itemSellingPrice = $part->selling_price;
+
+            }
+            return $itemSellingPrice;
+        }
+    }
+
+    public function actionInsertInList() {
+        $detail = new QuotationDetail();
+        $this->layout = false;
+
+        if( Yii::$app->request->post() ) {
+            $getItemType = explode('-', Yii::$app->request->post()['services_parts'] );
+            $ItemType = $getItemType[0];
+            $ItemId = $getItemType[1];
+
+            $serviceId = false;
+            $serviceName = false;
+            $partId = false;
+            $partName = false;
+
+            if( $ItemType == '0' ) {
+                $service = Service::find()->where(['id' => $ItemId])->one();
+                $serviceId = $service->id;
+                $serviceName = $service->service_name;
+
+            }else{
+                $model = new Quotation();
+                $part = Product::find()->where(['id' => $ItemId])->one();
+                $partId = $part->id;
+                $partName = $part->product_name;
+            
+                // $partQty = Inventory::find()->where(['product_id' => $getServicePartId])->one();
+                // $totalQty = $partQty->quantity - $value;
+                
+                // Yii::$app->db->createCommand()
+                //     ->update('inventory', ['quantity' => $totalQty ], "id = $getServicePartId" )
+                //     ->execute();
+            }
+
+            $n = Yii::$app->request->post('n');
+            $itemQty = Yii::$app->request->post('itemQty');
+            $itemPriceValue = Yii::$app->request->post('itemPriceValue');
+            $itemSubTotal = Yii::$app->request->post('itemSubTotal');
+
+            return $this->render('item-list', [
+                    'n' => $n,
+                    'itemQty' => $itemQty,
+                    'itemPriceValue' => $itemPriceValue,
+                    'itemSubTotal' => $itemSubTotal,
+                    'serviceId' => $serviceId,
+                    'serviceName' => $serviceName,
+                    'partId' => $partId,
+                    'partName' => $partName,
+                    'itemType' => $ItemType,
+                    'detail' => $detail,
+                ]);
+        }  
+
+    }
+
 }

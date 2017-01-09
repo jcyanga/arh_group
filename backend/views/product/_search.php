@@ -27,19 +27,15 @@ $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'category_id')->dropDownList($dataCategory)->label(false) ?>
+        <?= $form->field($model, 'category_id')->dropDownList($dataCategory,['class' => 'form_input form-control'])->label(false) ?>
+    </div>
+
+    <div class="col-md-4">
+        <?= $form->field($model, 'product_name')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Write Part Name here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'product_code')->textInput(['placeholder' => 'Enter Parts Code here...'])->label(false) ?>
-    </div>
-
-    <div class="col-md-3">
-        <?= $form->field($model, 'product_name')->textInput(['placeholder' => 'Enter Parts Name here...'])->label(false) ?>
-    </div>
-
-    <div class="col-md-3">
-        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'btn btn-primary']) ?>
+        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
         <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
     </div>
     

@@ -9,10 +9,9 @@ use yii\helpers\Url;
 /* @var $form yii\widgets\ActiveForm */
 
 $dataStatus = array('' => 'Choose Status', '0' => 'Inactive', '1' => 'Active');
-
 $dateNow = date('Y-m-d');
-
 $userId = Yii::$app->user->identity->id;
+
 ?>
 
 <?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
@@ -26,18 +25,18 @@ $userId = Yii::$app->user->identity->id;
     <br/>
 
     <div class="col-md-4">
-        <label style="font-size: 12px;">Name</label>
-        <?= $form->field($model, 'name')->textInput(['required' => 'required', 'placeholder' => 'Name here...'])->label(false) ?>
+        <label class="form_label">Name</label>
+        <?= $form->field($model, 'name')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Service Category Name here.'])->label(false) ?>
     </div>
     
     <div class="col-md-4">
-        <label style="font-size: 12px;">Description</label>
-        <?= $form->field($model, 'description')->textInput(['required' => 'required', 'placeholder' => 'Description here...'])->label(false) ?>
+        <label class="form_label">Description</label>
+        <?= $form->field($model, 'description')->textInput(['class' => 'form_input form-control',  'required' => 'required', 'placeholder' => 'Write Service Category Description here.'])->label(false) ?>
     </div>
 
     <div class="col-md-4">
-        <label style="font-size: 12px;">Status</label>
-        <?= $form->field($model, 'status')->dropDownList($dataStatus,['required' => 'required'])->label(false) ?>
+        <label class="form_label">Status</label>
+        <?= $form->field($model, 'status')->dropDownList($dataStatus,['class' => 'form_input form-control', 'required' => 'required'])->label(false) ?>
     </div>
 
     <div>

@@ -74,13 +74,12 @@ class SearchServiceCategory extends ServiceCategory
         return $dataProvider;
     }
 
-    public function searchServiceCategory($name,$description) {
+    public function searchServiceCategory($name) {
         $rows = new Query();
 
         $result = $rows->select(['*'])
                     ->from('service_category')
                     ->where(['like', 'name', $name])
-                    ->orWhere(['like', 'description', $description])
                     ->all();
 
         return $result;  

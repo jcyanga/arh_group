@@ -8,11 +8,10 @@ use yii\helpers\Url;
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
-$member_list = array('0' => 'No', '1' => 'Yes');
-
 $datetime = date('Y-m-d h:i:s');
-
 $userId = Yii::$app->user->identity->id;
+$supplierCode = 'SUPPLIERS' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
+
 ?>
 
 <?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
@@ -26,24 +25,23 @@ $userId = Yii::$app->user->identity->id;
     <br/>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Supplier Code</label>
-        <?php $supplierCode = 'SUPPLIERS' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5); ?>
-        <?= $form->field($model, 'supplier_code')->textInput(['readonly' => 'readonly', 'value' => $supplierCode])->label(false) ?>
+        <label class="form_label">Supplier Code</label>
+        <?= $form->field($model, 'supplier_code')->textInput(['class' => 'form_input form-control', 'readonly' => 'readonly', 'value' => $supplierCode])->label(false) ?>
     </div>
     
     <div class="col-md-3">
-        <label style="font-size: 12px;">Supplier Name</label>
-        <?= $form->field($model, 'supplier_name')->textInput(['required' => 'required', 'placeholder' => 'Supplier Name here...'])->label(false) ?>
+        <label class="form_label">Supplier Name</label>
+        <?= $form->field($model, 'supplier_name')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Supplier Name here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Address</label>
-        <?= $form->field($model, 'address')->textInput(['required' => 'required', 'placeholder' => 'Address here...'])->label(false) ?>
+        <label class="form_label">Address</label>
+        <?= $form->field($model, 'address')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Address here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Contact Number</label>
-        <?= $form->field($model, 'contact_number')->textInput(['required' => 'required', 'placeholder' => 'Contact Number here...'])->label(false) ?>
+        <label class="form_label">Contact Number</label>
+        <?= $form->field($model, 'contact_number')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Contact Number here.'])->label(false) ?>
     </div>
 
 </div>
@@ -55,10 +53,6 @@ $userId = Yii::$app->user->identity->id;
         <?= Html::submitButton($model->isNewRecord ? '<li class=\'fa fa-save\'></li> Save New Record' : '<li class=\'fa fa-save\'></li> Update Record', ['class' => $model->isNewRecord ? 'form-btn btn btn-primary' : 'form-btn btn btn-primary']) ?>
         <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
     </div>
-    
-    <div class="col-md-4"></div>
-
-    <div class="col-md-4"></div>
 
 </div>
 <br/><br/>

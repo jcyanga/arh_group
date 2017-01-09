@@ -59,13 +59,12 @@ class ServiceCategory extends \yii\db\ActiveRecord
     }
 
     // Search if with same name.
-    public function getServiceCategories($name,$description) {
+    public function getServiceCategories($name) {
            $rows = new Query();
         
-           $result = $rows->select(['name', 'description'])
+           $result = $rows->select(['name'])
             ->from('service_category')
             ->where(['name' => $name])
-            ->andWhere(['description' => $description])
             ->all();
             
             if( count($result) > 0 ) {

@@ -8,11 +8,11 @@ use yii\helpers\Url;
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
-$dataStatus = array('' => 'Choose Status', '0' => 'Inactive', '1' => 'Active');
-
+$dataStatus = array('' => 'CHOOSE STATUS HERE', '0' => 'INACTIVE', '1' => 'ACTIVE');
 $dateNow = date('Y-m-d');
-
 $userId = Yii::$app->user->identity->id;
+$branchCode = 'BRANCH' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5); 
+
 ?>
 
 <?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
@@ -26,37 +26,33 @@ $userId = Yii::$app->user->identity->id;
     <br/>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Branch Code</label>
-        <?php $branchCode = 'BRANCH' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5); ?>
-        <?= $form->field($model, 'code')->textInput(['readonly' => 'readonly', 'value' => $branchCode])->label(false) ?>
+        <label class="form_label">Branch Code</label>
+        <?= $form->field($model, 'code')->textInput(['class' => 'form_input form-control', 'readonly' => 'readonly', 'value' => $branchCode])->label(false) ?>
     </div>
-    
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
+
 </div>
 <br/>
 
 <div class="row">
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Branch Name</label>
-        <?= $form->field($model, 'name')->textInput(['required' => 'required', 'placeholder' => 'Branch Name here...'])->label(false) ?>
+        <label class="form_label">Branch Name</label>
+        <?= $form->field($model, 'name')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Branch Name here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Address</label>
-        <?= $form->field($model, 'address')->textInput(['required' => 'required', 'placeholder' => 'Address here...'])->label(false) ?>
+        <label class="form_label">Address</label>
+        <?= $form->field($model, 'address')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Address here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Contact Number</label>
-        <?= $form->field($model, 'contact_no')->textInput(['required' => 'required', 'placeholder' => 'Contact Number here...'])->label(false) ?>
+        <label class="form_label">Contact Number</label>
+        <?= $form->field($model, 'contact_no')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Contact Number here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Status</label>
-        <?= $form->field($model, 'status')->dropDownList($dataStatus,['required' => 'required'])->label(false) ?>
+        <label class="form_label">Status</label>
+        <?= $form->field($model, 'status')->dropDownList($dataStatus,['class' => 'form_input form-control', 'required' => 'required'])->label(false) ?>
     </div>
 
     <div>
@@ -76,10 +72,6 @@ $userId = Yii::$app->user->identity->id;
         <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
     </div>
     
-    <div class="col-md-4"></div>
-
-    <div class="col-md-4"></div>
-
 </div>
 <br/><br/>
 

@@ -27,9 +27,12 @@ $this->title = 'Inventories';
  <br/>
  
  <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-database"></i> UPDATE PARTS STOCKS</h4></span>
+        <span class="form-header"><h4><i class="fa fa-database"></i> UPDATE PARTS STOCK</h4></span>
  </div>
- <br/>
+ <hr/>
+
+<?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
+<br/><br/>
 
  <div class="" role="tabpanel" data-example-id="togglable-tabs">
             <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
@@ -43,32 +46,37 @@ $this->title = 'Inventories';
     <br/>
 
 
-    <?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
+    <?php $form = ActiveForm::begin(['id' => 'demo-form2', 'method' => 'POST', 'action' => '?r=stocks/update', 'class' => 'form-inline']); ?>
 
 	<div class="row">
 
-	    <div class="col-md-8">
+	    <div class="col-md-12">
 
-	        <table style="border: solid 1px #eee;" class="table table-hover table-striped" >
+	        <table id="tblStocks" class="table table-hover table-boardered" >
 	        	<thead>
 	        		<tr>
-	        			<td style="font-weight: bold;"><i class="fa fa-cogs"></i> PARTS NAME</td>
-	        			<td style="text-align: center; font-weight: bold;"><i class="fa fa-upload"></i> ADDED STOCKS</td>
-	        			<td style="text-align: center; font-weight: bold;"><i class="fa fa-database"></i> QUANTITY</td>
+	        			<td class="tblstockTh0"><i class="fa fa-cogs"></i> PARTS NAME</td>
+	        			<td class="tblstockTh"><i class="fa fa-upload"></i> ADDED STOCKS</td>
+	        			<td class="tblstockTh"><i class="fa fa-database"></i> QUANTITY</td>
 	        		</tr>
 	        	</thead>
 	        	<?php foreach($data as $key => $value): ?>
 	        	<tr>
 	        		<td>
-	        			<label style="font-size: 12px; text-transform: uppercase; margin-top: 30px;"><?php echo $value['itemName']; ?></label>
+	        			<label class="tblstockTd"><i class="fa fa-cog"></i> <?php echo $value['itemName']; ?></label>
 	        		</td>
 	        		<td>
 	        			&nbsp;
-	        			<input type="text" class="qtyValue form-control" value="" id="<?php echo $value['itemId']; ?>" >
+	        			<input type="text" class="form_input qtyValue form-control" style="text-align: center;" value="" id="<?php echo $value['itemId']; ?>" placeholder="0" />
 	        		</td>
 	        		<td>
 	        			&nbsp;
-	        			<input type="text" readonly="readonly" style="text-align: center;" class="qtyS form-control" value="<?php echo $value['itemQty']; ?>" id="<?php echo $value['itemId']; ?>" >
+	        			<input type="hidden" value="<?php echo $value['itemId']; ?>" id="<?php echo $value['itemId']; ?>" name="inventoryId[]" />
+	        			<input type="hidden" value="<?php echo $value['ProductId']; ?>" id="<?php echo $value['ProductId']; ?>" name="ProductId[]" />
+	        			<input type="hidden" value="<?php echo $value['SupplierId']; ?>" id="<?php echo $value['SupplierId']; ?>" name="SupplierId[]" />
+	        			<input type="hidden" value="<?php echo $value['costPrice']; ?>" id="<?php echo $value['costPrice']; ?>" name="costPrice[]" />
+	        			<input type="hidden" value="<?php echo $value['sellingPrice']; ?>" id="<?php echo $value['sellingPrice']; ?>" name="sellingPrice[]" />
+	        			<input type="text" readonly="readonly" style="text-align: center;" class="form_input qtyStock form-control" value="<?php echo $value['itemQty']; ?>" id="<?php echo $value['itemId']; ?>" name="qtyStock[]" />
 	        		</td>
 	        	</tr>
 	        	<?php endforeach; ?>	
@@ -81,24 +89,21 @@ $this->title = 'Inventories';
 
 	<div class="row">
 
-	    <div class="col-md-4">
-	        <button type="submit" class="form-btn btn btn-info" > <i class="fa fa-save"></i> Save Record </button>
-	        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
+	    <div class="col-md-12">
+	    	<div >
+	        	<button type="submit" class="form-btn btn btn-info" > <i class="fa fa-save"></i> Save Parts Quantity </button>
+	        	<?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
+	    	</div>
 	    </div>
-	    
-	    <div class="col-md-4"></div>
-
-	    <div class="col-md-4"></div>
 
 	</div>
-	<br/><br/>
+	<br/>
 
 	<?php ActiveForm::end(); ?>
     <br/>
 
     </div>
     
- 
                 <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
                     <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip</p>
                 </div>

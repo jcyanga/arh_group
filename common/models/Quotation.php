@@ -41,12 +41,12 @@ class Quotation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['quotation_code', 'user_id', 'customer_id', 'branch_id', 'date_issue', 'type', 'no_of_services', 'no_of_parts', 'grand_total', 'remarks', 'created_at', 'created_by', 'updated_at', 'updated_by', 'delete'], 'required'],
-            [['user_id', 'customer_id', 'branch_id', 'no_of_services', 'no_of_parts', 'created_by', 'updated_by', 'delete'], 'integer'],
+            [['quotation_code', 'user_id', 'customer_id', 'branch_id', 'date_issue', 'grand_total', 'remarks', 'created_at', 'created_by', 'updated_at', 'updated_by', 'delete'], 'required'],
+            [['user_id', 'customer_id', 'branch_id', 'created_by', 'updated_by', 'delete'], 'integer'],
             [['date_issue', 'created_at', 'updated_at'], 'safe'],
             [['grand_total'], 'number'],
             [['remarks'], 'string'],
-            [['quotation_code', 'type'], 'string', 'max' => 50],
+            [['quotation_code'], 'string', 'max' => 50],
         ];
     }
 
@@ -62,9 +62,6 @@ class Quotation extends \yii\db\ActiveRecord
             'customer_id' => 'Customer ID',
             'branch_id' => 'Branch ID',
             'date_issue' => 'Date Issue',
-            'type' => 'Type',
-            'no_of_services' => 'No Of Services',
-            'no_of_parts' => 'No Of Parts',
             'grand_total' => 'Grand Total',
             'remarks' => 'Remarks',
             'created_at' => 'Created At',
@@ -97,7 +94,7 @@ class Quotation extends \yii\db\ActiveRecord
     public function getBranch() {
         $rows = new Query();
 
-        $result = $rows->select(['concat(code," | ",name) as branchList, id'])
+        $result = $rows->select(['id','code','name as branchList'])
         ->from('branch')
         ->all();
 
@@ -115,7 +112,7 @@ class Quotation extends \yii\db\ActiveRecord
     public function getUser() {
         $rows = new Query();
 
-        $result = $rows->select(['concat(role.role," | ",user.fullname) as userList, user.id'])
+        $result = $rows->select(['user.id', 'role.role', 'user.fullname as userList'])
         ->from('user')
         ->join('INNER JOIN', 'role', 'user.role_id = role.id')
         ->where('user.role_id >= 2')
@@ -136,7 +133,7 @@ class Quotation extends \yii\db\ActiveRecord
     public function getCustomer() {
         $rows = new Query();
 
-        $result = $rows->select(['concat(carplate," | ",fullname) as customerList, id'])
+        $result = $rows->select(['id', 'carplate', 'fullname as customerList'])
         ->from('customer')
         ->all();
 
@@ -150,5 +147,85 @@ class Quotation extends \yii\db\ActiveRecord
 
     }
 
+    // get services
+    public function getServicesList() {
+        $rows = new Query();
+
+        $result = $rows->select(['service.id', 'service_category.name', 'service.service_name'])
+        ->from('service')
+        ->join('INNER JOIN', 'service_category', 'service.service_category_id = service_category.id')
+        ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        
+        }else {
+            return 0;
+        
+        }   
+
+    }
+
+    // get products
+    public function getPartsList() {
+        $rows = new Query();
+
+        $result = $rows->select(['product.id', 'product.product_name', 'category.category'])
+        ->from('product')
+        ->join('INNER JOIN', 'category', 'product.category_id = category.id')
+        ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        
+        }else {
+            return 0;
+        
+        }   
+
+    }
+
+    // getLastInsertQuotation
+    public function getLastInsertQuotation($quotationId) {
+        $rows = new Query();
+
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.date_issue', 'quotation.remarks'])
+            ->from('quotation')
+            ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
+            ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
+            ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
+            ->where(['quotation.id' => $quotationId])
+            ->one();
+
+        return $result;
+    }
+
+    // getLastInsertQuotationServiceDetail
+    public function getLastInsertQuotationServiceDetail($id) {
+        $rows = new Query();
+
+        $service = $rows->select(['quotation_detail.id', 'quotation_detail.quotation_id', 'service.service_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal'])
+            ->from('quotation_detail')
+            ->join('INNER JOIN', 'service', 'quotation_detail.service_part_id = service.id')
+            ->where(['quotation_detail.quotation_id' => $id])
+            ->andWhere('quotation_detail.type = 0')
+            ->all();
+
+        return $service;
+    }
+
+    // getLastInsertQuotationPartDetail
+    public function getLastInsertQuotationPartDetail($id) {
+        $rows = new Query();
+
+        $part = $rows->select(['quotation_detail.id', 'product.product_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal'])
+            ->from('quotation_detail')
+            ->join('INNER JOIN', 'product', 'quotation_detail.service_part_id = product.id')
+            ->where(['quotation_detail.quotation_id' => $id])
+            ->andWhere('quotation_detail.type = 1')
+            ->all();
+
+        return $part;
+    }
 
 }

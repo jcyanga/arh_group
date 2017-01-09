@@ -12,12 +12,10 @@ use common\models\ServiceCategory;
 /* @var $form yii\widgets\ActiveForm */
 
 $dataServiceCategory = ArrayHelper::map(ServiceCategory::find()->all(), 'id', 'name');
-
-$dataStatus = array('' => 'Choose Status', '0' => 'Inactive', '1' => 'Active');
-
+$dataStatus = array('' => 'CHOOSE STATUS HERE', '0' => 'Inactive', '1' => 'Active');
 $dateNow = date('Y-m-d');
-
 $userId = Yii::$app->user->identity->id;
+
 ?>
 
 <?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
@@ -31,12 +29,9 @@ $userId = Yii::$app->user->identity->id;
     <br/>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Service Category</label>
-        <?= $form->field($model, 'service_category_id')->dropDownList($dataServiceCategory,['required', 'required'])->label(false) ?>
+        <label class="form_label">Service Category</label>
+        <?= $form->field($model, 'service_category_id')->dropDownList($dataServiceCategory,['class' => 'form_input form-control', 'required', 'required'])->label(false) ?>
     </div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
-    <div class="col-md-3"></div>
 
 </div>   
 <br/>
@@ -44,23 +39,23 @@ $userId = Yii::$app->user->identity->id;
 <div class="row">
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Service Name</label>
-        <?= $form->field($model, 'service_name')->textInput(['required' => 'required', 'placeholder' => 'Service Name here...'])->label(false) ?>
+        <label class="form_label">Service Name</label>
+        <?= $form->field($model, 'service_name')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Service Name here.'])->label(false) ?>
     </div>
     
     <div class="col-md-3">
-        <label style="font-size: 12px;">Description</label>
-        <?= $form->field($model, 'description')->textInput(['required' => 'required', 'placeholder' => 'Description here...'])->label(false) ?>
+        <label class="form_label">Description</label>
+        <?= $form->field($model, 'description')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Description here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Default Price</label>
-        <?= $form->field($model, 'default_price')->textInput(['required' => 'required', 'placeholder' => 'Default Price here...'])->label(false) ?>
+        <label class="form_label">Default Price</label>
+        <?= $form->field($model, 'default_price')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Default Price here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <label style="font-size: 12px;">Status</label>
-        <?= $form->field($model, 'status')->dropDownList($dataStatus,['required' => 'required'])->label(false) ?>
+        <label class="form_label">Status</label>
+        <?= $form->field($model, 'status')->dropDownList($dataStatus,['class' => 'form_input form-control', 'required' => 'required'])->label(false) ?>
     </div>
 
     <div>

@@ -27,7 +27,7 @@ class ServiceCategoryController extends Controller
         $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
        
         foreach ( $userRoleArray as $uRId => $uRName ){ 
-            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $permission = UserPermission::find()->where(['controller' => 'ServiceCategory'])->andWhere(['role_id' => $uRId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
                 $actionArray[] = $p->action;
@@ -42,37 +42,31 @@ class ServiceCategoryController extends Controller
         }   
         // print_r($action['developer']); exit;
         return [
-            // 'access' => [
-            //     'class' => AccessControl::className(),
-            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
-            //     'rules' => [
+            'access' => [
+                'class' => AccessControl::className(),
+                // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
                     
-            //         [
-            //             'actions' => $action['developer'],
-            //             'allow' => $allow['developer'],
-            //             'roles' => ['developer'],
-            //         ],
+                    [
+                        'actions' => $action['developer'],
+                        'allow' => $allow['developer'],
+                        'roles' => ['developer'],
+                    ],
 
-            //         [
-            //             'actions' => $action['admin'],
-            //             'allow' => $allow['admin'],
-            //             'roles' => ['admin'],
-            //         ],
+                    [
+                        'actions' => $action['admin'],
+                        'allow' => $allow['admin'],
+                        'roles' => ['admin'],
+                    ],
 
-            //         [
-            //             'actions' => $action['staff'],
-            //             'allow' => $allow['staff'],
-            //             'roles' => ['staff'],
-            //         ],
-
-            //         [
-            //             'actions' => $action['customer'],
-            //             'allow' => $allow['customer'],
-            //             'roles' => ['customer'],
-            //         ]
+                    [
+                        'actions' => $action['staff'],
+                        'allow' => $allow['staff'],
+                        'roles' => ['staff'],
+                    ]
        
-            //     ],
-            // ],
+                ],
+            ],
 
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -92,14 +86,14 @@ class ServiceCategoryController extends Controller
         $searchModel = new SearchServiceCategory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchServiceCategory')['name'] ) || isset(Yii::$app->request->get('SearchServiceCategory')['description'] ) ) {
+        if( isset(Yii::$app->request->get('SearchServiceCategory')['name'] ) ) {
 
                 $name = Yii::$app->request->get('SearchServiceCategory')['name'];
-                $description = Yii::$app->request->get('SearchServiceCategory')['description'];
+                $getServiceCategory = $searchModel->searchServiceCategory($name);
 
-                $getServiceCategory = $searchModel->searchServiceCategory($name,$description);
-        }elseif ( Yii::$app->request->get('SearchServiceCategory')['name'] == "" || Yii::$app->request->get('SearchServiceCategory')['description'] == "" ) {
+        }elseif ( Yii::$app->request->get('SearchServiceCategory')['name'] == "" ) {
                 $getServiceCategory = ServiceCategory::find()->all();
+                
         }else {
                 $getServiceCategory = ServiceCategory::find()->all();
         }
@@ -132,12 +126,10 @@ class ServiceCategoryController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 
             $name = Yii::$app->request->post('ServiceCategory') ['name'];
-            $description = Yii::$app->request->post('ServiceCategory') ['description'];
-
-            $result = $model->getServiceCategories($name,$description);
+            $result = $model->getServiceCategories($name);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change the name or description.']);
+                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change service category name.']);
             }
 
             if($model->save()) {

@@ -23,16 +23,12 @@ use yii\helpers\Url;
 <!-- , 'class' => 'form-inline' -->
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
-    <div class="col-md-3">
-        <?= $form->field($model, 'code')->textInput(['placeholder' => 'Enter Branch Code here...'])->label(false) ?>
-    </div>
-    
-    <div class="col-md-3">
-        <?= $form->field($model, 'name')->textInput(['placeholder' => 'Enter Branch Name here...'])->label(false) ?>
+    <div class="col-md-4">
+        <?= $form->field($model, 'name')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Enter Branch Name here...'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'btn btn-primary']) ?>
+        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
         <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
     </div>
 

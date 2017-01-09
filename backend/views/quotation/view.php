@@ -34,9 +34,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'customer_id',
             'branch_id',
             'date_issue',
-            'type',
-            'no_of_services',
-            'no_of_parts',
             'grand_total',
             'remarks:ntext',
             'created_at',
@@ -44,6 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'updated_at',
             'updated_by',
             'delete',
+            'task',
         ],
     ]) ?>
 

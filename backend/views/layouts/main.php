@@ -11,19 +11,29 @@ use yii\widgets\Breadcrumbs;
 use common\widgets\Alert;
 use yii\helpers\Url;
 
+use common\models\UserPermission;
+
 AppAsset::register($this);
 
+$roleId = Yii::$app->user->identity->role_id;
+$getUserPermission = UserPermission::find()->where(['role_id' => $roleId])->all();
+
 $isDashboard = false;
-$isCustomer = false;
-$isUser = false;
+$isBranch = false;
 $isRole = false;
 $isModules = false;
-$isModulesAccess = false;
-$isInventory = false;
+$isUserPermission = false;
+$isUser = false;
+$isCustomer = false;
+$isServiceCategory = false;
+$isService = false;
 $isCategory = false;
-$isSupplier = false;
 $isProduct = false;
+$isSupplier = false;
 $isInventory = false;
+$isStocks = false;
+$isQuotation = false;
+$isInvoice = false;
 
 if(isset($_GET['r'])) {
     $getClass = $_GET['r'];
@@ -75,7 +85,7 @@ if(isset($_GET['r'])) {
     }
 }
 
-$userName = Yii::$app->user->identity->username;
+$userFullname = Yii::$app->user->identity->fullname;
 
 ?>
 
@@ -88,10 +98,11 @@ $userName = Yii::$app->user->identity->username;
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE-edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <?= Html::csrfMetaTags() ?>
     <title>ARH Group Pte Ltd.</title>
 
     <!-- CSS -->
-
+    
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />    
     <link rel="stylesheet" href="assets/font-awesome-4.7.0/css/font-awesome.min.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/animate.min.css" />
@@ -109,332 +120,255 @@ $userName = Yii::$app->user->identity->username;
 
 <body class="nav-md">
 
-<div class="container body">
+    <div class="container body">
 
-    <div class="main_container">
 
-        <div class="col-md-3 left_col">
-        
-        <div class="left_col scroll-view">
+        <div class="main_container">
 
-            <div class="navbar nav_title" style="border: 0;">
-                <a href="index.html" class="site_title"><i class="fa fa-car"></i> <span> ARH Group </span></a>
-            </div>
-            <div class="clearfix"></div>
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
 
-            <!-- menu prile quick info -->
-            <div class="profile">
-                <div class="profile_pic">
-                
-                <img src="assets/bootstrap/photos/user.png" alt="..." class="img-circle profile_img">
-               
-                </div>
-                
-                <div class="profile_info">
-                    <span>Welcome,</span>
-                    <h2><?php echo $userName; ?></h2>
-                </div>
-            </div>
-            <!-- /menu prile quick info -->
-            <br />
+                    <div class="navbar nav_title" style="border: 0;">
+                        <a href="?" class="site_title"><i class="fa fa-car"></i> <span> Arh Group Pte Ltd. </span></a>
+                    </div>
+                    <div class="clearfix"></div>
 
-            <!-- sidebar menu -->
-            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
-            <div class="menu_section">
-            <h3 style="color: transparent;">-</h3>
-
-            <ul class="nav side-menu">
-            	<li><a> <span id="nav-menu-header"> <i class="fa fa-list"></i> MENU NAVIGATION -- </span> </a></li>
-                <li><a href="?" id="nav-dashboard" ><i class="fa fa-home"></i> Dashboard </a></li>
-                <li><a href="?r=quotation" id="nav-quotation" ><i class="fa fa-pencil"></i> Quotation</a></li>
-                <li><a href="?r=inventory" id="nav-invoice" ><i class="fa fa-paste"></i> Invoice</a></li>
-                <li><a href="?r=stocks" id="nav-services" ><i class="fa fa-database"></i> Stocks </a></li>
-                <li><a href="#" id="nav-services" ><i class="fa fa-battery-quarter"></i> Services <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu" style="display: none">
-                        <li><a href="?r=service-category"  id="nav-serviceCategory" >Category</a></li>
-                        <li><a href="?r=service"  id="nav-serviceList" >Service List</a></li>
-                    </ul>
-                </li>
-                <li><a href="#" id="nav-parts" ><i class="fa fa-cogs"></i> Parts <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu" style="display: none">
-                        <li><a href="?r=category"  id="nav-category" >Category</a></li>
-                        <li><a href="?r=product"  id="nav-product" >Parts</a></li>
-                        <li><a href="?r=supplier" id="nav-supplier" >Parts-Supplier</a></li>
-                        <li><a href="?r=inventory" id="nav-inventory" > Parts-Inventory</a></li>
-                    </ul>
-                </li>
-                <li><a href="?r=branch" id="nav-branch" ><i class="fa fa-globe"></i> Branch </a></li>
-                <li><a href="?r=customer" id="nav-customer"  ><i class="fa fa-users"></i> Customer </a></li>
-                <li><a href="#" id="nav-user" ><i class="fa fa-user"></i>  User <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu" style="display: none">
-                        <li><a href="?r=role" id="nav-role"  >User Role</a></li>
-                        <li><a href="?r=modules" id="nav-modules" >Module List</a></li>
-                        <li><a href="?r=user-permission" id="nav-userPermission" >User Permission</a></li>
-                        <li ><a href="?r=user" id="nav-userList"  >User </a></li>
-                    </ul>
-                </li>
-                <li><a href="#" id="nav-reports" ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu" style="display: none">
-                        <li><a href="general_elements.html">General Elements</a>
-                        </li>
-                        <li><a href="media_gallery.html">Media Gallery</a>
-                        </li>
-                        <li><a href="typography.html">Typography</a>
-                        </li>
-                        <li><a href="icons.html">Icons</a>
-                        </li>
-                        <li><a href="glyphicons.html">Glyphicons</a>
-                        </li>
-                        <li><a href="widgets.html">Widgets</a>
-                        </li>
-                        <li><a href="invoice.html">Invoice</a>
-                        </li>
-                        <li><a href="inbox.html">Inbox</a>
-                        </li>
-                        <li><a href="calender.html">Calender</a>
-                        </li>
-                    </ul>
-                </li>
-                <li><a href="#" id="nav-reports" ><i class="fa fa-gear"></i> Utilities <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu" style="display: none">
-                        <li><a href="?r=gst">GST</a></li>
-                    </ul>
-                </li>
-                <li id="footer-container"><span style="color: transparent;" >-</span><br/><span id="footer-content"> &copy; <?php echo date('Y'); ?> | FIRSTCOM SOLUTIONS</span><br/><span style="color: transparent;" >-</span></li>
-                <!-- <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu" style="display: none">
-                        <li><a href="tables.html">Tables</a>
-                        </li>
-                        <li><a href="tables_dynamic.html">Table Dynamic</a>
-                        </li>
-                    </ul>
-                </li>
-                <li><a><i class="fa fa-bar-chart-o"></i> Data Presentation <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu" style="display: none">
-                        <li><a href="chartjs.html">Chart JS</a>
-                        </li>
-                        <li><a href="chartjs2.html">Chart JS2</a>
-                        </li>
-                        <li><a href="morisjs.html">Moris JS</a>
-                        </li>
-                        <li><a href="echarts.html">ECharts </a>
-                        </li>
-                        <li><a href="other_charts.html">Other Charts </a>
-                        </li>
-                    </ul>
-                </li> -->
-            </ul>
-        </div>
-        <!-- <div class="menu_section">
-            <h3>Live On</h3>
-            <ul class="nav side-menu">
-                <li><a><i class="fa fa-bug"></i> Additional Pages <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu" style="display: none">
-                        <li><a href="e_commerce.html">E-commerce</a>
-                        </li>
-                        <li><a href="projects.html">Projects</a>
-                        </li>
-                        <li><a href="project_detail.html">Project Detail</a>
-                        </li>
-                        <li><a href="contacts.html">Contacts</a>
-                        </li>
-                        <li><a href="profile.html">Profile</a>
-                        </li>
-                    </ul>
-                </li>
-                <li><a><i class="fa fa-windows"></i> Extras <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu" style="display: none">
-                        <li><a href="page_404.html">404 Error</a>
-                        </li>
-                        <li><a href="page_500.html">500 Error</a>
-                        </li>
-                        <li><a href="plain_page.html">Plain Page</a>
-                        </li>
-                        <li><a href="login.html">Login Page</a>
-                        </li>
-                        <li><a href="pricing_tables.html">Pricing Tables</a>
-                        </li>
-
-                    </ul>
-                </li>
-                <li><a><i class="fa fa-laptop"></i> Landing Page <span class="label label-success pull-right">Coming Soon</span></a>
-                </li>
-            </ul>
-        </div> -->
-
-    </div>
-    <!-- /sidebar menu -->
-
-    <!-- /menu footer buttons -->
-    <div class="sidebar-footer hidden-small">
-        <a data-toggle="tooltip" data-placement="top" title="Settings">
-            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-        </a>
-        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-        </a>
-        <a data-toggle="tooltip" data-placement="top" title="Lock">
-            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-        </a>
-        <a data-toggle="tooltip" data-placement="top" title="Logout">
-            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-        </a>
-    </div>
-    <!-- /menu footer buttons -->
-</div>
-    </div>
-
-<!-- top navigation -->
-<div class="top_nav">
-
-<div class="nav_menu">
-    
-    <nav class="" role="navigation">
-        <div class="nav toggle">
-            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-        </div>
-
-        <ul class="nav navbar-nav navbar-right">
-            <li class="">
-                <a href="javascript:;" id="top-nav-right" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <img src="assets/bootstrap/photos/user.png" alt=""> <?php echo $userName; ?>
-                    <span class=" fa fa-angle-down"></span>
-                </a>
-                <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
-                    <li><a href="javascript:;">  Profile</a>
-                    </li>
-                    <li>
-                        <a href="javascript:;">
-                            <span class="badge bg-red pull-right">50%</span>
-                            <span>Settings</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="javascript:;">Help</a>
-                    </li>
-                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a><?php
-                    echo Html::beginForm(['/site/logout'], 'post',['id' => 'logout-form']) . '<a href="#" onclick="document.getElementById(\'logout-form\').submit(); return false;" class="btn btn-default btn-flat">Sign out</a>'. Html::endForm();
-                  ?>
-                    </li>
-                </ul>
-            </li>
-
-            <li role="presentation" class="dropdown">
-                <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fa fa-envelope-o"></i>
-                    <span class="badge bg-green">6</span>
-                </a>
-                <ul id="menu1" class="dropdown-menu list-unstyled msg_list animated fadeInDown" role="menu">
-                    <li>
-                        <a>
-                            <span class="image">
-                        <img src="assets/bootstrap/photos/user.png" alt="Profile Image" />
-                    </span>
-                            <span>
-                        <span>John Smith</span>
-                            <span class="time">3 mins ago</span>
-                            </span>
-                            <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were where... 
-                    </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a>
-                            <span class="image">
-                        <img src="assets/bootstrap/photos/user.png" alt="Profile Image" />
-                    </span>
-                            <span>
-                        <span>John Smith</span>
-                            <span class="time">3 mins ago</span>
-                            </span>
-                            <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were where... 
-                    </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a>
-                            <span class="image">
-                        <img src="assets/bootstrap/photos/user.png" alt="Profile Image" />
-                    </span>
-                            <span>
-                        <span>John Smith</span>
-                            <span class="time">3 mins ago</span>
-                            </span>
-                            <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were where... 
-                    </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a>
-                            <span class="image">
-                        <img src="assets/bootstrap/photos/user.png" alt="Profile Image" />
-                    </span>
-                            <span>
-                        <span>John Smith</span>
-                            <span class="time">3 mins ago</span>
-                            </span>
-                            <span class="message">
-                        Film festivals used to be do-or-die moments for movie makers. They were where... 
-                    </span>
-                        </a>
-                    </li>
-                    <li>
-                        <div class="text-center">
-                            <a>
-                                <strong><a href="inbox.html">See All Alerts</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
+                    <!-- menu prile quick info -->
+                    <div class="profile">
+                        <div class="profile_pic">
+                            <img src="assets/bootstrap/images/user.png" alt="..." class="img-circle profile_img">
                         </div>
-                    </li>
-                </ul>
-            </li>
+                        <div class="profile_info">
+                            <span>Welcome,</span>
+                            <h2><?= $userFullname ?></h2>
+                        </div>
+                    </div>
+                    <!-- /menu prile quick info -->
 
+                    <br />
+
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+
+                        <div class="menu_section">
+                            <h3>General</h3>
+                            <ul class="nav side-menu">
+                                <li id="menu_header_bg"><a> <span id="nav-menu-header"> <i class="fa fa-list"></i> Menu Navigation </span> </a></li>
+                                <li><a href="?"><i class="fa fa-home"></i> Dashboard </a></li>
+                                <li><a href="?r=branch" id="nav-branch" ><i class="fa fa-globe"></i> Branch </a></li>
+                                <li><a id="nav-user" ><i class="fa fa-user"></i>  User <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu" style="display: none">
+                                        <li><a href="?r=role" id="nav-role" > User Role</a></li>
+                                        <li><a href="?r=modules" id="nav-modules"> Module List</a></li>
+                                        <li><a href="?r=user-permission" id="nav-userPermission"> User Permission</a></li>
+                                        <li ><a href="?r=user" id="nav-userList"> User </a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="?r=customer" id="nav-customer"  ><i class="fa fa-users"></i> Customer </a></li>
+                                <li><a id="nav-services" ><i class="fa fa-battery-quarter"></i> Services <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu" style="display: none">
+                                        <li><a href="?r=service-category"  id="nav-serviceCategory" >Category</a></li>
+                                        <li><a href="?r=service"  id="nav-serviceList" >Service List</a></li>
+                                    </ul>
+                                </li>
+                                <li><a id="nav-parts" ><i class="fa fa-cogs"></i> Parts <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu" style="display: none">
+                                        <li><a href="?r=category"  id="nav-category" >Category</a></li>
+                                        <li><a href="?r=product"  id="nav-product" >Parts</a></li>
+                                        <li><a href="?r=supplier" id="nav-supplier" >Parts-Supplier</a></li>
+                                        <li><a href="?r=inventory" id="nav-inventory" > Parts-Inventory</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="?r=stocks" id="nav-services" ><i class="fa fa-database"></i> Stocks </a></li>
+                                <li><a><i class="fa fa-desktop"></i>Transactions <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu" style="display: none">
+                                        <li><a href="?r=quotation" id="nav-quotation" > Quotation</a></li>
+                                        <li><a href="?r=inventory" id="nav-invoice" > Invoice</a></li>
+                                    </ul>
+                                </li>
+                                <li><a id="nav-reports" ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu" style="display: none">
+                                    <li><a href="media_gallery.html">Best Selling Product</a></li>
+                                    <li><a href="media_gallery.html">Monthly Sales Report</a></li>
+                                        <li><a href="general_elements.html">Monthly Stocks Report</a></li>
+                                    </ul>
+                                </li>
+                                <li><a id="nav-reports" ><i class="fa fa-gear"></i> Utilities <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu" style="display: none">
+                                        <li><a href="?r=gst">Set GST</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <!-- /sidebar menu -->
+
+                    <!-- /menu footer buttons -->
+                    <div class="sidebar-footer hidden-small">
+                        <a data-toggle="tooltip" data-placement="top" title="Settings">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
+                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Lock">
+                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+                        </a>
+                        <a data-toggle="tooltip" data-placement="top" title="Logout">
+                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <!-- /menu footer buttons -->
+                </div>
+            </div>
+
+            <!-- top navigation -->
+            <div class="top_nav">
+
+                <div class="nav_menu">
+                    <nav class="" role="navigation">
+                        <div class="nav toggle">
+                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        </div>
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="">
+                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <img src="assets/bootstrap/images/user.png" alt=""><b> <?= $userFullname ?>
+                                    <span class=" fa fa-angle-down"></span> </b>
+                                </a>
+                                <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
+                                    <li><a href="javascript:;">
+                                            <span class="badge bg-red pull-right">50%</span>
+                                            <span>Settings</span>
+                                        </a>
+                                    </li>
+                                    <li><a href="javascript:;">Help</a></li>
+                                    <li><?php
+                                        echo Html::beginForm(['/site/logout'], 'post',['id' => 'logout-form']) . '<a href="#" onclick="document.getElementById(\'logout-form\').submit(); return false;" class="form-btn btn btn-link btn-flat" style="color: #5A738E; border-top: solid 1px #5A738E;"><i class="fa fa-sign-out"></i> Sign out</a>'. Html::endForm();
+                                      ?>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li role="presentation" class="dropdown">
+                                <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-envelope-o"></i>
+                                    <span class="badge bg-green">6</span>
+                                </a>
+                                <ul id="menu1" class="dropdown-menu list-unstyled msg_list animated fadeInDown" role="menu">
+                                    <li>
+                                        <a>
+                                            <span class="image">
+                                        <img src="assets/bootstrap/images/user.png" alt="Profile Image" />
+                                    </span>
+                                            <span>
+                                        <span>John Smith</span>
+                                            <span class="time">3 mins ago</span>
+                                            </span>
+                                            <span class="message">
+                                        Film festivals used to be do-or-die moments for movie makers. They were where... 
+                                    </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a>
+                                            <span class="image">
+                                        <img src="assets/bootstrap/images/user.png" alt="Profile Image" />
+                                    </span>
+                                            <span>
+                                        <span>John Smith</span>
+                                            <span class="time">3 mins ago</span>
+                                            </span>
+                                            <span class="message">
+                                        Film festivals used to be do-or-die moments for movie makers. They were where... 
+                                    </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a>
+                                            <span class="image">
+                                        <img src="assets/bootstrap/images/user.png" alt="Profile Image" />
+                                    </span>
+                                            <span>
+                                        <span>John Smith</span>
+                                            <span class="time">3 mins ago</span>
+                                            </span>
+                                            <span class="message">
+                                        Film festivals used to be do-or-die moments for movie makers. They were where... 
+                                    </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a>
+                                            <span class="image">
+                                        <img src="assets/bootstrap/images/user.png" alt="Profile Image" />
+                                    </span>
+                                            <span>
+                                        <span>John Smith</span>
+                                            <span class="time">3 mins ago</span>
+                                            </span>
+                                            <span class="message">
+                                        Film festivals used to be do-or-die moments for movie makers. They were where... 
+                                    </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <div class="text-center">
+                                            <a>
+                                                <strong>See All Alerts</strong>
+                                                <i class="fa fa-angle-right"></i>
+                                            </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </nav>
+                </div>
+
+            </div>
+            <!-- /top navigation -->
+
+            <!-- page content -->
+            <div class="right_col" role="main">
+                <div class="">     
+                <br/ >
+
+                    <div>
+                        <?= $content ?>
+                    </div>
+
+                </div>
+                <br/>
+
+                <!-- footer content -->
+                <footer>
+                    <div class="">
+                        <p class="pull-right">&copy; <?= date('Y') ?> Powered by <a>FirstCom Solutions</a>. |
+                            <span class="lead"> <i class="fa fa-car"></i> Arh Group Pte Ltd. </span>
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                </footer>
+                <!-- /footer content -->
+
+            </div>
+            <!-- /page content -->
+
+        </div>
+
+    </div>
+
+    <div id="custom_notifications" class="custom-notifications dsp_none">
+        <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group">
         </ul>
-    </nav>
-
-</div>
-
-</div>
-<!-- /top navigation -->
-
-
-<!-- page content -->
-<div class="right_col" role="main">
-<br/>
-
-<div>
-    <?= $content ?>
-</div>
-<br />
-
-<!-- footer content -->
-<!-- <footer>
-    <div class="">
-        <p class="pull-right"> &copy; <?php echo date('Y'); ?> Powered by <a>FirstCom Solutions</a>. |
-            <span class="lead"> <i class="fa fa-car"></i> ARH Group Pte Ltd. </span>
-        </p>
+        <div class="clearfix"></div>
+        <div id="notif-group" class="tabbed_notifications"></div>
     </div>
-    <div class="clearfix"></div>
-</footer> -->
-<!-- /footer content -->
-
-</div>
-<!-- /page content -->
-
-    </div>
-
-</div>
-
-<div id="custom_notifications" class="custom-notifications dsp_none">
-    <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group">
-    </ul>
-    <div class="clearfix"></div>
-    <div id="notif-group" class="tabbed_notifications"></div>
-</div>
 
     <!-- Javascript -->
     <script src="assets/bootstrap/js/jquery.min.js"></script>
@@ -454,8 +388,12 @@ $userName = Yii::$app->user->identity->username;
     <script type="text/javascript" src="assets/bootstrap/js/moment.min.js"></script>
     <script type="text/javascript" src="assets/bootstrap/js/moment.min2.js"></script>
     <script type="text/javascript" src="assets/bootstrap/js/datepicker/daterangepicker.js"></script>
+    <!-- sparkline -->
+    <script src="assets/bootstrap/js/sparkline/jquery.sparkline.min.js"></script>
 
     <script src="assets/bootstrap/js/custom.js"></script>
+    <!-- skycons -->
+    <script src="assets/bootstrap/js/skycons/skycons.js"></script>
 
     <!-- flot -->
     <script type="text/javascript" src="assets/bootstrap/js/flot/jquery.flot.js"></script>
@@ -500,159 +438,45 @@ $userName = Yii::$app->user->identity->username;
     <script type="text/javascript" src="assets/bootstrap/js/confirmation.js"></script>
     <script type="text/javascript" src="assets/bootstrap/js/datepicker.js"></script>
     
-    <script type="text/javascript">
-        $
-            $('#userRole').change(function(){
-            $('#w0').submit();
-            });
-
-            $('#controllerName').change(function(){
-                $('#w0').submit();
-            });
-
-            $('#select-all').click(function(event) {   
-                $('.actionChkbox').each(function() {
-                    this.checked = true;
-                
-                });
-            });
-
-            $('#checkAllParts').click(function(event) {   
-                $('.updateQty').each(function() {
-                    this.checked = true;
-                
-                });
-            });
-    </script>
-
     <!-- select2 -->
-    <script>
-        $(document).ready(function () {
-            $(".select2_single").select2({
-                placeholder: "Choose here",
-                allowClear: true
-            });
-            $(".select3_single").select2({
-                placeholder: "Choose here",
-                allowClear: true
-            });
-            $(".select2_group").select2({});
-            $(".select2_multiple").select2({
-                maximumSelectionLength: 4,
-                placeholder: "With Max Selection limit 4",
-                allowClear: true
-            });
-        });
+    <script type="text/javascript" src="assets/bootstrap/js/selecttwo.js"></script>
 
-        $(document).ready(function() {
-
-
-          $(".add-more").click(function(){ 
-
-              var html = $(".copy").html();
-
-              $(".after-add-more").after(html);
-
-          });
-
-
-          $(".remove").each(function(){
-            $(this).click(function(){
-
-                alert(2);
-              // $(this).parents(".control-group").remove();
-
-            });
-
-          });
-
-
-        });
-
-    </script>
-    <!-- /select2 -->
-
-    <script>
-        $(function () {
-            var cnt = 10; //$("#custom_notifications ul.notifications li").length + 1;
-            TabbedNotification = function (options) {
-                var message = "<div id='ntf" + cnt + "' class='text alert-" + options.type + "' style='display:none'><h2><i class='fa fa-bell'></i> " + options.title + "</h2><div class='close'><a href='javascript:;' class='notification_close'><i class='fa fa-close'></i></a></div><p>" + options.text + "</p></div>";
-
-                if (document.getElementById('custom_notifications') == null) {
-                    alert('doesnt exists');
-                } else {
-                    $('#custom_notifications ul.notifications').append("<li><a id='ntlink" + cnt + "' class='alert-" + options.type + "' href='#ntf" + cnt + "'><i class='fa fa-bell animated shake'></i></a></li>");
-                    $('#custom_notifications #notif-group').append(message);
-                    cnt++;
-                    CustomTabs(options);
-                }
-            }
-
-            CustomTabs = function (options) {
-                $('.tabbed_notifications > div').hide();
-                $('.tabbed_notifications > div:first-of-type').show();
-                $('#custom_notifications').removeClass('dsp_none');
-                $('.notifications a').click(function (e) {
-                    e.preventDefault();
-                    var $this = $(this),
-                        tabbed_notifications = '#' + $this.parents('.notifications').data('tabbed_notifications'),
-                        others = $this.closest('li').siblings().children('a'),
-                        target = $this.attr('href');
-                    others.removeClass('active');
-                    $this.addClass('active');
-                    $(tabbed_notifications).children('div').hide();
-                    $(target).show();
-                });
-            }
-
-            CustomTabs();
-
-            var tabid = idname = '';
-            $(document).on('click', '.notification_close', function (e) {
-                idname = $(this).parent().parent().attr("id");
-                tabid = idname.substr(-2);
-                $('#ntf' + tabid).remove();
-                $('#ntlink' + tabid).parent().remove();
-                $('.notifications a').first().addClass('active');
-                $('#notif-group div').first().css('display','block');
-            });
-        })
-    </script>
-
-    <script>
+    <!-- add & remove new product -->
+    <script type="text/javascript" src="assets/bootstrap/js/add-remove-new-product.js"></script>
     
-    $(document).ready(function () {
+    <!-- update stocks qty -->
+    <script type="text/javascript" src="assets/bootstrap/js/update-stocks-qty.js"></script>
+  
+    <!-- flot -->
+    <script type="text/javascript" src="assets/bootstrap/js/flot.js"></script>
+    
+    <!-- sparkline  -->
+    <script type="text/javascript" src="assets/bootstrap/js/sparkline.js"></script>
+    
+    <!-- reportrange -->
+    <!-- datepicker -->
+    <script type="text/javascript" src="assets/bootstrap/js/reportrange-datepicker.js"></script>
 
-            $('.qtyValue').each(function(){
+    <!-- moris js -->
+    <script type="text/javascript" src="assets/bootstrap/js/moris/raphael-min.js"></script>
+    <script type="text/javascript" src="assets/bootstrap/js/moris/morris.js"></script>
+    <script type="text/javascript" src="assets/bootstrap/js/moris.js"></script>
+    
+    <!-- skycons -->
+    <script type="text/javascript" src="assets/bootstrap/js/skycons.js"></script>
+    
+    <!--  gauge-->
+    <script type="text/javascript" src="assets/bootstrap/js/gauge.js"></script>
+    
 
-                $('.qtyValue').change(function(){
+    <!-- user-permission -->
+    <script type="text/javascript" src="assets/bootstrap/js/user-permission.js"></script>
+    
+    <!-- tab -->
+    <script type="text/javascript" src="assets/bootstrap/js/tab.js"></script>
 
-                    var qtyValueId = $(this).attr('id');
-                    var qtyValue = $(this).val();
-
-                    $('.qtyS').each(function(){
-
-                        if( $(this).attr('id') === qtyValueId ) {
-                                var qtySvalue = $(this).val();
-                                var total = parseInt(qtySvalue) + parseInt(qtyValue);
-                                console.log(parseInt(total));
-
-                    
-                                // // $(this).val(total);    
-
-                                // // return true;                        
-                        
-                        }
-
-                    });
-
-                });
-
-            });
-        
-
-    });
-</script>
+    <!-- quotation -->
+    <script type="text/javascript" src="assets/bootstrap/js/quotation.js"></script>
 
     </body>   
 

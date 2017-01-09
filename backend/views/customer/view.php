@@ -54,8 +54,7 @@ $this->title = 'View Customer';
             'is_blacklist',
             'is_member',
             'points',
-            'member_expiry',
-            'status',
+            'member_expiry'
             // 'created_at',
             // 'created_by',
             // 'updated_at',

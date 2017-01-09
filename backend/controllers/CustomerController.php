@@ -42,37 +42,31 @@ class CustomerController extends Controller
         }   
         // print_r($action['developer']); exit;
         return [
-            // 'access' => [
-            //     'class' => AccessControl::className(),
-            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
-            //     'rules' => [
+            'access' => [
+                'class' => AccessControl::className(),
+                // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
                     
-            //         [
-            //             'actions' => $action['developer'],
-            //             'allow' => $allow['developer'],
-            //             'roles' => ['developer'],
-            //         ],
+                    [
+                        'actions' => $action['developer'],
+                        'allow' => $allow['developer'],
+                        'roles' => ['developer'],
+                    ],
 
-            //         [
-            //             'actions' => $action['admin'],
-            //             'allow' => $allow['admin'],
-            //             'roles' => ['admin'],
-            //         ],
+                    [
+                        'actions' => $action['admin'],
+                        'allow' => $allow['admin'],
+                        'roles' => ['admin'],
+                    ],
 
-            //         [
-            //             'actions' => $action['staff'],
-            //             'allow' => $allow['staff'],
-            //             'roles' => ['staff'],
-            //         ],
-
-            //         [
-            //             'actions' => $action['customer'],
-            //             'allow' => $allow['customer'],
-            //             'roles' => ['customer'],
-            //         ]
+                    [
+                        'actions' => $action['staff'],
+                        'allow' => $allow['staff'],
+                        'roles' => ['staff'],
+                    ]
        
-            //     ],
-            // ],
+                ],
+            ],
 
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -92,15 +86,14 @@ class CustomerController extends Controller
         $searchModel = new SearchCustomer();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchCustomer')['fullname'] ) || isset(Yii::$app->request->get('SearchCustomer')['email'] ) || isset(Yii::$app->request->get('SearchCustomer')['carplate'] )) {
+        if( isset(Yii::$app->request->get('SearchCustomer')['fullname'] ) ) {
 
                 $fullname = Yii::$app->request->get('SearchCustomer')['fullname'];
-                $email = Yii::$app->request->get('SearchCustomer')['email'];
-                $carplate = Yii::$app->request->get('SearchCustomer')['carplate'];
+                $getCustomer = $searchModel->searchCustomer($fullname);
 
-                $getCustomer = $searchModel->searchCustomer($fullname,$email,$carplate);
-        }elseif ( Yii::$app->request->get('SearchCustomer')['fullname'] == "" || Yii::$app->request->get('SearchCustomer')['email'] == "" || Yii::$app->request->get('SearchCustomer')['carplate'] == "" ) {
+        }elseif ( Yii::$app->request->get('SearchCustomer')['fullname'] == "" ) {
                 $getCustomer = Customer::find()->all();
+
         }else {
                 $getCustomer = Customer::find()->all();
         }

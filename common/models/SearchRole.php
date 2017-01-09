@@ -67,7 +67,7 @@ class SearchRole extends Role
         return $dataProvider;
     }
 
-    public function searchRole($id,$role) {
+    public function searchRole($role) {
         $rows = new Query();
 
         $result = $rows->select(['*'])

@@ -28,7 +28,7 @@ class ProductController extends Controller
         $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
        
         foreach ( $userRoleArray as $uRId => $uRName ){ 
-            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $permission = UserPermission::find()->where(['controller' => 'Product'])->andWhere(['role_id' => $uRId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
                 $actionArray[] = $p->action;
@@ -43,37 +43,31 @@ class ProductController extends Controller
         }   
         // print_r($action['developer']); exit;
         return [
-            // 'access' => [
-            //     'class' => AccessControl::className(),
-            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
-            //     'rules' => [
+            'access' => [
+                'class' => AccessControl::className(),
+                // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
                     
-            //         [
-            //             'actions' => $action['developer'],
-            //             'allow' => $allow['developer'],
-            //             'roles' => ['developer'],
-            //         ],
+                    [
+                        'actions' => $action['developer'],
+                        'allow' => $allow['developer'],
+                        'roles' => ['developer'],
+                    ],
 
-            //         [
-            //             'actions' => $action['admin'],
-            //             'allow' => $allow['admin'],
-            //             'roles' => ['admin'],
-            //         ],
+                    [
+                        'actions' => $action['admin'],
+                        'allow' => $allow['admin'],
+                        'roles' => ['admin'],
+                    ],
 
-            //         [
-            //             'actions' => $action['staff'],
-            //             'allow' => $allow['staff'],
-            //             'roles' => ['staff'],
-            //         ],
-
-            //         [
-            //             'actions' => $action['customer'],
-            //             'allow' => $allow['customer'],
-            //             'roles' => ['customer'],
-            //         ]
+                    [
+                        'actions' => $action['staff'],
+                        'allow' => $allow['staff'],
+                        'roles' => ['staff'],
+                    ]
        
-            //     ],
-            // ],
+                ],
+            ],
 
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -93,22 +87,22 @@ class ProductController extends Controller
         $searchModel = new SearchProduct();
         $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
         
-        if( isset(Yii::$app->request->get('SearchProduct')['category_id'] ) || isset(Yii::$app->request->get('SearchProduct')['product_code'] )  || isset(Yii::$app->request->get('SearchProduct')['product_name'] ) ) {
+        if( isset(Yii::$app->request->get('SearchProduct')['category_id'] ) || isset(Yii::$app->request->get('SearchProduct')['product_name'] ) ) {
 
                 $category_id = Yii::$app->request->get('SearchProduct')['category_id'];
-                $product_code = Yii::$app->request->get('SearchProduct')['product_code'];
                 $product_name = Yii::$app->request->get('SearchProduct')['product_name'];
+                $getProduct = $searchModel->searchProduct($category_id,$product_name);
 
-                $getProduct = $searchModel->searchProduct($category_id,$product_code,$product_name);
-
-        }elseif ( Yii::$app->request->get('SearchProduct')['category_id'] == "" || Yii::$app->request->get('SearchProduct')['product_code'] == "" || Yii::$app->request->get('SearchProduct')['product_name'] == "" ) {
+        }elseif ( Yii::$app->request->get('SearchProduct')['category_id'] == "" && Yii::$app->request->get('SearchProduct')['product_name'] == "" ) {
                 
                 $getResult = new Product();
                 $getProduct = $getResult->getProduct();
+
         }else {
 
                 $getResult = new Product();
                 $getProduct = $getResult->getProduct();
+
         }
 
         return $this->render('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'getProduct' => $getProduct, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''

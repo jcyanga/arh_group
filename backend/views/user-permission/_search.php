@@ -27,19 +27,19 @@ $dataRole = ArrayHelper::map(Role::find()->where('id > 1')->all(), 'id', 'role')
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'role_id')->dropDownList($dataRole)->label(false) ?>
+        <?= $form->field($model, 'role_id')->dropDownList($dataRole,['class' => 'form_input form-control'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'controller')->textInput(['placeholder' => 'Enter Controller here...'])->label(false) ?>
+        <?= $form->field($model, 'controller')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Enter Controller here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'action')->textInput(['placeholder' => 'Enter Actions here...'])->label(false) ?>
+        <?= $form->field($model, 'action')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Enter Actions here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'btn btn-primary']) ?>
+        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
         <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
     </div>
     

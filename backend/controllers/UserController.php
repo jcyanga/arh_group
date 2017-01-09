@@ -28,7 +28,7 @@ class UserController extends Controller
         $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
        
         foreach ( $userRoleArray as $uRId => $uRName ){ 
-            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $permission = UserPermission::find()->where(['controller' => 'User'])->andWhere(['role_id' => $uRId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
                 $actionArray[] = $p->action;
@@ -43,37 +43,31 @@ class UserController extends Controller
         }   
         // print_r($action['developer']); exit;
         return [
-            // 'access' => [
-            //     'class' => AccessControl::className(),
-            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
-            //     'rules' => [
+            'access' => [
+                'class' => AccessControl::className(),
+                // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
                     
-            //         [
-            //             'actions' => $action['developer'],
-            //             'allow' => $allow['developer'],
-            //             'roles' => ['developer'],
-            //         ],
+                    [
+                        'actions' => $action['developer'],
+                        'allow' => $allow['developer'],
+                        'roles' => ['developer'],
+                    ],
 
-            //         [
-            //             'actions' => $action['admin'],
-            //             'allow' => $allow['admin'],
-            //             'roles' => ['admin'],
-            //         ],
+                    [
+                        'actions' => $action['admin'],
+                        'allow' => $allow['admin'],
+                        'roles' => ['admin'],
+                    ],
 
-            //         [
-            //             'actions' => $action['staff'],
-            //             'allow' => $allow['staff'],
-            //             'roles' => ['staff'],
-            //         ],
-
-            //         [
-            //             'actions' => $action['customer'],
-            //             'allow' => $allow['customer'],
-            //             'roles' => ['customer'],
-            //         ]
+                    [
+                        'actions' => $action['staff'],
+                        'allow' => $allow['staff'],
+                        'roles' => ['staff'],
+                    ]
        
-            //     ],
-            // ],
+                ],
+            ],
 
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -93,14 +87,12 @@ class UserController extends Controller
         $searchModel = new SearchUser();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchUser')['fullname'] ) || isset(Yii::$app->request->get('SearchUser')['username'] ) || isset(Yii::$app->request->get('SearchUser')['email'] )) {
+        if( isset(Yii::$app->request->get('SearchUser')['fullname'] ) ) {
 
                 $fullname = Yii::$app->request->get('SearchUser')['fullname'];
-                $username = Yii::$app->request->get('SearchUser')['username'];
-                $email = Yii::$app->request->get('SearchUser')['email'];
+                $getUser = $searchModel->searchUser($fullname);
 
-                $getUser = $searchModel->searchUser($fullname,$username,$email);
-        }elseif ( Yii::$app->request->get('SearchUser')['fullname'] == "" || Yii::$app->request->get('SearchUser')['username'] == "" || Yii::$app->request->get('SearchUser')['email'] == "" ) {
+        }elseif ( Yii::$app->request->get('SearchUser')['fullname'] == "" ) {
                 $getUser = $searchModel->getUser();
 
         }else {
@@ -148,7 +140,7 @@ class UserController extends Controller
             $result = $model->getUsernameAndEmail($username, $email);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change customer username or email.']);
+                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change username or email.']);
             }
             
             if ( !empty ( $model->password ) ) {
@@ -159,21 +151,21 @@ class UserController extends Controller
 
             if($model->save()) {
             
-               $auth = \Yii::$app->authManager;
+               $auth = Yii::$app->authManager;
 
                $userRoleId = $model->role_id;
 
                 if ( $userRoleId == 1) {
-                    // $userRole = $auth->getRole('developer');
-                    $auth->assign('developer', $model->id);
+                    $userRole = $auth->getRole('developer');
+                    $auth->assign($userRole, $model->id);
                 }
                 if ( $userRoleId == 2) {
-                    // $userRole = $auth->getRole('admin');
-                    $auth->assign('admin', $model->id);
+                    $userRole = $auth->getRole('admin');
+                    $auth->assign($userRole, $model->id);
                 }
                 if ( $userRoleId == 3) {
-                    // $userRole = $auth->getRole('staff');
-                    $auth->assign('staff', $model->id);
+                    $userRole = $auth->getRole('staff');
+                    $auth->assign($userRole, $model->id);
                 }
 
                 $searchModel = new SearchUser();

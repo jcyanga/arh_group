@@ -50,12 +50,12 @@ class Customer extends \yii\db\ActiveRecord
         
         // 'is_blacklist', 'is_member', 'status', 'created_by', 'updated_by'
         return [
-            [['fullname', 'ic', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'tyre_size', 'batteries', 'belt', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at'], 'required'],
-            [['fullname', 'ic', 'address', 'batteries', 'belt', 'is_member'], 'string'],
+            [['fullname', 'ic', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at'], 'required'],
+            [['fullname', 'ic', 'address', 'is_member'], 'string'],
             [['hanphone_no', 'office_no', 'points', 'is_blacklist', 'created_by'], 'integer'],
             [['email'], 'email'],
             [['member_expiry', 'status', 'created_at', 'updated_at'], 'safe'],
-            [['fullname', 'ic', 'race', 'carplate', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'tyre_size', 'batteries', 'belt'], 'string', 'max' => 50],
+            [['fullname', 'ic', 'race', 'carplate', 'hanphone_no', 'office_no', 'email', 'make', 'model'], 'string', 'max' => 50],
         ];
     }
 
@@ -75,9 +75,6 @@ class Customer extends \yii\db\ActiveRecord
             'email' => 'Email',
             'make' => 'Make',
             'model' => 'Model',
-            'tyre_size' => 'Tyre Size',
-            'batteries' => 'Batteries',
-            'belt' => 'Belt',
             'is_blacklist' => 'Is Blacklist',
             'is_member' => 'Already a member.',
             'points' => 'Points',

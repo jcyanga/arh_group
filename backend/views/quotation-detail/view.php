@@ -4,13 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\QuotationSubtotal */
+/* @var $model common\models\QuotationDetail */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Quotation Subtotals', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Quotation Details', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="quotation-subtotal-view">
+<div class="quotation-detail-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -30,13 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'quotation_id',
-            'item_id',
-            'qty',
-            'price',
+            'service_part_id',
+            'quantity',
+            'selling_price',
             'subTotal',
-            'type',
             'created_at',
             'created_by',
+            'type',
         ],
     ]) ?>
 

@@ -17,17 +17,17 @@ $this->title = 'Modules';
 ?>
 
 <div class="row form-container">
- 
+
+<div>
+    <?php if($msg <> ''){ ?>
+        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
+            <?php echo $msg; ?>
+        </div>
+    <?php } ?>
+</div>
+
  <div class="col-md-12 col-sm-12 col-xs-12">
-  
-    <div>
-        <?php if($msg <> ''){ ?>
-            <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-            <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-                <?php echo $msg; ?>
-            </div>
-        <?php } ?>
-    </div>
 
     <div class="form-title-container">
         <span class="form-header"><h4>Module Maintenance</h4></span>
@@ -70,7 +70,7 @@ $this->title = 'Modules';
     <thead>
         <tr style="font-size: 11px;" class="headings">
             <th> # </th>
-            <th style="text-align: center;"> MODULES </th>
+            <th class="tblalign_center"> MODULES </th>
             <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
@@ -82,10 +82,10 @@ $this->title = 'Modules';
                 <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                     <td class=" "><?php echo $row['id'];  ?></td>
                     <td style="text-align: center;" class=" "><?php echo $row['modules'];  ?></td>
-                    <td style="text-align: center; font-size: 12px;" class=" last">
-                        <a href="?r=modules/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> | 
-                        <a href="?r=modules/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> | 
-                        <a href="?r=modules/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><b><li class="fa fa-trash"></li> DELETE </b></a>
+                    <td style="text-align: center; font-size: 13px;" class=" last">
+                        <a href="?r=modules/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a> |
+                        <a href="?r=modules/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-pencil-square"><span class="actionTooltiptext">Update record</span></li> </a> | 
+                        <a href="?r=modules/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
                     </td>
                 </tr>
             <?php } ?> 

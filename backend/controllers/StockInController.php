@@ -3,16 +3,16 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\QuotationSubtotal;
-use common\models\SearchQuotationSubtotal;
+use common\models\StockIn;
+use common\models\SearchStockIn;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * QuotationSubtotalController implements the CRUD actions for QuotationSubtotal model.
+ * StockInController implements the CRUD actions for StockIn model.
  */
-class QuotationSubtotalController extends Controller
+class StockInController extends Controller
 {
     /**
      * @inheritdoc
@@ -30,12 +30,12 @@ class QuotationSubtotalController extends Controller
     }
 
     /**
-     * Lists all QuotationSubtotal models.
+     * Lists all StockIn models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SearchQuotationSubtotal();
+        $searchModel = new SearchStockIn();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -45,7 +45,7 @@ class QuotationSubtotalController extends Controller
     }
 
     /**
-     * Displays a single QuotationSubtotal model.
+     * Displays a single StockIn model.
      * @param integer $id
      * @return mixed
      */
@@ -57,13 +57,13 @@ class QuotationSubtotalController extends Controller
     }
 
     /**
-     * Creates a new QuotationSubtotal model.
+     * Creates a new StockIn model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new QuotationSubtotal();
+        $model = new StockIn();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -75,7 +75,7 @@ class QuotationSubtotalController extends Controller
     }
 
     /**
-     * Updates an existing QuotationSubtotal model.
+     * Updates an existing StockIn model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -94,7 +94,7 @@ class QuotationSubtotalController extends Controller
     }
 
     /**
-     * Deletes an existing QuotationSubtotal model.
+     * Deletes an existing StockIn model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -107,15 +107,15 @@ class QuotationSubtotalController extends Controller
     }
 
     /**
-     * Finds the QuotationSubtotal model based on its primary key value.
+     * Finds the StockIn model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return QuotationSubtotal the loaded model
+     * @return StockIn the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = QuotationSubtotal::findOne($id)) !== null) {
+        if (($model = StockIn::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

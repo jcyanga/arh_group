@@ -76,13 +76,12 @@ class SearchBranch extends Branch
         return $dataProvider;
     }
 
-    public function searchBranch($code,$name) {
+    public function searchBranch($name) {
         $rows = new Query();
 
         $result = $rows->select(['*'])
                     ->from('branch')
-                    ->where(['like', 'code', $code])
-                    ->orWhere(['like', 'name', $name])
+                    ->where(['like', 'name', $name])
                     ->all();
 
         return $result;  

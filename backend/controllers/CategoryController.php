@@ -27,7 +27,7 @@ class CategoryController extends Controller
         $userRoleArray = ArrayHelper::map(Role::find()->all(), 'id', 'role');
        
         foreach ( $userRoleArray as $uRId => $uRName ){ 
-            $permission = UserPermission::find()->where(['controller' => 'Modules'])->andWhere(['role_id' => $uRId ] )->all();
+            $permission = UserPermission::find()->where(['controller' => 'Category'])->andWhere(['role_id' => $uRId ] )->all();
             $actionArray = [];
             foreach ( $permission as $p )  {
                 $actionArray[] = $p->action;
@@ -42,37 +42,31 @@ class CategoryController extends Controller
         }   
         // print_r($action['developer']); exit;
         return [
-            // 'access' => [
-            //     'class' => AccessControl::className(),
-            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
-            //     'rules' => [
+            'access' => [
+                'class' => AccessControl::className(),
+                // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
                     
-            //         [
-            //             'actions' => $action['developer'],
-            //             'allow' => $allow['developer'],
-            //             'roles' => ['developer'],
-            //         ],
+                    [
+                        'actions' => $action['developer'],
+                        'allow' => $allow['developer'],
+                        'roles' => ['developer'],
+                    ],
 
-            //         [
-            //             'actions' => $action['admin'],
-            //             'allow' => $allow['admin'],
-            //             'roles' => ['admin'],
-            //         ],
+                    [
+                        'actions' => $action['admin'],
+                        'allow' => $allow['admin'],
+                        'roles' => ['admin'],
+                    ],
 
-            //         [
-            //             'actions' => $action['staff'],
-            //             'allow' => $allow['staff'],
-            //             'roles' => ['staff'],
-            //         ],
-
-            //         [
-            //             'actions' => $action['customer'],
-            //             'allow' => $allow['customer'],
-            //             'roles' => ['customer'],
-            //         ]
+                    [
+                        'actions' => $action['staff'],
+                        'allow' => $allow['staff'],
+                        'roles' => ['staff'],
+                    ]
        
-            //     ],
-            // ],
+                ],
+            ],
 
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -92,16 +86,17 @@ class CategoryController extends Controller
         $searchModel = new SearchCategory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchCategory')['id'] ) || isset(Yii::$app->request->get('SearchCategory')['category'] ) ) {
+        if( isset(Yii::$app->request->get('SearchCategory')['category'] ) ) {
 
-                $id = Yii::$app->request->get('SearchCategory')['id'];
                 $category = Yii::$app->request->get('SearchCategory')['category'];
+                $getCategory = $searchModel->searchCategory($category);
 
-                $getCategory = $searchModel->searchCategory($id,$category);
-        }elseif ( Yii::$app->request->get('SearchCategory')['id'] == "" || Yii::$app->request->get('SearchCategory')['category'] == "" ) {
+        }elseif ( Yii::$app->request->get('SearchCategory')['category'] == "" ) {
                 $getCategory = Category::find()->all();
+
         }else {
                 $getCategory = Category::find()->all();
+
         }
 
         return $this->render('index', ['searchModel' => $searchModel, 'getCategory' => $getCategory, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
@@ -136,7 +131,7 @@ class CategoryController extends Controller
             $result = $model->getCategory($category);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change the category.']);
+                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change the part category name.']);
             }
 
             if($model->save()) {

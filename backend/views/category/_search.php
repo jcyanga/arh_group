@@ -23,12 +23,8 @@ use yii\helpers\Url;
 <!-- , 'class' => 'form-inline' -->
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
-    <div class="col-md-3">
-        <?= $form->field($model, 'id')->textInput(['placeholder' => 'Enter ID here...'])->label(false) ?>
-    </div>
-
-    <div class="col-md-3">
-        <?= $form->field($model, 'category')->textInput(['placeholder' => 'Enter Category here...'])->label(false) ?>
+    <div class="col-md-4">
+        <?= $form->field($model, 'category')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Write Category here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">

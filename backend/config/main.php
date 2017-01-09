@@ -46,5 +46,6 @@ return [
         ],
         */
     ],
+    'timeZone' => 'Asia/Singapore',
     'params' => $params,
 ];

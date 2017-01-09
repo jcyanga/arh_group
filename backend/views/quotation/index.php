@@ -35,7 +35,7 @@ $this->title = 'Inventories';
 
     <p>
         <a href="?r=quotation/create" id="option-list-link" class="btn btn-app">
-            <i class="fa fa-pencil-square-o"></i> <b> New Quotation </b>
+            <i class="fa fa-cogs"></i> <b> New Quotation </b>
         </a>
 
         <a href="?r=quotation/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
@@ -49,9 +49,8 @@ $this->title = 'Inventories';
 </div>
 
 <div class="row table-container">
- 
- <div class="col-md-12 col-sm-12 col-xs-12">
-<br/>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
         <span class="form-header"><h4><i class="fa fa-pencil-square-o"></i> QUOTATION</h4></span>
@@ -63,7 +62,50 @@ $this->title = 'Inventories';
  <div class="col-md-12 col-sm-12 col-xs-12">
  <br/><br/>
 
-   
+    <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
+    <thead>
+        <tr style="font-size: 11px;" class="headings">
+            <th> # </th>
+            <th class="tblalign_center" ><b>QUOTATION CODE</b></th>
+            <th class="tblalign_center" ><b>BRANCH</b></th>
+            <th class="tblalign_center" ><b>CUSTOMER NAME</b></th>
+            <th class="tblalign_center" ><b>CAR-PLATE</b></th>
+            <th class="tblalign_center" ><b>SALES PERSON</b></th>
+            <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
+            </th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <?php if( !empty($getQuotation) ): ?>
+            <?php foreach( $getQuotation as $row){ ?>
+                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
+                    <td class=" "><?php echo $row['id'];  ?></td>
+                    <td class="tblalign_center"><?php echo $row['quotation_code'];  ?></td>
+                    <td class="tblalign_center"><?php echo $row['name'];  ?></td>
+                    <td class="tblalign_center"><?php echo $row['fullname'];  ?></td>
+                    <td class="tblalign_center"><?php echo $row['carplate'];  ?></td>
+                    <td class="tblalign_center"><?php echo $row['salesPerson'];  ?></td>
+                    <td style="text-align: center; font-size: 13px;" class=" last">
+                       <a href="?r=quotation/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a> |
+                       <a href="?r=quotation/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-edit"><span class="actionTooltiptext">Update record</span></li> </a> |
+                       <a href="?r=quotation/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
+                    </td>
+                </tr>
+            <?php } ?> 
+        <?php else: ?>
+            <tr>
+                <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        <?php endif; ?> 
+    </tbody>
+    </table>
  
 </div>
 
@@ -72,6 +114,7 @@ $this->title = 'Inventories';
 </div>
 
 <br/>
+
 
 
 

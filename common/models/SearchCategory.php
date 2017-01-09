@@ -68,7 +68,7 @@ class SearchCategory extends Category
         return $dataProvider;
     }
 
-    public function searchCategory($id,$category) {
+    public function searchCategory($category) {
         $rows = new Query();
 
         $result = $rows->select(['*'])

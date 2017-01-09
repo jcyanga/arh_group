@@ -8,11 +8,9 @@ use yii\helpers\Url;
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
-$member_list = array('0' => 'No', '1' => 'Yes');
-
 $datetime = date('Y-m-d h:i:s');
-
 $userId = Yii::$app->user->identity->id;
+
 ?>
 
 <?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
@@ -26,12 +24,9 @@ $userId = Yii::$app->user->identity->id;
     <br/>
 
     <div class="col-md-4">
-        <label style="font-size: 12px;">Category</label>
-        <?= $form->field($model, 'category')->textInput(['required' => 'required', 'placeholder' => 'Category here...'])->label(false) ?>
+        <label class="form_label">Category</label>
+        <?= $form->field($model, 'category')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Part Category here.'])->label(false) ?>
     </div>
-    
-    <div class="col-md-4"></div>
-    <div class="col-md-4"></div>
 
 </div>
 <hr/>

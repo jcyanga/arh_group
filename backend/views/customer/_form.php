@@ -26,18 +26,18 @@ $userId = Yii::$app->user->identity->id;
     <br/>
 
     <div class="col-md-4">
-        <label style="font-size: 12px;">FULLNAME</label>
-        <?= $form->field($model, 'fullname')->textInput(['required' => 'required', 'placeholder' => 'Fullname here...'])->label(false) ?>
+        <label class="form_label">FULLNAME</label>
+        <?= $form->field($model, 'fullname')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Customer Fullname here.'])->label(false) ?>
     </div>
     
     <div class="col-md-4">
-        <label style="font-size: 11px;">ADDRESS</label>
-        <?= $form->field($model, 'address')->textInput(['required' => 'required', 'placeholder' => 'Address here...'])->label(false) ?>
+        <label class="form_label">ADDRESS</label>
+        <?= $form->field($model, 'address')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Address here.'])->label(false) ?>
     </div>
 
     <div class="col-md-4">
-        <label style="font-size: 11px;">RACE</label>
-        <?= $form->field($model, 'race')->textInput(['required' => 'required', 'placeholder' => 'Race here...'])->label(false) ?>
+        <label class="form_label">RACE</label>
+        <?= $form->field($model, 'race')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Race here.'])->label(false) ?>
     </div>
 
 </div>
@@ -46,18 +46,18 @@ $userId = Yii::$app->user->identity->id;
 <div class="row">
 
     <div class="col-md-4">
-        <label style="font-size: 11px;">E-MAIL ADDRESS</label>
-        <?= $form->field($model, 'email')->textInput(['required' => 'required', 'placeholder' => 'Email Plate here...'])->label(false) ?>
+        <label class="form_label">E-MAIL ADDRESS</label>
+        <?= $form->field($model, 'email')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Email Address here.'])->label(false) ?>
     </div>
     
     <div class="col-md-4">
-        <label style="font-size: 11px;">PHONE NUMBER</label>
-        <?= $form->field($model, 'hanphone_no')->textInput(['required' => 'required', 'placeholder' => 'Hand-Phone Number here...'])->label(false) ?>
+        <label class="form_label">PHONE NUMBER</label>
+        <?= $form->field($model, 'hanphone_no')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Phone Number here.'])->label(false) ?>
     </div>
 
     <div class="col-md-4">
-        <label style="font-size: 11px;">OFFICE NUMBER</label>
-        <?= $form->field($model, 'office_no')->textInput(['required' => 'required', 'placeholder' => 'Office Number here...'])->label(false) ?>
+        <label class="form_label">OFFICE NUMBER</label>
+        <?= $form->field($model, 'office_no')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Office Number here.'])->label(false) ?>
     </div>
 
 </div>
@@ -72,18 +72,18 @@ $userId = Yii::$app->user->identity->id;
     <br/>
 
     <div class="col-md-4">
-        <label style="font-size: 11px;">IC</label>
-        <?= $form->field($model, 'ic')->textInput(['required' => 'required', 'placeholder' => 'Car IC here...'])->label(false) ?>
+        <label class="form_label">IC</label>
+        <?= $form->field($model, 'ic')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Car IC here.'])->label(false) ?>
     </div>
     
     <div class="col-md-4">
-        <label style="font-size: 11px;">CAR PLATE</label>
-        <?= $form->field($model, 'carplate')->textInput(['required' => 'required', 'placeholder' => 'Car Plate here...'])->label(false) ?>
+        <label class="form_label">CAR PLATE</label>
+        <?= $form->field($model, 'carplate')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Car Plate here.'])->label(false) ?>
     </div>
 
     <div class="col-md-4">
-        <label style="font-size: 11px;">CAR MODEL</label>
-        <?= $form->field($model, 'model')->textInput(['required' => 'required', 'placeholder' => 'Car Model here...'])->label(false) ?>
+        <label class="form_label">CAR MODEL</label>
+        <?= $form->field($model, 'model')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Car Model here.'])->label(false) ?>
     </div>
 
 </div>
@@ -92,33 +92,9 @@ $userId = Yii::$app->user->identity->id;
 <div class="row">
 
     <div class="col-md-4">
-        <label style="font-size: 11px;">BATTERY/IES</label>
-        <?= $form->field($model, 'batteries')->textInput(['required' => 'required', 'placeholder' => 'Battery/ies here...'])->label(false) ?>
+        <label  class="form_label">CAR MAKE</label>
+                <?= $form->field($model, 'make')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Car Make here.'])->label(false) ?>
     </div>
-    
-    <div class="col-md-4">
-        <label style="font-size: 11px;">CAR BELT</label>
-        <?= $form->field($model, 'belt')->textInput(['required' => 'required', 'placeholder' => 'Car Belt here...'])->label(false) ?>
-    </div>
-
-    <div class="col-md-4">
-        <label style="font-size: 11px;">CAR TYRE SIZE</label>
-        <?= $form->field($model, 'tyre_size')->textInput(['required' => 'required', 'placeholder' => 'Car Tyre Size here...'])->label(false) ?>
-    </div>
-
-</div>
-<br/>
-
-<div class="row">
-
-    <div class="col-md-4">
-        <label style="font-size: 11px;">CAR MAKE</label>
-                <?= $form->field($model, 'make')->textInput(['required' => 'required', 'placeholder' => 'Car Make here...'])->label(false) ?>
-    </div>
-    
-    <div class="col-md-4"></div>
-
-    <div class="col-md-4"></div>
 
 </div>
 <br/>
@@ -132,18 +108,18 @@ $userId = Yii::$app->user->identity->id;
     <br/>
 
     <div class="col-md-4">
-        <label style="font-size: 11px;">REWARD POINTS</label>
-        <?= $form->field($model, 'points')->textInput(['required' => 'required', 'placeholder' => 'Reward Points here...'])->label(false) ?>
+        <label  class="form_label">REWARD POINTS</label>
+        <?= $form->field($model, 'points')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Reward Points here.'])->label(false) ?>
     </div>
     
     <div class="col-md-4">
-        <label style="font-size: 11px; font-weight: bold;">MEMBER EXPIRY</label>
-        <?= $form->field($model, 'member_expiry')->textInput(['id' => 'expiry_date', 'required' => 'required', 'placeholder' => 'YYYY-MM-DD'])->label(false) ?>
+        <label  class="form_label">MEMBER EXPIRY</label>
+        <?= $form->field($model, 'member_expiry')->textInput(['class' => 'form_input form-control', 'readonly' => 'readonly', 'id' => 'expiry_date', 'required' => 'required', 'placeholder' => 'YYYY-MM-DD'])->label(false) ?>
     </div>
 
     <div class="col-md-4">
-        <label style="font-size: 11px;">MEMBER</label>
-        <?=  $form->field($model, 'is_member')->dropDownList(['1' => 'Yes', '0' => 'No'],['prompt'=>'Select Option'])->label(false) ?>           
+        <label  class="form_label">MEMBER</label>
+        <?=  $form->field($model, 'is_member')->dropDownList(['' => 'CHOOSE STATUS HERE', '1' => 'Yes', '0' => 'No'],['class' => 'form_input form-control'])->label(false) ?>           
     </div>
 
     <div >

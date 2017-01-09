@@ -43,37 +43,31 @@ class ModulesController extends Controller
         }   
         // print_r($action['developer']); exit;
         return [
-            // 'access' => [
-            //     'class' => AccessControl::className(),
-            //     // 'only' => ['index', 'create', 'update', 'view', 'delete'],
-            //     'rules' => [
+            'access' => [
+                'class' => AccessControl::className(),
+                // 'only' => ['index', 'create', 'update', 'view', 'delete'],
+                'rules' => [
                     
-            //         [
-            //             'actions' => $action['developer'],
-            //             'allow' => $allow['developer'],
-            //             'roles' => ['developer'],
-            //         ],
+                    [
+                        'actions' => $action['developer'],
+                        'allow' => $allow['developer'],
+                        'roles' => ['developer'],
+                    ],
 
-            //         [
-            //             'actions' => $action['admin'],
-            //             'allow' => $allow['admin'],
-            //             'roles' => ['admin'],
-            //         ],
+                    [
+                        'actions' => $action['admin'],
+                        'allow' => $allow['admin'],
+                        'roles' => ['admin'],
+                    ],
 
-            //         [
-            //             'actions' => $action['staff'],
-            //             'allow' => $allow['staff'],
-            //             'roles' => ['staff'],
-            //         ],
-
-            //         [
-            //             'actions' => $action['customer'],
-            //             'allow' => $allow['customer'],
-            //             'roles' => ['customer'],
-            //         ]
+                    [
+                        'actions' => $action['staff'],
+                        'allow' => $allow['staff'],
+                        'roles' => ['staff'],
+                    ]
        
-            //     ],
-            // ],
+                ],
+            ],
 
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -94,13 +88,12 @@ class ModulesController extends Controller
         $searchModel = new SearchModules();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchModules')['id'] ) || isset(Yii::$app->request->get('SearchModules')['modules'] ) ) {
+        if( isset(Yii::$app->request->get('SearchModules')['modules'] ) ) {
 
-                $id = Yii::$app->request->get('SearchModules')['id'];
                 $module = Yii::$app->request->get('SearchModules')['modules'];
+                $getModule = $searchModel->searchModule($module);
 
-                $getModule = $searchModel->searchModule($id,$module);
-        }elseif ( Yii::$app->request->get('SearchModules')['id'] == "" || Yii::$app->request->get('SearchModules')['modules'] == "" ) {
+        }elseif ( Yii::$app->request->get('SearchModules')['modules'] == "" ) {
                 $getModule = Modules::find()->all();
         }else {
                 $getModule = Modules::find()->all();
@@ -139,7 +132,7 @@ class ModulesController extends Controller
             $result = $model->getModules($modules);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change the modules.']);
+                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change the module name.']);
             }
 
             if($model->save()) {
