@@ -97,7 +97,9 @@ $this->title = 'Customers';
                     <td style="text-align: center; font-size: 13px;" class=" last">
                         <a href="?r=customer/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a> |
                         <a href="?r=customer/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-pencil-square"><span class="actionTooltiptext">Update record</span></li> </a> | 
-                        <a href="?r=customer/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
+                        <a href="?r=customer/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a> |
+                         <a href="?r=customer/service-history&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-history"><span class="actionTooltiptext">Service history</span></li> </a> |
+                         <a href="?r=customer/points-redemption&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-bank"><span class="actionTooltiptext">Points redemption</span></li> </a> 
                     </td>
                 </tr>
             <?php } ?> 

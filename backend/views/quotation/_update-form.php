@@ -12,12 +12,24 @@ use common\models\Product;
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
+use common\models\Gst;
+
+$getGst = Gst::find()->where(['branch_id' => $model['branch_id'] ])->one();
+
+if( isset($getGst) ) {
+    $grandTotal = $model['grand_total'] / $getGst->gst;
+
+}else{
+    $grandTotal = $model['grand_total'];
+
+}
+
+
 $datetime = date('Y-m-d h:i:s');
 $userId = Yii::$app->user->identity->id;
 $dataSupplier = ArrayHelper::map(Supplier::find()->all(), 'id', 'supplier_name');
 $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
-$quotationCodeValue = $quotationCode . $quotationId;
 
 ?>
 
@@ -47,7 +59,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
 
                         <span class="quotationLabel" ><i class="fa fa-barcode"></i> Quotation Code </span>
 
-                        <input type="text" name="Quotation[quotationCode]" value="<?php echo $quotationCodeValue; ?>" class="form_qRInput form-control" id="quotationCode" readonly="readonly" />
+                        <input type="text" name="Quotation[quotationCode]" value="<?= $model['quotation_code'] ?>" class="form_qRInput form-control" id="quotationCode" readonly="readonly" />
                     </div>
 
                 </div>
@@ -60,7 +72,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
 
                     <span class="quotationLabel" style="margin-left: 45px;" ><i class="fa fa-calendar"></i> Date Issue </span>
 
-                    <input type="text" name="Quotation[dateIssue]" style="margin-left: 40px;" id="expiry_date" class="form_qRInput form-control" readonly="readonly" placeholder="CHOOSE DATE HERE" />    
+                    <input type="text" name="Quotation[dateIssue]" style="margin-left: 40px;" id="expiry_date" class="form_qRInput form-control" readonly="readonly" value="<?= $model['date_issue'] ?>" placeholder="CHOOSE DATE HERE" />    
                 </div>
 
                 </div>
@@ -78,7 +90,8 @@ $quotationCodeValue = $quotationCode . $quotationId;
                     
                     <span class="quotationLabel" ><i class="fa fa-globe"></i> Branch </span>
 
-                    <select name="Quotation[selectedBranch]" class="qSelect select3_single">
+                    <select name="Quotation[selectedBranch]" class="qSelect select3_single" >
+                        <option value="<?= $model['branch_id'] ?>">[ <?= $model['code'] ?> ] <?= $model['name'] ?></option>
                         <option value="0">SEARCH BRANCH HERE.</option>
                         <?php foreach( $getBranchList as $row ): ?>
                             <option value="<?php echo $row['id']; ?>">[ <?php echo $row['code']; ?> ] <?php echo $row['branchList']; ?></option>
@@ -102,6 +115,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
                     <span class="quotationLabel" ><i class="fa fa-users"></i> Customer Name</span>
                     
                     <select name="Quotation[selectedCustomer]" class="qSelect select3_single" >
+                        <option value="<?= $model['customer_id'] ?>">[ <?= $model['carplate'] ?> ] <?= $model['fullname'] ?></option>
                         <option value="0">SEARCH CUSTOMER HERE.</option>
                         <?php foreach( $getCustomerList as $row ): ?>
                             <option value="<?php echo $row['id']; ?>">[ <?php echo $row['carplate']; ?> ] <?php echo $row['customerList']; ?></option>
@@ -125,6 +139,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
                     <span class="quotationLabel" ><i class="fa fa-user"></i> Sales Person </span>
 
                     <select name="Quotation[selectedUser]" class="qSelect select3_single" >
+                        <option value="<?= $model['user_id'] ?>"><?= $model['salesPerson'] ?></option>
                         <option value="0">SEARCH SALES PERSON HERE.</option>
                         <?php foreach( $getUserList as $row ): ?>
                             <option value="<?php echo $row['id']; ?>">[ <?php echo $row['role']; ?> ] <?php echo $row['userList']; ?></option>
@@ -143,7 +158,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
         <div class="col-md-12">
             
             <span class="quotationLabel" ><i class="fa fa-comment"></i> Remarks </span>
-            <textarea name="Quotation[remarks]" placeholder="Write your remarks here." id="message" class="qtxtarea form-control" data-parsley-trigger="keyup" data-parsley-minlength="10" data-parsley-maxlength="100" data-parsley-minlength-message="You need to enter at least a 10 caracters long comment." data-parsley-validation-threshold="10"></textarea> 
+            <textarea name="Quotation[remarks]" placeholder="Write your remarks here." id="message" class="qtxtarea form-control" data-parsley-trigger="keyup" data-parsley-minlength="10" data-parsley-maxlength="100" data-parsley-minlength-message="You need to enter at least a 10 caracters long comment." data-parsley-validation-threshold="10"><?= $model['remarks'] ?></textarea> 
         </div>
         
         </div>
@@ -239,6 +254,96 @@ $quotationCodeValue = $quotationCode . $quotationId;
             </div>
             <hr/>
             
+            <?php foreach($getService as $sRow): ?>
+            <div class="col-md-12">    
+                <div class="row item">
+                    <div class="col-md-6">
+                        <b> <input type="checkbox" name="QuotationDetail[task][]" id="task" class="form_quoSP task"  value="checked" <?php if( $sRow['task'] == 1 ): ?> checked='checked' <?php endif; ?> /> Pending Service ?</b> 
+                    </div>
+
+                    <div class="col-md-6">
+                        <div style="text-align: right;">
+                            <span class="edit-button<?= $sRow['id'] ?> edit-button">
+                                <a href="javascript:editSelectedItem(<?= $sRow['id'] ?>)"><i class="fa fa-pencil"></i> Edit</a>
+                            </span>
+                            <span class="save-button<?= $sRow['id'] ?> save-button hidden">
+                                <a href="javascript:saveSelectedItem(<?= $sRow['id'] ?>)"><i class="fa fa-save"></i> Save</a>
+                            </span>
+                            <span class="remove-button">
+                                <a href="?r=quotation/delete-selected-quotation-detail&id=<?= $sRow['id'] ?>" onclick="return deleteConfirmation()">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row item">
+                    
+                    <div class="col-md-3">
+                        <input type="text" class="form_quoSP form-control" id="selected-service" value="<?= $sRow['service_name'] ?>" readonly>
+                        <input type="hidden" class="form-control" name="QuotationDetail[service_part_id][]" value="0-<?= $sRow['serviceId'] ?>" readonly>
+
+                    </div>
+
+                    <div class="col-md-3">
+                        <input type="text" class="form_quoSP form-control" id="selected-<?= $sRow['id'] ?>-itemQty" name="QuotationDetail[quantity][]" value="<?= $sRow['quantity'] ?>" readonly onchange="updateSelectedItemSubtotal(<?= $sRow['id'] ?>)">
+                    </div>
+
+                    <div class="col-md-3">
+                        <input type="text" class="form_quoSP form-control" id="selected-<?= $sRow['id'] ?>-itemPrice" name="QuotationDetail[selling_price][]" value="<?= $sRow['selling_price'] ?>" readonly onchange="updateSelectedItemSubtotal(<?= $sRow['id'] ?>)">
+                    </div>
+
+                    <div class="col-md-3">
+                         <input type="text" class="form_quoSP form-control subTotalGroup" id="selected-<?= $sRow['id'] ?>-subTotal" name="QuotationDetail[subTotal][]" value="<?= $sRow['subTotal'] ?>" readonly>
+                    </div>
+
+
+                </div>
+            </div>
+            <?php endforeach; ?>
+
+            <?php foreach($getPart as $pRow): ?>
+            <div class="col-md-12">    
+                <div class="row item">
+                    <div class="col-md-6"></div>
+
+                    <div class="col-md-6">
+                        <div style="text-align: right;">
+                            <span class="edit-button<?= $pRow['id'] ?> edit-button">
+                                <a href="javascript:editSelectedItem(<?= $pRow['id'] ?>)"><i class="fa fa-pencil"></i> Edit</a>
+                            </span>
+                            <span class="save-button<?= $pRow['id'] ?> save-button hidden">
+                                <a href="javascript:saveSelectedItem(<?= $pRow['id'] ?>)"><i class="fa fa-save"></i> Save</a>
+                            </span>
+                            <span class="remove-button">
+                                <a href="?r=quotation/delete-selected-quotation-detail&id=<?= $pRow['id'] ?>" onclick="return deleteConfirmation()">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row item">
+                    
+                    <div class="col-md-3">
+                        <input type="text" class="form_quoSP form-control" id="selected-<?= $pRow['id'] ?>-service" value="<?= $pRow['product_name'] ?>" readonly>
+                        <input type="hidden" class="form-control" name="QuotationDetail[service_part_id][]" value="0-<?= $pRow['productId'] ?>" readonly>
+
+                    </div>
+
+                    <div class="col-md-3">
+                        <input type="text" class="form_quoSP form-control" id="selected-<?= $pRow['id'] ?>-itemQty" name="QuotationDetail[quantity][]" value="<?= $pRow['quantity'] ?>" readonly onchange="updateSelectedItemSubtotal(<?= $pRow['id'] ?>)">
+                    </div>
+
+                    <div class="col-md-3">
+                        <input type="text" class="form_quoSP form-control" id="selected-<?= $pRow['id'] ?>-itemPrice" name="QuotationDetail[selling_price][]" value="<?= $pRow['selling_price'] ?>" readonly onchange="updateSelectedItemSubtotal(<?= $pRow['id'] ?>)">
+                    </div>
+
+                    <div class="col-md-3">
+                         <input type="text" class="form_quoSP form-control subTotalGroup" id="selected-<?= $pRow['id'] ?>-subTotal" name="QuotationDetail[subTotal][]" value="<?= $pRow['subTotal'] ?>" readonly>
+                    </div>
+
+
+                </div>
+            </div>
+            <?php endforeach; ?>
+
             <div class="col-md-12">
                 <div class="selected-item-list" id="selected-item-list"></div><br/>
             </div>
@@ -254,12 +359,12 @@ $quotationCodeValue = $quotationCode . $quotationId;
             <div class="col-md-3"></div>
 
             <div class="col-md-3">
-                <input type="text" name="Quotation[grand_total]" class="grandTotal form_quoSP form-control" id="grandTotal" style="text-align: center;" placeholder="Total Price" readonly />
+                <input type="text" name="Quotation[grand_total]" class="grandTotal form_quoSP form-control" id="grandTotal" style="text-align: center;" value="<?= $grandTotal ?>" placeholder="Total Price" readonly />
             </div>
         
         </div>
 
-        <input type="hidden" id='n' value="0">
+        <input type="hidden" id='n' value="<?= $getLastId ?>">
         <br/><hr/>
 
         <div class="row">

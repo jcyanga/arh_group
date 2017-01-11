@@ -5,13 +5,13 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Quotation;
+use common\models\Invoice;
 
 use yii\db\Query;
 /**
- * SearchQuotation represents the model behind the search form about `common\models\Quotation`.
+ * SearchInvoice represents the model behind the search form about `common\models\Invoice`.
  */
-class SearchQuotation extends Quotation
+class SearchInvoice extends Invoice
 {
     /**
      * @inheritdoc
@@ -19,8 +19,8 @@ class SearchQuotation extends Quotation
     public function rules()
     {
         return [
-            [['id', 'user_id', 'customer_id', 'branch_id', 'created_by', 'updated_by', 'delete'], 'integer'],
-            [['quotation_code', 'date_issue', 'remarks', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'user_id', 'customer_id', 'branch_id', 'created_by', 'updated_by', 'delete', 'task', 'paid'], 'integer'],
+            [['invoice_no', 'date_issue', 'remarks', 'created_at', 'updated_at'], 'safe'],
             [['grand_total'], 'number'],
         ];
     }
@@ -43,7 +43,7 @@ class SearchQuotation extends Quotation
      */
     public function search($params)
     {
-        $query = Quotation::find();
+        $query = Invoice::find();
 
         // add conditions that should always apply here
 
@@ -72,26 +72,27 @@ class SearchQuotation extends Quotation
             'updated_at' => $this->updated_at,
             'updated_by' => $this->updated_by,
             'delete' => $this->delete,
+            'task' => $this->task,
+            'paid' => $this->paid,
         ]);
 
-        $query->andFilterWhere(['like', 'quotation_code', $this->quotation_code])
+        $query->andFilterWhere(['like', 'invoice_no', $this->invoice_no])
             ->andFilterWhere(['like', 'remarks', $this->remarks]);
 
         return $dataProvider;
     }
 
-    // getLastInsertQuotation
-    public function getQuotation() {
+    // getLastInvoice
+    public function getInvoice() {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.paid', 'quotation.date_issue'])
-            ->from('quotation')
-            ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
-            ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
-            ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue'])
+            ->from('invoice')
+            ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
+            ->join('INNER JOIN', 'branch', 'invoice.branch_id = branch.id')
             ->all();
 
         return $result;
     }
-
 }

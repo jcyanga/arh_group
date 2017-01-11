@@ -189,7 +189,7 @@ class Quotation extends \yii\db\ActiveRecord
     public function getLastInsertQuotation($quotationId) {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.date_issue', 'quotation.remarks'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'customer.make', 'customer.model', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total'])
             ->from('quotation')
             ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
@@ -204,7 +204,7 @@ class Quotation extends \yii\db\ActiveRecord
     public function getLastInsertQuotationServiceDetail($id) {
         $rows = new Query();
 
-        $service = $rows->select(['quotation_detail.id', 'quotation_detail.quotation_id', 'service.service_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal'])
+        $service = $rows->select(['quotation_detail.id', 'quotation_detail.quotation_id', 'service.service_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal', 'quotation_detail.task'])
             ->from('quotation_detail')
             ->join('INNER JOIN', 'service', 'quotation_detail.service_part_id = service.id')
             ->where(['quotation_detail.quotation_id' => $id])
@@ -226,6 +226,62 @@ class Quotation extends \yii\db\ActiveRecord
             ->all();
 
         return $part;
+    }
+
+    // getQuotation
+    public function getQuotation($id) {
+        $rows = new Query();
+
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.branch_id', 'quotation.customer_id', 'quotation.user_id', 'quotation.created_at', 'quotation.created_by', 'quotation.updated_at', 'quotation.updated_by', 'quotation.delete', 'quotation.task', 'quotation.paid'])
+            ->from('quotation')
+            ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
+            ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
+            ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
+            ->where(['quotation.id' => $id])
+            ->one();
+
+        return $result;
+
+    }
+
+    // getQuotationDetailService
+    public function getQuotationDetailService($id) {
+        $rows = new Query();
+
+        $service = $rows->select(['quotation_detail.id', 'quotation_detail.quotation_id', 'service.id as serviceId', 'service.service_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal', 'quotation_detail.task', 'quotation_detail.created_at', 'quotation_detail.created_by', 'quotation_detail.type'])
+            ->from('quotation_detail')
+            ->join('INNER JOIN', 'service', 'quotation_detail.service_part_id = service.id')
+            ->where(['quotation_detail.quotation_id' => $id])
+            ->andWhere('quotation_detail.type = 0')
+            ->all();
+
+        return $service;
+    }
+
+    // getQuotationDetailPart
+    public function getQuotationDetailPart($id) {
+        $rows = new Query();
+
+        $part = $rows->select(['quotation_detail.id', 'product.id as productId', 'product.product_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal', 'quotation_detail.task', 'quotation_detail.created_at', 'quotation_detail.created_by', 'quotation_detail.type'])
+            ->from('quotation_detail')
+            ->join('INNER JOIN', 'product', 'quotation_detail.service_part_id = product.id')
+            ->where(['quotation_detail.quotation_id' => $id])
+            ->andWhere('quotation_detail.type = 1')
+            ->all();
+
+        return $part;
+    }
+
+    // getLastId
+    public function getLastId($id) {
+        $rows= new Query();
+
+        $lastId = $rows->select(['max(id) as id'])
+                    ->from('quotation_detail')
+                    ->where(['quotation_id' => $id ])
+                    ->one();
+
+        return $lastId['id'];
     }
 
 }

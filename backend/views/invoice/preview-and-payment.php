@@ -7,7 +7,6 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Customer */
 
 use common\models\Gst;
-use common\models\Invoice;
 
 $getGst = Gst::find()->where(['branch_id' => $customerInfo['BranchId'] ])->one();
 
@@ -19,7 +18,6 @@ if( isset($getGst->gst) ) {
     $getSubTotal = $customerInfo['grand_total'] / $gst;
 }
 
-$getInvoice = Invoice::find()->where(['quotation_code' => $customerInfo['quotation_code'] ])->one();
 
 $this->title = 'View Quotation';
 // $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
@@ -36,7 +34,7 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 <div style="border:0;" class="x_panel">
 
     <div class="x_title">
-        <h2> Quotation Preview.</h2>
+        <h2> Quotation Details.</h2>
         <ul class="nav navbar-right panel_toolbox">
             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
             <li class="dropdown">
@@ -66,14 +64,26 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
         </div>
         <!-- /.col -->
     </div>
-    <br/>
+    <br/><br/>
 
     <!-- info row -->
-    <div  style="margin: 0 auto; max-width: 90%" class="row invoice-info">
+    <div  style="margin: 0 auto;" class="row invoice-info">
         
         <div class="col-sm-4 invoice-col">
         <br/>
-            <address style="text-align: center;">
+            <address>
+                <strong>Arh Group Pte. Ltd.</strong>
+                <br><small>148 Sanchez Street. Manggahan, Brgy. Commonwealth,
+                <br>Quezon City, MM 1121.</small>
+                <br><small>Phone: ( 02) 951-5747 / Mobile: (+63) 9959575415</small>
+                <br><small>Email: jcyanga28@yahoo.com</small>
+            </address>
+        </div>
+        <!-- /.col -->
+        
+        <div class="col-sm-4 invoice-col">
+        <br/>
+            <address>
                 <strong>Branch Prepared: <?= $customerInfo['name'] ?></strong>
                 <br><small><?= $customerInfo['address'] ?></small>
                 <br><small>Contact No.  <?= $customerInfo['branchNumber'] ?></small>
@@ -84,36 +94,21 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
         <div class="col-sm-4 invoice-col">
         <br/>
-            <address style="text-align: center;">
+            <address>
                 <!-- <strong>Invoice #: <?= $invoiceNo ?></strong> -->
                 <strong>Customer Name: <?= $customerInfo['fullname'] ?></strong>
                 <br><small><b>Address:</b> <?= $customerInfo['customerAddress'] ?></small>
-                <br><small><b>Race:</b> <?= $customerInfo['race'] ?></small>
-                <br><small><b>E-mail:</b> <?= $customerInfo['email'] ?></small>
-                <br><small><b>Phone #:</b> <?= $customerInfo['hanphone_no'] ?> / <b>Office #:</b> <?= $customerInfo['office_no'] ?></small>
+                <br><small><b>CarPlate:</b> <?= $customerInfo['carplate'] ?></small>
+                <br><small><b>Phone:</b> <?= $customerInfo['hanphone_no'] ?></small>
                 <!-- <br>Email: jon@ironadmin.com -->
             </address>
         </div>
         <!-- /.col -->
-
-        <div class="col-sm-4 invoice-col">
-        <br/>
-            <address style="text-align: center;">
-                <!-- <strong>Invoice #: <?= $invoiceNo ?></strong> -->
-                <strong>Car Plate #: <?= $customerInfo['carplate'] ?></strong>
-                <br><small><b>make:</b> <?= $customerInfo['make'] ?></small>
-                <br><small><b>model:</b> <?= $customerInfo['model'] ?></small>
-                <!-- <br>Email: jon@ironadmin.com -->
-            </address>
-        </div>
-        <!-- /.col -->
-
     </div>
     <!-- /.row -->
     
 
     <!-- Table row -->
-    <input type="checkbox" class="showPrices" id="showPrices" checked="checked" value="" /> <b> Show Prices? </b>
     <div id="selectedServicesParts" class="row">
         <div class="col-xs-12 table">
             <table id="selecteditems" class="table table-hover">
@@ -127,14 +122,8 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                 </thead>
                 <tbody>
                     <?php foreach($services as $sRow): ?>
-                        <tr <?php if( $sRow['task'] == 1 ): ?> style="color: red;" <?php endif; ?> >
-                            <td class="qtblalign_center">
-                                <?php if( $sRow['task'] == 1 ): ?> 
-                                         <span class="actionTooltip"><?php echo '*' .$sRow['service_name']; ?><span class="actionTooltiptext">Pending Sevice.</span></span>
-                                   <?php else: ?>
-                                        <?php echo $sRow['service_name']; ?>
-                                    <?php endif; ?>
-                            </td>
+                        <tr>
+                            <td class="qtblalign_center"><?php echo $sRow['service_name']; ?></td>
                             <td class="qtblalign_center"><?php echo $sRow['quantity']; ?></td>
                             <td class="qtblalign_center"><?php echo $sRow['selling_price']; ?></td>
                             <td class="qtblalign_center"><?php echo $sRow['subTotal']; ?></td>
@@ -193,18 +182,7 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
     <hr/>
     <div class="row no-print">
         <div class="col-xs-12">
-            <?php if( empty($getInvoice) ): ?>
-            <a href="?r=quotation/print-quotation&id=<?= $customerInfo['id'] ?>"><button class="btn btn-info"><i class="fa fa-edit"></i> Update Quotation</button></a>
-            <?php endif; ?>
-            
-            <a href="?r=quotation/delete-column&id=<?= $customerInfo['id'] ?>" onclick="return deleteConfirmation()"><button class="btn btn-danger"><i class="fa fa-trash"></i> Delete Quotation</button></a>
-            
-            <button class="btn btn-default pull-right" onclick="window.print();"><i class="fa fa-print"></i> Print Quotation</button>
-            
-            <?php if( empty($getInvoice) ): ?>
-            <a href="?r=quotation/insert-invoice&id=<?= $customerInfo['id'] ?>"><button class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Generate Invoice</button></a>
-            <?php endif; ?>
-
+            <a href="?r=invoice/payment-method&id=<?= $customerInfo['id'] ?>"><button class="btn btn-default pull-right" > Proceed to Payment <i class="fa fa-chevron-circle-right"></i></button></a>
         </div>
     </div>
 </section>

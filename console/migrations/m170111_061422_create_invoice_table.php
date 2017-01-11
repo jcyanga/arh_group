@@ -3,18 +3,19 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `quotation`.
+ * Handles the creation of table `invoice`.
  */
-class m170103_071512_create_quotation_table extends Migration
+class m170111_061422_create_invoice_table extends Migration
 {
     /**
      * @inheritdoc
      */
     public function up()
     {
-        $this->createTable('quotation', [
+        $this->createTable('invoice', [
             'id' => $this->primaryKey(),
             'quotation_code' => $this->string(50)->notNull(),
+            'invoice_no' => $this->string(50)->notNull(),
             'user_id' => $this->integer(10)->notNull(),
             'customer_id' => $this->integer(10)->notNull(),
             'branch_id' => $this->integer(10)->notNull(),
@@ -36,6 +37,6 @@ class m170103_071512_create_quotation_table extends Migration
      */
     public function down()
     {
-        $this->dropTable('quotation');
+        $this->dropTable('invoice');
     }
 }

@@ -23,7 +23,7 @@ class SearchCustomer extends Customer
         // , 'is_blacklist', 'is_member', created_by', 'updated_by'
         return [
             [['id'], 'integer'],
-            [['fullname', 'ic', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at'], 'safe'],
+            [['fullname', 'ic', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'remarks', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -83,7 +83,8 @@ class SearchCustomer extends Customer
             ->andFilterWhere(['like', 'office_no', $this->office_no])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'make', $this->make])
-            ->andFilterWhere(['like', 'model', $this->model]);
+            ->andFilterWhere(['like', 'model', $this->model])
+            ->andFilterWhere(['like', 'remarks', $this->model]);
 
         return $dataProvider;
     }

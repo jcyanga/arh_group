@@ -119,7 +119,13 @@ $userId = Yii::$app->user->identity->id;
 
     <div class="col-md-4">
         <label  class="form_label">MEMBER</label>
-        <?=  $form->field($model, 'is_member')->dropDownList(['' => 'CHOOSE STATUS HERE', '1' => 'Yes', '0' => 'No'],['class' => 'form_input form-control'])->label(false) ?>           
+        <?=  $form->field($model, 'is_member')->dropDownList(['' => 'CHOOSE STATUS HERE', '1' => 'Yes', '0' => 'No'],['class' => 'form_input form-control', 'required' => 'required'])->label(false) ?>           
+    </div>
+    <br/>
+
+    <div class="col-md-6">
+        <label  class="form_label">REMARKS</label>
+         <textarea name="Customer[remarks]" placeholder="Write your remarks here." id="message" required="required" class="qtxtarea form-control" data-parsley-trigger="keyup" data-parsley-minlength="10" data-parsley-maxlength="100" data-parsley-minlength-message="You need to enter at least a 10 caracters long comment." data-parsley-validation-threshold="10"></textarea>           
     </div>
 
     <div >
@@ -130,8 +136,6 @@ $userId = Yii::$app->user->identity->id;
         <?= $form->field($model, 'created_by')->textInput(['type' => 'hidden', 'value' => $userId])->label(false) ?>
      </div>     
      <br/>
-
-     
 
 </div>
 <hr/>

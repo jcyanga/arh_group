@@ -184,7 +184,7 @@ $userFullname = Yii::$app->user->identity->fullname;
                                 <li><a><i class="fa fa-desktop"></i>Transactions <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
                                         <li><a href="?r=quotation" id="nav-quotation" > Quotation</a></li>
-                                        <li><a href="?r=inventory" id="nav-invoice" > Invoice</a></li>
+                                        <li><a href="?r=invoice" id="nav-invoice" > Invoice</a></li>
                                     </ul>
                                 </li>
                                 <li><a id="nav-reports" ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
@@ -197,6 +197,7 @@ $userFullname = Yii::$app->user->identity->fullname;
                                 <li><a id="nav-reports" ><i class="fa fa-gear"></i> Utilities <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
                                         <li><a href="?r=gst">Set GST</a></li>
+                                        <li><a href="?r=gst">Part Critical & Minimum Level</a></li>
                                     </ul>
                                 </li>
                             </ul>

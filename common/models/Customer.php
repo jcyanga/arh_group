@@ -18,9 +18,6 @@ use yii\db\Query;
  * @property string $email
  * @property string $make
  * @property string $model
- * @property string $tyre_size
- * @property string $batteries
- * @property string $belt
  * @property integer $is_blacklist
  * @property integer $is_member
  * @property integer $points
@@ -50,7 +47,7 @@ class Customer extends \yii\db\ActiveRecord
         
         // 'is_blacklist', 'is_member', 'status', 'created_by', 'updated_by'
         return [
-            [['fullname', 'ic', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at'], 'required'],
+            [['fullname', 'ic', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'remarks', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at'], 'required'],
             [['fullname', 'ic', 'address', 'is_member'], 'string'],
             [['hanphone_no', 'office_no', 'points', 'is_blacklist', 'created_by'], 'integer'],
             [['email'], 'email'],
@@ -75,6 +72,7 @@ class Customer extends \yii\db\ActiveRecord
             'email' => 'Email',
             'make' => 'Make',
             'model' => 'Model',
+            'remarks' => 'Remarks',
             'is_blacklist' => 'Is Blacklist',
             'is_member' => 'Already a member.',
             'points' => 'Points',

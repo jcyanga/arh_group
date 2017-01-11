@@ -39,7 +39,7 @@ class Branch extends \yii\db\ActiveRecord
             [['status', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['code', 'name', 'contact_no'], 'string', 'max' => 50],
-            [['address'], 'string', 'max' => 150],
+            [['address'], 'string', 'max' => 200],
         ];
     }
 

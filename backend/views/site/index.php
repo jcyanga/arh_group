@@ -5,185 +5,214 @@
 $this->title = 'My Yii Application';
 ?>
 
-<div class="row form-container">
- 
-     <div class="col-md-12 col-sm-12 col-xs-12">
-     
-         <div class="row top_tiles" style="margin: 10px 0; border: solid 1px red;">
-            <div class="col-md-3 col-sm-3 col-xs-6 tile">
-                <span>Total Sessions</span>
-                <h2>231,809</h2>
-                <span class="sparkline_one" style="height: 160px;">
-            <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
-            </span>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6 tile">
-                <span>Total Revenue</span>
-                <h2>$ 231,809</h2>
-                <span class="sparkline_one" style="height: 160px;">
-            <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
-            </span>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6 tile">
-                <span>Total Sessions</span>
-                <h2>231,809</h2>
-                <span class="sparkline_two" style="height: 160px;">
-            <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
-            </span>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6 tile">
-                <span>Total Sessions</span>
-                <h2>231,809</h2>
-                <span class="sparkline_one" style="height: 160px;">
-            <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
-            </span>
-            </div>
-         </div>
+<br/>
+<div class="row">
 
-     </div>
-     <br/>
-
-     <!-- <div class="row">
-         <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="dashboard_graph x_panel">
-                    <div class="row x_title">
-                        <div class="col-md-6">
-                            <h3>Network Activities <small>Graph title sub-title</small></h3>
-                        </div>
-                        <div class="col-md-6">
-                            <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
-                                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                                <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="x_content">
-                        <div class="demo-container" style="height:250px">
-                            <div id="placeholder3xx3" class="demo-placeholder" style="width: 100%; height:250px;"></div>
-                        </div>
-                    </div>
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="dashboard_graph x_panel">
+        <div class="row x_title">
+            <div class="col-md-6">
+                <h3>Sales Monitor <small>Graph title sub-title</small></h3>
+            </div>
+            <div class="col-md-6">
+                <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                    <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
                 </div>
             </div>
-     </div> -->
-
- </div>
-
-
-                    
-
-
-<div class="row">
-<div class="col-md-4 col-sm-6 col-xs-12">
-    <div class="x_panel fixed_height_320">
-        <div class="x_title">
-            <h2>Application Devices <small>Sessions</small></h2>
-            <ul class="nav navbar-right panel_toolbox">
-                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                </li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Settings 1</a>
-                        </li>
-                        <li><a href="#">Settings 2</a>
-                        </li>
-                    </ul>
-                </li>
-                <li><a class="close-link"><i class="fa fa-close"></i></a>
-                </li>
-            </ul>
-            <div class="clearfix"></div>
         </div>
         <div class="x_content">
-            <h4>App Versions</h4>
-            <div class="widget_summary">
-                <div class="w_left w_25">
-                    <span>1.5.2</span>
-                </div>
-                <div class="w_center w_55">
-                    <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 66%;">
-                            <span class="sr-only">60% Complete</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="w_right w_20">
-                    <span>123k</span>
-                </div>
-                <div class="clearfix"></div>
+            <div class="demo-container" style="height:250px">
+                <div id="placeholder3xx3" class="demo-placeholder" style="width: 100%; height:250px;"></div>
             </div>
-
-            <div class="widget_summary">
-                <div class="w_left w_25">
-                    <span>1.5.3</span>
-                </div>
-                <div class="w_center w_55">
-                    <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 45%;">
-                            <span class="sr-only">60% Complete</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="w_right w_20">
-                    <span>53k</span>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="widget_summary">
-                <div class="w_left w_25">
-                    <span>1.5.4</span>
-                </div>
-                <div class="w_center w_55">
-                    <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 25%;">
-                            <span class="sr-only">60% Complete</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="w_right w_20">
-                    <span>23k</span>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="widget_summary">
-                <div class="w_left w_25">
-                    <span>1.5.5</span>
-                </div>
-                <div class="w_center w_55">
-                    <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 5%;">
-                            <span class="sr-only">60% Complete</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="w_right w_20">
-                    <span>3k</span>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="widget_summary">
-                <div class="w_left w_25">
-                    <span>0.1.5.6</span>
-                </div>
-                <div class="w_center w_55">
-                    <div class="progress">
-                        <div class="progress-bar bg-green" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 2%;">
-                            <span class="sr-only">60% Complete</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="w_right w_20">
-                    <span>1k</span>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-
         </div>
     </div>
 </div>
 
+</div>
+<br/>
+                    
+<div class="row">
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<div class="col-md-4 col-sm-4 col-xs-12">
+
+<div class="x_panel">
+
+<div class="x_title">
+    <h2>Pending Tasks</h2>
+    <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Settings 1</a></li>
+                <li><a href="#">Settings 2</a></li>
+            </ul>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+    </ul>
+    <div class="clearfix"></div>
+</div>
+
+<div class="x_content">
+    <div class="dashboard-widget-content">
+
+        <ul class="list-unstyled timeline widget">
+            <li>
+                <div class="block">
+                    <div class="block_content">
+                        <h2 class="title"><a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a></h2>
+                        <div class="byline">
+                            <span>13 hours ago</span> by <a>Jane Smith</a>
+                        </div>
+                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                        </p>
+                    </div>
+                </div>
+            </li>    
+        </ul>
+    </div>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="col-md-4 col-sm-4 col-xs-12">
+
+<div class="x_panel">
+
+<div class="x_title">
+    <h2>Parts in Warning Condition</h2>
+    <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Settings 1</a></li>
+                <li><a href="#">Settings 2</a></li>
+            </ul>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+    </ul>
+    <div class="clearfix"></div>
+</div>
+
+<div class="x_content">
+    <div class="dashboard-widget-content">
+
+        <ul class="list-unstyled timeline widget">
+            <li>
+                <div class="block">
+                    <div class="block_content">
+                        <h2 class="title"><a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a></h2>
+                        <div class="byline">
+                            <span>13 hours ago</span> by <a>Jane Smith</a>
+                        </div>
+                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                        </p>
+                    </div>
+                </div>
+            </li>    
+        </ul>
+    </div>
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-4 col-sm-4 col-xs-12">
+
+<div class="x_panel">
+
+<div class="x_title">
+    <h2>Parts No Stocks</h2>
+    <ul class="nav navbar-right panel_toolbox">
+        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#">Settings 1</a></li>
+                <li><a href="#">Settings 2</a></li>
+            </ul>
+        </li>
+        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+    </ul>
+    <div class="clearfix"></div>
+</div>
+
+<div class="x_content">
+    <div class="dashboard-widget-content">
+
+        <ul class="list-unstyled timeline widget">
+            <li>
+                <div class="block">
+                    <div class="block_content">
+                        <h2 class="title"><a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a></h2>
+                        <div class="byline">
+                            <span>13 hours ago</span> by <a>Jane Smith</a>
+                        </div>
+                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
+                        </p>
+                    </div>
+                </div>
+            </li>    
+        </ul>
+    </div>
+</div>
+
+</div>
+
+</div>
+<br/>
+
+<div class="row">
+ 
+     <div class="col-md-12 col-sm-12 col-xs-12">
+     
+         Customer Info. & Customer Quotation
+
+     </div>
+
+</div>
+<br/>
+
+</div>
+
+<!-- <div class="row top_tiles" style="margin: 10px 0; border: solid 1px red;">
+<div class="col-md-3 col-sm-3 col-xs-6 tile">
+    <span>Total Sessions</span>
+    <h2>231,809</h2>
+    <span class="sparkline_one" style="height: 160px;">
+<canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+</span>
+</div>
+<div class="col-md-3 col-sm-3 col-xs-6 tile">
+    <span>Total Revenue</span>
+    <h2>$ 231,809</h2>
+    <span class="sparkline_one" style="height: 160px;">
+<canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+</span>
+</div>
+<div class="col-md-3 col-sm-3 col-xs-6 tile">
+    <span>Total Sessions</span>
+    <h2>231,809</h2>
+    <span class="sparkline_two" style="height: 160px;">
+<canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+</span>
+</div>
+<div class="col-md-3 col-sm-3 col-xs-6 tile">
+    <span>Total Sessions</span>
+    <h2>231,809</h2>
+    <span class="sparkline_one" style="height: 160px;">
+<canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+</span>
+</div>
+</div> -->
+
+<!-- <div class="col-md-4 col-sm-6 col-xs-12">
 <div class="x_panel fixed_height_320">
     <div class="x_title">
         <h2>Daily active users <small>Sessions</small></h2>
@@ -262,9 +291,9 @@ $this->title = 'My Yii Application';
         </table>
     </div>
 </div>
-</div>
+</div> -->
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!-- <div class="col-md-4 col-sm-6 col-xs-12">
 <div class="x_panel fixed_height_320">
     <div class="x_title">
         <h2>Daily active users <small>Sessions</small></h2>
@@ -314,9 +343,9 @@ $this->title = 'My Yii Application';
         </div>
     </div>
 </div>
-</div>
+</div> -->
 
-<div class="col-md-4 col-sm-6 col-xs-12 widget_tally_box">
+<!-- <div class="col-md-4 col-sm-6 col-xs-12 widget_tally_box">
 <div class="x_panel">
     <div class="x_title">
         <h2>User Uptake</h2>
@@ -404,10 +433,10 @@ $this->title = 'My Yii Application';
         </div>
     </div>
 </div>
-</div>
+</div> -->
 
 <!-- start of weather widget -->
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!-- <div class="col-md-4 col-sm-6 col-xs-12">
     <div class="x_panel">
         <div class="x_title">
             <h2>Daily active users <small>Sessions</small></h2>
@@ -533,11 +562,11 @@ $this->title = 'My Yii Application';
         </div>
     </div>
 
-</div>
+</div> -->
 <!-- end of weather widget -->
 
 
-<div class="col-md-4 col-sm-6 col-xs-12">
+<!-- <div class="col-md-4 col-sm-6 col-xs-12">
 <div class="x_panel fixed_height_320">
     <div class="x_title">
         <h2>Daily active users <small>Sessions</small></h2>
@@ -587,6 +616,6 @@ $this->title = 'My Yii Application';
         </div>
     </div>
 </div>
-</div>
+</div> -->
 
-</div>
+<!-- </div> -->
