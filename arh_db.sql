@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 11, 2017 at 11:43 AM
+-- Generation Time: Jan 12, 2017 at 01:42 PM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -231,17 +231,17 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`id`, `product_id`, `supplier_id`, `quantity`, `cost_price`, `selling_price`, `date_imported`, `status`, `created_at`, `created_by`) VALUES
-(1, 1, 1, 10, 1000, 1200, '2017-01-04', 0, '2017-01-04', 1),
-(2, 4, 1, 10, 500, 700, '2017-01-04', 0, '2017-01-04', 1),
-(3, 3, 1, 0, 1500, 1800, '2017-01-04', 0, '2017-01-04', 1),
-(4, 2, 1, 10, 900, 1000, '2017-01-04', 0, '2017-01-04', 1),
-(5, 19, 11, 14, 150, 170, '2017-01-08', 0, '2017-01-08', 1),
-(6, 11, 6, 30, 250, 275, '2017-01-08', 0, '2017-01-08', 1),
-(7, 3, 9, 12, 100, 250, '2017-01-08', 0, '2017-01-08', 1),
-(8, 19, 9, 11, 175, 200, '2017-01-08', 0, '2017-01-08', 1),
-(9, 16, 11, 7, 99, 110, '2017-01-09', 0, '2017-01-09', 1),
-(10, 11, 11, 30, 75, 100, '2017-01-09', 0, '2017-01-09', 1),
-(11, 18, 11, 7, 100, 125, '2017-01-09', 0, '2017-01-09', 1);
+(1, 1, 1, 15, 1000, 1200, '2017-01-04', 0, '2017-01-04', 1),
+(2, 4, 1, 17, 500, 700, '2017-01-04', 0, '2017-01-04', 1),
+(3, 3, 1, 8, 1500, 1800, '2017-01-04', 0, '2017-01-04', 1),
+(4, 2, 1, 17, 900, 1000, '2017-01-04', 0, '2017-01-04', 1),
+(5, 19, 11, 20, 150, 170, '2017-01-08', 0, '2017-01-08', 1),
+(6, 11, 6, 37, 250, 275, '2017-01-08', 0, '2017-01-08', 1),
+(7, 3, 9, 8, 100, 250, '2017-01-08', 0, '2017-01-08', 1),
+(8, 19, 9, 20, 175, 200, '2017-01-08', 0, '2017-01-08', 1),
+(9, 16, 11, 17, 99, 110, '2017-01-09', 0, '2017-01-09', 1),
+(10, 11, 11, 37, 75, 100, '2017-01-09', 0, '2017-01-09', 1),
+(11, 18, 11, 17, 100, 125, '2017-01-09', 0, '2017-01-09', 1);
 
 -- --------------------------------------------------------
 
@@ -273,7 +273,7 @@ CREATE TABLE `invoice` (
 --
 
 INSERT INTO `invoice` (`id`, `quotation_code`, `invoice_no`, `user_id`, `customer_id`, `branch_id`, `date_issue`, `grand_total`, `remarks`, `created_at`, `created_by`, `updated_at`, `updated_by`, `delete`, `task`, `paid`) VALUES
-(1, 'QUO-2017-806431', 'OR-2017-73007', 2, 1, 2, '2017-01-11', 1008, 'god bless us.', '2017-01-11', 1, '2017-01-11', 1, 0, 0, 0);
+(2, 'QUO-2017-863531', 'INVOICE-2017-84953-1', 3, 8, 2, '2017-01-12', 4614.4, 'god bless us.', '2017-01-12', 1, '2017-01-12', 1, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -299,9 +299,10 @@ CREATE TABLE `invoice_detail` (
 --
 
 INSERT INTO `invoice_detail` (`id`, `invoice_id`, `service_part_id`, `quantity`, `selling_price`, `subTotal`, `created_at`, `created_by`, `type`, `task`) VALUES
-(1, 1, 1, 1, 150, 150, '2017-01-11', 1, 0, 1),
-(2, 1, 2, 1, 200, 200, '2017-01-11', 1, 0, 0),
-(3, 1, 11, 2, 275, 550, '2017-01-11', 1, 1, 0);
+(4, 2, 1, 1, 150, 150, '2017-01-12', 1, 0, 1),
+(5, 2, 2, 1, 200, 200, '2017-01-12', 1, 0, 0),
+(6, 2, 3, 2, 1800, 3600, '2017-01-12', 1, 0, 0),
+(7, 2, 19, 1, 170, 170, '2017-01-12', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -354,7 +355,9 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m170110_091618_create_payment_table', 1484040226),
 ('m170111_050841_create_invoice_table', 1484111555),
 ('m170111_061422_create_invoice_table', 1484115376),
-('m170111_063217_create_invoice_detail_table', 1484116390);
+('m170111_063217_create_invoice_detail_table', 1484116390),
+('m170112_053810_create_payment_table', 1484199747),
+('m170112_071611_create_product_level_table', 1484205472);
 
 -- --------------------------------------------------------
 
@@ -411,14 +414,27 @@ CREATE TABLE `module_access` (
 
 CREATE TABLE `payment` (
   `id` int(11) NOT NULL,
-  `quotation_id` int(5) NOT NULL,
   `invoice_id` int(5) NOT NULL,
+  `invoice_no` varchar(50) NOT NULL,
+  `customer_id` int(5) NOT NULL,
+  `amount` double NOT NULL,
+  `discount` double NOT NULL,
+  `payment_method` int(5) NOT NULL,
+  `payment_type` varchar(50) NOT NULL,
+  `points_earned` int(5) NOT NULL,
+  `points_redeem` int(5) NOT NULL,
+  `remarks` text NOT NULL,
   `payment_date` date NOT NULL,
   `payment_time` time NOT NULL,
-  `amount` double NOT NULL,
-  `type` int(5) NOT NULL,
   `status` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `payment`
+--
+
+INSERT INTO `payment` (`id`, `invoice_id`, `invoice_no`, `customer_id`, `amount`, `discount`, `payment_method`, `payment_type`, `points_earned`, `points_redeem`, `remarks`, `payment_date`, `payment_time`, `status`) VALUES
+(1, 2, 'INVOICE-2017-84953-1', 8, 5000, 1000, 1, 'cash payment', 125, 100, 'good job', '2017-01-12', '18:06:32', 1);
 
 -- --------------------------------------------------------
 
@@ -470,6 +486,25 @@ INSERT INTO `product` (`id`, `product_code`, `product_name`, `product_image`, `u
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `product_level`
+--
+
+CREATE TABLE `product_level` (
+  `id` int(11) NOT NULL,
+  `minimum_level` int(10) NOT NULL,
+  `critical_level` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `product_level`
+--
+
+INSERT INTO `product_level` (`id`, `minimum_level`, `critical_level`) VALUES
+(1, 7, 5);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `quotation`
 --
 
@@ -496,7 +531,7 @@ CREATE TABLE `quotation` (
 --
 
 INSERT INTO `quotation` (`id`, `quotation_code`, `user_id`, `customer_id`, `branch_id`, `date_issue`, `grand_total`, `remarks`, `created_at`, `created_by`, `updated_at`, `updated_by`, `delete`, `task`, `paid`) VALUES
-(1, 'QUO-2017-806431', 2, 1, 2, '2017-01-11', 1008, 'god bless us.', '2017-01-11', 1, '2017-01-11', 1, 0, 0, 0);
+(2, 'QUO-2017-863531', 3, 8, 2, '2017-01-12', 4424, 'god bless us.', '2017-01-12', 1, '2017-01-12', 1, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -522,9 +557,9 @@ CREATE TABLE `quotation_detail` (
 --
 
 INSERT INTO `quotation_detail` (`id`, `quotation_id`, `service_part_id`, `quantity`, `selling_price`, `subTotal`, `created_at`, `created_by`, `type`, `task`) VALUES
-(1, 1, 1, 1, 150, 150, '2017-01-11', 1, 0, 1),
-(2, 1, 2, 1, 200, 200, '2017-01-11', 1, 0, 0),
-(3, 1, 11, 2, 275, 550, '2017-01-11', 1, 1, 0);
+(4, 2, 1, 1, 150, 150, '2017-01-12', 1, 0, 1),
+(5, 2, 2, 1, 200, 200, '2017-01-12', 1, 0, 0),
+(6, 2, 3, 2, 1800, 3600, '2017-01-12', 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -688,7 +723,18 @@ INSERT INTO `stock_in` (`id`, `product_id`, `supplier_id`, `quantity`, `cost_pri
 (55, 3, 9, 12, 100, 250, '2017-01-09', '13:50:44', '2017-01-09', 1),
 (56, 19, 9, 11, 175, 200, '2017-01-09', '13:50:44', '2017-01-09', 1),
 (57, 16, 11, 7, 99, 110, '2017-01-09', '13:50:45', '2017-01-09', 1),
-(58, 11, 11, 10, 75, 100, '2017-01-09', '13:50:45', '2017-01-09', 1);
+(58, 11, 11, 10, 75, 100, '2017-01-09', '13:50:45', '2017-01-09', 1),
+(59, 1, 1, 20, 1000, 1200, '2017-01-12', '16:03:11', '2017-01-12', 1),
+(60, 4, 1, 20, 500, 700, '2017-01-12', '16:03:11', '2017-01-12', 1),
+(61, 3, 1, 10, 1500, 1800, '2017-01-12', '16:03:11', '2017-01-12', 1),
+(62, 2, 1, 20, 900, 1000, '2017-01-12', '16:03:11', '2017-01-12', 1),
+(63, 19, 11, 21, 150, 170, '2017-01-12', '16:03:11', '2017-01-12', 1),
+(64, 11, 6, 37, 250, 275, '2017-01-12', '16:03:11', '2017-01-12', 1),
+(65, 3, 9, 22, 100, 250, '2017-01-12', '16:03:11', '2017-01-12', 1),
+(66, 19, 9, 21, 175, 200, '2017-01-12', '16:03:11', '2017-01-12', 1),
+(67, 16, 11, 17, 99, 110, '2017-01-12', '16:03:12', '2017-01-12', 1),
+(68, 11, 11, 37, 75, 100, '2017-01-12', '16:03:12', '2017-01-12', 1),
+(69, 18, 11, 17, 100, 125, '2017-01-12', '16:03:20', '2017-01-12', 1);
 
 -- --------------------------------------------------------
 
@@ -1061,12 +1107,6 @@ INSERT INTO `user_permission` (`id`, `controller`, `action`, `role_id`) VALUES
 (352, 'Quotation', 'delete-selected-quotation-detail', 2),
 (353, 'Quotation', 'price', 2),
 (354, 'Quotation', 'insert-in-list', 2),
-(355, 'Invoice', 'index', 1),
-(356, 'Invoice', 'view', 1),
-(357, 'Invoice', 'create', 1),
-(358, 'Invoice', 'update', 1),
-(359, 'Invoice', 'delete', 1),
-(360, 'Invoice', 'preview-and-payment', 1),
 (361, 'Quotation', 'index', 1),
 (362, 'Quotation', 'view', 1),
 (363, 'Quotation', 'create', 1),
@@ -1077,7 +1117,20 @@ INSERT INTO `user_permission` (`id`, `controller`, `action`, `role_id`) VALUES
 (368, 'Quotation', 'delete-selected-quotation-detail', 1),
 (369, 'Quotation', 'price', 1),
 (370, 'Quotation', 'insert-in-list', 1),
-(371, 'Quotation', 'insert-invoice', 1);
+(371, 'Quotation', 'insert-invoice', 1),
+(401, 'Invoice', 'index', 1),
+(402, 'Invoice', 'view', 1),
+(403, 'Invoice', 'create', 1),
+(404, 'Invoice', 'preview', 1),
+(405, 'Invoice', 'update', 1),
+(406, 'Invoice', 'delete', 1),
+(407, 'Invoice', 'delete-column', 1),
+(408, 'Invoice', 'delete-selected-quotation-detail', 1),
+(409, 'Invoice', 'price', 1),
+(410, 'Invoice', 'insert-in-list', 1),
+(411, 'Invoice', 'payment-method', 1),
+(412, 'Invoice', 'save-payment', 1),
+(413, 'Invoice', 'insert-in-payment-list', 1);
 
 --
 -- Indexes for dumped tables
@@ -1183,6 +1236,12 @@ ALTER TABLE `product`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `product_level`
+--
+ALTER TABLE `product_level`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `quotation`
 --
 ALTER TABLE `quotation`
@@ -1269,12 +1328,12 @@ ALTER TABLE `inventory`
 -- AUTO_INCREMENT for table `invoice`
 --
 ALTER TABLE `invoice`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `invoice_detail`
 --
 ALTER TABLE `invoice_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `modules`
 --
@@ -1289,22 +1348,27 @@ ALTER TABLE `module_access`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 --
+-- AUTO_INCREMENT for table `product_level`
+--
+ALTER TABLE `product_level`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
 -- AUTO_INCREMENT for table `quotation`
 --
 ALTER TABLE `quotation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `quotation_detail`
 --
 ALTER TABLE `quotation_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `role`
 --
@@ -1324,7 +1388,7 @@ ALTER TABLE `service_category`
 -- AUTO_INCREMENT for table `stock_in`
 --
 ALTER TABLE `stock_in`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 --
 -- AUTO_INCREMENT for table `supplier`
 --
@@ -1339,7 +1403,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `user_permission`
 --
 ALTER TABLE `user_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=372;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=414;
 --
 -- Constraints for dumped tables
 --

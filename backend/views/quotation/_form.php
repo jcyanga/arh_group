@@ -157,7 +157,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
             <div class="col-md-12">
                 
                 <div>
-                    <span class="quotationHeaderLabel" > <li class="fa fa-info"></li> Services or Parts Information </span>
+                    <span class="quotationHeaderLabel" > <li class="fa fa-chain-broken"></li> Services or Parts Information </span>
                 </div>
             
             </div>
@@ -266,8 +266,8 @@ $quotationCodeValue = $quotationCode . $quotationId;
 
             <div class="col-md-12">
                 <div style="text-align: right;">        
-                <?= Html::submitButton('<li class=\'fa fa-save\'></li> Submit Quotation' , ['class' =>'form-btn btn btn-dark btn-lg']) ?>
-                <?= Html::resetButton('<li class=\'fa fa-file\'></li> Cancel', ['class' => 'form-btn btn btn-default btn-lg']) ?>
+                <?= Html::submitButton('<li class=\'fa fa-save\'></li> Submit Quotation' , ['class' =>'form-btn btn btn-success']) ?>
+                <?= Html::resetButton('<li class=\'fa fa-file\'></li> Cancel', ['class' => 'form-btn btn btn-default']) ?>
                 </div>
             </div>
 

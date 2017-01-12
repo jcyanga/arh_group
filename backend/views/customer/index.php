@@ -70,7 +70,7 @@ $this->title = 'Customers';
     <thead>
         <tr style="font-size: 11px;" class="headings">
             <th>
-                <input type="checkbox" class="tableflat">
+                <input type="checkbox" id="chkAll" class="tableflat">
             </th>
             <th> FULLNAME </th>
             <th> PHONE NUMBER </th>
@@ -87,7 +87,7 @@ $this->title = 'Customers';
             <?php foreach( $getCustomer as $row){ ?>
                 <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                     <td class="a-center ">
-                        <input type="checkbox" class="tableflat" value="<?php echo $row['id']; ?>">
+                        <input type="checkbox" class="chkUser tableflat" value="<?php echo $row['id']; ?>">
                     </td>
                     <td class=" "><?php echo $row['fullname'];  ?></td>
                     <td class=" "><?php echo $row['hanphone_no'];  ?></td>
@@ -98,8 +98,8 @@ $this->title = 'Customers';
                         <a href="?r=customer/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a> |
                         <a href="?r=customer/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-pencil-square"><span class="actionTooltiptext">Update record</span></li> </a> | 
                         <a href="?r=customer/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a> |
-                         <a href="?r=customer/service-history&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-history"><span class="actionTooltiptext">Service history</span></li> </a> |
-                         <a href="?r=customer/points-redemption&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-bank"><span class="actionTooltiptext">Points redemption</span></li> </a> 
+                         <a href="?r=customer/service-history&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-wrench"><span class="actionTooltiptext">Service history</span></li> </a> |
+                         <a href="?r=customer/points-redemption&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-history"><span class="actionTooltiptext">Points redemption</span></li> </a> 
                     </td>
                 </tr>
             <?php } ?> 

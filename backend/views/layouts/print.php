@@ -123,7 +123,7 @@ $userFullname = Yii::$app->user->identity->fullname;
         
 
     <!-- page content -->
-        <div>
+        <div style="border: solid 1px red;  margin: 0 auto;">
             <?= $content ?>
         </div>           
 

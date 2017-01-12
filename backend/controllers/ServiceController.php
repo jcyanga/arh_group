@@ -180,7 +180,7 @@ class ServiceController extends Controller
             return $this->render('index', ['searchModel' => $searchModel, 'getService' => $getService,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
         } else {
-            return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('update', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
         }
     }
 

@@ -197,7 +197,7 @@ $userFullname = Yii::$app->user->identity->fullname;
                                 <li><a id="nav-reports" ><i class="fa fa-gear"></i> Utilities <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
                                         <li><a href="?r=gst">Set GST</a></li>
-                                        <li><a href="?r=gst">Part Critical & Minimum Level</a></li>
+                                        <li><a href="?r=product-level">Part Critical & Minimum Level</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -478,6 +478,12 @@ $userFullname = Yii::$app->user->identity->fullname;
 
     <!-- quotation -->
     <script type="text/javascript" src="assets/bootstrap/js/quotation.js"></script>
+
+    <!-- quotation -->
+    <script type="text/javascript" src="assets/bootstrap/js/payment_method.js"></script>
+
+    <!-- customer -->
+    <script type="text/javascript" src="assets/bootstrap/js/customer.js"></script>
 
     </body>   
 

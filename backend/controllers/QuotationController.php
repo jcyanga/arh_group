@@ -16,6 +16,7 @@ use common\models\Product;
 use common\models\Gst;
 use common\models\Invoice;
 use common\models\InvoiceDetail;
+use common\models\ProductLevel;
 
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -111,7 +112,7 @@ class QuotationController extends Controller
      */
     public function actionView($id)
     {
-        $model = new Quotation();
+         $model = new Quotation();
          $getLastInsertQuotation = $model->getLastInsertQuotation($id); 
          $getLastInsertQuotationServiceDetail = $model->getLastInsertQuotationServiceDetail($id); 
          $getLastInsertQuotationPartDetail = $model->getLastInsertQuotationPartDetail($id);
@@ -421,6 +422,7 @@ class QuotationController extends Controller
             }
 
         } else {
+            
             return $this->render('update', [
                 'model' => $getQuotation, 
                 'getService' => $getService,
@@ -539,14 +541,18 @@ class QuotationController extends Controller
             }else{
                 $part = Inventory::find()->where(['product_id' => $ItemId])->one();
                 $itemQty = $part->quantity;
-    
+                
+                $getPartLevel = ProductLevel::find()->one();
+                $criticalLvl = $getPartLevel->critical_level;
+                $minimumLvl = $getPartLevel->minimum_level;
+
                 switch($itemQty) {
-                    case 10:
-                        $itemSellingPrice = 'ten';
+                    case $minimumLvl:
+                        $itemSellingPrice = 'minimum_level';
                      break;
                     
-                    case 5:
-                        $itemSellingPrice = 'five';
+                    case $criticalLvl:
+                        $itemSellingPrice = 'critical_level';
                      break;
                     
                     case 0:
@@ -621,9 +627,12 @@ class QuotationController extends Controller
     public function actionInsertInvoice($id) {
         $model = new Quotation();
         $details = new QuotationDetail();
+        $invoice = new Invoice();
 
         $getQuotation = $model->getQuotation($id);
-        $invoiceNo = 'OR' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
+        $getInvoiceId = $invoice->getInvoiceId();
+
+        $invoiceNo = 'INVOICE' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5) . '-' . $getInvoiceId;
 
         $getService = $model->getQuotationDetailService($id);
         $getPart = $model->getQuotationDetailPart($id);
