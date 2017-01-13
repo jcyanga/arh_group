@@ -17,54 +17,67 @@ $this->title = 'Inventories';
 
 ?>
 
-<div class="row">
- <div class="col-md-12 col-sm-12 col-xs-12">
- <br/>
- </div>
+<div style="text-align: right;" class="other-btns-container">
+<br/>
+
+    <p>
+        <a href="?r=inventory/create" id="option-list-link" class="btn btn-app">
+            <i class="fa fa-cogs"></i> <b> New Item in Inventory </b>
+        </a>
+
+        <a href="?r=product/create" id="option-list-link" class="btn btn-app">
+            <i class="fa fa-chain"></i> <b> New Product </b>
+        </a>
+
+        <a href="?r=supplier/create" id="option-list-link" class="btn btn-app">
+            <i class="fa fa-truck"></i> <b> New Supplier </b>
+        </a>
+
+        <a href="?r=inventory/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
+            <i class="fa fa-file-excel-o"></i> <b> Export to Excel </b>
+        </a>
+
+        <a href="?r=inventory/export-pdf" id="option-list-link" onclick="return pdfPrintConfirmation()" class="btn btn-app">
+            <i class="fa fa-file-pdf-o"></i> <b> Export to PDF </b>
+        </a>
+    </p>
 </div>
 
 <div class="row table-container">
- 
- <div class="col-md-12 col-sm-12 col-xs-12">
- <br/>
- 
- <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-database"></i> PARTS STOCK</h4></span>
- </div>
- <hr/><br/>
 
- <div class="" role="tabpanel" data-example-id="togglable-tabs">
-            <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-                <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true"><b><i class="fa fa-sign-in"></i> Stock-In</b></a>
-                </li>
-                <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab"  aria-expanded="false"><b><i class="fa fa-sign-out"></i> Stock-Out</b></a>
-                </li>
-            </ul>
-            <div id="myTabContent" class="tab-content">
-                <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
-    <div>
-        <?php if($msg <> ''){ ?>
-            <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-                <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-                <?php echo $msg; ?>
-            </div>
-        <?php } ?>
+<div>
+    <?php if($msg <> ''){ ?>
+        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
+            <?php echo $msg; ?>
+        </div>
+    <?php } ?>
+</div>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+
+    <div class="form-title-container">
+        <span class="form-header"><h4><i class="fa fa-database"></i> STOCKS </h4></span>
     </div>
-    <br/> 
+    <hr/>
 
-    <?php $form = ActiveForm::begin(['action' => '?r=stocks/create', 'method' => 'POST', 'class' => 'form-inline']); ?>
+</div>
 
-    <div style="text-align: right;">
+<?php $form = ActiveForm::begin(['action' => '?r=stocks/create', 'method' => 'POST', 'class' => 'form-inline']); ?>
+
+<div class="col-md-12 col-sm-12 col-xs-12">
+ 
+ <div>
         <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
         <button type="submit" name="btn-updateQty" class="form-btn btn btn-success"><i class="fa fa-edit"></i> Update Parts Quantity</button>
         <button type="button" name="btn-checkAll" class="form-btn btn btn-info " id="checkAllParts" ><i class="fa fa-check-square"></i> Select All</button>
-    </div>
-    <br/>
+ </div>
 
-    <div>
-        <label id="stockLabel">*Check Item you want to Update Quantity.</label>
-    </div>
-    <br/>
+</div> 
+<br/>
+
+ <div class="col-md-12 col-sm-12 col-xs-12">
+ <br/><br/>
 
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
@@ -102,35 +115,18 @@ $this->title = 'Inventories';
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td> 
                 </tr> 
         <?php endif; ?>
     </tbody>
     </table>
-
-    <?php ActiveForm::end(); ?>
-    <br/><br/>
-
-    </div>
-    
  
-                <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab">
-                    <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip</p>
-                </div>
-                
- 
-            </div>
-        </div>
-
- </div>
-
 </div>
 
+<div style="color:#fff">|<br/>|<br/>|<br/></div>
+
+</div>
+<?php ActiveForm::end(); ?>
+
 <br/>
-
-
-
-
-
 
 

@@ -8,6 +8,8 @@ use yii\filters\AccessControl;
 use common\models\User;
 use common\models\LoginForm;
 
+use common\models\Inventory;
+
 /**
  * Site controller
  */
@@ -61,7 +63,13 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $model = new Inventory();
+        
+        $getZeroStock = $model->getZeroStock();
+        $getCriticalStock = $model->getCriticalStock();
+        $getWarningStock = $model->getWarningStock();
+
+        return $this->render('index', ['getZeroStock' => $getZeroStock, 'getCriticalStock' => $getCriticalStock, 'getWarningStock' => $getWarningStock]);
     }
 
     /**

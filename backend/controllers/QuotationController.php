@@ -156,7 +156,7 @@ class QuotationController extends Controller
 
             if( $dateIssue == "" || $selectedBranch == 0 || $selectedCustomer == 0 || $selectedUser == 0 || $remarks == "" ) {
                     
-                    return $this->render('create', [
+                    return $this->render('_form', [
                         'model' => $model,
                         'quotationId' => $quotationId,
                         'getBranchList' => $getBranchList,
@@ -217,8 +217,9 @@ class QuotationController extends Controller
                             $totalQty = $getPart->quantity - $value;
                             
                             Yii::$app->db->createCommand()
-                                ->update('inventory', ['quantity' => $totalQty ], "product_id = $getServicePartId" )
+                                ->update('inventory', ['quantity' => $totalQty], "product_id = $getServicePartId" )
                                 ->execute();
+                            
                         }
 
                         $quoD->quotation_id = $quotationId;
@@ -249,7 +250,7 @@ class QuotationController extends Controller
             
         } else {
 
-            return $this->render('create', [
+            return $this->render('_form', [
                 'model' => $model,
                 'quotationId' => $quotationId,
                 'getBranchList' => $getBranchList,
@@ -269,7 +270,7 @@ class QuotationController extends Controller
          $getLastInsertQuotationServiceDetail = $model->getLastInsertQuotationServiceDetail($id); 
          $getLastInsertQuotationPartDetail = $model->getLastInsertQuotationPartDetail($id);
 
-        return $this->render('preview',[
+        return $this->render('_print-quotation',[
                 'model' => $this->findModel($id),
                 'customerInfo' => $getLastInsertQuotation,
                 'services' => $getLastInsertQuotationServiceDetail,
@@ -326,7 +327,7 @@ class QuotationController extends Controller
 
             if( $dateIssue == "" || $selectedBranch == 0 || $selectedCustomer == 0 || $selectedUser == 0 || $remarks == "" ) {
                     
-                    return $this->render('update', [
+                    return $this->render('_update-form', [
                         'model' => $model,
                         'quotationId' => $quotationId,
                         'getBranchList' => $getBranchList,
@@ -423,7 +424,7 @@ class QuotationController extends Controller
 
         } else {
             
-            return $this->render('update', [
+            return $this->render('_update-form', [
                 'model' => $getQuotation, 
                 'getService' => $getService,
                 'getPart' => $getPart,
@@ -536,8 +537,9 @@ class QuotationController extends Controller
 
             if( $ItemType == '0' ) {
                 $service = Service::find()->where(['id' => $ItemId])->one();
-                $itemSellingPrice = $service->default_price;;
-                
+                $itemSellingPrice = $service->default_price;
+                $status = '';
+
             }else{
                 $part = Inventory::find()->where(['product_id' => $ItemId])->one();
                 $itemQty = $part->quantity;
@@ -548,24 +550,28 @@ class QuotationController extends Controller
 
                 switch($itemQty) {
                     case $minimumLvl:
-                        $itemSellingPrice = 'minimum_level';
+                        $itemSellingPrice = $part->selling_price;
+                        $status = 'minimum_level';
                      break;
                     
                     case $criticalLvl:
-                        $itemSellingPrice = 'critical_level';
+                        $itemSellingPrice = $part->selling_price;
+                        $status = 'critical_level';
                      break;
                     
                     case 0:
-                        $itemSellingPrice = 'zero';
+                        $itemSellingPrice = '0';
+                        $status = '0';
                      break;
 
                     default:
                         $itemSellingPrice = $part->selling_price;
+                        $status = '';
                 
                 } 
 
             }
-            return $itemSellingPrice;
+            return json_encode(['price' => $itemSellingPrice, 'status' => $status]);
 
         }
     }
@@ -697,6 +703,10 @@ class QuotationController extends Controller
                 
                 $pDetails->save();
             }
+
+            Yii::$app->db->createCommand()
+                ->update('quotation', ['task' => 1], "id = $id")
+                ->execute();
 
             $searchModel = new SearchQuotation();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);

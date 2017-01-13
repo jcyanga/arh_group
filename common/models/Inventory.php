@@ -112,4 +112,66 @@ class Inventory extends \yii\db\ActiveRecord
             return 0;
         }   
     }
+
+    public function getZeroStock() {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
+            ->from('inventory')
+            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+            ->where('inventory.quantity > 10')
+            ->orderBy('product.product_name')
+            ->limit(10)
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        } 
+
+    }
+
+    public function getCriticalStock() {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
+            ->from('inventory')
+            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+            ->where('inventory.quantity > 5')
+            ->orderBy('product.product_name')
+            ->limit(10)
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        } 
+
+    }
+
+    public function getWarningStock() {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
+            ->from('inventory')
+            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+            ->where('inventory.quantity > 1')
+            ->orderBy('product.product_name')
+            ->limit(10)
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        } 
+
+    }
+
+
 }

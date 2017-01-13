@@ -5,179 +5,237 @@
 $this->title = 'My Yii Application';
 ?>
 
-<br/>
-<div class="row">
 
-<div class="col-md-12 col-sm-12 col-xs-12">
-    <div class="dashboard_graph x_panel">
-        <div class="row x_title">
-            <div class="col-md-6">
-                <h3>Sales Monitor <small>Graph title sub-title</small></h3>
+<div style="margin-top: 50px;">
+    
+    <div class="row">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard_graph x_panel">
+            <div class="row x_title">
+                <div class="col-md-6">
+                    <h3>Customer List <small>Graph title sub-title</small></h3>
+                </div>
+                <div class="col-md-6">
+                    <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                        <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6">
-                <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
-                    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                    <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
+            <div class="x_content">
+                <div class="demo-container" style="height:250px">
+                    <div id="placeholder3xx3" class="demo-placeholder" style="width: 50%; height:250px;">
+                        <input type="text" class="form-control" />
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="x_content">
-            <div class="demo-container" style="height:250px">
-                <div id="placeholder3xx3" class="demo-placeholder" style="width: 100%; height:250px;"></div>
+    </div>
+
+    </div>
+    <br/>
+
+    <div class="row">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard_graph x_panel">
+            <div class="row x_title">
+                <div class="col-md-6">
+                    <h3>Pending Services <small>Graph title sub-title</small></h3>
+                </div>
+                <div class="col-md-6">
+                    <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                        <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
+                    </div>
+                </div>
+            </div>
+            <div class="x_content">
+                <div class="demo-container" style="height:250px">
+                    <div id="placeholder3xx3" class="demo-placeholder" style="width: 100%; height:250px;"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-</div>
-<br/>
-                    
-<div class="row">
-
-<div class="col-md-4 col-sm-4 col-xs-12">
-
-<div class="x_panel">
-
-<div class="x_title">
-    <h2>Pending Tasks</h2>
-    <ul class="nav navbar-right panel_toolbox">
-        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings 1</a></li>
-                <li><a href="#">Settings 2</a></li>
-            </ul>
-        </li>
-        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-    </ul>
-    <div class="clearfix"></div>
-</div>
-
-<div class="x_content">
-    <div class="dashboard-widget-content">
-
-        <ul class="list-unstyled timeline widget">
-            <li>
-                <div class="block">
-                    <div class="block_content">
-                        <h2 class="title"><a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a></h2>
-                        <div class="byline">
-                            <span>13 hours ago</span> by <a>Jane Smith</a>
-                        </div>
-                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
-                        </p>
-                    </div>
-                </div>
-            </li>    
-        </ul>
     </div>
-</div>
+    <br/>
 
-</div>
+    <div class="row">
 
-</div>
+    <div class="col-md-4 col-sm-4 col-xs-12">
 
+    <div class="x_panel">
 
-<div class="col-md-4 col-sm-4 col-xs-12">
-
-<div class="x_panel">
-
-<div class="x_title">
-    <h2>Parts in Warning Condition</h2>
-    <ul class="nav navbar-right panel_toolbox">
-        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings 1</a></li>
-                <li><a href="#">Settings 2</a></li>
-            </ul>
-        </li>
-        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-    </ul>
-    <div class="clearfix"></div>
-</div>
-
-<div class="x_content">
-    <div class="dashboard-widget-content">
-
-        <ul class="list-unstyled timeline widget">
-            <li>
-                <div class="block">
-                    <div class="block_content">
-                        <h2 class="title"><a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a></h2>
-                        <div class="byline">
-                            <span>13 hours ago</span> by <a>Jane Smith</a>
-                        </div>
-                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
-                        </p>
-                    </div>
-                </div>
-            </li>    
+    <div class="x_title">
+        <h2>Parts in Warning Stock</h2>
+        <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a></li>
+                    <li><a href="#">Settings 2</a></li>
+                </ul>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i> See All(<?php echo count($getWarningStock); ?>)</a></li>
         </ul>
+        <div class="clearfix"></div>
     </div>
-</div>
 
-</div>
+    <div class="x_content">
+        <div class="dashboard-widget-content">
 
-</div>
-
-<div class="col-md-4 col-sm-4 col-xs-12">
-
-<div class="x_panel">
-
-<div class="x_title">
-    <h2>Parts No Stocks</h2>
-    <ul class="nav navbar-right panel_toolbox">
-        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Settings 1</a></li>
-                <li><a href="#">Settings 2</a></li>
-            </ul>
-        </li>
-        <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-    </ul>
-    <div class="clearfix"></div>
-</div>
-
-<div class="x_content">
-    <div class="dashboard-widget-content">
-
-        <ul class="list-unstyled timeline widget">
-            <li>
-                <div class="block">
-                    <div class="block_content">
-                        <h2 class="title"><a>Who Needs Sundance When You’ve Got&nbsp;Crowdfunding?</a></h2>
-                        <div class="byline">
-                            <span>13 hours ago</span> by <a>Jane Smith</a>
+            <ul class="list-unstyled timeline widget">
+               <?php if( !empty($getWarningStock) ): ?>
+                   <?php foreach( $getWarningStock as $wStock ): ?>
+                        
+                        <li>
+                        <div class="block">
+                            <div class="block_content">
+                                <h2 class="title"><a style="font-size: 12.5px; text-transform: uppercase; font-family: Tahoma;"><center><?php echo $wStock['product_name']; ?></center></a></h2>
+                            </div>
                         </div>
-                        <p class="excerpt">Film festivals used to be do-or-die moments for movie makers. They were where you met the producers that could fund your project, and if the buyers liked your flick, they’d pay to Fast-forward and… <a>Read&nbsp;More</a>
-                        </p>
-                    </div>
-                </div>
-            </li>    
-        </ul>
+                    </li>   
+
+                    <?php endforeach; ?>
+                <?php else: ?>
+
+                    <li>
+                        <div class="block">
+                            <div class="block_content">
+                                <h2 class="title"><a>No Record Found.</a></h2>
+                            </div>
+                        </div>
+                    </li>  
+
+                <?php endif; ?>
+            </ul>
+
+        </div>
     </div>
-</div>
 
-</div>
+    </div>
 
-</div>
-<br/>
+    </div>
 
-<div class="row">
- 
-     <div class="col-md-12 col-sm-12 col-xs-12">
-     
-         Customer Info. & Customer Quotation
 
-     </div>
+    <div class="col-md-4 col-sm-4 col-xs-12">
 
-</div>
-<br/>
+    <div class="x_panel">
+
+    <div class="x_title">
+        <h2>Parts in Critical Stock</h2>
+        <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a></li>
+                    <li><a href="#">Settings 2</a></li>
+                </ul>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i> See All(<?php echo count($getCriticalStock); ?>)</a></li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="x_content">
+        <div class="dashboard-widget-content">
+
+            <ul class="list-unstyled timeline widget">
+               <?php if( !empty($getCriticalStock) ): ?>
+                   <?php foreach( $getCriticalStock as $cStock ): ?>
+                        
+                        <li>
+                        <div class="block">
+                            <div class="block_content">
+                                <h2 class="title"><a style="font-size: 12.5px; text-transform: uppercase; font-family: Tahoma;"><center><?php echo $cStock['product_name']; ?></center></a></h2>
+                            </div>
+                        </div>
+                    </li>   
+
+                    <?php endforeach; ?>
+                <?php else: ?>
+
+                    <li>
+                        <div class="block">
+                            <div class="block_content">
+                                <h2 class="title"><a>No Record Found.</a></h2>
+                            </div>
+                        </div>
+                    </li>  
+
+                <?php endif; ?>
+            </ul>
+
+        </div>
+    </div>
+
+    </div>
+
+    </div>
+
+
+    <div class="col-md-4 col-sm-4 col-xs-12">
+
+    <div class="x_panel">
+
+    <div class="x_title">
+        <h2>Parts Zero Stock</h2>
+        <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Settings 1</a></li>
+                    <li><a href="#">Settings 2</a></li>
+                </ul>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i> See All(<?php echo count($getZeroStock); ?>)</a></li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+
+    <div class="x_content">
+        <div class="dashboard-widget-content">
+
+            <ul class="list-unstyled timeline widget">
+               <?php if( !empty($getZeroStock) ): ?>
+                   <?php foreach( $getZeroStock as $zStock ): ?>
+                        
+                        <li>
+                        <div class="block">
+                            <div class="block_content">
+                                <h2 class="title"><a style="font-size: 12.5px; text-transform: uppercase; font-family: Tahoma;"><center><?php echo $zStock['product_name']; ?></center></a></h2>
+                            </div>
+                        </div>
+                    </li>   
+
+                    <?php endforeach; ?>
+                <?php else: ?>
+
+                    <li>
+                        <div class="block">
+                            <div class="block_content">
+                                <h2 class="title"><a>No Record Found.</a></h2>
+                            </div>
+                        </div>
+                    </li>  
+
+                <?php endif; ?>
+            </ul>
+
+        </div>
+    </div>
+
+    </div>
+
+    </div>
+    <br/>
+
+    </div>
 
 </div>
 

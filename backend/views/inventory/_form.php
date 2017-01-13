@@ -15,6 +15,7 @@ $datetime = date('Y-m-d h:i:s');
 $userId = Yii::$app->user->identity->id;
 $dataSupplier = ArrayHelper::map(Supplier::find()->all(), 'id', 'supplier_name');
 $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
+$getSupplier = Supplier::find()->all();
 
 ?>
 
@@ -28,9 +29,15 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
     </div>
     <br/>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label class="form_label">Parts-Supplier</label>
-        <?= $form->field($model, 'supplier_id')->dropDownList($dataSupplier, ['class' => 'form_input form-control', 'class' => 'select2_single', 'style' => 'width: 100%;'])->label(false) ?>
+        <br/>
+        <select name="Inventory[supplier_id][]" class="form_input form-control select2_single" id="inventorySupplier" >
+            <option value="0">CHOOSE SUPPLIER HERE</option>
+            <?php foreach( $getSupplier as $sRow ): ?>
+                <option value="<?php echo $sRow['id']; ?>"> <?php echo $sRow['supplier_name']; ?> </option>
+            <?php endforeach; ?>
+        </select>
     </div>
 
 </div>
@@ -38,11 +45,11 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 
 <div class="row">
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label class="form_label">Product Name</label>
         <br/>
-        <select name="product_id[]" class="form_input form-control" id="inventoryProduct" required="required" >
-            <option value="">CHOOSE PARTS HERE</option>
+        <select name="Inventory[product][]" class="form_input form-control select2_single" id="inventoryProduct" >
+            <option value="0">CHOOSE PARTS HERE</option>
             <?php foreach( $getProductList as $row ): ?>
                 <option value="<?php echo $row['id']; ?>">[ <?php echo $row['category']; ?> ] <?php echo $row['product_name']; ?></option>
             <?php endforeach; ?>
@@ -50,28 +57,34 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 
     </div>
 
-    <div class="col-md-2">
+</div>
+<br/>
+
+<div class="row">
+
+    <div class="col-md-3">
         <label class="form_label">Quantity</label>
-        <input type="text" name="quantity[]" class="form_input form-control" required="required" placeholder="Write Quantity Here." />
+        <input type="text" name="Inventory[quantity][]" class="form_input form-control" id="inventoryQty" placeholder="Write Quantity Here." />
     </div>
 
-    <div class="col-md-2">
+    <div class="col-md-3">
         <label class="form_label">Cost Price</label>
-        <input type="text" name="cost_price[]" class="form_input form-control" required="required" placeholder="Write Cost Price Here." />
+        <input type="text" name="Inventory[cost_price][]" class="form_input form-control" id="inventoryCost" placeholder="Write Cost Price Here." />
     </div>
 
-    <div class="col-md-2">
+    <div class="col-md-3">
         <label class="form_label">Selling Price</label>
-        <input type="text" name="selling_price[]" class="form_input form-control" required="required" placeholder="Write Selling Price Here." />
+        <input type="text" name="Inventory[selling_price][]" class="form_input form-control" id="inventorySelling" placeholder="Write Selling Price Here." />
     </div>
 
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div style="padding-top: 30px;">
-        <a href="#" class="form-btn add-more"><i class="fa fa-plus"></i> Add</a>
+        <button type="button" class="form-btn btn btn-link" onclick="newProduct()"><i class="fa fa-plus"></i> Add Product </button>
         </div>  
     </div>
 
     <div >
+        <input type="hidden" id="n" value="0" />
         <?= $form->field($model, 'created_at')->textInput(['type' => 'hidden', 'value' => $datetime])->label(false) ?>
         <?= $form->field($model, 'date_imported')->textInput(['type' => 'hidden', 'value' => $datetime])->label(false) ?>
         <?= $form->field($model, 'created_by')->textInput(['type' => 'hidden', 'value' => $userId])->label(false) ?>
@@ -80,54 +93,8 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 </div>
 <br/>
 
-<div class="input-group control-group after-add-more"></div>
+<div class="selected-product-list" id="selected-product-list"></div>
 
-<div class="copy hide " >
-
-<div class="control-group" >
-
-<div class="row">
-
-    <div class="col-md-4">
-        
-        <label class="form_label">Product Name</label>
-        <br/>
-        <select name="product_id[]" class="form_input form-control" id="inventoryProduct" >
-            <option value="">CHOOSE PARTS HERE</option>
-            <?php foreach( $getProductList as $row ): ?>
-                <option value="<?php echo $row['id']; ?>">[ <?php echo $row['category']; ?> ] <?php echo $row['product_name']; ?></option>
-            <?php endforeach; ?>
-        </select>
-
-    </div>  
-
-    <div class="col-md-2">
-        <label class="form_label">Quantity</label>
-        <input type="text" name="quantity[]" class="form_input form-control" placeholder="Write Quantity Here." />
-    </div>
-
-    <div class="col-md-2">
-        <label class="form_label">Cost Price</label>
-        <input type="text" name="cost_price[]" class="form_input form-control" placeholder="Write Cost Price Here." />
-    </div>
-
-    <div class="col-md-2">
-        <label class="form_label">Selling Price</label>
-        <input type="text" name="selling_price[]" class="form_input form-control" placeholder="Write Selling Price Here." />
-    </div>
-
-    <div class="col-md-2">
-        <div style="padding-top: 30px;">
-        <a href="#" class="form-btn remove"><i class="fa fa-trash"></i> Remove</a>
-        </div>  
-    </div>
-    
-</div>
-<br/>
-
-</div>
-
-</div>
 <hr/>
 
 <div class="row">

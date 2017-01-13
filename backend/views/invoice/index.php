@@ -80,9 +80,11 @@ $this->title = 'Inventories';
             <?php foreach( $getInvoice as $row){ ?>
                 <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                     <td style="text-align: center; font-size: 13px;" class=" first">
-                        <a href="?r=invoice/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a> |
-                           <a href="?r=invoice/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-edit"><span class="actionTooltiptext">Update record</span></li> </a> |
+                        <a href="?r=invoice/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a>
+                        <?php if( $row['task'] <> 1 ): ?>
+                           | <a href="?r=invoice/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-edit"><span class="actionTooltiptext">Update record</span></li> </a> |
                            <a href="?r=invoice/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Void record</span></li> </a>
+                        <?php endif; ?>
                     </td>
                     <td class="tblalign_center"><?php echo date('m-d-Y', strtotime($row['date_issue']) );  ?></td>
                     <td class="tblalign_center"><?php echo $row['name'];  ?></td>

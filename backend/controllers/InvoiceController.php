@@ -15,6 +15,7 @@ use common\models\InvoiceDetail;
 use common\models\Product;
 use common\models\Gst;
 use common\models\Payment;
+use common\models\ProductLevel;
 
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -153,7 +154,7 @@ class InvoiceController extends Controller
 
             if( $dateIssue == "" || $selectedBranch == 0 || $selectedCustomer == 0 || $selectedUser == 0 || $remarks == "" ) {
                     
-                    return $this->render('create', [
+                    return $this->render('_form', [
                         'model' => $model,
                         'invoiceId' => $invoiceId,
                         'getBranchList' => $getBranchList,
@@ -246,7 +247,7 @@ class InvoiceController extends Controller
             
         } else {
 
-            return $this->render('create', [
+            return $this->render('_form', [
                 'model' => $model,
                 'invoiceId' => $invoiceId,
                 'getBranchList' => $getBranchList,
@@ -316,7 +317,7 @@ class InvoiceController extends Controller
 
             if( $dateIssue == "" || $selectedBranch == 0 || $selectedCustomer == 0 || $selectedUser == 0 || $remarks == "" ) {
                     
-                    return $this->render('update', [
+                    return $this->render('_update-form', [
                         'model' => $model,
                         'invoiceId' => $invoiceId,
                         'getBranchList' => $getBranchList,
@@ -414,7 +415,7 @@ class InvoiceController extends Controller
 
         } else {
 
-            return $this->render('update', [
+            return $this->render('_update-form', [
                 'model' => $getInvoice, 
                 'getService' => $getService,
                 'getPart' => $getPart,
@@ -533,32 +534,41 @@ class InvoiceController extends Controller
 
             if( $ItemType == '0' ) {
                 $service = Service::find()->where(['id' => $ItemId])->one();
-                $itemSellingPrice = $service->default_price;;
-                
+                $itemSellingPrice = $service->default_price;
+                $status = '';
+
             }else{
                 $part = Inventory::find()->where(['product_id' => $ItemId])->one();
                 $itemQty = $part->quantity;
-    
+                
+                $getPartLevel = ProductLevel::find()->one();
+                $criticalLvl = $getPartLevel->critical_level;
+                $minimumLvl = $getPartLevel->minimum_level;
+
                 switch($itemQty) {
-                    case 10:
-                        $itemSellingPrice = 'ten';
+                    case $minimumLvl:
+                        $itemSellingPrice = $part->selling_price;
+                        $status = 'minimum_level';
                      break;
                     
-                    case 5:
-                        $itemSellingPrice = 'five';
+                    case $criticalLvl:
+                        $itemSellingPrice = $part->selling_price;
+                        $status = 'critical_level';
                      break;
                     
                     case 0:
-                        $itemSellingPrice = 'zero';
+                        $itemSellingPrice = '0';
+                        $status = '0';
                      break;
 
                     default:
                         $itemSellingPrice = $part->selling_price;
+                        $status = '';
                 
                 } 
 
             }
-            return $itemSellingPrice;
+            return json_encode(['price' => $itemSellingPrice, 'status' => $status]);
 
         }
     }
@@ -636,39 +646,101 @@ class InvoiceController extends Controller
     public function actionSavePayment() {
 
         $model = new Payment();
+        $searchModel = new SearchInvoice();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         // $getInvoice = $model->getInvoice($id); 
         // $getInvoiceServiceDetail = $model->getInvoiceServiceDetail($id); 
         // $getInvoicePartDetail = $model->getInvoicePartDetail($id);
 
         if( $model->load(Yii::$app->request->post()) ) {
-            $invoiceId = Yii::$app->request->post('Payment')['invoice_id'];
-            $invoiceNo = Yii::$app->request->post('Payment')['invoice_no'];
-            $customerId = Yii::$app->request->post('Payment')['customer_id'];
-            $paymentDate = Yii::$app->request->post('Payment')['payment_date'];
-            $paymentTime = Yii::$app->request->post('Payment')['payment_time'];
-            $paymentMethod = Yii::$app->request->post('Payment')['payment_method'];
-            $paymentType = Yii::$app->request->post('Payment')['payment_type'];
-            $amount = Yii::$app->request->post('Payment')['amount'];
-            $discount = Yii::$app->request->post('Payment')['discount'];
-            $pointsRedeem = Yii::$app->request->post('Payment')['points_redeem'];
-            $pointsEarned = Yii::$app->request->post('Payment')['points_earned'];
-            $remarks = Yii::$app->request->post('Payment')['remarks'];
-
-            $model->invoice_id = $invoiceId;
-            $model->invoice_no = $invoiceNo;
-            $model->customer_id = $customerId;
-            $model->amount = $amount;
-            $model->discount = $discount;
-            $model->payment_method = $paymentMethod;
-            $model->payment_type = $paymentType;
-            $model->points_earned = $pointsEarned;
-            $model->points_redeem = $pointsRedeem;
-            $model->remarks = $remarks;
-            $model->payment_date = $paymentDate;
-            $model->payment_time = $paymentTime;
-            $model->status = 1;
             
-            $model->save();
+            $paymentMethod = Yii::$app->request->post('Payment')['payment_method'];     
+            
+            if( $paymentMethod == 1 ) {
+                
+                $invoiceId = Yii::$app->request->post('Payment')['invoice_id'];
+                $invoiceNo = Yii::$app->request->post('Payment')['invoice_no'];
+                $customerId = Yii::$app->request->post('Payment')['customer_id'];
+                $paymentDate = Yii::$app->request->post('Payment')['payment_date'];
+                $paymentTime = Yii::$app->request->post('Payment')['payment_time'];
+                $paymentType = Yii::$app->request->post('Payment')['payment_type'];
+                $amount = Yii::$app->request->post('Payment')['amount'];
+                $discount = Yii::$app->request->post('Payment')['discount'];
+                $pointsRedeem = Yii::$app->request->post('Payment')['points_redeem'];
+                $pointsEarned = Yii::$app->request->post('Payment')['points_earned'];
+                $remarks = Yii::$app->request->post('Payment')['remarks'];
+
+                $model->invoice_id = $invoiceId;
+                $model->invoice_no = $invoiceNo;
+                $model->customer_id = $customerId;
+                $model->amount = $amount;
+                $model->discount = $discount;
+                $model->payment_method = $paymentMethod;
+                $model->payment_type = $paymentType;
+                $model->points_earned = $pointsEarned;
+                $model->points_redeem = $pointsRedeem;
+                $model->remarks = $remarks;
+                $model->payment_date = $paymentDate;
+                $model->payment_time = $paymentTime;
+                $model->status = 1;
+                
+                $model->save();
+                
+                Yii::$app->db->createCommand()
+                    ->update('invoice', ['task' => 1], "id = $invoiceId")
+                    ->execute();
+
+                $getInvoice = $searchModel->getInvoice();
+
+                return $this->render('index', [
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
+                    'getInvoice' => $getInvoice
+                ]);
+
+            }else{
+
+                $mInvoiceId = Yii::$app->request->post('Payment')['mInvoice_id'];
+                $mInvoiceNo = Yii::$app->request->post('Payment')['mInvoice_no'];
+                $mCustomerId = Yii::$app->request->post('Payment')['mCustomer_id'];
+                $mPaymentDate = Yii::$app->request->post('Payment')['mPayment_date'];
+                $mPaymentTime = Yii::$app->request->post('Payment')['mPayment_time'];
+
+                $mlPaymentType = Yii::$app->request->post('Payment')['mlPayment_type'];
+                $mlAmount = Yii::$app->request->post('Payment')['mlAmount'];
+                $mlDiscount = Yii::$app->request->post('Payment')['mlDiscount'];
+                $mlPointsRedeem = Yii::$app->request->post('Payment')['mlPoints_redeem'];
+                $mlPointsEarned = Yii::$app->request->post('Payment')['mlPoints_earned'];
+                $mlRemarks = Yii::$app->request->post('Payment')['mlRemarks'];
+                
+                foreach( $mlPaymentType as $key => $value ) {
+                     $mModel = new Payment();
+                     
+                     $mModel->invoice_id = $mInvoiceId;
+                     $mModel->invoice_no = $mInvoiceNo;
+                     $mModel->customer_id = $mCustomerId;
+
+                     $mModel->amount = $mlAmount[$key];
+                     $mModel->discount = $mlDiscount[$key];
+
+                     $mModel->payment_method = $paymentMethod;
+
+                     $mModel->payment_type = $value;
+                     $mModel->points_earned = $mlPointsEarned[$key];
+                     $mModel->points_redeem = $mlPointsRedeem[$key];
+                     $mModel->remarks = $mlRemarks[$key];
+
+                     $mModel->payment_date = $mPaymentDate;
+                     $mModel->payment_time = $mPaymentTime;
+
+                     $mModel->status = 1;
+                    
+                     $mModel->save();
+
+                }
+
+            }
+
 
         }else{
             echo 'not ok';
@@ -677,20 +749,28 @@ class InvoiceController extends Controller
     }
 
     public function actionInsertInPaymentList() {
+        $detail = new Payment();
+        $this->layout = false;
+
+        $n = Yii::$app->request->post('n');
+        $mPayment_type = Yii::$app->request->post('mPayment_type');
+        $mAmount = Yii::$app->request->post('mAmount');
+        $mDiscount = Yii::$app->request->post('mDiscount');
+        $mPoints_redeem = Yii::$app->request->post('mPoints_redeem');
+        $mPoints_earned = Yii::$app->request->post('mPoints_earned');
+        $mRemarks = Yii::$app->request->post('mRemarks');
 
         return $this->render('add-payment-lists', [
-                    'content' => 'ok',
-                    // 'n' => $n,
-                    // 'itemQty' => $itemQty,
-                    // 'itemPriceValue' => $itemPriceValue,
-                    // 'itemSubTotal' => $itemSubTotal,
-                    // 'serviceId' => $serviceId,
-                    // 'serviceName' => $serviceName,
-                    // 'partId' => $partId,
-                    // 'partName' => $partName,
-                    // 'itemType' => $ItemType,
-                    // 'detail' => $detail,
-                ]);
+            'n' => $n,
+            'mPayment_type' => $mPayment_type,
+            'mAmount' => $mAmount,
+            'mDiscount' => $mDiscount,
+            'mPoints_redeem' => $mPoints_redeem,
+            'mPoints_earned' => $mPoints_earned,
+            'mRemarks' => $mRemarks,
+            'detail' => $detail,
+
+        ]);
 
     }
 

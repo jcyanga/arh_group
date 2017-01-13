@@ -1,74 +1,77 @@
-<div style="margin-left: 10px;" class="row">
+<?php
 
-                <div class="col-md-5">
-                    <span class="pmLabel" ><i class="fa fa-bank"></i> MODE OF PAYMENT </span>   
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
-                    <select  name="Payment[mPayment_type]" class="form_pm form-control" id="mPayment_type" >
-                        <option value="">CHOOSE PAYMENT HERE.</option>
-                        <option value="Cash_Payment">Cash Payment</option>
-                        <option value="Telegraphic_Transfer">Telegraphic Transfer</option>
-                        <option value="Money_Orders">Money Orders</option>
-                        <option value="Bill_of_Exchange">Bill of Exchange</option>
-                        <option value="Promissory_Notes">Promissory Notes</option>
-                        <option value="Cheque">Cheque</option>
-                        <option value="Bank_Draft">Bank Draft</option>
-                    </select>
-                </div>
+?>  
 
-            </div>
-            <br/>
+<div class="payment-<?= $n ?>">
 
-            <div style="margin-left: 10px;" class="row">
+    <div class="row">
 
-                <div class="col-md-5">
-                    <span class="pmLabel" ><i class="fa fa-money"></i> AMOUNT </span>
+        <div class="col-md-12">
+                
+                <span class="remove-button">
+                    <a href="javascript:removePayment(<?= $n ?>)"><button type="button" class="form-btn btn btn-link"><i class="fa fa-minus-circle"></i> REMOVE PAYMENT </button></a>
+                </span>
+      
+        </div>
 
-                    <input type="text" name="Payment[mAmount]" class="form_pm form-control" id="mAmount" placeholder="Enter Amount here." />
-                </div>
+    </div> 
+    <br/>
 
-            </div>
-            <br/>
+    <div style="margin-left: 10px;" class="row">
 
-            <div style="margin-left: 10px;" class="row">
+        <div class="col-md-4">
+            <span class="pmLabel" ><i class="fa fa-bank"></i> MODE OF PAYMENT </span>
 
-                <div class="col-md-5">
-                    <span class="pmLabel" ><i class="fa fa-dollar"></i> DISCOUNT </span>
+            <input type="text" name="Payment[mlPayment_type][]" class="form_pm form-control" id="payment-<?= $n ?>-mPayment_type" value="<?= $mPayment_type ?>" readonly />
+        </div>
 
-                    <input type="text" name="Payment[mDiscount]" class="form_pm form-control" id="mDiscount" placeholder="Enter Discount here." />
-                </div>
+        <div class="col-md-4">
+            <span class="pmLabel" ><i class="fa fa-money"></i> AMOUNT </span>
 
-            </div>
-            <br/>
+            <input type="text" name="Payment[mlAmount][]" class="form_pm form-control" id="payment-<?= $n ?>-mAmount" value="<?= $mAmount ?>" readonly />
+        </div>
 
-            <div style="margin-left: 10px;" class="row">
+        <div class="col-md-4">
+            <span class="pmLabel" ><i class="fa fa-minus-square"></i> DISCOUNT </span>
 
-                <div class="col-md-5">
-                    <input type="checkbox" class="chkboxRedeemPoints" id="chkboxRedeemPoints" > <b>Redeem Points?</b>
-                    <br/>
-                    
-                </div>
+            <input type="text" name="Payment[mlDiscount][]" class="form_pm form-control" id="payment-<?= $n ?>-mDiscount" value="<?= $mDiscount ?>" readonly />
+        </div>
 
-            </div>
-            <br/>
+    </div>
+    <br/>
 
-            <div style="margin-left: 10px;" class="row">
+    <div style="margin-left: 10px;" class="row">
 
-                <div class="col-md-5">
-                    <span class="pmLabel" ><i class="fa fa-dot-circle-o"></i> POINTS EARNED </span>
+        <div class="col-md-4">
+            <span class="pmLabel" ><i class="fa fa-user"></i> POINTS REDEEMED </span>
+            
+            <input type="text" class="form_pm form-control" id="payment-<?= $n ?>-mPoints_redeem" name="Payment[mlPoints_redeem][]" value="<?= $mPoints_redeem ?>" readonly />
+        </div>
 
-                    <input type="text" name="Payment[mPoints_earned]" class="form_pm form-control" id="mPoints_earned" placeholder="Enter Points Earned here." />
-                </div>
+        <div class="col-md-4">
+            <span class="pmLabel" ><i class="fa fa-dot-circle-o"></i> POINTS EARNED </span>
 
-            </div>
-            <br/>
+            <input type="text" name="Payment[mlPoints_earned][]" class="form_pm form-control" id="payment-<?= $n ?>-mPoints_earned" value="<?= $mPoints_earned ?>" readonly />
+        </div>
 
-            <div style="margin-left: 10px;" class="row">
+    </div>
+    <br/>
 
-                <div class="col-md-11">
-                    <span class="pmLabel" ><i class="fa fa-comments"></i> REMARKS </span>
+    <div style="margin-left: 10px;" class="row">
 
-                    <textarea cols="20" rows="3" name="Payment[mRemarks]" class="form_pmTxtArea form-control" id="mRemarks" placeholder="Write Remarks here."></textarea>
-                </div>
+        <div class="col-md-11">
+            <span class="pmLabel" ><i class="fa fa-comments"></i> REMARKS </span>
 
-            </div>
-            <br/>
+            <textarea cols="10" rows="2" name="Payment[mlRemarks][]" class="form_pmTxtArea form-control" id="payment-<?= $n ?>-mRemarks" readonly><?= $mRemarks ?></textarea>
+
+        </div>
+
+    </div>
+
+</div>
+<hr/>

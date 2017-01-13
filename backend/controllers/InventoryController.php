@@ -18,11 +18,13 @@ use common\models\UserPermission;
 use yii\web\Response;
 use common\models\Product;
 use common\models\StockIn;
+use common\models\Supplier;
 /**
  * InventoryController implements the CRUD actions for Inventory model.
  */
 class InventoryController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -131,65 +133,66 @@ class InventoryController extends Controller
         if ($model->load(Yii::$app->request->post())) {
 
             $supplier_id = Yii::$app->request->post('Inventory')['supplier_id'];
-            $product_id = Yii::$app->request->post('product_id');
-             array_pop($product_id);
-            $quantity = Yii::$app->request->post('quantity');
-             array_pop($quantity);
-            $cost_price = Yii::$app->request->post('cost_price');
-             array_pop($cost_price);
-            $selling_price = Yii::$app->request->post('selling_price');
-             array_pop($selling_price); 
+            
+            // $product_id = Yii::$app->request->post('product_id');
+            //  array_pop($product_id);
+            // $quantity = Yii::$app->request->post('quantity');
+            //  array_pop($quantity);
+            // $cost_price = Yii::$app->request->post('cost_price');
+            //  array_pop($cost_price);
+            // $selling_price = Yii::$app->request->post('selling_price');
+            //  array_pop($selling_price); 
+            $productId = Yii::$app->request->post('Inventory')['product'];
+            $quantity = Yii::$app->request->post('Inventory')['quantity'];
+            $cost_price = Yii::$app->request->post('Inventory')['cost_price'];
+            $selling_price = Yii::$app->request->post('Inventory')['selling_price'];
+
             $date_imported = Yii::$app->request->post('Inventory')['date_imported'];
             $created_at = Yii::$app->request->post('Inventory')['created_at'];
             $created_by = Yii::$app->request->post('Inventory')['created_by'];
             
-            if( !empty($product_id) ) {
+            foreach ($productId as $key => $value) {
+            
+            $result = $model->selectSupplierNameandProductName($supplier_id[$key], $value);
 
-                foreach ($selling_price as $key => $value) {
-                
-                $result = $model->selectSupplierNameandProductName($supplier_id,$product_id[$key]);
+                $inventory = new Inventory();
+                $inventory->supplier_id = $supplier_id[$key];
+                $inventory->product_id = $value;
+                $inventory->quantity = $quantity[$key];
+                $inventory->cost_price = $cost_price[$key];
+                $inventory->selling_price = $selling_price[$key];
+                $inventory->date_imported = $date_imported;
+                $inventory->created_at = $created_at;
+                $inventory->created_by = $created_by;
 
-                    $inventory = new Inventory();
-                    $inventory->supplier_id = $supplier_id;
-                    $inventory->product_id = $product_id[$key];
-                    $inventory->quantity = $quantity[$key];
-                    $inventory->cost_price = $cost_price[$key];
-                    $inventory->selling_price = $selling_price[$key];
-                    $inventory->date_imported = $date_imported;
-                    $inventory->created_at = $created_at;
-                    $inventory->created_by = $created_by;
-
-                    if( $result != 1) { 
-                        $inventory->save();  
-                    }
-
-                    $stockin = new StockIn();
-                    $stockin->supplier_id = $supplier_id;
-                    $stockin->product_id = $product_id[$key];
-                    $stockin->quantity = $quantity[$key];
-                    $stockin->cost_price = $cost_price[$key];
-                    $stockin->selling_price = $selling_price[$key];
-                    $stockin->date_imported = date("Y-m-d");
-                    $stockin->time_imported = date("H:i:s");
-                    $stockin->created_at = date("Y-m-d");
-                    $stockin->created_by = Yii::$app->user->identity->id;
-
-                    if( $result != 1) { 
-                        $stockin->save();  
-                    }
-                        
+                if( $result != 1) { 
+                    $inventory->save();  
                 }
-                
-                $searchModel = new SearchInventory();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-                $getProductInInventory = $model->getProductInInventory();
+                $stockin = new StockIn();
+                $stockin->supplier_id = $supplier_id[$key];
+                $stockin->product_id = $value;
+                $stockin->quantity = $quantity[$key];
+                $stockin->cost_price = $cost_price[$key];
+                $stockin->selling_price = $selling_price[$key];
+                $stockin->date_imported = date("Y-m-d");
+                $stockin->time_imported = date("H:i:s");
+                $stockin->created_at = date("Y-m-d");
+                $stockin->created_by = Yii::$app->user->identity->id;
 
-                return $this->render('index', ['searchModel' => $searchModel, 'getProductInInventory' => $getProductInInventory,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
+                if( $result != 1) { 
+                    $stockin->save();  
+                }
+                    
+            }
+            
+            $searchModel = new SearchInventory();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+            $getProductInInventory = $model->getProductInInventory();
 
-            }           
+            return $this->render('index', ['searchModel' => $searchModel, 'getProductInInventory' => $getProductInInventory,
+                'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);        
 
         } else {
 
@@ -365,6 +368,37 @@ class InventoryController extends Controller
         $dompdf->stream('PartsInventory-' . date('m-d-Y'));
           
 
+    }
+
+    public function actionInsertInInventory() {
+        $detail = new Inventory();
+        $this->layout = false;
+
+        $n = Yii::$app->request->post('n');
+        $inventorySupplierId = Yii::$app->request->post('inventorySupplier');
+        $inventoryProductId = Yii::$app->request->post('inventoryProduct');
+        $inventoryQty = Yii::$app->request->post('inventoryQty');
+        $inventoryCost = Yii::$app->request->post('inventoryCost');
+        $inventorySelling = Yii::$app->request->post('inventorySelling');
+
+        $getProductName = Product::find()->where(['id' => $inventoryProductId])->one();
+        $inventoryProductName = $getProductName->product_name;
+
+        $getSupplierName = Supplier::find()->where(['id' => $inventorySupplierId])->one();
+        $inventorySupplierName = $getSupplierName->supplier_name;
+
+        return $this->render('product-lists',[
+
+                'n' => $n,
+                'inventorySupplier' => $inventorySupplierId,
+                'inventorySupplierName' => $inventorySupplierName,
+                'inventoryProduct' => $inventoryProductId,
+                'inventoryProductName' => $inventoryProductName,
+                'inventoryQty' => $inventoryQty,
+                'inventoryCost' => $inventoryCost,
+                'inventorySelling' => $inventorySelling,
+                'detail' => $detail
+            ]);
     }
 
 

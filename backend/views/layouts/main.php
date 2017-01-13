@@ -15,9 +15,6 @@ use common\models\UserPermission;
 
 AppAsset::register($this);
 
-$roleId = Yii::$app->user->identity->role_id;
-$getUserPermission = UserPermission::find()->where(['role_id' => $roleId])->all();
-
 $isDashboard = false;
 $isBranch = false;
 $isRole = false;
@@ -34,56 +31,143 @@ $isInventory = false;
 $isStocks = false;
 $isQuotation = false;
 $isInvoice = false;
+$isGst = false;
+$isProductLevel = false;
 
-if(isset($_GET['r'])) {
-    $getClass = $_GET['r'];
-    $url = explode('/', $_GET['r']);
-    $isDashboard = true;
-    
-    if( $url ) {
-        $getClass = $url[0];
+$roleId = Yii::$app->user->identity->role_id;
+$getUserPermission = UserPermission::find()->where(['role_id' => $roleId])->groupBy('controller')->all();
+
+foreach ($getUserPermission as $key => $value) {
+   
+    switch($value['controller']) {
+        case 'Site':
+            $isDashboard = true;
+        break;
+
+        case 'Branch':
+            $isBranch = true;
+        break;
+
+        case 'Role':
+            $isRole = true;
+        break;
+
+        case 'Modules':
+            $isModules = true;
+        break;
+
+        case 'UserPermission':
+            $isUserPermission = true;
+        break;
+
+        case 'User':
+            $isUser = true;
+        break;
+
+        case 'Customer':
+            $isCustomer = true;
+        break;
+
+        case 'ServiceCategory':
+            $isServiceCategory = true;
+        break;
+
+        case 'Service':
+            $isService = true;
+        break;
+
+        case 'Category':
+            $isCategory = true;
+        break;
+
+        case 'Product':
+            $isProduct = true;
+        break;
+
+        case 'Supplier':
+            $isSupplier = true;
+        break;
+
+        case 'Inventory':
+            $isInventory = true;
+        break;
+
+        case 'Stocks':
+            $isStocks = true;
+        break;
+
+        case 'Quotation':
+            $isQuotation = true;
+        break;
+
+        case 'Invoice':
+            $isInvoice = true;
+        break;
+
+        case 'Gst':
+            $isGst = true;
+        break;
+
+        case 'ProductLevel':
+            $isProductLevel = true;
+        break;
+
+        default:
+            $navigation = true;
+
     }
 
-    if( $getClass == 'customer' ) {
-        $isCustomer = true;
-    }
-
-    if( $getClass == 'user' ) {
-        $isUser = true;
-    }
-
-    if( $getClass == 'role' ) {
-        $isRole = true;
-    }
-
-    if( $getClass == 'modules' ) {
-        $isModules = true;
-    }
-
-    if( $getClass == 'modules-access' ) {
-        $isModulesAccess = true;
-    }
-
-    if( $getClass == 'inventory' ) {
-        $isInventory = true;
-    }
-
-    if( $getClass == 'category' ) {
-        $isCategory = true;
-    }
-
-    if( $getClass == 'supplier' ) {
-        $isSupplier = true;
-    }
-
-    if( $getClass == 'product' ) {
-        $isProduct = true;
-    }
-
-    if( $getClass == 'inventory' ) {
-        $isInventory = true;
-    }
 }
+
+
+// if(isset($_GET['r'])) {
+    // $getClass = $_GET['r'];
+    // $url = explode('/', $_GET['r']);
+    
+    // if( $url ) {
+    //     $getClass = $url[0];
+    // }
+
+    // if( $getClass == 'customer' ) {
+    //     $isCustomer = true;
+    // }
+
+    // if( $getClass == 'user' ) {
+    //     $isUser = true;
+    // }
+
+    // if( $getClass == 'role' ) {
+    //     $isRole = true;
+    // }
+
+    // if( $getClass == 'modules' ) {
+    //     $isModules = true;
+    // }
+
+    // if( $getClass == 'modules-access' ) {
+    //     $isModulesAccess = true;
+    // }
+
+    // if( $getClass == 'inventory' ) {
+    //     $isInventory = true;
+    // }
+
+    // if( $getClass == 'category' ) {
+    //     $isCategory = true;
+    // }
+
+    // if( $getClass == 'supplier' ) {
+    //     $isSupplier = true;
+    // }
+
+    // if( $getClass == 'product' ) {
+    //     $isProduct = true;
+    // }
+
+    // if( $getClass == 'inventory' ) {
+    //     $isInventory = true;
+    // }
+// }
 
 $userFullname = Yii::$app->user->identity->fullname;
 
@@ -155,38 +239,78 @@ $userFullname = Yii::$app->user->identity->fullname;
                             <h3>General</h3>
                             <ul class="nav side-menu">
                                 <li id="menu_header_bg"><a> <span id="nav-menu-header"> <i class="fa fa-list"></i> Menu Navigation </span> </a></li>
+                                <?php if($isDashboard): ?>
                                 <li><a href="?"><i class="fa fa-home"></i> Dashboard </a></li>
+                                <?php endif; ?>
+                                <?php if($isBranch): ?>
                                 <li><a href="?r=branch" id="nav-branch" ><i class="fa fa-globe"></i> Branch </a></li>
+                                <?php endif; ?>
+                                <?php if($isRole || $isModules || $isUserPermission || $isUser): ?>
                                 <li><a id="nav-user" ><i class="fa fa-user"></i>  User <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
+                                        <?php if($isRole): ?>
                                         <li><a href="?r=role" id="nav-role" > User Role</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isModules): ?>
                                         <li><a href="?r=modules" id="nav-modules"> Module List</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isUserPermission): ?>
                                         <li><a href="?r=user-permission" id="nav-userPermission"> User Permission</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isUser): ?>
                                         <li ><a href="?r=user" id="nav-userList"> User </a></li>
+                                        <?php endif; ?>
                                     </ul>
                                 </li>
+                                <?php endif; ?>
+                                <?php if($isCustomer): ?>
                                 <li><a href="?r=customer" id="nav-customer"  ><i class="fa fa-users"></i> Customer </a></li>
+                                <?php endif; ?>
+                                <?php if($isServiceCategory || $isService): ?>
                                 <li><a id="nav-services" ><i class="fa fa-battery-quarter"></i> Services <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
+                                        <?php if($isServiceCategory): ?>
                                         <li><a href="?r=service-category"  id="nav-serviceCategory" >Category</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isService): ?>
                                         <li><a href="?r=service"  id="nav-serviceList" >Service List</a></li>
+                                        <?php endif; ?>
                                     </ul>
                                 </li>
+                                <?php endif; ?>
+                                <?php if($isCategory || $isProduct || $isSupplier || $isInventory): ?>
                                 <li><a id="nav-parts" ><i class="fa fa-cogs"></i> Parts <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
+                                        <?php if($isCategory): ?>
                                         <li><a href="?r=category"  id="nav-category" >Category</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isProduct): ?>
                                         <li><a href="?r=product"  id="nav-product" >Parts</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isSupplier): ?>
                                         <li><a href="?r=supplier" id="nav-supplier" >Parts-Supplier</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isInventory): ?>
                                         <li><a href="?r=inventory" id="nav-inventory" > Parts-Inventory</a></li>
+                                        <?php endif; ?>
                                     </ul>
                                 </li>
+                                <?php endif; ?>
+                                <?php if($isStocks): ?>
                                 <li><a href="?r=stocks" id="nav-services" ><i class="fa fa-database"></i> Stocks </a></li>
+                                <?php endif; ?>
+                                <?php if($isQuotation || $isInvoice): ?>
                                 <li><a><i class="fa fa-desktop"></i>Transactions <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
+                                        <?php if($isQuotation): ?>
                                         <li><a href="?r=quotation" id="nav-quotation" > Quotation</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isInvoice): ?>
                                         <li><a href="?r=invoice" id="nav-invoice" > Invoice</a></li>
+                                        <?php endif; ?>
                                     </ul>
                                 </li>
+                                <?php endif; ?>
                                 <li><a id="nav-reports" ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
                                     <li><a href="media_gallery.html">Best Selling Product</a></li>
@@ -194,12 +318,18 @@ $userFullname = Yii::$app->user->identity->fullname;
                                         <li><a href="general_elements.html">Monthly Stocks Report</a></li>
                                     </ul>
                                 </li>
+                                <?php if($isGst || $isProductLevel): ?>
                                 <li><a id="nav-reports" ><i class="fa fa-gear"></i> Utilities <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
+                                        <?php if($isGst): ?>
                                         <li><a href="?r=gst">Set GST</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isProductLevel): ?>
                                         <li><a href="?r=product-level">Part Critical & Minimum Level</a></li>
+                                        <?php endif; ?>
                                     </ul>
                                 </li>
+                                <?php endif; ?>
                             </ul>
                         </div>
 

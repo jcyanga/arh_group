@@ -13,7 +13,7 @@ $this->title = 'Create Quotation';
 
 ?>
 
-<div class="row form-container">
+<div class="row transactionform-container">
 
 <div>
     <?php if($msg <> ''){ ?>

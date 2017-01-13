@@ -84,11 +84,12 @@ class SearchQuotation extends Quotation
     public function getQuotation() {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.paid', 'quotation.date_issue'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.paid', 'quotation.date_issue', 'quotation.task'])
             ->from('quotation')
             ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
             ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
+            ->where('quotation.delete = 0')
             ->all();
 
         return $result;

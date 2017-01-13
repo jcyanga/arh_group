@@ -23,9 +23,28 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
 
 <?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
 
-<div class="row">
+<div class="row transactionform-container">
 
-    <div id="invCustomerSide" class="col-md-5">
+<div>
+    <?php if($msg <> ''){ ?>
+        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
+            <?php echo $msg; ?>
+        </div>
+    <?php } ?>
+</div>
+
+ <div class="col-md-12 col-sm-12 col-xs-12">
+ 
+    <div class="form-title-container">
+        <span style="color: #666;" class="form-header"><h4><i class="fa fa-pencil"></i> Create Invoice</h4></span>
+    </div>
+    <hr/>
+
+    <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
+    <br/><br/>
+
+    <div class="form-crud-container">
         
         <div class="row invoiceHeader">
             <div class="col-md-12">
@@ -38,12 +57,12 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/><br/>
 
-        <div class="row">
+        <div style="margin: 0 auto;" class="row">
 
             <div class="col-md-6">
                 <div class="row">
 
-                    <div class="col-md-12">
+                    <div class="col-md-8">
 
                         <span class="invoiceLabel" ><i class="fa fa-barcode"></i> Invoice Number </span>
 
@@ -56,7 +75,7 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
             <div class="col-md-6">
                 <div class="row">
 
-                <div class="col-md-10">
+                <div class="col-md-8">
 
                     <span class="invoiceLabel" style="margin-left: 45px;" ><i class="fa fa-calendar"></i> Date Issue </span>
 
@@ -69,12 +88,12 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/><br/>
 
-        <div class="row">
+        <div style="margin: 0 auto;" class="row">
 
         <div class="col-md-6">
             <div class="row">
 
-                <div class="col-md-12">
+                <div class="col-md-8">
                     
                     <span class="invoiceLabel" ><i class="fa fa-globe"></i> Branch </span>
 
@@ -92,12 +111,12 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/>
 
-        <div class="row">
+        <div style="margin: 0 auto;" class="row">
 
         <div class="col-md-6">
             <div class="row">
 
-                <div class="col-md-12">
+                <div class="col-md-8">
                     
                     <span class="invoiceLabel" ><i class="fa fa-users"></i> Customer Name</span>
                     
@@ -115,19 +134,19 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/>
 
-        <div class="row">
+        <div style="margin: 0 auto;" class="row">
 
         <div class="col-md-6">
             <div class="row">
 
-                <div class="col-md-12">
+                <div class="col-md-8">
                     
                     <span class="invoiceLabel" ><i class="fa fa-user"></i> Sales Person </span>
 
                     <select name="Invoice[selectedUser]" class="qSelect select3_single" >
                         <option value="0">SEARCH SALES PERSON HERE.</option>
                         <?php foreach( $getUserList as $row ): ?>
-                            <option value="<?php echo $row['id']; ?>">[ <?php echo $row['role']; ?> ] <?php echo $row['userList']; ?></option>
+                            <option value="<?php echo $row['id']; ?>"> <?php echo $row['userList']; ?> </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -138,9 +157,9 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/><br/>
 
-        <div class="row">
+        <div style="margin: 0 auto;" class="row">
 
-        <div class="col-md-12">
+        <div class="col-md-6">
             
             <span class="invoiceLabel" ><i class="fa fa-comment"></i> Remarks </span>
             <textarea name="Invoice[remarks]" placeholder="Write your remarks here." id="message" class="qtxtarea form-control" data-parsley-trigger="keyup" data-parsley-minlength="10" data-parsley-maxlength="100" data-parsley-minlength-message="You need to enter at least a 10 caracters long comment." data-parsley-validation-threshold="10"></textarea> 
@@ -149,26 +168,35 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/>
 
-    </div>
+    </div>   
+ 
+ </div>
 
-    <div class="col-md-7">
+</div>
+
+
+<div class="row transactionform-container">
+
+ <div class="col-md-12 col-sm-12 col-xs-12">
+ 
+    <div class="form-crud-container">
         
         <div class="row invoiceHeader">
             <div class="col-md-12">
                 
-                <div>
-                    <span class="invoiceHeaderLabel" > <li class="fa fa-info"></li> Services or Parts Information </span>
+                <div >
+                    <span class="invoiceHeaderLabel" > <li class="fa fa-chain-broken"></li> Services or Parts Information </span>
                 </div>
             
             </div>
         </div>
         <br/><br/>
 
-        <div class="row">
+        <div style="margin: 0 auto;" class="row">
 
-        <div class="col-md-7">
+        <div class="col-md-5">
 
-            <div style="text-align: center;"> <b><span><i class="fa fa-battery-quarter"></i> Services | <i class="fa fa-cogs"></i> Parts </span></b> 
+            <div style="text-align: center;"> <b><span><i class="fa fa-battery-quarter"></i> Services & <i class="fa fa-cogs"></i> Parts </span></b> 
             </div>
 
             <select class="select2_group form-control" id="services_parts" onchange="invGetSellingPrice()" >
@@ -193,7 +221,7 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/>
 
-        <div class="row">
+        <div style="margin: 0 auto;" class="row">
             
             <div class="col-md-3">
         
@@ -230,9 +258,9 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
             </div>
 
         </div>
-        <hr/><br/>
+        <br/>
 
-        <div id="invSelectedContainer" class="row">
+        <div style="margin: 0 auto;" id="invSelectedContainer" class="row">
             
             <div class="col-md-12">
                 <b><i class="fa fa-thumbs-up"></i> Selected Services or Parts</b>
@@ -245,48 +273,41 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/>
 
-        <div class="row">
+        <div style="margin: 0 auto;" class="row">
+
+            <div class="col-md-4"></div>
 
             <div class="col-md-3"></div>
 
             <div class="col-md-3"></div>
 
-            <div class="col-md-3"></div>
-
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <input type="text" name="Invoice[grand_total]" class="grandTotal form_invSP form-control" id="grandTotal" style="text-align: center;" placeholder="Total Price" readonly />
             </div>
         
         </div>
-
+        
         <input type="hidden" id='n' value="0">
-        <br/><hr/>
+        <br/>
 
-        <div class="row">
+    </div>   
+ 
+ </div>
 
-            <div class="col-md-12">
-                <div style="text-align: right;">        
-                <?= Html::submitButton('<li class=\'fa fa-save\'></li> Submit Quotation' , ['class' =>'form-btn btn btn-info btn-lg']) ?>
-                <?= Html::resetButton('<li class=\'fa fa-file\'></li> Cancel', ['class' => 'form-btn btn btn-default btn-lg']) ?>
-                </div>
-            </div>
+</div>
+<br/>
 
-        </div>
+<div class="row">
 
+    <div class="col-md-12">
+        <div style="text-align: right;">        
+        <?= Html::submitButton('<li class=\'fa fa-save\'></li> Submit Invoice' , ['class' =>'form-btn btn btn-dark btn-lg']) ?>
+         </div>
     </div>
 
 </div>
 <br/>
 
-<?php ActiveForm::end(); ?>
-
-
-
-
-
-
-
-
-
+<?php ActiveForm::end(); ?>  
     
 

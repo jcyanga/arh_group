@@ -88,7 +88,7 @@ $this->title = 'Inventories';
     <tbody>
         <?php if( !empty($getQuotation) ): ?>
             <?php foreach( $getQuotation as $row){ ?>
-            <?php $getInvoice = Invoice::find()->where(['quotation_code' => $row['quotation_code'] ])->all(); ?>
+
                 <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
                     <td class="tblalign_center"><?php echo date('m-d-Y', strtotime($row['date_issue']) );  ?></td>
                     <td class="tblalign_center"><?php echo $row['name'];  ?></td>
@@ -96,11 +96,11 @@ $this->title = 'Inventories';
                     <td class="tblalign_center"><?php echo $row['salesPerson'];  ?></td>
                     <td class="tblalign_center" style="font-weight: bold; font-style: italic;"><?php echo ( $row['paid'] == 1 )? 'Yes' : 'Not Yet';  ?></td>
                     <td style="text-align: center; font-size: 13px;" class=" last">
-                       <?php if( !empty($getInvoice) ): ?>
-                       <a href="?r=quotation/preview&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-print"><span class="actionTooltiptext">Print record</span></li> </a> |
-                       <?php endif; ?> 
+                       <?php if( $row['task'] == 1 ): ?>
+                        <a href="?r=quotation/preview&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-print"><span class="actionTooltiptext">Print quotation</span></li> </a> |
+                       <?php endif; ?>
                        <a href="?r=quotation/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a>
-                       <?php if( empty($getInvoice) ): ?>
+                       <?php if( $row['task'] <> 1 ): ?>
                         | <a href="?r=quotation/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-edit"><span class="actionTooltiptext">Update record</span></li> </a> 
                        <?php endif; ?>
                         | <a href="?r=quotation/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>

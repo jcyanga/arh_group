@@ -19,8 +19,6 @@ if( isset($getGst->gst) ) {
     $getSubTotal = $customerInfo['grand_total'] / $gst;
 }
 
-$getInvoice = Invoice::find()->where(['quotation_code' => $customerInfo['quotation_code'] ])->one();
-
 $this->title = 'View Quotation';
 // $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
 // $this->params['breadcrumbs'][] = $this->title;
@@ -85,8 +83,7 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                 <!-- <strong>Invoice #: <?= $invoiceNo ?></strong> -->
                 <b>Customer Name:</b> <?= $customerInfo['fullname'] ?>
                 <br><b>Address:</b> <?= $customerInfo['customerAddress'] ?>
-                <br><b>E-mail:</b> 
-                <br><b>Phone:</b> <?= $customerInfo['hanphone_no'] ?> / Office # <?= $customerInfo['office_no'] ?>
+                <br><b>Phone:</b> <?= $customerInfo['hanphone_no'] ?> / <b>Office #</b> <?= $customerInfo['office_no'] ?>
                 <br><b>CarPlate:</b> <?= $customerInfo['carplate'] ?>
                 <br><b>Model:</b> <?= $customerInfo['carplate'] ?>
                 <!-- <br>Email: jon@ironadmin.com -->
@@ -113,7 +110,7 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                 <tbody>
                     <?php foreach($services as $sRow): ?>
                         <tr>
-                            <td class="qtblalign_center">
+                            <td class="qtblalign_center" <?php if( $sRow['task'] == 1 ): ?> style="color: red;" <?php endif; ?> >
                                 <?php if( $sRow['task'] == 1 ): ?> 
                                      <span class="actionTooltip"><?php echo '*' .$sRow['service_name']; ?><span class="actionTooltiptext">Pending Sevice.</span></span>
                                 <?php else: ?>
@@ -181,15 +178,15 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
     <div class="row no-print">
         <div class="col-xs-12">
             
-            <?php if( empty($getInvoice) ): ?>
+            <?php if( $customerInfo['task'] <> 1 ): ?>
             <a href="?r=quotation/update&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-info"><i class="fa fa-edit"></i> Update Quotation</button></a>
             <?php endif; ?>
             
             <a href="?r=quotation/delete-column&id=<?= $customerInfo['id'] ?>" onclick="return deleteConfirmation()"><button class="form-btn btn btn-danger"><i class="fa fa-trash"></i> Delete Quotation</button></a>
             
-            <button class="form-btn btn btn-default pull-right" onclick="window.print();"><i class="fa fa-print"></i> Print Quotation</button>
+            <a href="?r=quotation/preview&id=<?php echo $customerInfo['id']; ?>"><button class="form-btn btn btn-default pull-right" onclick="window.print();"><i class="fa fa-print"></i> Print Quotation</button></a>
             
-            <?php if( empty($getInvoice) ): ?>
+            <?php if( $customerInfo['task'] <> 1 ): ?>
             <a href="?r=quotation/insert-invoice&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-success pull-right"><i class="fa fa-credit-card"></i> Generate Invoice</button></a>
             <?php endif; ?>
 

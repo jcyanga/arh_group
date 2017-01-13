@@ -165,7 +165,7 @@ class StocksController extends Controller
 
         $getProductInInventory = $model->getProductInInventory();
 
-        return $this->render('index', ['model' => $model, 'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'getProductInInventory' => $getProductInInventory, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
+        return $this->render('index', ['model' => $model, 'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'getProductInInventory' => $getProductInInventory, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Record was successfully updated.'
         ]);
     
     }

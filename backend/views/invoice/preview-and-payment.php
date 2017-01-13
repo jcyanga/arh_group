@@ -83,7 +83,6 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                 <!-- <strong>Invoice #: <?= $invoiceNo ?></strong> -->
                 <b>Customer Name:</b> <?= $customerInfo['fullname'] ?>
                 <br><b>Address:</b> <?= $customerInfo['customerAddress'] ?>
-                <br><b>E-mail:</b> 
                 <br><b>Phone:</b> <?= $customerInfo['hanphone_no'] ?> / Office # <?= $customerInfo['office_no'] ?>
                 <br><b>CarPlate:</b> <?= $customerInfo['carplate'] ?>
                 <br><b>Model:</b> <?= $customerInfo['carplate'] ?>
@@ -111,7 +110,13 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                 <tbody>
                     <?php foreach($services as $sRow): ?>
                         <tr>
-                            <td class="qtblalign_center"><?php echo $sRow['service_name']; ?></td>
+                            <td class="qtblalign_center" <?php if( $sRow['task'] == 1 ): ?> style="color: red;" <?php endif; ?> >
+                                <?php if( $sRow['task'] == 1 ): ?> 
+                                     <span class="actionTooltip"><?php echo '*' .$sRow['service_name']; ?><span class="actionTooltiptext">Pending Sevice.</span></span>
+                                <?php else: ?>
+                                    <?php echo $sRow['service_name']; ?>
+                                <?php endif; ?>
+                            </td>
                             <td class="qtblalign_center"><?php echo $sRow['quantity']; ?></td>
                             <td class="qtblalign_center"><?php echo $sRow['selling_price']; ?></td>
                             <td class="qtblalign_center"><?php echo $sRow['subTotal']; ?></td>

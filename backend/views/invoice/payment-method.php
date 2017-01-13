@@ -79,8 +79,10 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
                 <div class="col-md-5">
                     <span class="pmLabel" ><i class="fa fa-bank"></i> MODE OF PAYMENT </span>   
+                    <br/>
 
-                    <select  name="Payment[payment_type]" class="form_pm form-control" >
+                    <select  name="Payment[payment_type]" style="width: 100%;" class="form_pm form-control select3_single" >
+                        <option value="0">CHOOSE PAYMENT HERE.</option>
                         <option value="">CHOOSE PAYMENT HERE.</option>
                         <option value="Cash_Payment">Cash Payment</option>
                         <option value="Telegraphic_Transfer">Telegraphic Transfer</option>
@@ -109,7 +111,7 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
             <div style="margin-left: 10px;" class="row">
 
                 <div class="col-md-5">
-                    <span class="pmLabel" ><i class="fa fa-dollar"></i> DISCOUNT </span>
+                    <span class="pmLabel" ><i class="fa fa-minus-square"></i> DISCOUNT </span>
 
                     <input type="text" name="Payment[discount]" class="form_pm form-control" placeholder="Enter Discount here." />
                 </div>
@@ -195,9 +197,10 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
                 <div class="col-md-5">
                     <span class="pmLabel" ><i class="fa fa-bank"></i> MODE OF PAYMENT </span>   
+                    <br/>
 
-                    <select  name="Payment[mPayment_type]" class="form_pm form-control" id="mPayment_type" >
-                        <option value="">CHOOSE PAYMENT HERE.</option>
+                    <select  name="Payment[mPayment_type]" style="width: 100%;" class="form_pm form-control select3_single" id="mPayment_type" >
+                        <option value="0">CHOOSE PAYMENT HERE.</option>
                         <option value="Cash_Payment">Cash Payment</option>
                         <option value="Telegraphic_Transfer">Telegraphic Transfer</option>
                         <option value="Money_Orders">Money Orders</option>
@@ -225,7 +228,7 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
             <div style="margin-left: 10px;" class="row">
 
                 <div class="col-md-5">
-                    <span class="pmLabel" ><i class="fa fa-dollar"></i> DISCOUNT </span>
+                    <span class="pmLabel" ><i class="fa fa-minus-square"></i> DISCOUNT </span>
 
                     <input type="text" name="Payment[mDiscount]" class="form_pm form-control" id="mDiscount" placeholder="Enter Discount here." />
                 </div>
@@ -236,9 +239,9 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
             <div style="margin-left: 10px;" class="row">
 
                 <div class="col-md-5">
-                    <input type="checkbox" class="chkboxRedeemPoints" id="chkboxRedeemPoints" > <b>Redeem Points?</b>
+                    <input type="checkbox" class="mChkboxRedeemPoints" id="mChkboxRedeemPoints" > <b>Redeem Points?</b>
                     <br/>
-                    <input type="text" class="form_pm form-control" id="sRedeemPoints" name="Payment[mPoints_redeem]" id="mPoints_redeem" placeholder="<?= $customerInfo['points'] ?> Points remaining." />
+                    <input type="text" class="form_pm form-control" id="mRedeemPoints" name="Payment[mPoints_redeem]" placeholder="<?= $customerInfo['points'] ?> Points remaining." />
                 </div>
 
             </div>
@@ -270,7 +273,7 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
                 <div class="col-md-12">
                     <div style="text-align: right;">
-                        <a onclick="newPayment()"><span class="pmLabel" ><i class="fa fa-plus-circle"></i> ADD PAYMENT </span></a>
+                        <button type="button" class="form-btn btn btn-link" onclick="newPayment()"><span class="pmLabel" ><i class="fa fa-plus-circle"></i> ADD PAYMENT </span></button>
                     </div>
                 </div>
 
@@ -280,6 +283,7 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
             <div class="added-payment-lists" id="added-payment-lists"></div>
 
             <div>
+                <input type="hidden" id="n" value="0">
                 <input type="hidden" name="Payment[mInvoice_id]" id="mInvoice_id" class="form_pm form-control" value="<?= $customerInfo['id'] ?>" />
                 <input type="hidden" name="Payment[mInvoice_no]" id="mInvoice_no" class="form_pm form-control" value="<?= $customerInfo['invoice_no'] ?>" />
                 <input type="hidden" name="Payment[mCustomer_id]" id="mCustomer_id" class="form_pm form-control" value="<?= $customerInfo['customer_id'] ?>" />
@@ -314,11 +318,11 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 <div style=" box-shadow: .7px .7px .7px .7px;" class="x_panel">
 
     <div class="x_title">
-        <h2> Invoice Preview.</h2>
+        <h2> Invoice #<?= $customerInfo['id'] ?></h2>
         <ul class="nav navbar-right panel_toolbox">
-            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+            <!-- <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
             <li class="dropdown"></li>
-            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a></li> -->
         </ul>
         <div class="clearfix"></div>
     </div>
@@ -344,10 +348,10 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
     <!-- title row -->
     <div class="row">
         <div class="col-xs-12 invoice-header">
-            <h3>
+            <h4>
             <small class="pull-left"><i class="fa fa-globe"></i> <?=$customerInfo['invoice_no'] ?></small>
             <small class="pull-right"><i class="fa fa-calendar"></i> Date Issue: <?= date('m-d-Y', strtotime($customerInfo['date_issue']) ) ?></small>
-            </h3>
+            </h4>
         </div>
         <!-- /.col -->
     </div>
@@ -362,7 +366,6 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                 <!-- <strong>Invoice #: <?= $invoiceNo ?></strong> -->
                 <b>Customer Name:</b> <?= $customerInfo['fullname'] ?>
                 <br><b>Address:</b> <?= $customerInfo['customerAddress'] ?>
-                <br><b>E-mail:</b> 
                 <br><b>Phone:</b> <?= $customerInfo['hanphone_no'] ?> / Office # <?= $customerInfo['office_no'] ?>
                 <br><b>CarPlate:</b> <?= $customerInfo['carplate'] ?>
                 <br><b>Model:</b> <?= $customerInfo['carplate'] ?>
@@ -390,7 +393,13 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                 <tbody>
                     <?php foreach($services as $sRow): ?>
                         <tr>
-                            <td class="qtblalign_center"><?php echo $sRow['service_name']; ?></td>
+                            <td class="qtblalign_center" <?php if( $sRow['task'] == 1 ): ?> style="color: red;" <?php endif; ?> >
+                                <?php if( $sRow['task'] == 1 ): ?> 
+                                     <span class="actionTooltip"><?php echo '*' .$sRow['service_name']; ?><span class="actionTooltiptext">Pending Sevice.</span></span>
+                                <?php else: ?>
+                                    <?php echo $sRow['service_name']; ?>
+                                <?php endif; ?>
+                            </td>
                             <td class="qtblalign_center"><?php echo $sRow['quantity']; ?></td>
                             <td class="qtblalign_center"><?php echo $sRow['selling_price']; ?></td>
                             <td class="qtblalign_center"><?php echo $sRow['subTotal']; ?></td>
