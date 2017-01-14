@@ -184,7 +184,7 @@ $invoiceNo = 'Arh' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
             
             <a href="?r=quotation/delete-column&id=<?= $customerInfo['id'] ?>" onclick="return deleteConfirmation()"><button class="form-btn btn btn-danger"><i class="fa fa-trash"></i> Delete Quotation</button></a>
             
-            <a href="?r=quotation/preview&id=<?php echo $customerInfo['id']; ?>"><button class="form-btn btn btn-default pull-right" onclick="window.print();"><i class="fa fa-print"></i> Print Quotation</button></a>
+            <a href="?r=quotation/preview&id=<?php echo $customerInfo['id']; ?>"><button class="form-btn btn btn-default pull-right" ><i class="fa fa-print"></i> Generate Quotation</button></a>
             
             <?php if( $customerInfo['task'] <> 1 ): ?>
             <a href="?r=quotation/insert-invoice&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-success pull-right"><i class="fa fa-credit-card"></i> Generate Invoice</button></a>

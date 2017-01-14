@@ -288,7 +288,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
             <div class="col-md-12">    
                 <div class="row item">
                     <div class="col-md-6">
-                        <b> <input type="checkbox" name="InvoiceDetail[task][]" id="task" class="form_invSP task"  value="checked" <?php if( $sRow['task'] == 1 ): ?> checked='checked' <?php endif; ?> /> Pending Service ?</b> 
+                        <b> <input type="checkbox" name="InvoiceDetail[task][]" id="task" class="form_invSP task"  value="<?= $sRow['serviceId'] ?>" <?php if( $sRow['task'] == 1 ): ?> checked='checked' <?php endif; ?> /> Pending Service ?</b> 
                     </div>
 
                     <div class="col-md-6">
@@ -300,7 +300,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
                                 <a href="javascript:saveInvSelectedItem(<?= $sRow['id'] ?>)"><i class="fa fa-save"></i> Save</a>
                             </span>
                             <span class="remove-button">
-                                <a href="?r=invoice/delete-selected-quotation-detail&id=<?= $sRow['id'] ?>" onclick="return deleteConfirmation()">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                                <a href="?r=invoice/delete-selected-quotation-detail&id=<?= $sRow['id'] ?>&invoiceId=<?= $sRow['id'] ?>" onclick="return deleteConfirmation()">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
                             </span>
                         </div>
                     </div>

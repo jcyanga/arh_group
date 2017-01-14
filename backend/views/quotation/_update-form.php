@@ -286,7 +286,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
             <div class="col-md-12">    
                 <div class="row item">
                     <div class="col-md-6">
-                        <b> <input type="checkbox" name="QuotationDetail[task][]" id="task" class="form_quoSP task"  value="checked" <?php if( $sRow['task'] == 1 ): ?> checked='checked' <?php endif; ?> /> Pending Service ?</b> 
+                        <b> <input type="checkbox" name="QuotationDetail[task][]" id="task" class="form_quoSP task"  value="<?= $sRow['serviceId'] ?>" <?php if( $sRow['task'] == 1 ): ?> checked='checked' <?php endif; ?> /> Pending Service ?</b> 
                     </div>
 
                     <div class="col-md-6">
@@ -298,7 +298,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                                 <a href="javascript:saveSelectedItem(<?= $sRow['id'] ?>)"><i class="fa fa-save"></i> Save</a>
                             </span>
                             <span class="remove-button">
-                                <a href="?r=quotation/delete-selected-quotation-detail&id=<?= $sRow['id'] ?>" onclick="return deleteConfirmation()">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                                <a href="?r=quotation/delete-selected-quotation-detail&id=<?= $sRow['id'] ?>&quotationId=<?= $sRow['quotation_id']; ?>" onclick="return deleteConfirmation()">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
                             </span>
                         </div>
                     </div>
@@ -342,7 +342,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                                 <a href="javascript:saveSelectedItem(<?= $pRow['id'] ?>)"><i class="fa fa-save"></i> Save</a>
                             </span>
                             <span class="remove-button">
-                                <a href="?r=quotation/delete-selected-quotation-detail&id=<?= $pRow['id'] ?>" onclick="return deleteConfirmation()">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                                <a href="?r=quotation/delete-selected-quotation-detail&id=<?= $pRow['id'] ?>&quotationId=<?= $sRow['quotation_id']; ?>" onclick="return deleteConfirmation()">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
                             </span>
                         </div>
                     </div>

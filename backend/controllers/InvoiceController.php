@@ -202,7 +202,8 @@ class InvoiceController extends Controller
                     $quantity = Yii::$app->request->post('InvoiceDetail')['quantity'];
                     $selling_price = Yii::$app->request->post('InvoiceDetail')['selling_price'];
                     $subTotal = Yii::$app->request->post('InvoiceDetail')['subTotal'];
-                    
+                    $task = Yii::$app->request->post('InvoiceDetail')['task'];
+
                     foreach ($quantity as $key => $value) {
                         $invD = new InvoiceDetail();
 
@@ -227,19 +228,20 @@ class InvoiceController extends Controller
                         $invD->created_at = $created_at;
                         $invD->created_by = $created_by;
                         $invD->type = $getType;
-                        
-                        if ( isset(Yii::$app->request->post('QuotationDetail')['task'][$key]) ) {
-                            $invD->task = 1;
-
-                        }else{
-                            $invD->task = 0;
-                            
-                        }
+                        $invD->task = 0;
 
                         $invD->save();
 
                     }
                  
+                    foreach( $task as $key => $tValue ) {
+
+                        Yii::$app->db->createCommand()
+                            ->update('invoice_detail', ['task' => 1], "invoice_id = $invoiceId AND service_part_id = $tValue AND type = 0")
+                            ->execute();
+
+                    }
+
                  return $this->redirect(['view', 'id' => $model->id]);
 
                 }
@@ -370,7 +372,8 @@ class InvoiceController extends Controller
                     $quantity = Yii::$app->request->post('InvoiceDetail')['quantity'];
                     $selling_price = Yii::$app->request->post('InvoiceDetail')['selling_price'];
                     $subTotal = Yii::$app->request->post('InvoiceDetail')['subTotal'];
-                    
+                    $task = Yii::$app->request->post('InvoiceDetail')['task'];
+
                     foreach ($quantity as $key => $value) {
                         $invD = new InvoiceDetail();
 
@@ -395,19 +398,20 @@ class InvoiceController extends Controller
                         $invD->created_at = $created_at;
                         $invD->created_by = $created_by;
                         $invD->type = $getType;
-                        
-                        if ( isset(Yii::$app->request->post('InvoiceDetail')['task'][$key]) ) {
-                            $invD->task = 1;
-
-                        }else{
-                            $invD->task = 0;
-                            
-                        }
+                        $invD->task = 0;
 
                         $invD->save();
 
                     }
                  
+                 foreach( $task as $key => $tValue ) {
+
+                        Yii::$app->db->createCommand()
+                            ->update('invoice_detail', ['task' => 1], "invoice_id = $invoiceId AND service_part_id = $tValue AND type = 0")
+                            ->execute();
+
+                 }
+
                  return $this->redirect(['view', 'id' => $model->id]);
 
                 }
@@ -470,39 +474,13 @@ class InvoiceController extends Controller
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
     }
 
-    public function actionDeleteSelectedQuotationDetail($id)
+    public function actionDeleteSelectedQuotationDetail($id,$invoiceId)
     {
         Yii::$app->db->createCommand()
-            ->delete('invoice_detail', "invoice_id = $id" )
+            ->delete('invoice_detail', "id = $id" )
             ->execute();
 
-        $model = new Invoice();
-
-        $getInvoice = $model->getInvoice($id);
-        $getService = $model->getQuotationDetailService($id);
-        $getPart = $model->getQuotationDetailPart($id);
-        $getLastId = $model->getLastId($id);
-
-        $invoiceId = $this->_getInvoiceId();
-        $getBranchList = $model->getBranch();
-        $getUserList = $model->getUser();
-        $getCustomerList = $model->getCustomer();
-        $getServicesList = $model->getServicesList();
-        $getPartsList = $model->getPartsList();
-
-        return $this->render('update', [
-                'model' => $getInvoice, 
-                'getService' => $getService,
-                'getPart' => $getPart,
-                'getLastId' => $getLastId,
-                'invoiceId' => $invoiceId,
-                'getBranchList' => $getBranchList,
-                'getUserList' => $getUserList,
-                'getCustomerList' => $getCustomerList,
-                'getServicesList' => $getServicesList,
-                'getPartsList' => $getPartsList, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-            
-            ]);
+        return $this->actionUpdate($invoiceId);
     }
     /**
      * Finds the Invoice model based on its primary key value.

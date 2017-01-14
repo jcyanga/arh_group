@@ -140,9 +140,9 @@ $userFullname = Yii::$app->user->identity->fullname;
     }
     .subpage {
         padding: 1cm;
-        border: 5px red solid;
-        height: 256mm;
-        outline: 2cm #FFEAEA solid;
+        /*border: 5px red solid;*/
+        /*height: 256mm;*/
+        /*outline: 2cm #FFEAEA solid;*/
     }
     
     @page {

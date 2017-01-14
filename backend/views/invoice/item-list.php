@@ -10,7 +10,7 @@ use yii\helpers\Url;
 <div class="row item-<?= $n ?>">
     <div class="col-md-6">
         <?php if ( $itemType == '0' ) {  ?>
-            <b> <input type="checkbox" name="InvoiceDetail[task][]" id="task" class="form_invSP task" value="" /> Pending Service ?</b>
+            <b> <input type="checkbox" name="InvoiceDetail[task][]" id="task" class="form_invSP task" value="<?= $serviceId ?>" /> Pending Service ?</b>
         <?php } ?>
     </div>
 

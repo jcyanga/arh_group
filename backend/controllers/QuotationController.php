@@ -205,6 +205,8 @@ class QuotationController extends Controller
                     $selling_price = Yii::$app->request->post('QuotationDetail')['selling_price'];
                     $subTotal = Yii::$app->request->post('QuotationDetail')['subTotal'];
                     
+                    $task = Yii::$app->request->post('QuotationDetail')['task'];
+
                     foreach ($quantity as $key => $value) {
                         $quoD = new QuotationDetail();
 
@@ -229,17 +231,18 @@ class QuotationController extends Controller
                         $quoD->subTotal = $subTotal[$key];
                         $quoD->created_at = $created_at;
                         $quoD->created_by = $created_by;
-                        $quoD->type = $getType;
-                        
-                        if ( isset(Yii::$app->request->post('QuotationDetail')['task'][$key]) ) {
-                            $quoD->task = 1;
-
-                        }else{
-                            $quoD->task = 0;
-                            
-                        }
+                        $quoD->type = $getType; 
+                        $quoD->task = 0;
 
                         $quoD->save();
+
+                    }
+
+                    foreach( $task as $key => $tValue ) {
+
+                        Yii::$app->db->createCommand()
+                            ->update('quotation_detail', ['task' => 1], "quotation_id = $quotationId AND service_part_id = $tValue AND type = 0")
+                            ->execute();
 
                     }
                  
@@ -379,7 +382,8 @@ class QuotationController extends Controller
                     $quantity = Yii::$app->request->post('QuotationDetail')['quantity'];
                     $selling_price = Yii::$app->request->post('QuotationDetail')['selling_price'];
                     $subTotal = Yii::$app->request->post('QuotationDetail')['subTotal'];
-                    
+                    $task = Yii::$app->request->post('QuotationDetail')['task'];
+
                     foreach ($quantity as $key => $value) {
                         $quoD = new QuotationDetail();
 
@@ -404,16 +408,17 @@ class QuotationController extends Controller
                         $quoD->created_at = $created_at;
                         $quoD->created_by = $created_by;
                         $quoD->type = $getType;
-                        
-                        if ( isset(Yii::$app->request->post('QuotationDetail')['task'][$key]) ) {
-                            $quoD->task = 1;
-
-                        }else{
-                            $quoD->task = 0;
-                            
-                        }
+                        $quoD->task = 0;   
 
                         $quoD->save();
+
+                    }
+
+                    foreach( $task as $key => $tValue ) {
+
+                        Yii::$app->db->createCommand()
+                            ->update('quotation_detail', ['task' => 1], "quotation_id = $quotationId AND service_part_id = $tValue AND type = 0")
+                            ->execute();
 
                     }
                  
@@ -472,39 +477,13 @@ class QuotationController extends Controller
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
     }
 
-    public function actionDeleteSelectedQuotationDetail($id)
+    public function actionDeleteSelectedQuotationDetail($id,$quotationId)
     {
         Yii::$app->db->createCommand()
-            ->delete('quotation_detail', "quotation_id = $id" )
+            ->delete('quotation_detail', "id = $id" )
             ->execute();
 
-        $model = new Quotation();
-
-        $getQuotation = $model->getQuotation($id);
-        $getService = $model->getQuotationDetailService($id);
-        $getPart = $model->getQuotationDetailPart($id);
-        $getLastId = $model->getLastId($id);
-
-        $quotationId = $this->_getQuotationId();
-        $getBranchList = $model->getBranch();
-        $getUserList = $model->getUser();
-        $getCustomerList = $model->getCustomer();
-        $getServicesList = $model->getServicesList();
-        $getPartsList = $model->getPartsList();
-
-        return $this->render('update', [
-                'model' => $getQuotation, 
-                'getService' => $getService,
-                'getPart' => $getPart,
-                'getLastId' => $getLastId,
-                'quotationId' => $quotationId,
-                'getBranchList' => $getBranchList,
-                'getUserList' => $getUserList,
-                'getCustomerList' => $getCustomerList,
-                'getServicesList' => $getServicesList,
-                'getPartsList' => $getPartsList, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-            
-            ]);
+        return $this->actionUpdate($quotationId);
     }
 
     /**
