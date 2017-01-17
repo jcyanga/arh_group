@@ -21,8 +21,7 @@ if( isset($getGst->gst) ) {
 
 $getInvoice = Invoice::find()->where(['quotation_code' => $customerInfo['quotation_code'] ])->one();
 
-$this->title = 'Print Quotation';
-
+$this->title = 'Print-PDF Quotation';
 
 ?>
 
@@ -86,9 +85,6 @@ $this->title = 'Print Quotation';
                     
 
                     <!-- Services and Parts Info row -->
-                    <div id="showPrices">
-                        <input type="checkbox" class="showPrices" checked="checked" value="" /> <b style="font-size: 12px;"> Show Prices? </b>
-                    </div>
                     <div id="selectedServicesParts" class="row">
                         <div class="col-xs-12 table">
                             <table id="selecteditems" class="table table-boardered">
@@ -164,18 +160,6 @@ $this->title = 'Print Quotation';
 
                 </div>
 
-            </div>
-
-            <!-- Print Buttons -->   
-            <div class="row">
-                <div class="col-xs-12">
-                    <div style="text-align: center">
-                        <a href="?r=quotation/export-pdf&id=<?= $customerInfo['id'] ?>">
-                            <button class="form-btn btn btn-danger btn-xs print-buttons" id="download_pdf"><i class="fa fa-download"></i> Download to PDF</button>
-                        </a>
-                        <button class="form-btn btn btn-warning btn-xs print-buttons" id="print_quotation" onclick="quotationPrint()"><i class="fa fa-print"></i> Print Quotation</button>
-                    </div>
-                </div>
             </div>
 
         </div>    

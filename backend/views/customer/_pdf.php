@@ -10,10 +10,10 @@ use yii\helpers\Url;
 	<table class="table table-striped">
 		<thead>
 			<tr>
-				<td>FULLNAME</td>
-				<td>ADDRESS</td>
-				<td>MODEL</td>
-				<td>CARPLATE</td>
+				<td class="pdf_headBg" > Fullname </td>
+				<td class="pdf_headBg" > Address </td>
+				<td class="pdf_headBg" > Model </td>
+				<td class="pdf_headBg" > Car-Plate </td>
 			</tr>
 		</thead>
 		<tbody>

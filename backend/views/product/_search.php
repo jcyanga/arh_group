@@ -12,8 +12,6 @@ use common\models\Category;
 $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
 ?>
 
-</style>
-
  <div class="row">
 
     <div class="col-md-12">
@@ -22,8 +20,7 @@ $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
         </div> 
     </div>
     <br/><br/>
-<!-- 'id' => 'demo-form2' -->
-<!-- , 'class' => 'form-inline' -->
+    
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
     <div class="col-md-3">

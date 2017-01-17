@@ -27,7 +27,7 @@ $dataProduct = ArrayHelper::map($rows->select(['id', "concat(product_code, ' - '
 /* @var $searchModel common\models\SearchCustomer */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Inventories';
+$this->title = 'Quotation';
 
 ?>
 
@@ -36,15 +36,11 @@ $this->title = 'Inventories';
 
     <p>
         <a href="?r=quotation/create" id="option-list-link" class="btn btn-app">
-            <i class="fa fa-cogs"></i> <b> New Quotation </b>
+            <i class="fa fa-desktop"></i> <b> New Quotation </b>
         </a>
 
         <a href="?r=quotation/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
             <i class="fa fa-file-excel-o"></i> <b> Export to Excel </b>
-        </a>
-
-        <a href="?r=quotation/export-pdf" id="option-list-link" onclick="return pdfPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-pdf-o"></i> <b> Export to PDF </b>
         </a>
     </p>
 </div>
@@ -63,24 +59,27 @@ $this->title = 'Inventories';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-pencil-square-o"></i> QUOTATION</h4></span>
+        <span class="form-header"><h4><i class="fa fa-desktop"></i> QUOTATION</h4></span>
     </div>
     <hr/>
 
- </div>
+    <div class="form-search-container">    
+      <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+    </div> 
+    
+</div>
 
  <div class="col-md-12 col-sm-12 col-xs-12">
- <br/><br/>
+ <br/>
 
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
-        <tr style="font-size: 11px;" class="headings">
+        <tr sclass="headings">
             <th class="tblalign_center" ><b>DATE ISSUE</b></th>
             <th class="tblalign_center" ><b>BRANCH</b></th>
             <th class="tblalign_center" ><b>CUSTOMER NAME</b></th>
             <th class="tblalign_center" ><b>SALES PERSON</b></th>
-            <th class="tblalign_center" ><b>PAID</b></th>
-            <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
+            <th class="no-link last tblalign_center"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
     </thead>
@@ -89,28 +88,26 @@ $this->title = 'Inventories';
         <?php if( !empty($getQuotation) ): ?>
             <?php foreach( $getQuotation as $row){ ?>
 
-                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
-                    <td class="tblalign_center"><?php echo date('m-d-Y', strtotime($row['date_issue']) );  ?></td>
-                    <td class="tblalign_center"><?php echo $row['name'];  ?></td>
-                    <td class="tblalign_center"><?php echo $row['fullname'];  ?></td>
-                    <td class="tblalign_center"><?php echo $row['salesPerson'];  ?></td>
-                    <td class="tblalign_center" style="font-weight: bold; font-style: italic;"><?php echo ( $row['paid'] == 1 )? 'Yes' : 'Not Yet';  ?></td>
-                    <td style="text-align: center; font-size: 13px;" class=" last">
-                       <?php if( $row['task'] == 1 ): ?>
-                        <a href="?r=quotation/preview&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-print"><span class="actionTooltiptext">Print quotation</span></li> </a> |
+                <tr class="even_odd pointer">
+                    <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($row['date_issue']) );  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['name'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['fullname'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['salesPerson'];  ?></td>
+                    <td class="last tblalign_center">
+                       <?php if( $row['invoice'] == 1 ): ?>
+                        <a href="?r=quotation/preview&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Print Quotation" ><li class="fa fa-print"></li> </a> |
                        <?php endif; ?>
-                       <a href="?r=quotation/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a>
-                       <?php if( $row['task'] <> 1 ): ?>
-                        | <a href="?r=quotation/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-edit"><span class="actionTooltiptext">Update record</span></li> </a> 
+                       <a href="?r=quotation/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a>
+                       <?php if( $row['invoice'] <> 1 ): ?>
+                        | <a href="?r=quotation/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-edit"></li> </a> 
                        <?php endif; ?>
-                        | <a href="?r=quotation/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
+                        | <a href="?r=quotation/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a>
                     </td>
                 </tr>
             <?php } ?> 
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

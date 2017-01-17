@@ -10,14 +10,14 @@ use yii\helpers\Url;
 	<table border="1" >
 		<thead>
 			<tr >
-				<td style="background: #eee; text-align: center;" > # </td>
-				<td style=" background: #eee;" > Supplier Code </td>
-				<td style=" background: #eee;" > Supplier Name </td>
-				<td style=" background: #eee;" > Product Code </td>
-				<td style=" background: #eee;" > Product Name </td>
-				<td style=" background: #eee;" > Quantity </td>
-				<td style=" background: #eee;" > Cost Price </td>
-				<td style=" background: #eee;" > Selling Price </td>
+				<td class="pdf_number" > # </td>
+				<td class="pdf_headBg" > Supplier Code </td>
+				<td class="pdf_headBg" > Supplier Name </td>
+				<td class="pdf_headBg" > Product Code </td>
+				<td class="pdf_headBg" > Product Name </td>
+				<td class="pdf_headBg" > Quantity </td>
+				<td class="pdf_headBg" > Cost Price </td>
+				<td class="pdf_headBg" > Selling </td>
 			</tr>
 		</thead>
 		<tbody>

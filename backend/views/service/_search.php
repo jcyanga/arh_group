@@ -13,7 +13,6 @@ $dataServiceCategory = ArrayHelper::map(ServiceCategory::find()->all(), 'id', 'n
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-</style>
 
  <div class="row">
 
@@ -23,8 +22,7 @@ $dataServiceCategory = ArrayHelper::map(ServiceCategory::find()->all(), 'id', 'n
         </div> 
     </div>
     <br/><br/>
-<!-- 'id' => 'demo-form2' -->
-<!-- , 'class' => 'form-inline' -->
+    
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
     <div class="col-md-3">

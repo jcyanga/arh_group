@@ -7,7 +7,6 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Customer */
 
 use common\models\Gst;
-use common\models\Invoice;
 
 $getGst = Gst::find()->where(['branch_id' => $customerInfo['BranchId'] ])->one();
 
@@ -16,12 +15,13 @@ if( isset($getGst->gst) ) {
     $getSubTotal = $customerInfo['grand_total'] / $gst;
 }else{
     $gst = 0.00;
-    $getSubTotal = $customerInfo['grand_total'];
+    $getSubTotal = $customerInfo['grand_total'] / $gst;
 }
 
 $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
 
 $this->title = 'View Quotation';
+
 
 ?>
 
@@ -30,12 +30,14 @@ $this->title = 'View Quotation';
 <div class="col-md-12">
 <br/>
 
-    <div class="x_panel quotationViewContainer">
+    <div class="x_panel invoiceViewContainer">
 
         <div class="x_title">
-            <h2> Quotation Details.</h2>
+            <h2> Invoice Details.</h2>
             <ul class="nav navbar-right panel_toolbox">
-                <li><a class="collapse-link pull-right"><i class="fa fa-chevron-up"></i></a></li>
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
+                <li class="dropdown"></li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
             </ul>
             <div class="clearfix"></div>
         </div>
@@ -59,20 +61,20 @@ $this->title = 'View Quotation';
             </div>
         </div>
         <!-- /.row -->
-
+ 
 
         <!-- code and date row -->
         <div class="row">
             <div class="col-xs-12 invoice-header">
                 <h3>
-                <small class="pull-left"><i class="fa fa-globe"></i> <?=$customerInfo['quotation_code'] ?></small>
+                <small class="pull-left"><i class="fa fa-globe"></i> <?=$customerInfo['invoice_no'] ?></small>
                 <small class="pull-right"><i class="fa fa-calendar"></i> Date Issue: <?= $dateIssue ?></small>
                 </h3>
             </div>
         </div>
         <br/>
         <!-- /.row -->
-
+ 
 
         <!-- customer info row -->
         <div class="row invoice-info customerRowWrapper">
@@ -172,32 +174,23 @@ $this->title = 'View Quotation';
         <!-- /.row -->
 
 
-        <!-- button container -->
+        <!-- this row will not appear when printing -->
         <hr/>
         <div class="row no-print">
             <div class="col-xs-12">
-                
-                <?php if( $customerInfo['invoice'] <> 1 ): ?>
-                <a href="?r=quotation/update&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-info"><i class="fa fa-edit"></i> Update Quotation</button></a>
+                <?php if( $customerInfo['paid_type'] == 1 ): ?>
+                    <a href="?r=invoice/print-invoice&id=<?= $customerInfo['id'] ?>&invoice_no=<?= $customerInfo['invoice_no'] ?>"><button class="form-btn btn btn-default pull-right" ><i class="fa fa-print"></i> Print Invoice </button></a>
+                <?php else: ?>
+                    <a href="?r=invoice/print-multiple-invoice&id=<?= $customerInfo['id'] ?>&invoice_no=<?= $customerInfo['invoice_no'] ?>"><button class="form-btn btn btn-default pull-right" ><i class="fa fa-print"></i> Print Invoice </button></a>
                 <?php endif; ?>
-                
-                <a href="?r=quotation/delete-column&id=<?= $customerInfo['id'] ?>" onclick="return deleteConfirmation()"><button class="form-btn btn btn-danger"><i class="fa fa-trash"></i> Delete Quotation</button></a>
-                
-                <a href="?r=quotation/preview&id=<?php echo $customerInfo['id']; ?>"><button class="form-btn btn btn-default pull-right" ><i class="fa fa-print"></i> Generate Quotation</button></a>
-                
-                <?php if( $customerInfo['invoice'] <> 1 ): ?>
-                <a href="?r=quotation/insert-invoice&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-success pull-right"><i class="fa fa-credit-card"></i> Generate Invoice</button></a>
-                <?php endif; ?>
-
             </div>
         </div>
-        <!-- /.row -->
-        
+
     </section>
 
     </div>
 
-    </div>
+</div>
 
 </div>
 

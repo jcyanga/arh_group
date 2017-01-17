@@ -64,6 +64,12 @@ class UserController extends Controller
                         'actions' => $action['staff'],
                         'allow' => $allow['staff'],
                         'roles' => ['staff'],
+                    ],
+
+                    [
+                        'actions' => $action['customer'],
+                        'allow' => $allow['customer'],
+                        'roles' => ['customer'],
                     ]
        
                 ],
@@ -165,6 +171,10 @@ class UserController extends Controller
                 }
                 if ( $userRoleId == 3) {
                     $userRole = $auth->getRole('staff');
+                    $auth->assign($userRole, $model->id);
+                }
+                if ( $userRoleId == 4) {
+                    $userRole = $auth->getRole('customer');
                     $auth->assign($userRole, $model->id);
                 }
 

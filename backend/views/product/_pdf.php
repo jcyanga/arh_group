@@ -10,11 +10,11 @@ use yii\helpers\Url;
 	<table border="1" >
 		<thead>
 			<tr >
-				<td style="background: #eee; text-align: center;" > # </td>
-				<td style=" background: #eee;" > Parts-Category </td>
-				<td style=" background: #eee;" > Product Code </td>
-				<td style=" background: #eee;" > Product Name </td>
-				<td style=" background: #eee;" > Unit of Measure </td>
+				<td class="pdf_number" > # </td>
+				<td class="pdf_headBg" > Parts-Category </td>
+				<td class="pdf_headBg" > Parts-Code </td>
+				<td class="pdf_headBg" > Product Name </td>
+				<td class="pdf_headBg" > Unit of Measure </td>
 			</tr>
 		</thead>
 		<tbody>

@@ -97,6 +97,7 @@ class Invoice extends \yii\db\ActiveRecord
 
         $result = $rows->select(['id','code','name as branchList'])
         ->from('branch')
+        ->where('id > 1')
         ->all();
 
         if( count($result) > 0 ) {
@@ -171,9 +172,11 @@ class Invoice extends \yii\db\ActiveRecord
     public function getPartsList() {
         $rows = new Query();
 
-        $result = $rows->select(['product.id', 'product.product_name', 'category.category'])
-        ->from('product')
-        ->join('INNER JOIN', 'category', 'product.category_id = category.id')
+        $result = $rows->select(['inventory.id', 'inventory.product_id as productId', 'product.product_name', 'category.category', 'supplier.supplier_name'])
+        ->from('inventory')
+        ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
+        ->join('LEFT JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+        ->join('LEFT JOIN', 'category', 'product.category_id = category.id')
         ->all();
 
         if( count($result) > 0 ) {
@@ -186,11 +189,25 @@ class Invoice extends \yii\db\ActiveRecord
 
     }
 
+    // get part info
+    public function getPartInfo($ItemId) {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'inventory.product_id', 'product.product_name'])
+        ->from('inventory')
+        ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+        ->where(['inventory.id' => $ItemId])
+        ->one();
+
+        return $result;
+
+    }
+
     // getLastInsertInvoice
     public function getLastInsertInvoice($invoiceId) {
         $rows = new Query();
 
-        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'customer.make', 'customer.model', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'invoice.date_issue', 'invoice.remarks', 'invoice.grand_total', 'invoice.task'])
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'customer.make', 'customer.model', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'invoice.date_issue', 'invoice.remarks', 'invoice.grand_total', 'invoice.task', 'invoice.status'])
             ->from('invoice')
             ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
@@ -221,7 +238,8 @@ class Invoice extends \yii\db\ActiveRecord
 
         $part = $rows->select(['invoice_detail.id', 'product.product_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal'])
             ->from('invoice_detail')
-            ->join('INNER JOIN', 'product', 'invoice_detail.service_part_id = product.id')
+            ->join('LEFT JOIN', 'inventory', 'invoice_detail.service_part_id = inventory.id')
+            ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
             ->where(['invoice_detail.invoice_id' => $id])
             ->andWhere('invoice_detail.type = 1')
             ->all();
@@ -233,7 +251,7 @@ class Invoice extends \yii\db\ActiveRecord
     public function getInvoice($invoiceId) {
         $rows = new Query();
 
-        $result = $rows->select(['invoice.id', 'invoice.quotation_code', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.points', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'invoice.date_issue', 'invoice.remarks', 'invoice.grand_total', 'invoice.branch_id', 'invoice.customer_id', 'invoice.user_id', ])
+        $result = $rows->select(['invoice.id', 'invoice.quotation_code', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.points', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'invoice.date_issue', 'invoice.remarks', 'invoice.grand_total', 'invoice.branch_id', 'invoice.customer_id', 'invoice.user_id', 'invoice.paid_type' ])
             ->from('invoice')
             ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
@@ -262,9 +280,10 @@ class Invoice extends \yii\db\ActiveRecord
     public function getInvoicePartDetail($id) {
         $rows = new Query();
 
-        $part = $rows->select(['invoice_detail.id', 'invoice_detail.invoice_id', 'product.id as productId', 'product.product_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal'])
+        $part = $rows->select(['invoice_detail.id', 'invoice_detail.invoice_id', 'inventory.id as productId', 'product.product_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal'])
             ->from('invoice_detail')
-            ->join('INNER JOIN', 'product', 'invoice_detail.service_part_id = product.id')
+            ->join('LEFT JOIN', 'inventory', 'invoice_detail.service_part_id = inventory.id')
+            ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
             ->where(['invoice_detail.invoice_id' => $id])
             ->andWhere('invoice_detail.type = 1')
             ->all();

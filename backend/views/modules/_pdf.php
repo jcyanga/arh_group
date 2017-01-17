@@ -10,8 +10,8 @@ use yii\helpers\Url;
 	<table border="1" >
 		<thead>
 			<tr>
-				<td style="background: #eee; text-align: center;" > # </td>
-				<td style=" background: #eee;" >Modules </td>
+				<td class="pdf_number" > # </td>
+				<td class="pdf_headBg" > Modules </td>
 			</tr>
 		</thead>
 		<tbody>

@@ -12,7 +12,6 @@ use common\models\Role;
 $dataRole = ArrayHelper::map(Role::find()->where('id > 1')->all(), 'id', 'role');
 ?>
 
-</style>
 
  <div class="row">
 
@@ -22,8 +21,7 @@ $dataRole = ArrayHelper::map(Role::find()->where('id > 1')->all(), 'id', 'role')
         </div> 
     </div>
     <br/><br/>
-<!-- 'id' => 'demo-form2' -->
-<!-- , 'class' => 'form-inline' -->
+    
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
     <div class="col-md-3">

@@ -30,7 +30,7 @@ $this->title = 'Customers';
  <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4>Customer Maintenance</h4></span>
+        <span class="form-header"><h4><i class="fa fa-users"></i> Customer Maintenance</h4></span>
     </div>
     <hr/>
 
@@ -68,16 +68,16 @@ $this->title = 'Customers';
 
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
-        <tr style="font-size: 11px;" class="headings">
-            <th>
+        <tr class="headings">
+            <th class="tblalign_center" >
                 <input type="checkbox" id="chkAll" class="tableflat">
             </th>
-            <th> FULLNAME </th>
-            <th> PHONE NUMBER </th>
-            <th> CAR-PLATE </th>
-            <th> MEMBER EXPIRY </th>
-            <th> REWARD POINTS </th>
-            <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
+            <th class="tblalign_center" > FULLNAME </th>
+            <th class="tblalign_center" > PHONE NUMBER </th>
+            <th class="tblalign_center" > CAR-PLATE </th>
+            <th class="tblalign_center" > MEMBER EXPIRY </th>
+            <th class="tblalign_center" > REWARD POINTS </th>
+            <th class="no-link last tblalign_center"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
     </thead>
@@ -85,27 +85,33 @@ $this->title = 'Customers';
     <tbody>
         <?php if(count($getCustomer) > 0 ): ?>
             <?php foreach( $getCustomer as $row){ ?>
-                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
-                    <td class="a-center ">
+                <tr class="even_odd pointer">
+                    <td class="a-center tblalign_center">
                         <input type="checkbox" class="chkUser tableflat" value="<?php echo $row['id']; ?>">
                     </td>
-                    <td class=" "><?php echo $row['fullname'];  ?></td>
-                    <td class=" "><?php echo $row['hanphone_no'];  ?></td>
-                    <td class=" "><?php echo $row['carplate'];  ?></td>
-                    <td class=" "><?php echo date('m-d-Y', strtotime($row['member_expiry']));  ?></td>
-                    <td class=" "><?php echo $row['points']; ?></td>
-                    <td style="text-align: center; font-size: 13px;" class=" last">
-                        <a href="?r=customer/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a> |
-                        <a href="?r=customer/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-pencil-square"><span class="actionTooltiptext">Update record</span></li> </a> | 
-                        <a href="?r=customer/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a> |
-                         <a href="?r=customer/service-history&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-wrench"><span class="actionTooltiptext">Service history</span></li> </a> |
-                         <a href="?r=customer/points-redemption&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-history"><span class="actionTooltiptext">Points redemption</span></li> </a> 
+                    <td class="tblalign_center" ><?php echo $row['fullname'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['hanphone_no'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['carplate'];  ?></td>
+                    <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($row['member_expiry']));  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['points']; ?></td>
+                    <td class="last tblalign_center">
+                        <a href="?r=customer/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a> |
+                        <a href="?r=customer/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-pencil-square"></li> </a> | 
+                        <a href="?r=customer/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a> |
+                         <a href="?r=customer/service-history&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Service History" ><li class="fa fa-history"></li> </a> |
+                         <a href="?r=customer/points-redemption&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Points Redemption" ><li class="fa fa-laptop"></li> </a> 
                     </td>
                 </tr>
             <?php } ?> 
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         <?php endif; ?>    
     </tbody>

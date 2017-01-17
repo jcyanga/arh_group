@@ -37,7 +37,7 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
  <div class="col-md-12 col-sm-12 col-xs-12">
  
     <div class="form-title-container">
-        <span style="color: #666;" class="form-header"><h4><i class="fa fa-pencil"></i> Create Invoice</h4></span>
+        <span class="form-header"><h4><i class="fa fa-pencil"></i> Create Invoice</h4></span>
     </div>
     <hr/>
 
@@ -57,7 +57,7 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/><br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
             <div class="col-md-6">
                 <div class="row">
@@ -88,7 +88,7 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/><br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
         <div class="col-md-6">
             <div class="row">
@@ -99,9 +99,13 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
 
                     <select name="Invoice[selectedBranch]" class="qSelect select3_single">
                         <option value="0">SEARCH BRANCH HERE.</option>
-                        <?php foreach( $getBranchList as $row ): ?>
-                            <option value="<?php echo $row['id']; ?>">[ <?php echo $row['code']; ?> ] <?php echo $row['branchList']; ?></option>
-                        <?php endforeach; ?>
+                        <?php if( !empty($getBranchList) ): ?>
+                            <?php foreach( $getBranchList as $row ): ?>
+                                <option value="<?php echo $row['id']; ?>">[ <?php echo $row['code']; ?> ] <?php echo $row['branchList']; ?></option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="0">NO RECORD FOUND.</option>
+                        <?php endif; ?>
                     </select>
                 </div>
 
@@ -111,7 +115,7 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
         <div class="col-md-6">
             <div class="row">
@@ -122,9 +126,13 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
                     
                     <select name="Invoice[selectedCustomer]" class="qSelect select3_single" >
                         <option value="0">SEARCH CUSTOMER HERE.</option>
-                        <?php foreach( $getCustomerList as $row ): ?>
-                            <option value="<?php echo $row['id']; ?>">[ <?php echo $row['carplate']; ?> ] <?php echo $row['customerList']; ?></option>
-                        <?php endforeach; ?>
+                        <?php if( !empty($getCustomerList) ): ?>
+                            <?php foreach( $getCustomerList as $row ): ?>
+                                <option value="<?php echo $row['id']; ?>">[ <?php echo $row['carplate']; ?> ] <?php echo $row['customerList']; ?></option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="0">NO RECORD FOUND.</option>
+                        <?php endif; ?>
                     </select>   
                 </div>
 
@@ -134,7 +142,7 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
         <div class="col-md-6">
             <div class="row">
@@ -145,9 +153,13 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
 
                     <select name="Invoice[selectedUser]" class="qSelect select3_single" >
                         <option value="0">SEARCH SALES PERSON HERE.</option>
-                        <?php foreach( $getUserList as $row ): ?>
-                            <option value="<?php echo $row['id']; ?>"> <?php echo $row['userList']; ?> </option>
-                        <?php endforeach; ?>
+                        <?php if( !empty($getUserList) ): ?>
+                            <?php foreach( $getUserList as $row ): ?>
+                                <option value="<?php echo $row['id']; ?>"> <?php echo $row['userList']; ?> </option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="0">NO RECORD FOUND.</option>
+                        <?php endif; ?>
                     </select>
                 </div>
 
@@ -157,12 +169,12 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/><br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
         <div class="col-md-6">
             
             <span class="invoiceLabel" ><i class="fa fa-comment"></i> Remarks </span>
-            <textarea name="Invoice[remarks]" placeholder="Write your remarks here." id="message" class="qtxtarea form-control" data-parsley-trigger="keyup" data-parsley-minlength="10" data-parsley-maxlength="100" data-parsley-minlength-message="You need to enter at least a 10 caracters long comment." data-parsley-validation-threshold="10"></textarea> 
+            <textarea name="Invoice[remarks]" style="font-size: 11.5px;" placeholder="Write your remarks here." id="message" class="qtxtarea form-control" data-parsley-trigger="keyup" data-parsley-minlength="10" data-parsley-maxlength="300" data-parsley-minlength-message="You need to enter at least a 10 caracters long comment." data-parsley-validation-threshold="10"></textarea> 
         </div>
         
         </div>
@@ -192,26 +204,34 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/><br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
         <div class="col-md-5">
 
-            <div style="text-align: center;"> <b><span><i class="fa fa-battery-quarter"></i> Services & <i class="fa fa-cogs"></i> Parts </span></b> 
+            <div style="text-align: center;"> <b><span><i class="fa fa-battery-quarter"></i> Services | <i class="fa fa-cogs"></i> Parts </span></b> 
             </div>
 
             <select class="select2_group form-control" id="services_parts" onchange="invGetSellingPrice()" >
                 <option value="0">SEARCH PARTS OR SERVICES</option>
                 
                 <optgroup label="- SERVICES - ">
-                    <?php foreach($getServicesList as $srowList): ?>
-                        <option value="0-<?php echo $srowList['id']; ?>">[ <?php echo $srowList['name']; ?> ] <?php echo $srowList['service_name']; ?></option>                 
-                    <?php endforeach; ?>
+                    <?php if( !empty($getServicesList) ): ?>
+                        <?php foreach($getServicesList as $srowList): ?>
+                            <option value="0-<?php echo $srowList['id']; ?>">[ <?php echo $srowList['name']; ?> ] <?php echo $srowList['service_name']; ?></option>                 
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                            <option value="0">NO RECORD FOUND.</option>
+                    <?php endif; ?>
                  </optgroup>
 
                  <optgroup label="- PARTS - ">
-                    <?php foreach($getPartsList as $prowList): ?>
-                        <option value="1-<?php echo $prowList['id']; ?>">[ <?php echo $prowList['category']; ?> ] <?php echo $prowList['product_name']; ?></option>                 
-                    <?php endforeach; ?>
+                    <?php if( !empty($getPartsList) ): ?>
+                        <?php foreach($getPartsList as $prowList): ?>
+                            <option value="1-<?php echo $prowList['id']; ?>">[ <?php echo $prowList['supplier_name']; ?> | <?php echo $prowList['category']; ?> ] <?php echo $prowList['product_name']; ?></option>                 
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                            <option value="0">NO RECORD FOUND.</option>
+                    <?php endif; ?>
                  </optgroup>      
             
             </select>
@@ -221,7 +241,7 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
             
             <div class="col-md-3">
         
@@ -260,7 +280,7 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/>
 
-        <div style="margin: 0 auto;" id="invSelectedContainer" class="row">
+        <div id="invSelectedContainer" class="row transactionFormAlign" >
             
             <div class="col-md-12">
                 <b><i class="fa fa-thumbs-up"></i> Selected Services or Parts</b>
@@ -273,7 +293,7 @@ $invoiceCodeValue = $invoiceCode . '-' . $invoiceId;
         </div>
         <br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
             <div class="col-md-4"></div>
 

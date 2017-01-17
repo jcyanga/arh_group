@@ -66,6 +66,12 @@ class StocksController extends Controller
                         'actions' => $action['staff'],
                         'allow' => $allow['staff'],
                         'roles' => ['staff'],
+                    ],
+
+                    [
+                        'actions' => $action['customer'],
+                        'allow' => $allow['customer'],
+                        'roles' => ['customer'],
                     ]
        
                 ],
@@ -134,19 +140,19 @@ class StocksController extends Controller
         $inventoryId = Yii::$app->request->post('inventoryId');
         $qtyStock = Yii::$app->request->post('qtyStock');
         $ProductId = Yii::$app->request->post('ProductId');
-        $SupplierId = Yii::$app->request->post('SupplierId');
+        $supplierId = Yii::$app->request->post('SupplierId');
         $costPrice = Yii::$app->request->post('costPrice');  
         $sellingPrice = Yii::$app->request->post('sellingPrice');  
 
         foreach( $qtyStock as $key => $value ) {
 
             Yii::$app->db->createCommand()
-                ->update('inventory', ['quantity' => $qtyStock[$key] ], "id = $inventoryId[$key]" )
+                ->update('inventory', ['quantity' => $qtyStock[$key] ], "id = $inventoryId[$key] and supplier_id = $supplierId[$key]" )
                 ->execute();
             
             $stockin = new StockIn();
             $stockin->product_id = $ProductId[$key];
-            $stockin->supplier_id = $SupplierId[$key];
+            $stockin->supplier_id = $supplierId[$key];
             $stockin->quantity = $qtyStock[$key];
             $stockin->cost_price = $costPrice[$key];
             $stockin->selling_price = $sellingPrice[$key];

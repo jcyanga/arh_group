@@ -27,7 +27,7 @@ $this->title = 'Create Branch';
  <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span style="color: #666;" class="form-header"><h4>Create Branch</h4></span>
+        <span class="form-header"><h4>Create Branch</h4></span>
     </div>
     <hr/>
 

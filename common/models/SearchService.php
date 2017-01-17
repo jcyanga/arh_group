@@ -89,4 +89,40 @@ class SearchService extends Service
 
         return $result;  
     }
+
+    public function getPendingServices() {
+        $rows = new Query();
+
+        $result = $rows->select([ 'quotation_detail.id', 'quotation.id as quotationId', 'quotation.quotation_code', 'quotation.user_id', 'user.fullname as salesPerson', 'quotation.customer_id', 'customer.fullname', 'quotation.branch_id', 'branch.name', 'quotation.grand_total', 'quotation.date_issue', 'quotation_detail.id', 'quotation_detail.service_part_id', 'service.service_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal' ])
+                ->from('quotation_detail')
+                ->join('LEFT JOIN', 'quotation', 'quotation_detail.quotation_id = quotation.id')
+                ->join('LEFT JOIN', 'user', 'quotation.user_id = user.id')
+                ->join('LEFT JOIN', 'customer', 'quotation.customer_id = customer.id')
+                ->join('LEFT JOIN', 'branch', 'quotation.branch_id = branch.id')
+                ->join('LEFT JOIN', 'service', 'quotation_detail.service_part_id = service.id')
+                ->where('quotation_detail.type = 0')
+                ->andWhere('quotation_detail.task = 1')
+                ->andWhere('quotation_detail.invoice = 0')
+                ->all();
+
+        return $result;
+    }
+
+    public function getPendingInvoiceServices() {
+        $rows = new Query();
+
+        $result = $rows->select([ 'invoice_detail.id', 'invoice.id as invoiceId', 'invoice.invoice_no', 'invoice.user_id', 'user.fullname as salesPerson', 'invoice.customer_id', 'customer.fullname', 'invoice.branch_id', 'branch.name', 'invoice.grand_total', 'invoice.date_issue', 'invoice_detail.id', 'invoice_detail.service_part_id', 'service.service_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal' ])
+                ->from('invoice_detail')
+                ->join('LEFT JOIN', 'invoice', 'invoice_detail.invoice_id = invoice.id')
+                ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+                ->join('LEFT JOIN', 'customer', 'invoice.customer_id = customer.id')
+                ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+                ->join('LEFT JOIN', 'service', 'invoice_detail.service_part_id = service.id')
+                ->where('invoice_detail.type = 0')
+                ->andWhere('invoice_detail.task = 1')
+                ->andWhere('invoice_detail.status = 0')
+                ->all();
+
+        return $result;
+    }
 }

@@ -82,6 +82,7 @@ class SearchBranch extends Branch
         $result = $rows->select(['*'])
                     ->from('branch')
                     ->where(['like', 'name', $name])
+                    ->andWhere('id > 1')
                     ->all();
 
         return $result;  
