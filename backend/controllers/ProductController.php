@@ -41,7 +41,7 @@ class ProductController extends Controller
             }
 
         }   
-        // print_r($action['developer']); exit;
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -93,26 +93,22 @@ class ProductController extends Controller
         $searchModel = new SearchProduct();
         $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
         
-        if( isset(Yii::$app->request->get('SearchProduct')['category_id'] ) || isset(Yii::$app->request->get('SearchProduct')['product_name'] ) ) {
-
-                $category_id = Yii::$app->request->get('SearchProduct')['category_id'];
-                $product_name = Yii::$app->request->get('SearchProduct')['product_name'];
-                $getProduct = $searchModel->searchProduct($category_id,$product_name);
-
-        }elseif ( Yii::$app->request->get('SearchProduct')['category_id'] == "" && Yii::$app->request->get('SearchProduct')['product_name'] == "" ) {
-                
-                $getResult = new Product();
-                $getProduct = $getResult->getProduct();
+        if( !empty(Yii::$app->request->get('SearchProduct')['category_id'] ) || !empty(Yii::$app->request->get('SearchProduct')['product_name'] ) ) {
+                $getProduct = $searchModel->searchProductName(Yii::$app->request->get('SearchProduct')['category_id'], Yii::$app->request->get('SearchProduct')['product_name']);
 
         }else {
-
-                $getResult = new Product();
-                $getProduct = $getResult->getProduct();
+                $getProduct = $searchModel->getProducts();
 
         }
 
-        return $this->render('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'getProduct' => $getProduct, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-        ]);
+        return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'dataProvider' => $dataProvider, 
+                        'getProduct' => $getProduct, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
+                    ]);
     }
 
     /**
@@ -122,7 +118,7 @@ class ProductController extends Controller
      */
     public function actionView($id)
     {
-        $model = new Product();
+        $model = new SearchProduct();
         $getProducts = $model->getProductById($id);
 
         return $this->render('view', [
@@ -138,50 +134,59 @@ class ProductController extends Controller
     public function actionCreate()
     {
         $model = new Product();
-
-        // echo $product_code = Yii::$app->request->post('Product') ['unit_of_measure'];
+        $searchModel = new SearchProduct();
+        $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
 
         if ($model->load(Yii::$app->request->post())) {
-
-            $product_code = Yii::$app->request->post('Product') ['product_code'];
-            $product_name = Yii::$app->request->post('Product') ['product_name'];
-
-            $result = $model->getProductCodeAndProductName($product_code, $product_name);
+            $result = $searchModel->getProductName(Yii::$app->request->post('Product') ['product_name']);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change product code or product name.']);
+                return $this->render('create', [
+                                    'model' => $model, 
+                                    'errTypeHeader' => 'Warning!',
+                                     'errType' => 'alert alert-warning', 
+                                     'msg' => 'You already enter an existing name, Please! Change product name.'
+                                ]);
             }
-            
-            if( !empty(UploadedFile::getInstances($model, 'product_image')[0]->name) ) {
-                $model->product_image = UploadedFile::getInstances($model, 'product_image')[0]->name;
-                $tempName = UploadedFile::getInstances($model, 'product_image')[0]->tempName;
-
-            }
-
-            if($model->save()) {
-                
                 if( !empty(UploadedFile::getInstances($model, 'product_image')[0]->name) ) {
-
-                move_uploaded_file($tempName, Yii::$app->basePath . '/web/assets/products/' . $model->product_image);
-                // $model->product_image->saveAs(Yii::$app->basePath . '/web/assets/products/' . $model->product_image);
+                    $model->product_image = UploadedFile::getInstances($model, 'product_image')[0]->name;
+                    $tempName = UploadedFile::getInstances($model, 'product_image')[0]->tempName;
                 }
 
-                $searchModel = new SearchProduct();
-                $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
+            if( $model->save() ) {
+                
+                if( !empty(UploadedFile::getInstances($model, 'product_image')[0]->name) ) {
+                    move_uploaded_file($tempName, Yii::$app->basePath . '/web/assets/products/' . $model->product_image);
+                 }
 
-                $getResult = new Product();
-                $getProduct = $getResult->getProduct();
+                $getProduct = $searchModel->getProducts();
 
-                return $this->render('index', ['searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider, 'getProduct' => $getProduct, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
+                return $this->render('index', [
+                                'searchModel' => $searchModel,
+                                'dataProvider' => $dataProvider, 
+                                'getProduct' => $getProduct, 
+                                'errTypeHeader' => 'Success!', 
+                                'errType' => 'alert alert-success', 
+                                'msg' => 'Your record was successfully added in the database.'
+                            ]);
 
             }else {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
+                return $this->render('create', [
+                                    'model' => $model, 
+                                    'errTypeHeader' => 'Error!', 
+                                    'errType' => 'alert alert-error', 
+                                    'msg' => 'You have an error Check All the required fields.'
+                                ]);
             }
 
         } else {
           
-            return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('create', [
+                                'model' => $model, 
+                                'errTypeHeader' => '', 
+                                'errType' => '', 
+                                'msg' => ''
+                            ]);
         }
     }
 
@@ -194,52 +199,59 @@ class ProductController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $searchModel = new SearchProduct();
+        $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
 
         if ( $model->load(Yii::$app->request->post()) ) {
-            // return $this->redirect(['view', 'id' => $model->id]);
             
             if( !empty(UploadedFile::getInstances($model, 'product_image')[0]->name) ) {
                 $model->product_image = UploadedFile::getInstances($model, 'product_image')[0]->name;
                 $tempName = UploadedFile::getInstances($model, 'product_image')[0]->tempName;
                 
-                if($model->save()) {
-                
+                if( $model->save() ) {
                     move_uploaded_file($tempName, Yii::$app->basePath . '/web/assets/products/' . $model->product_image);
 
-                    $searchModel = new SearchProduct();
-                    $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
-
-                    $getResult = new Product();
-                    $getProduct = $getResult->getProduct();
+                    $getProduct = $searchModel->getProducts();
                 
-                    return $this->render('index', ['searchModel' => $searchModel,
-                        'dataProvider' => $dataProvider, 'getProduct' => $getProduct, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+                    return $this->render('index', [
+                                    'searchModel' => $searchModel,
+                                    'dataProvider' => $dataProvider, 
+                                    'getProduct' => $getProduct, 
+                                    'errTypeHeader' => 'Success!', 
+                                    'errType' => 'alert alert-success', 
+                                    'msg' => 'Your record was successfully updated in the database.'
+                                ]);
                 }   
 
             }else{
                 $model->product_image = Yii::$app->request->post('before_productImg');
 
-                if($model->save()) {
-                    
-                    $searchModel = new SearchProduct();
-                    $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
-
-                    $getResult = new Product();
-                    $getProduct = $getResult->getProduct();;
+                if( $model->save() ) {
+                    $getProduct = $searchModel->getProducts();;
                 
-                    return $this->render('index', ['searchModel' => $searchModel,
-                        'dataProvider' => $dataProvider, 'getProduct' => $getProduct, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+                    return $this->render('index', [
+                                    'searchModel' => $searchModel,
+                                    'dataProvider' => $dataProvider, 
+                                    'getProduct' => $getProduct, 
+                                    'errTypeHeader' => 'Success!', 
+                                    'errType' => 'alert alert-success', 
+                                    'msg' => 'Your record was successfully updated in the database.'
+                                ]);
                 }
 
             }
             
 
         } else {
+            $getProducts = $searchModel->getProductById($id);
 
-            $product_model = new Product();
-            $getProducts = $product_model->getProductById($id);
-
-            return $this->render('update', ['model' => $model, 'getProducts' => $getProducts, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('update', [
+                                'model' => $model, 
+                                'getProducts' => $getProducts, 
+                                'errTypeHeader' => '', 
+                                'errType' => '', 
+                                'msg' => ''
+                            ]);
         
         }
     }
@@ -259,24 +271,20 @@ class ProductController extends Controller
 
     public function actionDeleteColumn($id)
     {
-        // $this->findModel($id)->delete();
-        // $model = $this->findModel($id);
-        // $model->deleted = 1;
-        // if ( $model->save() ) {
-        //     Yii::$app->getSession()->setFlash('success', 'Customer deleted');
-        // } else {
-        //     Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
-        // }
-
         $searchModel = new SearchProduct();
         $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
-
-        $getResult = new Product();
-        $getProduct = $getResult->getProduct();;
-
+        
         $this->findModel($id)->delete();
-        return $this->render('index', ['searchModel' => $searchModel,
-                    'dataProvider' => $dataProvider, 'getProduct' => $getProduct, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+        $getProduct = $searchModel->getProducts();;
+        
+        return $this->render('index', [
+                                'searchModel' => $searchModel,
+                                'dataProvider' => $dataProvider, 
+                                'getProduct' => $getProduct, 
+                                'errTypeHeader' => 'Success!', 
+                                'errType' => 'alert alert-success', 
+                                'msg' => 'Your record was successfully deleted in the database.'
+                            ]);
     }
 
     /**
@@ -295,10 +303,10 @@ class ProductController extends Controller
         }
     }
 
-    public function actionExportExcel() {
-
-        $getResult = new Product();
-        $result = $getResult->getProduct();
+    public function actionExportExcel() 
+    {
+        $searchModel = new SearchProduct();
+        $result = $searchModel->getProducts();
 
         $objPHPExcel = new \PHPExcel();
         $styleHeadingArray = array(
@@ -352,30 +360,21 @@ class ProductController extends Controller
 
     }
 
-    public function actionExportPdf() {
+    public function actionExportPdf() 
+    {
 
-        $getResult = new Product();
-        $result = $getResult->getProduct();
+        $searchModel = new SearchProduct();
+        $result = $searchModel->getProducts();
 
         $content = $this->renderPartial('_pdf', ['result' => $result]);
-        // instantiate and use the dompdf class
-        // $dompdf = new Dompdf();
-
-        $dompdf     = new Dompdf();
-        //return $pdf->stream();
-
+        
+        $dompdf = new Dompdf();
+        
         $dompdf->loadHtml($content);
-
-        // // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4', 'landscape');
-
-        // // Render the HTML as PDF
         $dompdf->render();
 
-        // Output the generated PDF to Browser
-        $dompdf->stream('PartsList-' . date('m-d-Y'));
-          
-
+        $dompdf->stream('PartsList-' . date('m-d-Y'));  
     }
 
 

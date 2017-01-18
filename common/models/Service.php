@@ -63,38 +63,6 @@ class Service extends \yii\db\ActiveRecord
         ];
     }
 
-    public function getServices() {
-        $rows = new Query();
-
-        $result = $rows->select(['service.id','service.service_category_id','service_category.name','service.service_name','service.description','service.default_price','service.status','service.created_at','service.created_by'])
-            ->from('service')
-            ->join('INNER JOIN', 'service_category', 'service.service_category_id = service_category.id')
-            ->all();
-
-        if( count($result) > 0 ) {
-            return $result;
-        }else {
-            return 0;
-        }
-
-    }
-
-    public function getSameServices($service_category_id,$service_name) {
-        $rows = new Query();
-        
-        $result = $rows->select(['service_category_id', 'service_name'])
-        ->from('service')
-        ->where(['service_category_id' => $service_category_id])
-        ->andWhere(['service_name' => $service_name])
-        ->all();
-        
-        if( count($result) > 0 ) {
-            return TRUE;
-        }else {
-            return 0;
-        }
-    }
-
     public function getServicesById($id) {
         $rows = new Query();
 

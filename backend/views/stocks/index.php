@@ -13,7 +13,7 @@ use common\models\Inventory;
 /* @var $searchModel common\models\SearchCustomer */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Inventories';
+$this->title = 'Stocks';
 
 ?>
 
@@ -69,8 +69,8 @@ $this->title = 'Inventories';
  
  <div>
         <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
-        <button type="submit" name="btn-updateQty" class="form-btn btn btn-success"><i class="fa fa-edit"></i> Update Parts Quantity</button>
         <button type="button" name="btn-checkAll" class="form-btn btn btn-info " id="checkAllParts" ><i class="fa fa-check-square"></i> Select All</button>
+        <button type="submit" name="btn-updateQty" class="form-btn btn btn-dark"><i class="fa fa-edit"></i> Update Parts Quantity</button>
  </div>
 
 </div> 

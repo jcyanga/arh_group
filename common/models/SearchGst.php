@@ -69,13 +69,15 @@ class SearchGst extends Gst
         return $dataProvider;
     }
 
-    public function searchBranch($branch_id) {
+    // Search box result
+    public function searchBranchWithGst($branch_id) 
+    {
         $rows = new Query();
 
         $result = $rows->select(['gst.id', 'gst.branch_id', 'branch.name', 'gst.gst'])
                     ->from('gst')
                     ->join('INNER JOIN', 'branch', 'gst.branch_id = branch.id')
-                    ->where(['gst.branch_id' => $branch_id])
+                    ->where(['like', 'gst.branch_id', $branch_id])
                     ->all();
 
         if( count($result) > 0 ) {
@@ -88,7 +90,28 @@ class SearchGst extends Gst
 
     }
 
-    public function searchGst($branch_id) {
+    // get Gst
+    public function getGsts() 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['gst.id', 'gst.branch_id', 'branch.name', 'gst.gst'])
+                    ->from('gst')
+                    ->join('INNER JOIN', 'branch', 'gst.branch_id = branch.id')
+                    ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+
+        }else{
+            return 0;
+
+        }   
+        
+    }
+
+    // get Branch with Gst
+    public function searchExistGst($branch_id) {
         $rows = new Query();
 
         $result = $rows->select(['*'])

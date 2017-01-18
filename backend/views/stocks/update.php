@@ -8,8 +8,7 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel common\models\SearchCustomer */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Create Item in Inventory';
-// $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
+$this->title = 'Update Item in Stocks';
 
 ?>
 

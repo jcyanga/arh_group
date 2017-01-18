@@ -70,7 +70,7 @@ $this->title = 'Customers';
     <thead>
         <tr class="headings">
             <th class="tblalign_center" >
-                <input type="checkbox" id="chkAll" class="tableflat">
+                <i class="fa fa-envelope-o"></i>
             </th>
             <th class="tblalign_center" > FULLNAME </th>
             <th class="tblalign_center" > PHONE NUMBER </th>
@@ -87,7 +87,7 @@ $this->title = 'Customers';
             <?php foreach( $getCustomer as $row){ ?>
                 <tr class="even_odd pointer">
                     <td class="a-center tblalign_center">
-                        <input type="checkbox" class="chkUser tableflat" value="<?php echo $row['id']; ?>">
+                        <input type="checkbox" class="chkUser form-control" value="<?php echo $row['id']; ?>">
                     </td>
                     <td class="tblalign_center" ><?php echo $row['fullname'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['hanphone_no'];  ?></td>

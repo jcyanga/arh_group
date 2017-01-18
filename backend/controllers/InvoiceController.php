@@ -50,7 +50,7 @@ class InvoiceController extends Controller
             }
 
         }   
-        // print_r($action['developer']); exit;
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -103,10 +103,7 @@ class InvoiceController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         
         if( !empty(Yii::$app->request->get('date_start')) && !empty(Yii::$app->request->get('date_end')) ) {
-            $date_start = Yii::$app->request->get('date_start');
-            $date_end = Yii::$app->request->get('date_end');
-
-            $getInvoice = $searchModel->getInvoiceByDateRange($date_start,$date_end);
+            $getInvoice = $searchModel->getInvoiceByDateRange(Yii::$app->request->get('date_start'), Yii::$app->request->get('date_end'));
 
         } else {
             $getInvoice = $searchModel->getInvoice();
@@ -114,10 +111,10 @@ class InvoiceController extends Controller
         }
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-            'getInvoice' => $getInvoice
-        ]);
+                        'searchModel' => $searchModel,
+                        'dataProvider' => $dataProvider,
+                        'getInvoice' => $getInvoice
+                    ]);
     }
 
     /**
@@ -128,15 +125,17 @@ class InvoiceController extends Controller
     public function actionView($id)
     {
          $model = new Invoice();
-         $getLastInsertInvoice = $model->getLastInsertInvoice($id); 
-         $getLastInsertInvoiceServiceDetail = $model->getLastInsertInvoiceServiceDetail($id); 
-         $getLastInsertInvoicePartDetail = $model->getLastInsertInvoicePartDetail($id);
+         $searchModel = new SearchInvoice();
+
+         $getProcessedInvoice = $searchModel->getProcessedInvoice($id); 
+         $getProcessedServices = $searchModel->getProcessedServices($id); 
+         $getProcessedParts = $searchModel->getProcessedParts($id);
 
         return $this->render('view',[
                 'model' => $this->findModel($id),
-                'customerInfo' => $getLastInsertInvoice,
-                'services' => $getLastInsertInvoiceServiceDetail,
-                'parts' => $getLastInsertInvoicePartDetail
+                'customerInfo' => $getProcessedInvoice,
+                'services' => $getProcessedServices,
+                'parts' => $getProcessedParts
             ]);
     }
 
@@ -149,53 +148,48 @@ class InvoiceController extends Controller
     {
         $model = new Invoice();
         $details = new InvoiceDetail();
+        $searchModel = new SearchInvoice();
 
         $invoiceId = $this->_getInvoiceId();
-        $getBranchList = $model->getBranch();
-        $getUserList = $model->getUser();
-        $getCustomerList = $model->getCustomer();
-        $getServicesList = $model->getServicesList();
-        $getPartsList = $model->getPartsList();
+        $getBranchList = $searchModel->getBranch();
+        $getUserList = $searchModel->getUser();
+        $getCustomerList = $searchModel->getCustomer();
+        $getServicesList = $searchModel->getServicesList();
+        $getPartsList = $searchModel->getPartsList();
 
         if ( $model->load(Yii::$app->request->post()) ) {
-            
-            $invoiceNo = Yii::$app->request->post('Invoice')['invoice_no'];
-            $dateIssue = Yii::$app->request->post('Invoice')['dateIssue'];
-            $selectedBranch = Yii::$app->request->post('Invoice')['selectedBranch'];
-            $selectedCustomer = Yii::$app->request->post('Invoice')['selectedCustomer'];
-            $selectedUser = Yii::$app->request->post('Invoice')['selectedUser'];
-            $remarks = Yii::$app->request->post('Invoice')['remarks'];
-            $grand_total = Yii::$app->request->post('Invoice')['grand_total'];
-            $getGst = Gst::find()->where(['branch_id' => $selectedBranch])->one();
+            $getGst = Gst::find()->where(['branch_id' => Yii::$app->request->post('Invoice')['selectedBranch'] ])->one();
 
             if( isset($getGst) ) {
-                $totalWithGst = ($grand_total * $getGst->gst);
+                $totalWithGst = ( Yii::$app->request->post('Invoice')['grand_total'] * $getGst->gst );
             }else {
-                $totalWithGst = ($grand_total + 0);
+                $totalWithGst = Yii::$app->request->post('Invoice')['grand_total'];
             }
 
-            if( $dateIssue == "" || $selectedBranch == 0 || $selectedCustomer == 0 || $selectedUser == 0 || $remarks == "" ) {
+            if( Yii::$app->request->post('Invoice')['dateIssue'] == "" || Yii::$app->request->post('Invoice')['selectedBranch'] == 0 || Yii::$app->request->post('Invoice')['selectedCustomer'] == 0 || Yii::$app->request->post('Invoice')['selectedUser'] == 0 || Yii::$app->request->post('Invoice')['remarks'] == "" ) {
                     
                     return $this->render('_form', [
-                        'model' => $model,
-                        'invoiceId' => $invoiceId,
-                        'getBranchList' => $getBranchList,
-                        'getUserList' => $getUserList,
-                        'getCustomerList' => $getCustomerList,
-                        'getServicesList' => $getServicesList,
-                        'getPartsList' => $getPartsList, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'Fill-up all the fields.'
-                    ]);
-
+                                        'model' => $model,
+                                        'invoiceId' => $invoiceId,
+                                        'getBranchList' => $getBranchList,
+                                        'getUserList' => $getUserList,
+                                        'getCustomerList' => $getCustomerList,
+                                        'getServicesList' => $getServicesList,
+                                        'getPartsList' => $getPartsList, 
+                                        'errTypeHeader' => 'Error!', 
+                                        'errType' => 'alert alert-error', 
+                                        'msg' => 'Fill-up all the fields in the form.'
+                                    ]);
             }
 
-            $model->invoice_no = $invoiceNo;
+            $model->invoice_no = Yii::$app->request->post('Invoice')['invoice_no'];
             $model->quotation_code = 0;
-            $model->user_id = $selectedUser;
-            $model->customer_id = $selectedCustomer;
-            $model->branch_id = $selectedBranch;
-            $model->date_issue = $dateIssue;
+            $model->user_id = Yii::$app->request->post('Invoice')['selectedUser'];
+            $model->customer_id = Yii::$app->request->post('Invoice')['selectedCustomer'];
+            $model->branch_id = Yii::$app->request->post('Invoice')['selectedBranch'];
+            $model->date_issue = Yii::$app->request->post('Invoice')['dateIssue'];
             $model->grand_total = $totalWithGst;
-            $model->remarks = $remarks;
+            $model->remarks = Yii::$app->request->post('Invoice')['remarks'];
             $model->created_by = Yii::$app->user->identity->id;
             $model->created_at = date("Y-m-d");
             $model->updated_by = Yii::$app->user->identity->id;
@@ -204,17 +198,10 @@ class InvoiceController extends Controller
             $model->task = 0;
             $model->paid = 0;
 
-            if ( $model->save() ) {
-                
+            if ( $model->save() ) { 
                 $invoiceId = $model->id;
 
                 if( $details->load(Yii::$app->request->post()) ) {
-                
-                    $arrLen = count( Yii::$app->request->post('InvoiceDetail')['quantity'] );
-                    $service_part_id = Yii::$app->request->post('InvoiceDetail')['service_part_id'];
-                    $quantity = Yii::$app->request->post('InvoiceDetail')['quantity'];
-                    $selling_price = Yii::$app->request->post('InvoiceDetail')['selling_price'];
-                    $subTotal = Yii::$app->request->post('InvoiceDetail')['subTotal'];
                     
                     if( empty(Yii::$app->request->post('InvoiceDetail')['task']) ) {
                         $task = 0;
@@ -222,10 +209,10 @@ class InvoiceController extends Controller
                         $task = Yii::$app->request->post('InvoiceDetail')['task'];
                     }
 
-                    foreach ($quantity as $key => $value) {
+                    foreach ( Yii::$app->request->post('InvoiceDetail')['quantity'] as $key => $value) {
                         $invD = new InvoiceDetail();
 
-                        $getServicePart = explode('-', $service_part_id[$key]);
+                        $getServicePart = explode('-', Yii::$app->request->post('InvoiceDetail')['service_part_id'][$key]);
                         $getType = $getServicePart[0];
                         $getServicePartId = $getServicePart[1];
 
@@ -233,67 +220,67 @@ class InvoiceController extends Controller
                             $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
                             $totalQty = $getPart->quantity - $value;
 
-                            Yii::$app->db->createCommand()
-                                ->update('inventory', ['quantity' => $totalQty ], "id = $getServicePartId" )
-                                ->execute();
+                            $invQty = Inventory::findOne($getServicePartId);
+                            $invQty->quantity = $totalQty;
+                            $invQty->save();
                         }
 
                         $invD->invoice_id = $invoiceId;
                         $invD->service_part_id = $getServicePartId;
                         $invD->quantity = $value;
-                        $invD->selling_price = $selling_price[$key];
-                        $invD->subTotal = $subTotal[$key];
+                        $invD->selling_price = Yii::$app->request->post('InvoiceDetail')['selling_price'][$key];
+                        $invD->subTotal = Yii::$app->request->post('InvoiceDetail')['subTotal'][$key];
                         $invD->created_by = Yii::$app->user->identity->id;
                         $invD->created_at = date("Y-m-d");
                         $invD->type = $getType;
                         $invD->task = 0;
 
                         $invD->save();
-
                     }
                     
                     if( !empty(Yii::$app->request->post('InvoiceDetail')['task']) ) {
-                        foreach( $task as $key => $tValue ) {
-
-                            Yii::$app->db->createCommand()
-                                ->update('invoice_detail', ['task' => 1], "invoice_id = $invoiceId AND service_part_id = $tValue AND type = 0")
-                                ->execute();
-
+                        foreach( Yii::$app->request->post('InvoiceDetail')['task'] as $key => $tValue ) {
+                            $qdTask = InvoiceDetail::find()->where(['invoice_id' => $invoiceId])->andWhere(['service_part_id' => $tValue])->andWhere('type = 0')->one();
+                            $qdTask->task = 1;
+                            $qdTask->save();
                         }
                     }
 
                  return $this->redirect(['view', 'id' => $model->id]);
-
                 }
             }
             
         } else {
 
             return $this->render('_form', [
-                'model' => $model,
-                'invoiceId' => $invoiceId,
-                'getBranchList' => $getBranchList,
-                'getUserList' => $getUserList,
-                'getCustomerList' => $getCustomerList,
-                'getServicesList' => $getServicesList,
-                'getPartsList' => $getPartsList, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-            ]);
-
+                                    'model' => $model,
+                                    'invoiceId' => $invoiceId,
+                                    'getBranchList' => $getBranchList,
+                                    'getUserList' => $getUserList,
+                                    'getCustomerList' => $getCustomerList,
+                                    'getServicesList' => $getServicesList,
+                                    'getPartsList' => $getPartsList, 
+                                    'errTypeHeader' => '', 
+                                    'errType' => '', 
+                                    'msg' => ''
+                                ]);
         }
     }
 
     public function actionPreview($id) {
 
          $model = new Invoice();
-         $getInvoice = $model->getInvoice($id); 
-         $getInvoiceServiceDetail = $model->getInvoiceServiceDetail($id); 
-         $getInvoicePartDetail = $model->getInvoicePartDetail($id);
+         $searchModel = new SearchInvoice();
+
+         $getProcessedInvoiceById = $searchModel->getProcessedInvoiceById($id); 
+         $getProcessedServicesById = $searchModel->getProcessedServicesById($id); 
+         $getProcessedPartsById = $searchModel->getProcessedPartsById($id);
 
         return $this->render('processed-invoice',[
                 'model' => $this->findModel($id),
-                'customerInfo' => $getInvoice,
-                'services' => $getInvoiceServiceDetail,
-                'parts' => $getInvoicePartDetail
+                'customerInfo' => $getProcessedInvoiceById,
+                'services' => $getProcessedServicesById,
+                'parts' => $getProcessedPartsById
             ]);
     }
 
@@ -307,35 +294,27 @@ class InvoiceController extends Controller
     {
         $model = new Invoice();
         $details = new InvoiceDetail();
+        $searchModel = new SearchInvoice();
 
-        $getInvoice = $model->getInvoice($id);
-        $getService = $model->getInvoiceServiceDetail($id);
-        $getPart = $model->getInvoicePartDetail($id);
-        $getLastId = $model->getLastId($id);
+        $getInvoice = $searchModel->getProcessedInvoicebyId($id);
+        $getService = $searchModel->getProcessedServicesbyId($id);
+        $getPart = $searchModel->getProcessedPartsbyId($id);
+        $getLastId = $searchModel->getLastId($id);
 
         $invoiceId = $this->_getInvoiceId();
-        $getBranchList = $model->getBranch();
-        $getUserList = $model->getUser();
-        $getCustomerList = $model->getCustomer();
-        $getServicesList = $model->getServicesList();
-        $getPartsList = $model->getPartsList();
+        $getBranchList = $searchModel->getBranch();
+        $getUserList = $searchModel->getUser();
+        $getCustomerList = $searchModel->getCustomer();
+        $getServicesList = $searchModel->getServicesList();
+        $getPartsList = $searchModel->getPartsList();
 
         if ( $model->load(Yii::$app->request->post()) ) {
-    
-
-            $invoice_no = Yii::$app->request->post('Invoice')['invoice_no'];
-            $dateIssue = Yii::$app->request->post('Invoice')['dateIssue'];
-            $selectedBranch = Yii::$app->request->post('Invoice')['selectedBranch'];
-            $selectedCustomer = Yii::$app->request->post('Invoice')['selectedCustomer'];
-            $selectedUser = Yii::$app->request->post('Invoice')['selectedUser'];
-            $remarks = Yii::$app->request->post('Invoice')['remarks'];
-            $grand_total = Yii::$app->request->post('Invoice')['grand_total'];
-            $getGst = Gst::find()->where(['branch_id' => $selectedBranch])->one();
+            $getGst = Gst::find()->where(['branch_id' => Yii::$app->request->post('Invoice')['selectedBranch'] ])->one();
 
             if( isset($getGst) ) {
-                $totalWithGst = ($grand_total * $getGst->gst);
+                $totalWithGst = ( Yii::$app->request->post('Invoice')['grand_total'] * $getGst->gst );
             }else {
-                $totalWithGst = ($grand_total + 0);
+                $totalWithGst = Yii::$app->request->post('Invoice')['grand_total'];
             }
 
             if( empty(Yii::$app->request->post('Quotation')['quotationCode']) ) {
@@ -344,40 +323,43 @@ class InvoiceController extends Controller
                 $quotationCode = Yii::$app->request->post('Quotation')['quotationCode'];
             }
 
-            if( $dateIssue == "" || $selectedBranch == 0 || $selectedCustomer == 0 || $selectedUser == 0 || $remarks == "" ) {
+            if( Yii::$app->request->post('Invoice')['dateIssue'] == "" || Yii::$app->request->post('Invoice')['selectedBranch'] == 0 || Yii::$app->request->post('Invoice')['selectedCustomer'] == 0 || Yii::$app->request->post('Invoice')['selectedUser'] == 0 || Yii::$app->request->post('Invoice')['remarks'] == "" ) {
                     
                     return $this->render('_update-form', [
-                        'model' => $model,
-                        'invoiceId' => $invoiceId,
-                        'getBranchList' => $getBranchList,
-                        'getUserList' => $getUserList,
-                        'getCustomerList' => $getCustomerList,
-                        'getServicesList' => $getServicesList,
-                        'getPartsList' => $getPartsList, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'Fill-up all the fields.'
-                    ]);
-
+                                                'model' => $model,
+                                                'invoiceId' => $invoiceId,
+                                                'getBranchList' => $getBranchList,
+                                                'getUserList' => $getUserList,
+                                                'getCustomerList' => $getCustomerList,
+                                                'getServicesList' => $getServicesList,
+                                                'getPartsList' => $getPartsList, 
+                                                'errTypeHeader' => 'Error!', 
+                                                'errType' => 'alert alert-error', 
+                                                'msg' => 'Fill-up all the fields in the form.'
+                                            ]);
             }
 
             $findModel = Invoice::findOne($id);
 
-            $findModel->invoice_no = $invoice_no;
+            $findModel->invoice_no = Yii::$app->request->post('Invoice')['invoice_no'];
             $findModel->quotation_code = $quotationCode;
-            $findModel->user_id = $selectedUser;
-            $findModel->customer_id = $selectedCustomer;
-            $findModel->branch_id = $selectedBranch;
-            $findModel->date_issue = $dateIssue;
+            $findModel->user_id = Yii::$app->request->post('Invoice')['selectedUser'];
+            $findModel->customer_id = Yii::$app->request->post('Invoice')['selectedCustomer'];
+            $findModel->branch_id = Yii::$app->request->post('Invoice')['selectedBranch'];
+            $findModel->date_issue = Yii::$app->request->post('Invoice')['dateIssue'];
             $findModel->grand_total = $totalWithGst;
-            $findModel->remarks = $remarks;
+            $findModel->remarks = Yii::$app->request->post('Invoice')['remarks'];
             $findModel->updated_at = date("Y-m-d");
             $findModel->updated_by = Yii::$app->user->identity->id;
             $findModel->delete = 0;
             $findModel->task = 0;
             $findModel->paid = 0;
+            $findModel->paid_type = 0;
+            $findModel->status = 0;
 
             if ( $findModel->save() ) {
 
-                if( $details->load(Yii::$app->request->post()) ) {
-                    
+                if( $details->load(Yii::$app->request->post()) ) {   
                     $getQty = InvoiceDetail::find()->where(['invoice_id' => $id])->andWhere('type = 1')->all();
                     
                     foreach( $getQty as $idInfo ) {
@@ -389,18 +371,12 @@ class InvoiceController extends Controller
                             $findPartModel = Inventory::findOne($idInfo['service_part_id']);
                             $findPartModel->quantity = $totalPartQty;
                             $findPartModel->save();
-
                         }
                     }
 
                     Yii::$app->db->createCommand()
                     ->delete('invoice_detail', "invoice_id = $id" )
                     ->execute();
-
-                    $service_part_id = Yii::$app->request->post('InvoiceDetail')['service_part_id'];
-                    $quantity = Yii::$app->request->post('InvoiceDetail')['quantity'];
-                    $selling_price = Yii::$app->request->post('InvoiceDetail')['selling_price'];
-                    $subTotal = Yii::$app->request->post('InvoiceDetail')['subTotal'];
                     
                     if( empty(Yii::$app->request->post('InvoiceDetail')['task']) ) {
                         $task = 0;
@@ -408,10 +384,10 @@ class InvoiceController extends Controller
                         $task = Yii::$app->request->post('InvoiceDetail')['task'];
                     }
 
-                    foreach ($quantity as $key => $value) {
+                    foreach ( Yii::$app->request->post('InvoiceDetail')['quantity'] as $key => $value) {
                         $invD = new InvoiceDetail();
 
-                        $getServicePart = explode('-', $service_part_id[$key]);
+                        $getServicePart = explode('-', Yii::$app->request->post('InvoiceDetail')['service_part_id'][$key]);
                         $getType = $getServicePart[0];
                         $getServicePartId = $getServicePart[1];
 
@@ -427,55 +403,57 @@ class InvoiceController extends Controller
                         $invD->invoice_id = $id;
                         $invD->service_part_id = $getServicePartId;
                         $invD->quantity = $value;
-                        $invD->selling_price = $selling_price[$key];
-                        $invD->subTotal = $subTotal[$key];
+                        $invD->selling_price = Yii::$app->request->post('InvoiceDetail')['selling_price'][$key];
+                        $invD->subTotal = Yii::$app->request->post('InvoiceDetail')['subTotal'][$key];
                         $invD->created_at = date("Y-m-d");
                         $invD->created_by = Yii::$app->user->identity->id;
                         $invD->type = $getType;
                         $invD->task = 0;
+                        $invD->status = 0;
 
                         $invD->save();
 
                     }
                  
                  if( !empty(Yii::$app->request->post('InvoiceDetail')['task']) ) {
-                     foreach( $task as $key => $tValue ) {
-
-                            Yii::$app->db->createCommand()
-                                ->update('invoice_detail', ['task' => 1], "invoice_id = $invoiceId AND service_part_id = $tValue AND type = 0")
-                                ->execute();
+                     foreach( Yii::$app->request->post('InvoiceDetail')['task'] as $key => $tValue ) {
+                        $qdTask = InvoiceDetail::find()->where(['invoice_id' => $id])->andWhere(['service_part_id' => $tValue])->andWhere('type = 0')->one();
+                        $qdTask->task = 1;
+                        $qdTask->save();
 
                      }
                  }
 
                  return $this->redirect(['view', 'id' => $id]);
-
                 }
             }
 
         } else {
 
             return $this->render('_update-form', [
-                'model' => $getInvoice, 
-                'getService' => $getService,
-                'getPart' => $getPart,
-                'getLastId' => $getLastId,
-                'invoiceId' => $invoiceId,
-                'getBranchList' => $getBranchList,
-                'getUserList' => $getUserList,
-                'getCustomerList' => $getCustomerList,
-                'getServicesList' => $getServicesList,
-                'getPartsList' => $getPartsList, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-            
-            ]);
+                                    'model' => $getInvoice, 
+                                    'getService' => $getService,
+                                    'getPart' => $getPart,
+                                    'getLastId' => $getLastId,
+                                    'invoiceId' => $invoiceId,
+                                    'getBranchList' => $getBranchList,
+                                    'getUserList' => $getUserList,
+                                    'getCustomerList' => $getCustomerList,
+                                    'getServicesList' => $getServicesList,
+                                    'getPartsList' => $getPartsList, 
+                                    'errTypeHeader' => '', 
+                                    'errType' => '', 
+                                    'msg' => ''
+                                ]);
 
         }
 
     }
 
-    public function _getInvoiceId() {
-        $model = new Invoice();
-        $result = $model->getInvoiceId();
+    public function _getInvoiceId() 
+    {
+        $searchModel = new SearchInvoice();
+        $result = $searchModel->getInvoiceId();
 
         return $result;
     }
@@ -499,15 +477,20 @@ class InvoiceController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $this->findModel($id)->delete();
-
         Yii::$app->db->createCommand()
             ->delete('invoice_detail', "invoice_id = $id" )
             ->execute();
 
         $getInvoice = $searchModel->getInvoice();
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getInvoice' => $getInvoice,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+        return $this->render('index', [
+                            'searchModel' => $searchModel, 
+                            'getInvoice' => $getInvoice,
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Your record was successfully deleted in the database.'
+                        ]);
     }
 
     public function actionDeleteSelectedQuotationDetail($id,$invoiceId)
@@ -534,8 +517,8 @@ class InvoiceController extends Controller
         }
     }
 
-    public function actionPrice() {
-
+    public function actionPrice() 
+    {
         $this->layout = false;
 
         if( Yii::$app->request->post() ) {
@@ -577,8 +560,7 @@ class InvoiceController extends Controller
 
                     default:
                         $itemSellingPrice = $part->selling_price;
-                        $status = '';
-                
+                        $status = '';      
                 } 
 
             }
@@ -587,7 +569,8 @@ class InvoiceController extends Controller
         }
     }
 
-    public function actionInsertInList() {
+    public function actionInsertInList() 
+    {
         $detail = new InvoiceDetail();
         $this->layout = false;
 
@@ -614,209 +597,188 @@ class InvoiceController extends Controller
 
             }
 
-            $n = Yii::$app->request->post('n');
-            $itemQty = Yii::$app->request->post('itemQty');
-            $itemPriceValue = Yii::$app->request->post('itemPriceValue');
-            $itemSubTotal = Yii::$app->request->post('itemSubTotal');
-
             return $this->render('item-list', [
-                    'n' => $n,
-                    'itemQty' => $itemQty,
-                    'itemPriceValue' => $itemPriceValue,
-                    'itemSubTotal' => $itemSubTotal,
-                    'serviceId' => $serviceId,
-                    'serviceName' => $serviceName,
-                    'partId' => $inventoryId,
-                    'partName' => $partName,
-                    'itemType' => $ItemType,
-                    'detail' => $detail,
-                ]);
+                                'n' => Yii::$app->request->post('n'),
+                                'itemQty' => Yii::$app->request->post('itemQty'),
+                                'itemPriceValue' => Yii::$app->request->post('itemPriceValue'),
+                                'itemSubTotal' => Yii::$app->request->post('itemSubTotal'),
+                                'serviceId' => $serviceId,
+                                'serviceName' => $serviceName,
+                                'partId' => $inventoryId,
+                                'partName' => $partName,
+                                'itemType' => $ItemType,
+                                'detail' => $detail,
+                            ]);
         }  
 
     }
 
-    public function actionPaymentMethod($id) {
-       
+    public function actionPaymentMethod($id) 
+    {
          $model = new Invoice();
-         $getInvoice = $model->getInvoice($id); 
-         $getInvoiceServiceDetail = $model->getInvoiceServiceDetail($id); 
-         $getInvoicePartDetail = $model->getInvoicePartDetail($id);
+         $searchModel = new SearchInvoice();
+
+         $getProcessedInvoiceById = $searchModel->getProcessedInvoiceById($id); 
+         $getProcessedServicesById = $searchModel->getProcessedServicesById($id); 
+         $getProcessedPartsById = $searchModel->getProcessedPartsById($id);
 
         return $this->render('payment-method',[
-                'model' => $this->findModel($id),
-                'customerInfo' => $getInvoice,
-                'services' => $getInvoiceServiceDetail,
-                'parts' => $getInvoicePartDetail
-            ]);
+                    'model' => $this->findModel($id),
+                    'customerInfo' => $getProcessedInvoiceById,
+                    'services' => $getProcessedServicesById,
+                    'parts' => $getProcessedPartsById
+                ]);
 
     }
 
-    public function actionSavePayment() {
-
+    public function actionSavePayment() 
+    {
         $model = new Payment();
-
         $searchModel = new SearchInvoice();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if( $model->load(Yii::$app->request->post()) ) {
-            
             $paymentMethod = Yii::$app->request->post('Payment')['payment_method'];     
             
             if( $paymentMethod == 1 ) {
                 
-                $invoiceId = Yii::$app->request->post('Payment')['invoice_id'];
-                $invoiceNo = Yii::$app->request->post('Payment')['invoice_no'];
-                $customerId = Yii::$app->request->post('Payment')['customer_id'];
-                $paymentDate = Yii::$app->request->post('Payment')['payment_date'];
-                $paymentTime = Yii::$app->request->post('Payment')['payment_time'];
-                $paymentType = Yii::$app->request->post('Payment')['payment_type'];
-                $amount = Yii::$app->request->post('Payment')['amount'];
-                $discount = Yii::$app->request->post('Payment')['discount'];
-
                 if( empty(Yii::$app->request->post('Payment')['points_redeem']) ) {
                     $pointsRedeem = 0;
                 } else {
                     $pointsRedeem = Yii::$app->request->post('Payment')['points_redeem'];
                 }
 
-                $pointsEarned = Yii::$app->request->post('Payment')['points_earned'];
-                $remarks = Yii::$app->request->post('Payment')['remarks'];
-
-                $checkIfExist = $model->checkInvoice($invoiceId,$invoiceNo,$customerId);
+                $checkIfExist = $searchModel->checkInvoice(Yii::$app->request->post('Payment')['invoice_id'], Yii::$app->request->post('Payment')['invoice_no'], Yii::$app->request->post('Payment')['customer_id']);
 
                 if( $checkIfExist == 0 ) {
                     
-                    $model->invoice_id = $invoiceId;
-                    $model->invoice_no = $invoiceNo;
-                    $model->customer_id = $customerId;
-                    $model->amount = $amount;
-                    $model->discount = $discount;
+                    $model->invoice_id = Yii::$app->request->post('Payment')['invoice_id'];
+                    $model->invoice_no = Yii::$app->request->post('Payment')['invoice_no'];
+                    $model->customer_id = Yii::$app->request->post('Payment')['customer_id'];
+                    $model->amount = Yii::$app->request->post('Payment')['amount'];
+                    $model->discount = Yii::$app->request->post('Payment')['discount'];
                     $model->payment_method = $paymentMethod;
-                    $model->payment_type = $paymentType;
-                    $model->points_earned = $pointsEarned;
+                    $model->payment_type = Yii::$app->request->post('Payment')['payment_type'];
+                    $model->points_earned = Yii::$app->request->post('Payment')['points_earned'];
                     $model->points_redeem = $pointsRedeem;
-                    $model->remarks = $remarks;
-                    $model->payment_date = $paymentDate;
-                    $model->payment_time = $paymentTime;
+                    $model->remarks = Yii::$app->request->post('Payment')['remarks'];
+                    $model->payment_date = Yii::$app->request->post('Payment')['payment_date'];
+                    $model->payment_time = Yii::$app->request->post('Payment')['payment_time'];
                     $model->status = 1;
                     
                     $model->save();
                     
                     $lastId = $model->id;
 
-                    Yii::$app->db->createCommand()
-                        ->update('invoice', ['status' => 1, 'paid' => 1, 'paid_type' => 1], "id = $invoiceId")
-                        ->execute();
+                    $invoice = Invoice::findOne(Yii::$app->request->post('Payment')['invoice_id']);
+                    $invoice->status = 1;
+                    $invoice->paid = 1;
+                    $invoice->paid_type = 1;
+                    $invoice->save();
 
-                    Yii::$app->db->createCommand()
-                        ->update('invoice_detail', ['status' => 1], "id = $invoiceId")
-                        ->execute();
+                    $invoice = Invoice::findOne(Yii::$app->request->post('Payment')['invoice_id']);
+                    $invoice->status = 1;
+                    $invoice->paid = 1;
+                    $invoice->paid_type = 1;
+                    $invoice->save();
 
-                    $getPoints = Customer::find()->where(['id' => $customerId])->one();
+                    $invoiceDetail = InvoiceDetail::find()->where(['invoice_id' => Yii::$app->request->post('Payment')['invoice_id'] ])->one();
+                    $invoiceDetail->status = 1;
+                    $invoiceDetail->save();
+
+                    $getPoints = Customer::find()->where(['id' => Yii::$app->request->post('Payment')['customer_id'] ])->one();
                     $points = $getPoints->points;
                     $totalPoints = $points - $pointsRedeem;
-                    $totalPoints += $pointsEarned;
+                    $totalPoints += Yii::$app->request->post('Payment')['points_earned'];
 
                     $getPoints->points = $totalPoints;
                     $getPoints->save();
 
-                    $getInvoice = $model->getInvoice($lastId,$invoiceId,$invoiceNo,$customerId);
-                    $getServices = $model->getInvoiceServiceDetail($invoiceId);
-                    $getParts = $model->getInvoicePartDetail($invoiceId);
+                    $getInvoice = $searchModel->getPaidInvoice($lastId,Yii::$app->request->post('Payment')['invoice_id'], Yii::$app->request->post('Payment')['invoice_no'], Yii::$app->request->post('Payment')['customer_id']);
+
+                    $getServices = $searchModel->getInvoiceServiceDetail(Yii::$app->request->post('Payment')['invoice_id']);
+                    $getParts = $searchModel->getInvoicePartDetail(Yii::$app->request->post('Payment')['invoice_id']);
 
                     $this->layout = 'print';
 
                     return $this->render('_print-invoice',[
-                    'customerInfo' => $getInvoice,
-                    'services' => $getServices,
-                    'parts' => $getParts
-                    ]);
-
-                }else{
-                    
+                                        'customerInfo' => $getInvoice,
+                                        'services' => $getServices,
+                                        'parts' => $getParts
+                                    ]);
+                }else{ 
                      $getInvoice = $searchModel->getInvoice();
 
                      return $this->render('index', [
-                        'searchModel' => $searchModel,
-                        'dataProvider' => $dataProvider,
-                        'getInvoice' => $getInvoice
-                     ]);
-
+                                    'searchModel' => $searchModel,
+                                    'dataProvider' => $dataProvider,
+                                    'getInvoice' => $getInvoice
+                                 ]);
                 }
 
             }else{
-
-                    $mInvoiceId = Yii::$app->request->post('Payment')['mInvoice_id'];
-                    $mInvoiceNo = Yii::$app->request->post('Payment')['mInvoice_no'];
-                    $mCustomerId = Yii::$app->request->post('Payment')['mCustomer_id'];
-                    $mPaymentDate = Yii::$app->request->post('Payment')['mPayment_date'];
-                    $mPaymentTime = Yii::$app->request->post('Payment')['mPayment_time'];
-
-                    $mlPaymentType = Yii::$app->request->post('Payment')['mlPayment_type'];
-                    $mlAmount = Yii::$app->request->post('Payment')['mlAmount'];
-                    $mlDiscount = Yii::$app->request->post('Payment')['mlDiscount'];
-
+                    
                     if( empty(Yii::$app->request->post('Payment')['mlPoints_redeem']) ) {
                         $mlPointsRedeem = 0;
                     } else {
                         $mlPointsRedeem = Yii::$app->request->post('Payment')['mlPoints_redeem'];
                     }
 
-                    $mlPointsEarned = Yii::$app->request->post('Payment')['mlPoints_earned'];
-                    $mlRemarks = Yii::$app->request->post('Payment')['mlRemarks'];
-                    
                     $getId = array();
 
-                    foreach( $mlPaymentType as $key => $value ) {
+                    foreach( Yii::$app->request->post('Payment')['mlPayment_type'] as $key => $value ) {
                          $mModel = new Payment();
                          
-                         $mModel->invoice_id = $mInvoiceId;
-                         $mModel->invoice_no = $mInvoiceNo . '-' . $key;
-                         $mModel->customer_id = $mCustomerId;
-                         $mModel->amount = $mlAmount[$key];
-                         $mModel->discount = $mlDiscount[$key];
+                         $mModel->invoice_id = Yii::$app->request->post('Payment')['mInvoice_id'];
+                         $mModel->invoice_no = Yii::$app->request->post('Payment')['mInvoice_no'] . '-' . $key;
+                         $mModel->customer_id = Yii::$app->request->post('Payment')['mCustomer_id'];
+                         $mModel->amount = Yii::$app->request->post('Payment')['mlAmount'][$key];
+                         $mModel->discount = Yii::$app->request->post('Payment')['mlDiscount'][$key];
                          $mModel->payment_method = $paymentMethod;
                          $mModel->payment_type = $value;
-                         $mModel->points_earned = $mlPointsEarned[$key];
+                         $mModel->points_earned = Yii::$app->request->post('Payment')['mlPoints_earned'][$key];
                          $mModel->points_redeem = $mlPointsRedeem[$key];
-                         $mModel->remarks = $mlRemarks[$key];
-                         $mModel->payment_date = $mPaymentDate;
-                         $mModel->payment_time = $mPaymentTime;
+                         $mModel->remarks = Yii::$app->request->post('Payment')['mlRemarks'][$key];
+                         $mModel->payment_date = Yii::$app->request->post('Payment')['mPayment_date'];
+                         $mModel->payment_time = Yii::$app->request->post('Payment')['mPayment_time'];
                          $mModel->status = 1;
                          
-                         $invoiceNo = $mInvoiceNo . '-' . $key;
+                         $invoiceNo = Yii::$app->request->post('Payment')['mInvoice_no'] . '-' . $key;
 
-                         $getMultipleInvoiceResult = $model->checkMultipleInvoice($mInvoiceId,$invoiceNo,$mCustomerId);
+                         $getMultipleInvoiceResult = $searchModel->checkMultipleInvoice(Yii::$app->request->post('Payment')['mInvoice_id'], $invoiceNo, Yii::$app->request->post('Payment')['mCustomer_id']);
 
                          if( empty($getMultipleInvoiceResult) ) {
                                 $mModel->save();
                                 $getId[] = $mModel->id;
                          }
                          
-                         $getPoints = Customer::find()->where(['id' => $mCustomerId])->all();
+                         $getPoints = Customer::find()->where(['id' => Yii::$app->request->post('Payment')['mCustomer_id'] ])->all();
                          
                          foreach( $getPoints as $mcPointsRow) {
                             $customerPoints = $mcPointsRow['points'];
                             $totalPoints = $customerPoints - $mlPointsRedeem[$key];
 
-                            $findCustomer = Customer::findOne($mCustomerId);
+                            $findCustomer = Customer::findOne(Yii::$app->request->post('Payment')['mCustomer_id']);
                             $findCustomer->points = $totalPoints;
                             $findCustomer->save();
                          }
 
                     }
                     
-                     Yii::$app->db->createCommand()
-                        ->update('invoice', ['status' => 1, 'paid' => 1, 'paid_type' => 2], "id = $mInvoiceId")
-                        ->execute();
+                        $invoice = Invoice::findOne(Yii::$app->request->post('Payment')['mInvoice_id']);
+                        $invoice->status = 1;
+                        $invoice->paid = 1;
+                        $invoice->paid_type = 2;
+                        $invoice->save();
 
-                     Yii::$app->db->createCommand()
-                        ->update('invoice_detail', ['status' => 1], "id = $mInvoiceId")
-                        ->execute();
+                        $invoiceDetail = InvoiceDetail::find()->where(['invoice_id' => Yii::$app->request->post('Payment')['mInvoice_id'] ])->one();
+                        $invoiceDetail->status = 1;
+                        $invoiceDetail->save();
 
-                     $getMultipleInvoice = $model->getMultipleInvoice($getId,$mInvoiceId,$mInvoiceNo,$mCustomerId);
-                     $getServices = $model->getInvoiceServiceDetail($mInvoiceId);
-                     $getParts = $model->getInvoicePartDetail($mInvoiceId);
+                     $getMultipleInvoice = $searchModel->getPaidMultipleInvoice($getId, Yii::$app->request->post('Payment')['mInvoice_id'], Yii::$app->request->post('Payment')['mInvoice_no'], Yii::$app->request->post('Payment')['mCustomer_id']);
+
+                     $getServices = $searchModel->getInvoiceServiceDetail(Yii::$app->request->post('Payment')['mInvoice_id']);
+                     $getParts = $searchModel->getInvoicePartDetail(Yii::$app->request->post('Payment')['mInvoice_id']);
 
                      $this->layout = 'print';
 
@@ -825,46 +787,37 @@ class InvoiceController extends Controller
                       'services' => $getServices,
                       'parts' => $getParts
                      ]);
-
             }
-
 
         }
 
     }
 
-    public function actionInsertInPaymentList() {
+    public function actionInsertInPaymentList() 
+    {
         $detail = new Payment();
         $this->layout = false;
 
-        $n = Yii::$app->request->post('n');
-        $mPayment_type = Yii::$app->request->post('mPayment_type');
-        $mAmount = Yii::$app->request->post('mAmount');
-        $mDiscount = Yii::$app->request->post('mDiscount');
-        $mPoints_redeem = Yii::$app->request->post('mPoints_redeem');
-        $mPoints_earned = Yii::$app->request->post('mPoints_earned');
-        $mRemarks = Yii::$app->request->post('mRemarks');
-
         return $this->render('add-payment-lists', [
-            'n' => $n,
-            'mPayment_type' => $mPayment_type,
-            'mAmount' => $mAmount,
-            'mDiscount' => $mDiscount,
-            'mPoints_redeem' => $mPoints_redeem,
-            'mPoints_earned' => $mPoints_earned,
-            'mRemarks' => $mRemarks,
-            'detail' => $detail,
-
-        ]);
-
+                            'n' => Yii::$app->request->post('n'),
+                            'mPayment_type' => Yii::$app->request->post('mPayment_type'),
+                            'mAmount' => Yii::$app->request->post('mAmount'),
+                            'mDiscount' => Yii::$app->request->post('mDiscount'),
+                            'mPoints_redeem' => Yii::$app->request->post('mPoints_redeem'),
+                            'mPoints_earned' => Yii::$app->request->post('mPoints_earned'),
+                            'mRemarks' => Yii::$app->request->post('mRemarks'),
+                            'detail' => $detail,
+                        ]);
     }
 
-    public function actionPrintInvoice($id,$invoice_no) {
+    public function actionPrintInvoice($id,$invoice_no) 
+    {
         $model = new Payment();
+        $searchModel = new SearchInvoice();
 
-        $getInvoice = $model->getInvoiceById($id,$invoice_no);
-        $getServices = $model->getInvoiceServiceDetail($id);
-        $getParts = $model->getInvoicePartDetail($id);
+        $getInvoice = $searchModel->getPaidInvoiceById($id,$invoice_no);
+        $getServices = $searchModel->getInvoiceServiceDetail($id);
+        $getParts = $searchModel->getInvoicePartDetail($id);
 
         $this->layout = 'print';
 
@@ -876,27 +829,27 @@ class InvoiceController extends Controller
 
     }
 
-    public function actionPrintMultipleInvoice($id,$invoice_no) {
+    public function actionPrintMultipleInvoice($id,$invoice_no) 
+    {
         $model = new Payment();
+        $searchModel = new SearchInvoice();
 
-        $getInvoice = $model->getMultipleInvoiceById($invoiceId,$invoiceNo);
-        $getServices = $model->getInvoiceServiceDetail($id);
-        $getParts = $model->getInvoicePartDetail($id);
+        $multipleInvoiceInfo = $searchModel->getPaidMultipleInvoiceById($id,$invoice_no);
+        $getServices = $searchModel->getInvoiceServiceDetail($id);
+        $getParts = $searchModel->getInvoicePartDetail($id);
 
         $this->layout = 'print';
 
         return $this->render('_print-multiple-invoice',[
-            'customerInfo' => $getInvoice,
+            'multipleInvoiceInfo' => $multipleInvoiceInfo,
             'services' => $getServices,
             'parts' => $getParts
         ]);
-
     }
 
-    public function actionExportExcel() {
-
+    public function actionExportExcel() 
+    {
         $model = new SearchInvoice();
-
         $result = $model->getInvoice();
 
         $objPHPExcel = new \PHPExcel();
@@ -954,7 +907,6 @@ class InvoiceController extends Controller
         header('Cache-Control: max-age=0');
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
         $objWriter->save('php://output');                
-
     }
 
 

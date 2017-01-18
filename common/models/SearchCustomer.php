@@ -89,7 +89,9 @@ class SearchCustomer extends Customer
         return $dataProvider;
     }
 
-    public function searchCustomer($fullname) {
+    // Search box result
+    public function searchCustomerFullname($fullname) 
+    {
         $rows = new Query();
 
         $result = $rows->select(['*'])
@@ -98,5 +100,23 @@ class SearchCustomer extends Customer
                     ->all();
 
         return $result;            
+    }
+
+    // Search if with same name.
+    public function getNameAndEmail($fullname, $email) 
+    {
+       $rows = new Query();
+    
+       $result = $rows->select(['fullname', 'email'])
+        ->from('customer')
+        ->where(['fullname' => $fullname])
+        ->andWhere(['email' => $email])
+        ->all();
+        
+        if( count($result) > 0 ) {
+            return TRUE;
+        }else {
+            return 0;
+        }
     }   
 }

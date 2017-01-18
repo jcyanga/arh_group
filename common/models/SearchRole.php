@@ -67,7 +67,9 @@ class SearchRole extends Role
         return $dataProvider;
     }
 
-    public function searchRole($role) {
+    // Search box result.
+    public function searchRoleName($role) 
+    {
         $rows = new Query();
 
         $result = $rows->select(['*'])
@@ -77,6 +79,23 @@ class SearchRole extends Role
                     ->all();
 
         return $result;            
+    }
+
+    // Search if with same name.
+    public function getRole($role) 
+    {
+       $rows = new Query();
+    
+       $result = $rows->select(['role'])
+        ->from('role')
+        ->where(['role' => $role])
+        ->all();
+        
+        if( count($result) > 0 ) {
+            return TRUE;
+        }else {
+            return 0;
+        }
     }
 
 }

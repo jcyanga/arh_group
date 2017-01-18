@@ -8,7 +8,7 @@ use yii\filters\AccessControl;
 use common\models\User;
 use common\models\LoginForm;
 
-use common\models\Inventory;
+use common\models\SearchInventory;
 use common\models\ProductLevel;
 use common\models\SearchService;
 
@@ -65,22 +65,31 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $model = new Inventory();
-        $getPartLevel = new ProductLevel();
-        $searchPendingService = new SearchService();
+        $inventoryModel = new SearchInventory();
+        $serviceModel = new SearchService();
+
+        
+        // products dashboard
+        $getZeroStock = $inventoryModel->getZeroStock();
 
         $getPartLevel = ProductLevel::find()->one();
         $criticalLevel = $getPartLevel->critical_level;
         $minimumLevel = $getPartLevel->minimum_level;
-        
-        $getZeroStock = $model->getZeroStock();
-        $getCriticalStock = $model->getCriticalStock($criticalLevel);
-        $getWarningStock = $model->getWarningStock($minimumLevel);
 
-        $pendingServices = $searchPendingService->getPendingServices();
-        $pendingInvoiceServices = $searchPendingService->getPendingInvoiceServices();
+        $getCriticalStock = $inventoryModel->getCriticalStock($criticalLevel);
+        $getWarningStock = $inventoryModel->getWarningStock($minimumLevel);
 
-        return $this->render('index', ['getZeroStock' => $getZeroStock, 'getCriticalStock' => $getCriticalStock, 'getWarningStock' => $getWarningStock, 'pendingServices' => $pendingServices, 'pendingInvoiceServices' => $pendingInvoiceServices ]);
+        // pending services dashboard
+        $pendingServices = $serviceModel->getPendingServices();
+        $pendingInvoiceServices = $serviceModel->getPendingInvoiceServices();
+
+        return $this->render('index', [
+                        'getZeroStock' => $getZeroStock, 
+                        'getCriticalStock' => $getCriticalStock, 
+                        'getWarningStock' => $getWarningStock, 
+                        'pendingServices' => $pendingServices, 
+                        'pendingInvoiceServices' => $pendingInvoiceServices 
+                    ]);
     }
 
     /**

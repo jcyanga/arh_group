@@ -9,7 +9,6 @@ use yii\helpers\ArrayHelper;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Create User';
-// $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
 
 ?>
 

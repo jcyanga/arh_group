@@ -43,7 +43,7 @@ class BranchController extends Controller
             }
 
         }   
-        // print_r($action['developer']); exit;
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -95,20 +95,21 @@ class BranchController extends Controller
         $searchModel = new SearchBranch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchBranch')['name'] ) ) {
-
-                $name = Yii::$app->request->get('SearchBranch')['name'];
-                $getBranch = $searchModel->searchBranch($name);
-
-        }elseif ( Yii::$app->request->get('SearchBranch')['name'] == "" ) {
-                $getBranch = Branch::find()->where('id > 1')->all();
+        if( !empty(Yii::$app->request->get('SearchBranch')['name'])) {
+            $getBranch = $searchModel->searchBranchName(Yii::$app->request->get('SearchBranch')['name']);
         
         }else {
-                $getBranch = Branch::find()->where('id > 1')->all();
+            $getBranch = Branch::find()->where('id > 1')->all();
 
         }
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getBranch' => $getBranch, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
+        return $this->render('index', [
+                    'searchModel' => $searchModel, 
+                    'getBranch' => $getBranch, 
+                    'dataProvider' => $dataProvider, 
+                    'errTypeHeader' => '', 
+                    'errType' => '', 
+                    'msg' => ''
         ]);
     }
 
@@ -132,31 +133,48 @@ class BranchController extends Controller
     public function actionCreate()
     {
         $model = new Branch();
+        $searchModel = new SearchBranch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if ($model->load(Yii::$app->request->post())) {
-
-            $name = Yii::$app->request->post('Branch') ['name'];
-            $result = $model->getBranch($name);
+            $result = $searchModel->getBranch(Yii::$app->request->post('Branch') ['name']);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change the branch name.']);
+                return $this->render('create', [
+                                'model' => $model, 
+                                'errTypeHeader' => 'Warning!', 
+                                'errType' => 'alert alert-warning', 
+                                'msg' => 'You already enter an existing name, Please! Change the branch name.']);
             }
 
-            if($model->save()) {
-                $searchModel = new SearchBranch();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+            if( $model->save() ) {
                 $getBranch = Branch::find()->where('id > 1')->all();
 
-                return $this->render('index', ['searchModel' => $searchModel, 'getBranch' => $getBranch,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
+                return $this->render('index', [
+                                'searchModel' => $searchModel, 
+                                'getBranch' => $getBranch,
+                                'dataProvider' => $dataProvider, 
+                                'errTypeHeader' => 'Success!', 
+                                'errType' => 'alert alert-success', 
+                                'msg' => 'Your record was successfully added in the database.'
+                            ]);
 
-            }else {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
+            } else {
+                return $this->render('create', [
+                                    'model' => $model, 
+                                    'errTypeHeader' => 'Error!', 
+                                    'errType' => 'alert alert-error', 
+                                    'msg' => 'You have an error, Check All the required fields.'
+                                ]);
             }
 
         } else {
-            return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('create', [
+                        'model' => $model, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => '']
+                        );
         }
     }
 
@@ -169,18 +187,28 @@ class BranchController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $searchModel = new SearchBranch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // return $this->redirect(['view', 'id' => $model->id]);
-            $searchModel = new SearchBranch();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            
+        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
             $getBranch = Branch::find()->where('id > 1')->all();
 
-            return $this->render('index', ['searchModel' => $searchModel, 'getBranch' => $getBranch,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+            return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getBranch' => $getBranch,
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => 'Success!', 
+                        'errType' => 'alert alert-success', 
+                        'msg' => 'Your record was successfully updated in the database.'
+                    ]);
+
         } else {
-            return $this->render('update', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('update', [
+                        'model' => $model, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
+                    ]);
         }
     }
 
@@ -199,23 +227,19 @@ class BranchController extends Controller
 
     public function actionDeleteColumn($id)
     {
-        // $this->findModel($id)->delete();
-        // $model = $this->findModel($id);
-        // $model->deleted = 1;
-        // if ( $model->save() ) {
-        //     Yii::$app->getSession()->setFlash('success', 'Customer deleted');
-        // } else {
-        //     Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
-        // }
         $searchModel = new SearchBranch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $this->findModel($id)->delete();
-
         $getBranch = Branch::find()->where('id > 1')->all();
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getBranch' => $getBranch,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+        return $this->render('index', [
+                    'searchModel' => $searchModel, 
+                    'getBranch' => $getBranch,
+                    'dataProvider' => $dataProvider, 
+                    'errTypeHeader' => 'Success!', 'errType' => 'alert alert-success', 
+                    'msg' => 'Your record was successfully deleted in the database.'
+                ]);
     }
 
     /**
@@ -234,11 +258,9 @@ class BranchController extends Controller
         }
     }
 
-    public function actionExportExcel() {
-
-        // $model = new Role();
-
-        $result = Branch::find()->all();
+    public function actionExportExcel() 
+    {
+        $result = Branch::find()->where('id > 1')->all();
 
         $objPHPExcel = new \PHPExcel();
         $styleHeadingArray = array(
@@ -276,8 +298,10 @@ class BranchController extends Controller
          $row=2;
                                 
                 foreach ($result as $result_row) {  
+                    
                     $dateCreated = date('m-d-Y', strtotime($result_row['created_at']) );    
-                    $status = ( $result_row['status'] == 1 ) ? 'Active' : 'Inactive';            
+                    $status = ( $result_row['status'] == 1 ) ? 'Active' : 'Inactive';
+
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['id']); 
                     $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['code']);
                     $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row['name']);
@@ -299,30 +323,18 @@ class BranchController extends Controller
 
     }
 
-    public function actionExportPdf() {
-
-        // $model = new Role();
-
-        $result = Branch::find()->all();
+    public function actionExportPdf() 
+    {
+        $result = Branch::find()->where('id > 1')->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
-        // instantiate and use the dompdf class
-        // $dompdf = new Dompdf();
 
-        $dompdf     = new Dompdf();
-        //return $pdf->stream();
+        $dompdf = new Dompdf();
 
         $dompdf->loadHtml($content);
-
-        // // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4', 'landscape');
-
-        // // Render the HTML as PDF
         $dompdf->render();
 
-        // Output the generated PDF to Browser
         $dompdf->stream('BranchList-' . date('m-d-Y'));
-          
-
     }
 
 }

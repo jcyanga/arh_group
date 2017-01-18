@@ -43,23 +43,6 @@ class Modules extends \yii\db\ActiveRecord
         ];
     }
 
-    // Search if with same name.
-    public function getModules($modules) {
-           $rows = new Query();
-        
-           $result = $rows->select(['modules'])
-            ->from('modules')
-            ->where(['modules' => $modules])
-            // ->andWhere(['email' => $email])
-            ->all();
-            
-            if( count($result) > 0 ) {
-                return TRUE;
-            }else {
-                return 0;
-            }
-    }
-
     public function getRole()
     {
         return $this->hasOne(Role::className(), ['id' => 'role_id']);

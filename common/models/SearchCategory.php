@@ -68,7 +68,9 @@ class SearchCategory extends Category
         return $dataProvider;
     }
 
-    public function searchCategory($category) {
+    // Search box result
+    public function searchCategoryName($category) 
+    {
         $rows = new Query();
 
         $result = $rows->select(['*'])
@@ -77,5 +79,22 @@ class SearchCategory extends Category
                     ->all();
 
         return $result;  
+    }
+
+    // Search if with same name.
+    public function getCategory($category) 
+    {
+       $rows = new Query();
+    
+       $result = $rows->select(['category'])
+        ->from('category')
+        ->where(['category' => $category])
+        ->all();
+        
+        if( count($result) > 0 ) {
+            return TRUE;
+        }else {
+            return 0;
+        }
     }
 }

@@ -205,20 +205,4 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-    // Search if with same user.
-    public function getUsernameAndEmail($username, $email) {
-        $rows = new Query();
-
-        $result = $rows->select(['username','email'])
-            ->from('user')
-            ->where(['username' => $username])
-            ->andWhere(['email' => $email])
-            ->all();
-            
-            if( count($result) > 0 ) {
-                return TRUE;
-            }else {
-                return 0;
-            }
-    }
 }
