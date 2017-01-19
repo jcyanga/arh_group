@@ -15,8 +15,17 @@ $this->title = 'Print Multiple Invoice';
 <div class="book">
     
     <?php foreach( $multipleInvoiceInfo as $iRow): ?>
-        
-        <div class="page">
+        <?php
+            $getGst = Gst::find()->where(['branch_id' => $iRow['branch_id'] ])->one();
+                if( isset($getGst->gst) ) {
+                    $gst = $getGst->gst;
+                    $getSubTotal = $iRow['grand_total'] / $gst;
+                }else{
+                    $gst = 1;
+                    $getSubTotal = $iRow['grand_total'];
+                }
+        ?>    
+        <div class="page">  
         
                 <div class="subpage">
                     
@@ -90,7 +99,7 @@ $this->title = 'Print Multiple Invoice';
                                             <tr >
                                                 <td class="servicespartsLists" ><?php echo $sRow['service_name']; ?></td>
                                                 <td class="servicespartsLists" ><?php echo $sRow['quantity']; ?></td>
-                                                <td class="servicespartsLists" ><?php echo $sRow['selling_price']; ?></td>
+                                                <td class="servicespartsLists" ><?php echo '$'.$sRow['selling_price'].'.00'; ?></td>
                                                 <td class="servicespartsLists" ><?php echo $sRow['subTotal']; ?></td>
                                             </tr>
                                         <?php endforeach; ?>  
@@ -98,7 +107,7 @@ $this->title = 'Print Multiple Invoice';
                                             <tr>
                                                 <td class="servicespartsLists" ><?php echo $pRow['product_name']; ?></td>
                                                 <td class="servicespartsLists" ><?php echo $pRow['quantity']; ?></td>
-                                                <td class="servicespartsLists" ><?php echo $pRow['selling_price']; ?></td>
+                                                <td class="servicespartsLists" ><?php echo '$'.$pRow['selling_price'].'.00'; ?></td>
                                                 <td class="servicespartsLists" ><?php echo $pRow['subTotal']; ?></td>
                                             </tr>
                                         <?php endforeach; ?> 
@@ -128,15 +137,15 @@ $this->title = 'Print Multiple Invoice';
                                         <tbody>
                                             <tr>
                                                 <th style="width:50%;" class="amountdueTh" >Subtotal:</th>
-                                                <td class="amountdueTd" >$ 2</td>
+                                                <td class="amountdueTd" >$<?= $getSubTotal.'.00' ?></td>
                                             </tr>
                                             <tr>
                                                 <th class="amountdueTh" >Gst(7%):</th>
-                                                <td class="amountdueTd" >$ 3</td>
+                                                <td class="amountdueTd" >$<?= $gst ?></td>
                                             </tr>
                                             <tr>
                                                 <th class="amountdueTh" >Total:</th>
-                                                <td class="amountdueTd" >$ <?= $iRow['grand_total'] ?></td>
+                                                <td class="amountdueTd" >$<?= $iRow['grand_total'].'.00' ?></td>
                                             </tr>
                                         </tbody>
                                     </table>

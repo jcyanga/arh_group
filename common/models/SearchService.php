@@ -139,9 +139,9 @@ class SearchService extends Service
                 ->join('LEFT JOIN', 'customer', 'quotation.customer_id = customer.id')
                 ->join('LEFT JOIN', 'branch', 'quotation.branch_id = branch.id')
                 ->join('LEFT JOIN', 'service', 'quotation_detail.service_part_id = service.id')
-                ->where('quotation_detail.type = 0')
+                ->where('quotation.invoice = 0')
+                ->andWhere('quotation_detail.type = 0')
                 ->andWhere('quotation_detail.task = 1')
-                // ->andWhere('quotation_detail.invoice = 0')
                 ->all();
 
         return $result;
@@ -160,7 +160,7 @@ class SearchService extends Service
                 ->join('LEFT JOIN', 'service', 'invoice_detail.service_part_id = service.id')
                 ->where('invoice_detail.type = 0')
                 ->andWhere('invoice_detail.task = 1')
-                // ->andWhere('invoice_detail.status = 0')
+                ->andWhere('invoice_detail.status = 0')
                 ->all();
 
         return $result;

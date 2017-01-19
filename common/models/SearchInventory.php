@@ -154,6 +154,26 @@ class SearchInventory extends Inventory
         } 
     }
 
+    // get zero product stock
+    public function getTotalZeroStock() 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
+            ->from('inventory')
+            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+            ->where('inventory.quantity = 0')
+            ->orderBy('product.product_name')
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        } 
+    }
+
     // get critical product stock
     public function getCriticalStock($criticalLevel) 
     {
@@ -175,6 +195,26 @@ class SearchInventory extends Inventory
         } 
     }
 
+    // get total critical product stock
+    public function getTotalCriticalStock($criticalLevel) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
+            ->from('inventory')
+            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+            ->where("inventory.quantity <= $criticalLevel")
+            ->orderBy('product.product_name')
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        } 
+    }
+
     // get warning product stock
     public function getWarningStock($minimumLevel) 
     {
@@ -187,6 +227,26 @@ class SearchInventory extends Inventory
             ->where("inventory.quantity <= $minimumLevel")
             ->orderBy('product.product_name')
             ->limit(10)
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        } 
+    }
+
+    // get total warning product stock
+    public function getTotalWarningStock($minimumLevel) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
+            ->from('inventory')
+            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+            ->where("inventory.quantity <= $minimumLevel")
+            ->orderBy('product.product_name')
             ->all();
 
         if( count($result) > 0 ) {
