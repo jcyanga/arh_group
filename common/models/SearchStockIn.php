@@ -181,5 +181,46 @@ class SearchStockIn extends StockIn
 
         return $result;
     }
+
+    // getBestSellingServicesReportByDateRange
+    public function getBestSellingServicesReportByDateRange($date_start,$date_end) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select([ 'invoice_detail.id as invoiceDetailId', 'invoice_detail.invoice_id', 'invoice.invoice_no', 'invoice_detail.service_part_id', 'service_category.name', 'service.service_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal' ])
+                ->from('invoice_detail')
+                ->join('LEFT JOIN', 'invoice', 'invoice_detail.invoice_id = invoice.id')
+                ->join('LEFT JOIN', 'service', 'invoice_detail.service_part_id = service.id')
+                ->join('LEFT JOIN', 'service_category', 'service.service_category_id = service_category.id')
+                ->where('invoice_detail.type = 0')
+                ->andWhere('invoice_detail.status = 1')
+                ->andWhere("invoice.date_issue >= '$date_start'")
+                ->andWhere("invoice.date_issue <= '$date_end'")
+                ->orderBy('subTotal', 'asc')
+                ->all();
+
+        return $result;
+    }
+
+    // getBestSellingPartsReportByDateRange
+    public function getBestSellingPartsReportByDateRange($date_start,$date_end) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select([ 'invoice_detail.id as invoiceDetailId', 'invoice_detail.invoice_id', 'invoice.invoice_no', 'invoice_detail.service_part_id', 'category.category', 'product.product_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal' ])
+                ->from('invoice_detail')
+                ->join('LEFT JOIN', 'invoice', 'invoice_detail.invoice_id = invoice.id')
+                ->join('LEFT JOIN', 'inventory', 'invoice_detail.service_part_id = inventory.id')
+                ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
+                ->join('LEFT JOIN', 'category', 'product.category_id = category.id')
+                ->where('invoice_detail.type = 1')
+                ->andWhere('invoice_detail.status = 1')
+                ->andWhere("invoice.date_issue >= '$date_start'")
+                ->andWhere("invoice.date_issue <= '$date_end'")
+                ->orderBy('subTotal', 'asc')
+                ->all();
+
+        return $result;
+    }
   
 }

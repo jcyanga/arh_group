@@ -31,6 +31,9 @@ $isInventory = false;
 $isStocks = false;
 $isQuotation = false;
 $isInvoice = false;
+$isBestSelling = false;
+$isMonthlySales = false;
+$isMonthlyStock = false;
 $isGst = false;
 $isProductLevel = false;
 
@@ -104,7 +107,12 @@ foreach ($getUserPermission as $key => $value) {
             $isInvoice = true;
         break;
 
-        case 'Gst':
+        case 'Reports':
+            $isBestSelling = true;
+            $isMonthlySales = true;
+            $isMonthlyStock = true;
+
+        case 'Gst': 
             $isGst = true;
         break;
 
@@ -118,7 +126,6 @@ foreach ($getUserPermission as $key => $value) {
     }
 
 }
-
 
 $userFullname = Yii::$app->user->identity->fullname;
 
@@ -262,13 +269,21 @@ $userFullname = Yii::$app->user->identity->fullname;
                                     </ul>
                                 </li>
                                 <?php endif; ?>
+                                <?php if($isBestSelling || $isMonthlySales || $isMonthlyStock): ?>
                                 <li><a id="nav-reports" ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
+                                        <?php if($isBestSelling): ?>
                                         <li><a href="?r=reports/best-selling-product-report">Best Selling Product</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isMonthlySales): ?>
                                         <li><a href="?r=reports/monthly-sales-report">Monthly Sales Report</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isMonthlyStock): ?>
                                         <li><a href="?r=reports/monthly-stock-report">Monthly Stocks Report</a></li>
+                                        <?php endif; ?>
                                     </ul>
                                 </li>
+                                <?php endif; ?>
                                 <?php if($isGst || $isProductLevel): ?>
                                 <li><a id="nav-reports" ><i class="fa fa-legal"></i> Utilities <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">

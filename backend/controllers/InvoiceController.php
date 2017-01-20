@@ -8,6 +8,7 @@ use common\models\SearchInvoice;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use Dompdf\Dompdf;
 
 use common\models\Service;
 use common\models\Inventory;
@@ -102,7 +103,7 @@ class InvoiceController extends Controller
         $searchModel = new SearchInvoice();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         
-        if( !empty(Yii::$app->request->get('date_start')) && !empty(Yii::$app->request->get('date_end')) ) {
+        if( Yii::$app->request->get('date_start') <> "" && Yii::$app->request->get('date_end') <> "" ) {
             $getInvoice = $searchModel->getInvoiceByDateRange(Yii::$app->request->get('date_start'), Yii::$app->request->get('date_end'));
 
         } else {
@@ -682,8 +683,10 @@ class InvoiceController extends Controller
                     $invoice->paid_type = 1;
                     $invoice->save();
 
+                    $invoiceId = Yii::$app->request->post('Payment')['invoice_id'];
+
                     Yii::$app->db->createCommand()
-                        ->update('invoice_detail', ['status' => 1], "invoice_id = Yii::$app->request->post('Payment')['invoice_id']")
+                        ->update('invoice_detail', ['status' => 1], "invoice_id = $invoiceId")
                         ->execute();
 
                     $getPoints = Customer::find()->where(['id' => Yii::$app->request->post('Payment')['customer_id'] ])->one();
@@ -771,9 +774,11 @@ class InvoiceController extends Controller
                         $invoice->paid_type = 2;
                         $invoice->save();
 
+                        $mInvoiceId = Yii::$app->request->post('Payment')['mInvoice_id'];
+                    
                         Yii::$app->db->createCommand()
-                        ->update('invoice_detail', ['status' => 1], "invoice_id = Yii::$app->request->post('Payment')['mInvoice_id']")
-                        ->execute();
+                            ->update('invoice_detail', ['status' => 1], "invoice_id = $mInvoiceId")
+                            ->execute();
 
                      $getMultipleInvoice = $searchModel->getPaidMultipleInvoice($getId, Yii::$app->request->post('Payment')['mInvoice_id'], Yii::$app->request->post('Payment')['mInvoice_no'], Yii::$app->request->post('Payment')['mCustomer_id']);
 
@@ -826,7 +831,6 @@ class InvoiceController extends Controller
             'services' => $getServices,
             'parts' => $getParts
         ]);
-
     }
 
     public function actionPrintMultipleInvoice($id,$invoice_no) 
@@ -909,5 +913,54 @@ class InvoiceController extends Controller
         $objWriter->save('php://output');                
     }
 
+    public function actionInvoiceExportPdf($id,$invoice_no) 
+    {
+        $model = new Payment();
+        $searchModel = new SearchInvoice();
+
+        $getInvoice = $searchModel->getPaidInvoiceById($id,$invoice_no);
+        $getServices = $searchModel->getInvoiceServiceDetail($id);
+        $getParts = $searchModel->getInvoicePartDetail($id);
+
+        $content = $this->renderPartial('_print-invoice-pdf', [
+                'model' => $this->findModel($id),
+                'customerInfo' => $getInvoice,
+                'services' => $getServices,
+                'parts' => $getParts
+        ]);
+
+        $dompdf = new Dompdf();
+
+        $dompdf->loadHtml($content);  
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        $dompdf->stream('Invoice-' . date('m-d-Y'));
+    }
+
+    public function actionMultipleInvoiceExportPdf($id,$invoice_no) 
+    {
+        $model = new Payment();
+        $searchModel = new SearchInvoice();
+
+        $multipleInvoiceInfo = $searchModel->getPaidMultipleInvoiceById($id,$invoice_no);
+        $getServices = $searchModel->getInvoiceServiceDetail($id);
+        $getParts = $searchModel->getInvoicePartDetail($id);
+
+        $content = $this->renderPartial('_print-multiple-invoice-pdf', [
+                'model' => $this->findModel($id),
+                'multipleInvoiceInfo' => $multipleInvoiceInfo,
+                'services' => $getServices,
+                'parts' => $getParts
+        ]);
+
+        $dompdf = new Dompdf();
+
+        $dompdf->loadHtml($content);  
+        $dompdf->setPaper('A4', 'landscape');
+        $dompdf->render();
+
+        $dompdf->stream('Multiple-Invoice-' . date('m-d-Y'));
+    }
 
 }

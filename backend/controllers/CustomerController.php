@@ -259,6 +259,22 @@ class CustomerController extends Controller
         }
     }
 
+    public function actionPointsRedemptionHistory($id)
+    {   
+        $searchModel = new SearchCustomer();
+
+        $getPoints = Customer::findOne($id);
+        $customerPoints = $getPoints->points;
+        
+        $getRedeemPoints = $searchModel->getRedeemPoints($id);
+        
+        return $this->render('_points-redeem', [
+                                'model' => $this->findModel($id),
+                                'customerPoints' => $customerPoints,
+                                'getRedeemPoints' => $getRedeemPoints,
+                            ]);
+    }
+
     public function actionExportExcel() 
     {
         $result = Customer::find()->all();

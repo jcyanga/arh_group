@@ -104,7 +104,7 @@ class QuotationController extends Controller
         $searchModel = new SearchQuotation();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( !empty(Yii::$app->request->get('date_start')) && !empty(Yii::$app->request->get('date_end')) ) {
+        if( Yii::$app->request->get('date_start') <> "" && Yii::$app->request->get('date_end') <> "" ) {
             $getQuotation = $searchModel->getQuotationByDateRange(Yii::$app->request->get('date_start'), Yii::$app->request->get('date_end'));
 
         } else {
@@ -785,7 +785,7 @@ class QuotationController extends Controller
 
     public function actionExportPdf($id) 
     {
-        $model = new Quotation();
+        $model = new SearchQuotation();
 
         $getProcessedQuotation = $model->getProcessedQuotation($id); 
         $getProcessedServices = $model->getProcessedServices($id); 

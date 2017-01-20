@@ -18,15 +18,23 @@ class ReportsController extends \yii\web\Controller
     {
         $model = new SearchStockIn();
 
-        if( !empty(Yii::$app->request->get('date_start')) && !empty(Yii::$app->request->get('date_end')) ) {
-            $getMonthlyStock = $model->getMonthlyStockByDateRange(Yii::$app->request->get('date_start'), Yii::$app->request->get('date_end'));
+        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
+            $getMonthlyStock = $model->getMonthlyStockByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+            $date_start = Yii::$app->request->post('date_start');
+            $date_end = Yii::$app->request->post('date_end');
 
         } else {
             $getMonthlyStock = $model->getMonthlyStock();
+            $date_start = '';
+            $date_end = '';
 
         }
 
-    	return $this->render('monthly-stock-report',['getMonthlyStock' => $getMonthlyStock]);
+    	return $this->render('monthly-stock-report',[
+                            'getMonthlyStock' => $getMonthlyStock,
+                            'date_start' => $date_start,
+                            'date_end' => $date_end,
+                        ]);
     }
 
     // print monthly stock report
@@ -34,7 +42,7 @@ class ReportsController extends \yii\web\Controller
     {
         $model = new SearchStockIn();
         
-        if( !empty(Yii::$app->request->post('dateStart')) && !empty(Yii::$app->request->post('dateEnd')) ) {
+        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
             $result = $model->getMonthlyStockByDateRange(Yii::$app->request->post('dateStart'), Yii::$app->request->post('dateEnd'));
             $dateStart = date('M-d-Y',strtotime(Yii::$app->request->post('dateStart')));
             $dateEnd = date('M-d-Y',strtotime(Yii::$app->request->post('dateEnd')));
@@ -110,15 +118,23 @@ class ReportsController extends \yii\web\Controller
     {
     	$model = new SearchStockIn();
 
-        if( !empty(Yii::$app->request->get('date_start')) && !empty(Yii::$app->request->get('date_end')) ) {
-            $getMonthlySales = $model->getMonthlySalesReportByDateRange(Yii::$app->request->get('date_start'), Yii::$app->request->get('date_end'));
+        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
+            $getMonthlySales = $model->getMonthlySalesReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+            $date_start = Yii::$app->request->post('date_start');
+            $date_end = Yii::$app->request->post('date_end');
 
         } else {
             $getMonthlySales = $model->getMonthlySales();
+            $date_start = '';
+            $date_end = '';
 
         }
 
-        return $this->render('monthly-sales-report',['getMonthlySales' => $getMonthlySales]);
+        return $this->render('monthly-sales-report',[
+                            'getMonthlySales' => $getMonthlySales,
+                            'date_start' => $date_start,
+                            'date_end' => $date_end,
+                        ]);
     }
 
     // print monthly sales report
@@ -126,7 +142,7 @@ class ReportsController extends \yii\web\Controller
     {
         $model = new SearchStockIn();
         
-        if( !empty(Yii::$app->request->post('dateStart')) && !empty(Yii::$app->request->post('dateEnd')) ) {
+        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
             $result = $model->getMonthlySalesReportByDateRange(Yii::$app->request->post('dateStart'), Yii::$app->request->post('dateEnd'));
             $dateStart = date('M-d-Y',strtotime(Yii::$app->request->post('dateStart')));
             $dateEnd = date('M-d-Y',strtotime(Yii::$app->request->post('dateEnd')));
@@ -196,16 +212,113 @@ class ReportsController extends \yii\web\Controller
     {
         $model = new SearchStockIn();
 
-        if( !empty(Yii::$app->request->get('date_start')) && !empty(Yii::$app->request->get('date_end')) ) {
-            $getMonthlySales = $model->getMonthlySalesReportByDateRange(Yii::$app->request->get('date_start'), Yii::$app->request->get('date_end'));
+        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
+            $getBestSellingService = $model->getBestSellingServicesReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+            $getBestSellingParts = $model->getBestSellingPartsReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+
+            $date_start = Yii::$app->request->post('date_start');
+            $date_end = Yii::$app->request->post('date_end');
 
         } else {
             $getBestSellingService = $model->getBestSellingService();
             $getBestSellingParts = $model->getBestSellingParts();
 
+            $date_start = '';
+            $date_end = '';
+
         }
 
-        return $this->render('best-selling-product-report',['getBestSellingService' => $getBestSellingService, 'getBestSellingParts' => $getBestSellingParts ]);
+        return $this->render('best-selling-product-report',[
+                            'getBestSellingService' => $getBestSellingService, 
+                            'getBestSellingParts' => $getBestSellingParts,
+                            'date_start' => $date_start,
+                            'date_end' => $date_end,
+                        ]);
+    }
+
+    // print best selling product report
+    public function actionPrintBestSellingProductReportExcel() 
+    {
+        $model = new SearchStockIn();
+        
+        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
+            $result = $model->getBestSellingServicesReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+            $result1 = $model->getBestSellingPartsReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+
+            $dateStart = date('M-d-Y',strtotime(Yii::$app->request->post('dateStart')));
+            $dateEnd = date('M-d-Y',strtotime(Yii::$app->request->post('dateEnd')));
+
+        }else{
+            $result = $model->getBestSellingService();
+            $result1 = $model->getBestSellingParts();
+
+            $dateStart = date('M-d-Y');
+            $dateEnd = date('M-d-Y');
+
+        }
+
+        $objPHPExcel = new \PHPExcel();
+        $styleHeadingArray = array(
+            'font'  => array(
+            'bold'  => true,
+            'color' => array('rgb' => '000000'),
+            'size'  => 11,
+            'name'  => 'Calibri'
+        ));
+
+        $sheet=0;
+          
+        $objPHPExcel->setActiveSheetIndex($sheet);
+        
+            $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(20);
+            $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+                
+            $objPHPExcel->getActiveSheet()->setTitle('xxx')                     
+             ->setCellValue('A1', 'Invoice Number')
+             ->setCellValue('B1', 'Category')
+             ->setCellValue('C1', 'Service Name / Product Name')
+             ->setCellValue('D1', 'Quantity')
+             ->setCellValue('E1', 'Total Sold Amount');
+
+             $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('C1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('D1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('E1')->applyFromArray($styleHeadingArray);
+                 
+         $row=2;
+                                
+                foreach ($result as $result_row) {  
+                    
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['invoice_no']); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row['service_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$row,$result_row['quantity']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,'$'.$result_row['subTotal'].'.00');
+
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
+                    $row++ ;
+                }
+
+                foreach ($result1 as $result_row1) {  
+                    
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row1['invoice_no']); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row1['category']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row1['product_name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$row,$result_row1['quantity']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,'$'.$result_row1['subTotal'].'.00');
+
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
+                    $row++ ;
+                }
+
+        header('Content-Type: application/vnd.ms-excel');
+        $filename = "Best-Selling-Product-Report(".$dateStart."-TO-".$dateEnd.").xls";
+        header('Content-Disposition: attachment;filename='.$filename);
+        header('Cache-Control: max-age=0');
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        $objWriter->save('php://output');   
+
     }
 
 }

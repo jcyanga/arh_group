@@ -218,9 +218,9 @@ class SearchInvoice extends Invoice
 
         $result = $rows->select(['inventory.id', 'inventory.product_id as productId', 'product.product_name', 'category.category', 'supplier.supplier_name'])
         ->from('inventory')
-        ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
-        ->join('LEFT JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
-        ->join('LEFT JOIN', 'category', 'product.category_id = category.id')
+        ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+        ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+        ->join('INNER JOIN', 'category', 'product.category_id = category.id')
         ->all();
 
         if( count($result) > 0 ) {
@@ -393,7 +393,7 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks' ])
+        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks', 'invoice.invoice_no as multipleInvoiceNo' ])
                 ->from('payment')
                 ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
                 ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
@@ -460,7 +460,7 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks' ])
+        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks', 'invoice.invoice_no as multipleInvoiceNo' ])
                 ->from('payment')
                 ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
                 ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')

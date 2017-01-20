@@ -166,4 +166,17 @@ class SearchCustomer extends Customer
         return $result;
     }
 
+    // get customer redeem points
+    public function getRedeemPoints($id) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['id', 'invoice_no', 'points_redeem', 'payment_date', 'payment_time'])
+                    ->from('payment')
+                    ->where(['customer_id' => $id])
+                    ->all();
+
+        return $result;
+    }
+
 }

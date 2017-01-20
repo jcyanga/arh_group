@@ -64,20 +64,22 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex($customerSearchkeyword = '')
+    public function actionIndex()
     {
         $inventoryModel = new SearchInventory();
         $serviceModel = new SearchService();
         $customerModel = new SearchCustomer();
         
         // customer list
-        if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
-            $getCustomerQuotationBySearch = $customerModel->getCustomerQuotationBySearch(Yii::$app->request->get('customerSearchkeyword'));
-            $getCustomerInvoiceBySearch = $customerModel->getCustomerInvoiceBySearch(Yii::$app->request->get('customerSearchkeyword'));
+        if( Yii::$app->request->post()) {
+            $getCustomerQuotationBySearch = $customerModel->getCustomerQuotationBySearch(Yii::$app->request->post('customerSearchkeyword'));
+            $getCustomerInvoiceBySearch = $customerModel->getCustomerInvoiceBySearch(Yii::$app->request->post('customerSearchkeyword'));
+            $keywordValue = Yii::$app->request->post('customerSearchkeyword');
 
         }else{
             $getCustomerQuotationBySearch = '';
             $getCustomerInvoiceBySearch = '';
+            $keywordValue = '';
 
         }
 
@@ -109,6 +111,7 @@ class SiteController extends Controller
                         'pendingInvoiceServices' => $pendingInvoiceServices,
                         'getCustomerQuotationBySearch' => $getCustomerQuotationBySearch,
                         'getCustomerInvoiceBySearch' => $getCustomerInvoiceBySearch,
+                        'keywordValue' => $keywordValue,
                     ]);
     }
 
