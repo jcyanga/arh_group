@@ -19,7 +19,7 @@ if( !empty(Yii::$app->request->get('date_start')) || !empty(Yii::$app->request->
 
 }
 
-$this->title = 'Monthly Stock Report';
+$this->title = 'Monthly Sales Report';
 
 ?>
 
@@ -28,7 +28,7 @@ $this->title = 'Monthly Stock Report';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-bar-chart"></i> MONTHLY STOCK REPORT</h4></span>
+        <span class="form-header"><h4><i class="fa fa-bar-chart"></i> MONTHLY SALES REPORT</h4></span>
     </div>
     <hr/>
 
@@ -37,7 +37,7 @@ $this->title = 'Monthly Stock Report';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-search-container">    
-      <?php echo $this->render('_search-monthly-stock'); ?>
+      <?php echo $this->render('_search-monthly-sales'); ?>
     </div> 
     
 </div>
@@ -50,30 +50,27 @@ $this->title = 'Monthly Stock Report';
         
         <thead>
             <tr class="headings">
-                <th class="tblalign_center" ><b>SUPPLIER NAME</b></th>
-                <th class="tblalign_center" ><b>PRODUCT NAME</b></th>
-                <th class="tblalign_center" ><b>QUANTITY</b></th>
-                <th class="tblalign_center" ><b>COST PRICE</b></th>
-                <th class="tblalign_center" ><b>SELLING PRICE</b></th>
-                <th class="tblalign_center" ><b>DATE IMPORTED</b></th>
+                <th class="tblalign_center" ><b>INVOICE NUMBER</b></th>
+                <th class="tblalign_center" ><b>TOTAL SELLING PRICE</b></th>
+                <th class="tblalign_center" ><b>CUSTOMER NAME</b></th>
+                <th class="tblalign_center" ><b>CUSTOMER AMOUNT PAID</b></th>
+                <th class="tblalign_center" ><b>DATE ISSUE</b></th>
             </tr>
         </thead>
         <tbody>
-        	<?php if( !empty($getMonthlyStock) ): ?>
-                <?php foreach( $getMonthlyStock as $row){ ?>
+        	<?php if( !empty($getMonthlySales) ): ?>
+                <?php foreach( $getMonthlySales as $row){ ?>
                     <tr >
-                        <td class="tblalign_center" ><?php echo $row['supplier_name'];  ?></td>
-                        <td class="tblalign_center" ><?php echo $row['product_name'];  ?></td>
-                        <td class="tblalign_center" ><b><?php echo $row['quantity'];  ?></b></td>
-                        <td  class="tblalign_center" ><?php echo '$'.$row['cost_price'].'.00';  ?></td>
-                        <td  class="tblalign_center" ><?php echo '$'.$row['selling_price'].'.00';  ?></td>
-                        <td  class="tblalign_center" ><b><?php echo date('m-d-Y', strtotime($row['date_imported']) );  ?></b></td>
+                        <td class="tblalign_center" ><?php echo $row['invoice_no'];  ?></td>
+                        <td  class="tblalign_center" ><b><?php echo '$'.$row['grand_total'].'.00';  ?></b></td>
+                        <td class="tblalign_center" ><?php echo $row['customerName'];  ?></td>
+                        <td  class="tblalign_center" ><b><?php echo '$'.$row['amount'].'.00';  ?></b></td>
+                        <td  class="tblalign_center" ><b><?php echo date('m-d-Y', strtotime($row['date_issue']) );  ?></b></td>
                     </tr>
                 <?php } ?> 
             <?php else: ?>
                 <tr>
                     <td><span>No Record Found.</span></td>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -91,7 +88,7 @@ $this->title = 'Monthly Stock Report';
 
 <div class="btnreportsAlign" >
     <p>
-        <?php $form = ActiveForm::begin(['action' => '?r=reports/print-monthly-stock-report-excel', 'method' => 'post']); ?>
+        <?php $form = ActiveForm::begin(['action' => '?r=reports/print-monthly-sales-report-excel', 'method' => 'post']); ?>
             <input type="hidden" id="date_start" value="<?= $date_start ?>" name="dateStart" />
             <input type="hidden" id="date_end" value="<?= $date_end ?>" name="dateEnd" />
          <button type="submit" class="form-btn btn btn-dark btn-lg" onclick="return excelPrintConfirmation()" >

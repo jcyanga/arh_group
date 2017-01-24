@@ -14,7 +14,7 @@ if( isset($getGst->gst) ) {
     $gst = $getGst->gst;
     $getSubTotal = $customerInfo['grand_total'] / $gst;
 }else{
-    $gst = 1;
+    $gst = 0.00;
     $getSubTotal = $customerInfo['grand_total'];
 }
 
@@ -98,7 +98,7 @@ $this->title = 'Print Invoice';
                                         <tr >
                                             <td class="servicespartsLists" ><?php echo $sRow['service_name']; ?></td>
                                             <td class="servicespartsLists" ><?php echo $sRow['quantity']; ?></td>
-                                            <td class="servicespartsLists" ><?php echo $sRow['selling_price']; ?></td>
+                                            <td class="servicespartsLists" ><?php echo '$'.$sRow['selling_price'].'.00'; ?></td>
                                             <td class="servicespartsLists" ><?php echo $sRow['subTotal']; ?></td>
                                         </tr>
                                     <?php endforeach; ?>  
@@ -106,7 +106,7 @@ $this->title = 'Print Invoice';
                                         <tr>
                                             <td class="servicespartsLists" ><?php echo $pRow['product_name']; ?></td>
                                             <td class="servicespartsLists" ><?php echo $pRow['quantity']; ?></td>
-                                            <td class="servicespartsLists" ><?php echo $pRow['selling_price']; ?></td>
+                                            <td class="servicespartsLists" ><?php echo '$'.$pRow['selling_price'].'.00'; ?></td>
                                             <td class="servicespartsLists" ><?php echo $pRow['subTotal']; ?></td>
                                         </tr>
                                     <?php endforeach; ?> 
@@ -136,7 +136,7 @@ $this->title = 'Print Invoice';
                                     <tbody>
                                         <tr>
                                             <th style="width:50%;" class="amountdueTh" >Subtotal:</th>
-                                            <td class="amountdueTd" >$<?= $getSubTotal ?></td>
+                                            <td class="amountdueTd" >$<?= $getSubTotal.'.00' ?></td>
                                         </tr>
                                         <tr>
                                             <th class="amountdueTh" >Gst(7%):</th>
@@ -144,7 +144,7 @@ $this->title = 'Print Invoice';
                                         </tr>
                                         <tr>
                                             <th class="amountdueTh" >Total:</th>
-                                            <td class="amountdueTd" >$<?= $customerInfo['grand_total'] ?></td>
+                                            <td class="amountdueTd" >$<?= $customerInfo['grand_total'].'.00' ?></td>
                                         </tr>
                                     </tbody>
                                 </table>

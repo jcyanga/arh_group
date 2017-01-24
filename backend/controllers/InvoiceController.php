@@ -682,9 +682,9 @@ class InvoiceController extends Controller
                     $invoice->paid_type = 1;
                     $invoice->save();
 
-                    $invoiceDetail = InvoiceDetail::find()->where(['invoice_id' => Yii::$app->request->post('Payment')['invoice_id'] ])->one();
-                    $invoiceDetail->status = 1;
-                    $invoiceDetail->save();
+                    Yii::$app->db->createCommand()
+                        ->update('invoice_detail', ['status' => 1], "invoice_id = Yii::$app->request->post('Payment')['invoice_id']")
+                        ->execute();
 
                     $getPoints = Customer::find()->where(['id' => Yii::$app->request->post('Payment')['customer_id'] ])->one();
                     $points = $getPoints->points;
@@ -771,9 +771,9 @@ class InvoiceController extends Controller
                         $invoice->paid_type = 2;
                         $invoice->save();
 
-                        $invoiceDetail = InvoiceDetail::find()->where(['invoice_id' => Yii::$app->request->post('Payment')['mInvoice_id'] ])->one();
-                        $invoiceDetail->status = 1;
-                        $invoiceDetail->save();
+                        Yii::$app->db->createCommand()
+                        ->update('invoice_detail', ['status' => 1], "invoice_id = Yii::$app->request->post('Payment')['mInvoice_id']")
+                        ->execute();
 
                      $getMultipleInvoice = $searchModel->getPaidMultipleInvoice($getId, Yii::$app->request->post('Payment')['mInvoice_id'], Yii::$app->request->post('Payment')['mInvoice_no'], Yii::$app->request->post('Payment')['mCustomer_id']);
 

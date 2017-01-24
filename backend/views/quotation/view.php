@@ -117,7 +117,7 @@ $this->title = 'View Quotation';
                                     <?php endif; ?>
                                 </td>
                                 <td class="servicespartsLists" ><?php echo $sRow['quantity']; ?></td>
-                                <td class="servicespartsLists" ><?php echo $sRow['selling_price']; ?></td>
+                                <td class="servicespartsLists" ><?php echo '$'.$sRow['selling_price'].'.00'; ?></td>
                                 <td class="servicespartsLists" ><?php echo $sRow['subTotal']; ?></td>
                             </tr>
                         <?php endforeach; ?>  
@@ -125,7 +125,7 @@ $this->title = 'View Quotation';
                             <tr>
                                 <td class="servicespartsLists" ><?php echo $pRow['product_name']; ?></td>
                                 <td class="servicespartsLists" ><?php echo $pRow['quantity']; ?></td>
-                                <td class="servicespartsLists" ><?php echo $pRow['selling_price']; ?></td>
+                                <td class="servicespartsLists" ><?php echo '$'.$pRow['selling_price'].'.00'; ?></td>
                                 <td class="servicespartsLists" ><?php echo $pRow['subTotal']; ?></td>
                             </tr>
                         <?php endforeach; ?> 
@@ -154,7 +154,7 @@ $this->title = 'View Quotation';
                         <tbody>
                             <tr>
                                 <th style="width:50%;" class="amountdueTh" >Subtotal:</th>
-                                <td class="amountdueTd" >$<?= $getSubTotal ?></td>
+                                <td class="amountdueTd" >$<?= $getSubTotal.'.00' ?></td>
                             </tr>
                             <tr>
                                 <th class="amountdueTh" >Gst(7%):</th>
@@ -162,7 +162,7 @@ $this->title = 'View Quotation';
                             </tr>
                             <tr>
                                 <th class="amountdueTh" >Total:</th>
-                                <td class="amountdueTd" >$<?= $customerInfo['grand_total'] ?></td>
+                                <td class="amountdueTd" >$<?= $customerInfo['grand_total'].'.00' ?></td>
                             </tr>
                         </tbody>
                     </table>

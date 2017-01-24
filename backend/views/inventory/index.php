@@ -103,8 +103,8 @@ $this->title = 'Inventories';
                     <td class="tblalign_center" ><?php echo $row['product_code'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['product_name'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['quantity'];  ?></td>
-                    <td class="tblalign_center" ><?php echo $row['cost_price'];  ?></td>
-                    <td class="tblalign_center" ><?php echo $row['selling_price'];  ?></td>
+                    <td class="tblalign_center" ><?php echo '$'.$row['cost_price'].'.00';  ?></td>
+                    <td class="tblalign_center" ><?php echo '$'.$row['selling_price'].'.00';  ?></td>
                     <td class="last tblalign_center">
                        <a href="?r=inventory/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a> |
                        <a href="?r=inventory/delete-column&id=<?php echo $row['id']; ?>&product_id=<?php echo $row['product_id']; ?>&date_imported=<?php echo $row['date_imported']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a>

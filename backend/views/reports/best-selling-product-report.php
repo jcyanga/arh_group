@@ -59,17 +59,29 @@ $this->title = 'Monthly Stock Report';
             </tr>
         </thead>
         <tbody>
-        	<?php if( !empty($getMonthlyStock) ): ?>
-                <?php foreach( $getMonthlyStock as $row){ ?>
+        	<?php if( !empty($getBestSellingParts) ): ?>
+                <?php foreach( $getBestSellingService as $srow){ ?>
                     <tr >
-                        <td class="tblalign_center" ><?php echo $row['supplier_name'];  ?></td>
-                        <td class="tblalign_center" ><?php echo $row['product_name'];  ?></td>
-                        <td class="tblalign_center" ><b><?php echo $row['quantity'];  ?></b></td>
-                        <td  class="tblalign_center" ><?php echo '$'.$row['cost_price'].'.00';  ?></td>
-                        <td  class="tblalign_center" ><?php echo '$'.$row['selling_price'].'.00';  ?></td>
-                        <td  class="tblalign_center" ><b><?php echo date('m-d-Y', strtotime($row['date_imported']) );  ?></b></td>
+                        <td class="tblalign_center" ><?php echo $srow['invoice_no'];  ?></td>
+                        <td class="tblalign_center" ><?php echo $srow['name'];  ?></td>
+                        <td class="tblalign_center" ><b><?php echo $srow['service_name'];  ?></b></td>
+                        <td class="tblalign_center" ><b><?php echo $srow['quantity'];  ?></b></td>
+                        <td  class="tblalign_center" ><?php echo '$'.$srow['selling_price'].'.00';  ?></td>
+                        <td  class="tblalign_center" ><?php echo '$'.$srow['subTotal'].'.00';  ?></td>
                     </tr>
                 <?php } ?> 
+
+                <?php foreach( $getBestSellingParts as $row){ ?>
+                    <tr >
+                        <td class="tblalign_center" ><?php echo $row['invoice_no'];  ?></td>
+                        <td class="tblalign_center" ><?php echo $row['category'];  ?></td>
+                        <td class="tblalign_center" ><b><?php echo $row['product_name'];  ?></b></td>
+                        <td class="tblalign_center" ><b><?php echo $row['quantity'];  ?></b></td>
+                        <td  class="tblalign_center" ><?php echo '$'.$row['selling_price'].'.00';  ?></td>
+                        <td  class="tblalign_center" ><?php echo '$'.$row['subTotal'].'.00';  ?></td>
+                    </tr>
+                <?php } ?> 
+
             <?php else: ?>
                 <tr>
                     <td><span>No Record Found.</span></td>

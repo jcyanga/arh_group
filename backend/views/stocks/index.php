@@ -102,8 +102,8 @@ $this->title = 'Stocks';
                     <td class="tblalign_center" ><?php echo $row['product_code'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['product_name'];  ?></td>
                     <td class="stockTableQty" ><a><?php echo $row['quantity'];  ?></a></td>
-                    <td class="tblalign_center" ><?php echo $row['cost_price'];  ?></td>
-                    <td class="tblalign_center" ><?php echo $row['selling_price'];  ?></td>
+                    <td class="tblalign_center" ><?php echo '$'.$row['cost_price'].'.00';  ?></td>
+                    <td class="tblalign_center" ><?php echo '$'.$row['selling_price'].'.00';  ?></td>
                 </tr>
             <?php } ?>    
             <?php else: ?>
