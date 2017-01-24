@@ -86,15 +86,34 @@ class SearchInvoice extends Invoice
     public function getInvoice() {
         $rows = new Query();
 
-        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task'])
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task', 'invoice.status'])
             ->from('invoice')
             ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
             ->join('INNER JOIN', 'branch', 'invoice.branch_id = branch.id')
             ->where('invoice.delete = 0')
-            ->where('invoice.paid = 0')
+            // ->where('invoice.paid = 0')
             ->all();
 
         return $result;
     }
+
+    // getInvoiceByDateRange
+    public function getInvoiceByDateRange($date_start,$date_end) {
+        $rows = new Query();
+
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task'])
+            ->from('invoice')
+            ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
+            ->join('INNER JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->where("invoice.date_issue >= '$date_start'")
+            ->andWhere("invoice.date_issue <= '$date_end'")
+            ->andWhere('invoice.delete = 0')
+            // ->where('invoice.paid = 0')
+            ->all();
+
+        return $result;
+    }
+
 }

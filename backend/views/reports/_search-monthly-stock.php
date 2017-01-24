@@ -9,20 +9,23 @@ use yii\helpers\Url;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-
  <div class="row">
 
     <div class="col-md-12">
         <div class="search-label-container">
-            <span class="search-label"><li class="fa fa-edit"></li> Enter Keyword here</span>
+            <span class="search-label"><li class="fa fa-calendar-o"></li> Enter Date-range here</span>
         </div> 
     </div>
     <br/><br/>
     
-    <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
+    <?php $form = ActiveForm::begin(['action' => '?r=reports/monthly-stock-report','method' => 'get', 'class' => 'form-inline']); ?>
 
-    <div class="col-md-4">
-        <?= $form->field($model, 'supplier_name')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Write Supplier Name here.'])->label(false) ?>
+    <div class="col-md-3">
+        <input type="text" name="date_start" id="datestart" class="form_input form-control" placeholder="Date Start" readonly />
+    </div>
+
+    <div class="col-md-3">
+        <input type="text" name="date_end" id="dateend" class="form_input form-control" placeholder="Date End" readonly />
     </div>
 
     <div class="col-md-3">
@@ -31,17 +34,11 @@ use yii\helpers\Url;
     </div>
 
     <div class="col-md-3"></div>
-    
+
     <?php ActiveForm::end(); ?>
-    <br/><br/>
+    <br/>
 
  </div>
-
-
-
-
-
-
 
 
 

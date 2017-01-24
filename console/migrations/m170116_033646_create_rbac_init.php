@@ -2,7 +2,7 @@
 
 use yii\db\Migration;
 
-class m170109_015349_rbac_init extends Migration
+class m170116_033646_create_rbac_init extends Migration
 {
     public function up()
     {
@@ -15,6 +15,10 @@ class m170109_015349_rbac_init extends Migration
         // $manageUsers = $auth->createPermission('manageUsers');
         // $manageUsers->description = 'Manage users';
         // $auth->add($manageUsers);
+
+        $customer = $auth->createRole('customer');
+        $customer->description = 'Customer';
+        $auth->add($customer);
 
         $staff = $auth->createRole('staff');
         $staff->description = 'Staff';

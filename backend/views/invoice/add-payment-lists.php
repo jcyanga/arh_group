@@ -14,60 +14,54 @@ use yii\helpers\Url;
         <div class="col-md-12">
                 
                 <span class="remove-button">
-                    <a href="javascript:removePayment(<?= $n ?>)"><button type="button" class="form-btn btn btn-link"><i class="fa fa-minus-circle"></i> REMOVE PAYMENT </button></a>
+                    <a href="javascript:removePayment(<?= $n ?>)"><button type="button" class="form-btn btn btn-link"><i class="fa fa-times-circle"></i> REMOVE  </button></a>
                 </span>
       
         </div>
 
     </div> 
-    <br/>
+   
+    <div class="row " >
 
-    <div style="margin-left: 10px;" class="row">
+        <div class="col-md-5">
+            <span class="pmLabel" ><center> MODE OF PAYMENT  </center></span>
+            <span class="modePayment" ><center> <?= $mPayment_type ?> </center></span>
 
-        <div class="col-md-4">
-            <span class="pmLabel" ><i class="fa fa-bank"></i> MODE OF PAYMENT </span>
-
-            <input type="text" name="Payment[mlPayment_type][]" class="form_pm form-control" id="payment-<?= $n ?>-mPayment_type" value="<?= $mPayment_type ?>" readonly />
+            <input type="hidden" name="Payment[mlPayment_type][]" class="form_pm form-control" id="payment-<?= $n ?>-mPayment_type" value="<?= $mPayment_type ?>" readonly />
         </div>
 
-        <div class="col-md-4">
-            <span class="pmLabel" ><i class="fa fa-money"></i> AMOUNT </span>
-
-            <input type="text" name="Payment[mlAmount][]" class="form_pm form-control" id="payment-<?= $n ?>-mAmount" value="<?= $mAmount ?>" readonly />
+        <div class="col-md-2">
+            <span class="dots" >............................</span>
         </div>
 
-        <div class="col-md-4">
-            <span class="pmLabel" ><i class="fa fa-minus-square"></i> DISCOUNT </span>
+        <div class="col-md-5">
+            <span class="pmLabel" ><center> AMOUNT PAID  </center></span>
+            <span class="amountPaid"><center> <?= $mAmount . '.00' ?> </center></span>
 
-            <input type="text" name="Payment[mlDiscount][]" class="form_pm form-control" id="payment-<?= $n ?>-mDiscount" value="<?= $mDiscount ?>" readonly />
+            <input type="hidden" name="Payment[mlAmount][]" class="form_pm form-control" id="payment-<?= $n ?>-mAmount" value="<?= $mAmount ?>" readonly />
         </div>
 
     </div>
-    <br/>
+ 
+    <div class="row transactionFormAlign" >
 
-    <div style="margin-left: 10px;" class="row">
+        <div class="col-md-3">
+            <input type="hidden" name="Payment[mlDiscount][]" class="form_pm form-control" id="payment-<?= $n ?>-mDiscount" value="<?= $mDiscount ?>"  />
+        </div>
 
-        <div class="col-md-4">
-            <span class="pmLabel" ><i class="fa fa-user"></i> POINTS REDEEMED </span>
+        <div class="col-md-3">
             
-            <input type="text" class="form_pm form-control" id="payment-<?= $n ?>-mPoints_redeem" name="Payment[mlPoints_redeem][]" value="<?= $mPoints_redeem ?>" readonly />
+            <input type="hidden" class="form_pm form-control" id="payment-<?= $n ?>-mPoints_redeem" name="Payment[mlPoints_redeem][]" value="<?= $mPoints_redeem ?>"  />
         </div>
 
-        <div class="col-md-4">
-            <span class="pmLabel" ><i class="fa fa-dot-circle-o"></i> POINTS EARNED </span>
+        <div class="col-md-3">
 
-            <input type="text" name="Payment[mlPoints_earned][]" class="form_pm form-control" id="payment-<?= $n ?>-mPoints_earned" value="<?= $mPoints_earned ?>" readonly />
+            <input type="hidden" name="Payment[mlPoints_earned][]" class="form_pm form-control" id="payment-<?= $n ?>-mPoints_earned" value="<?= $mPoints_earned ?>"  />
         </div>
 
-    </div>
-    <br/>
+        <div class="col-md-3">
 
-    <div style="margin-left: 10px;" class="row">
-
-        <div class="col-md-11">
-            <span class="pmLabel" ><i class="fa fa-comments"></i> REMARKS </span>
-
-            <textarea cols="10" rows="2" name="Payment[mlRemarks][]" class="form_pmTxtArea form-control" id="payment-<?= $n ?>-mRemarks" readonly><?= $mRemarks ?></textarea>
+            <input type="hidden" name="Payment[mlRemarks][]" class="form_pm form-control" id="payment-<?= $n ?>-mRemarks" value="<?= $mRemarks ?>"  />
 
         </div>
 

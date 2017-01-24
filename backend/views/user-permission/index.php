@@ -30,7 +30,7 @@ $this->title = 'User Permission';
  <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4>User Permission Maintenance</h4></span>
+        <span class="form-header"><h4><i class="fa fa-user"></i> User Permission Maintenance</h4></span>
     </div>
     <hr/>
 
@@ -60,12 +60,12 @@ $this->title = 'User Permission';
 
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
-        <tr style="font-size: 11px;" class="headings">
-            <th> # </th>
-            <th class="tblalign_center"> ROLES </th>
-            <th class="tblalign_center"> CONTROLLERS </th>
-            <th class="tblalign_center"> CONTROLLER ACTIONS </th>
-            <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
+        <tr class="headings">
+            <th class="tblalign_center" > # </th>
+            <th class="tblalign_center" > ROLES </th>
+            <th class="tblalign_center" > CONTROLLERS </th>
+            <th class="tblalign_center" > CONTROLLER ACTIONS </th>
+            <th class="no-link last tblalign_center"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
     </thead>
@@ -73,15 +73,15 @@ $this->title = 'User Permission';
     <tbody>
         <?php if( !empty($getUserPermission) ): ?>
             <?php foreach( $getUserPermission as $row){ ?>
-                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
-                    <td class=" "><?php echo $row['id'];  ?></td>
-                    <td style="text-align: center;" class=" "><?php echo $row['role'];  ?></td>
-                    <td style="text-align: center;" class=" "><?php echo $row['controller'];  ?></td>
-                    <td style="text-align: center;" class=" "><?php echo $row['action'];  ?></td>
-                    <td style="text-align: center; font-size: 12px;" class=" last">
+                <tr class="even_odd pointer">
+                    <td class="tblalign_center" ><?php echo $row['id'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['role'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['controller'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['action'];  ?></td>
+                    <td class="last tblalign_center">
                         <!-- <a href="?r=modules/view&id=<?php echo $row['id']; ?>"><b><li class="fa fa-eye"></li> VIEW </b></a> |  -->
                         <!-- <a href="?r=modules/update&id=<?php echo $row['id']; ?>"><b><li class="fa fa-pencil-square"></li> UPDATE </b></a> |  -->
-                        <a href="?r=user-permission/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
+                        <a href="?r=user-permission/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a>
                     </td>
                 </tr>
             <?php } ?> 

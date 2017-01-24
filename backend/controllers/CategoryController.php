@@ -63,6 +63,12 @@ class CategoryController extends Controller
                         'actions' => $action['staff'],
                         'allow' => $allow['staff'],
                         'roles' => ['staff'],
+                    ],
+
+                    [
+                        'actions' => $action['customer'],
+                        'allow' => $allow['customer'],
+                        'roles' => ['customer'],
                     ]
        
                 ],

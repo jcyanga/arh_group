@@ -61,6 +61,12 @@ class UserPermissionController extends Controller
                         'actions' => $action['staff'],
                         'allow' => $allow['staff'],
                         'roles' => ['staff'],
+                    ],
+
+                    [
+                        'actions' => $action['customer'],
+                        'allow' => $allow['customer'],
+                        'roles' => ['customer'],
                     ]
        
                 ],
@@ -240,7 +246,7 @@ class UserPermissionController extends Controller
         $userRoleId = 0;
         $controllerNameChosen = '';
         $controllerNameLong = '';
-        $userRole = Role::find()->all();
+        $userRole = Role::find()->where('id > 1')->all();
         $permission = [];
 // ->where('id > 1')
 

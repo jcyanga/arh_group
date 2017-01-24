@@ -14,21 +14,14 @@ $this->title = 'My Yii Application';
         <div class="dashboard_graph x_panel">
             <div class="row x_title">
                 <div class="col-md-6">
-                    <h3>Customer List <small>Graph title sub-title</small></h3>
+                    <h3>Customer List <small style="font-style: italic;">Search by: Customer Name/Carplate/Parts Name/Service Name.</small></h3>
                 </div>
                 <div class="col-md-6">
-                    <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
-                        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                        <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
-                    </div>
+            
                 </div>
             </div>
             <div class="x_content">
-                <div class="demo-container" style="height:250px">
-                    <div id="placeholder3xx3" class="demo-placeholder" style="width: 50%; height:250px;">
-                        <input type="text" class="form-control" />
-                    </div>
-                </div>
+                <h3>"Under-Construction."</h3>
             </div>
         </div>
     </div>
@@ -42,20 +35,114 @@ $this->title = 'My Yii Application';
         <div class="dashboard_graph x_panel">
             <div class="row x_title">
                 <div class="col-md-6">
-                    <h3>Pending Services <small>Graph title sub-title</small></h3>
+                    <h4><i class="fa fa-warning"></i> Pending Quotation Services </h4>
                 </div>
+            </div>
+
+            <table class="table table-boardered table-striped">
+                <thead>
+                    <tr class="headings">
+                        <td class="tblalign_center" ><b> DATE ISSUE </b></td>
+                        <td class="tblalign_center" ><b> BRANCH NAME </b></td>
+                        <td class="tblalign_center" ><b> SALES PERSON </b></td>
+                        <td class="tblalign_center" ><b> QUOTATION CODE </b></td>
+                        <td class="tblalign_center" ><b> CUSTOMER NAME </b></td>
+                        <td class="tblalign_center" ><b> SERVICE NAME </b></td>
+                        <td class="tblalign_center" ><b> QUANTITY </b></td>
+                        <td class="tblalign_center" ><b> SELLING PRICE </b></td>
+                        <td class="tblalign_center" ><b> CHECK SERVICE </b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if( !empty($pendingServices) ): ?>
+                        <?php foreach( $pendingServices as $pRow): ?>
+                            <tr>
+                                <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($pRow['date_issue']) ); ?></td>
+                                <td class="tblalign_center" ><?php echo $pRow['name']; ?></td>
+                                <td class="tblalign_center" ><?php echo $pRow['salesPerson']; ?></td>
+                                <td class="tblalign_center" ><?php echo $pRow['quotation_code']; ?></td>
+                                <td class="tblalign_center" ><?php echo $pRow['fullname']; ?></td>
+                                <td class="tblalign_center" ><?php echo $pRow['service_name']; ?></td>
+                                <td class="tblalign_center" ><?php echo $pRow['quantity']; ?></td>
+                                <td class="tblalign_center" ><?php echo $pRow['selling_price']; ?></td>
+                                <td class="tblalign_center" ><a href="?r=quotation/view&id=<?php echo $pRow['quotationId']; ?>" > <i class="fa fa-search"></i> </a></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td><span>No Record Found.</span></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    </div>
+    <br/>
+
+    <div class="row">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard_graph x_panel">
+            <div class="row x_title">
                 <div class="col-md-6">
-                    <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
-                        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                        <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
-                    </div>
+                    <h4><i class="fa fa-warning"></i> Pending Invoice Services </h4>
                 </div>
             </div>
-            <div class="x_content">
-                <div class="demo-container" style="height:250px">
-                    <div id="placeholder3xx3" class="demo-placeholder" style="width: 100%; height:250px;"></div>
-                </div>
-            </div>
+
+            <table class="table table-boardered table-striped">
+                <thead>
+                    <tr class="headings">
+                        <td class="tblalign_center" ><b> DATE ISSUE </b></td>
+                        <td class="tblalign_center" ><b> BRANCH NAME </b></td>
+                        <td class="tblalign_center" ><b> SALES PERSON </b></td>
+                        <td class="tblalign_center" ><b> INVOICE NUMBER </b></td>
+                        <td class="tblalign_center" ><b> CUSTOMER NAME </b></td>
+                        <td class="tblalign_center" ><b> SERVICE NAME </b></td>
+                        <td class="tblalign_center" ><b> QUANTITY </b></td>
+                        <td class="tblalign_center" ><b> SELLING PRICE </b></td>
+                        <td class="tblalign_center" ><b> CHECK SERVICE </b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if( !empty($pendingInvoiceServices) ): ?>
+                        <?php foreach( $pendingInvoiceServices as $iRow): ?>
+                            <tr>
+                                <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($iRow['date_issue']) ); ?></td>
+                                <td class="tblalign_center" ><?php echo $iRow['name']; ?></td>
+                                <td class="tblalign_center" ><?php echo $iRow['salesPerson']; ?></td>
+                                <td class="tblalign_center" ><?php echo $iRow['invoice_no']; ?></td>
+                                <td class="tblalign_center" ><?php echo $iRow['fullname']; ?></td>
+                                <td class="tblalign_center" ><?php echo $iRow['service_name']; ?></td>
+                                <td class="tblalign_center" ><?php echo $iRow['quantity']; ?></td>
+                                <td class="tblalign_center" ><?php echo $iRow['selling_price']; ?></td>
+                                <td class="tblalign_center" ><a href="?r=invoice/view&id=<?php echo $iRow['invoiceId']; ?>" > <i class="fa fa-search"></i> </a></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td><span>No Record Found.</span></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -69,18 +156,8 @@ $this->title = 'My Yii Application';
     <div class="x_panel">
 
     <div class="x_title">
-        <h2>Parts in Warning Stock</h2>
-        <ul class="nav navbar-right panel_toolbox">
-            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Settings 1</a></li>
-                    <li><a href="#">Settings 2</a></li>
-                </ul>
-            </li>
-            <li><a class="close-link"><i class="fa fa-close"></i> See All(<?php echo count($getWarningStock); ?>)</a></li>
-        </ul>
+        <h5><b><i class="fa fa-cog"></i> Parts in Warning Stock</b></h5>
+        <ul class="nav navbar-right panel_toolbox"></ul>
         <div class="clearfix"></div>
     </div>
 
@@ -89,23 +166,22 @@ $this->title = 'My Yii Application';
 
             <ul class="list-unstyled timeline widget">
                <?php if( !empty($getWarningStock) ): ?>
-                   <?php foreach( $getWarningStock as $wStock ): ?>
-                        
+                   <?php foreach( $getWarningStock as $wStock ): ?>        
                         <li>
-                        <div class="block">
-                            <div class="block_content">
-                                <h2 class="title"><a style="font-size: 12.5px; text-transform: uppercase; font-family: Tahoma;"><center><?php echo $wStock['product_name']; ?></center></a></h2>
+                            <div class="block">
+                                <div class="block_content">
+                                    <h2 class="title"><a style="font-size: 11px; text-transform: uppercase; font-family: Tahoma;"><center><?php echo $wStock['product_name']; ?></center></a></h2>
+                                </div>
                             </div>
-                        </div>
-                    </li>   
-
+                        </li>   
                     <?php endforeach; ?>
+                        <div style="text-align: right;font-style: italic; font-size: 11.5px; font-family: Tahoma;"><a>See All (<?php echo count( $getWarningStock ); ?>)</a></div>
                 <?php else: ?>
 
                     <li>
                         <div class="block">
                             <div class="block_content">
-                                <h2 class="title"><a>No Record Found.</a></h2>
+                                <h2 class="title"><a style="font-size: 12px;">No Record Found.</a></h2>
                             </div>
                         </div>
                     </li>  
@@ -126,18 +202,8 @@ $this->title = 'My Yii Application';
     <div class="x_panel">
 
     <div class="x_title">
-        <h2>Parts in Critical Stock</h2>
-        <ul class="nav navbar-right panel_toolbox">
-            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Settings 1</a></li>
-                    <li><a href="#">Settings 2</a></li>
-                </ul>
-            </li>
-            <li><a class="close-link"><i class="fa fa-close"></i> See All(<?php echo count($getCriticalStock); ?>)</a></li>
-        </ul>
+        <h5><b><i class="fa fa-cog"></i> Parts in Critical Stock</b></h5>
+        <ul class="nav navbar-right panel_toolbox"></ul>
         <div class="clearfix"></div>
     </div>
 
@@ -146,23 +212,22 @@ $this->title = 'My Yii Application';
 
             <ul class="list-unstyled timeline widget">
                <?php if( !empty($getCriticalStock) ): ?>
-                   <?php foreach( $getCriticalStock as $cStock ): ?>
-                        
+                   <?php foreach( $getCriticalStock as $cStock ): ?>        
                         <li>
-                        <div class="block">
-                            <div class="block_content">
-                                <h2 class="title"><a style="font-size: 12.5px; text-transform: uppercase; font-family: Tahoma;"><center><?php echo $cStock['product_name']; ?></center></a></h2>
+                            <div class="block">
+                                <div class="block_content">
+                                    <h2 class="title"><a style="font-size: 11px; text-transform: uppercase; font-family: Tahoma;"><center><?php echo $cStock['product_name']; ?></center></a></h2>
+                                </div>
                             </div>
-                        </div>
-                    </li>   
-
+                        </li>   
                     <?php endforeach; ?>
+                        <div style="text-align: right;font-style: italic; font-size: 11.5px; font-family: Tahoma;"><a>See All (<?php echo count( $getCriticalStock ); ?>)</a></div>
                 <?php else: ?>
 
                     <li>
                         <div class="block">
                             <div class="block_content">
-                                <h2 class="title"><a>No Record Found.</a></h2>
+                                <h2 class="title"><a style="font-size: 12px;">No Record Found.</a></h2>
                             </div>
                         </div>
                     </li>  
@@ -183,18 +248,8 @@ $this->title = 'My Yii Application';
     <div class="x_panel">
 
     <div class="x_title">
-        <h2>Parts Zero Stock</h2>
-        <ul class="nav navbar-right panel_toolbox">
-            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">Settings 1</a></li>
-                    <li><a href="#">Settings 2</a></li>
-                </ul>
-            </li>
-            <li><a class="close-link"><i class="fa fa-close"></i> See All(<?php echo count($getZeroStock); ?>)</a></li>
-        </ul>
+        <h5><b><i class="fa fa-cog"></i> Parts in Zero Stock</b></h5>
+        <ul class="nav navbar-right panel_toolbox"></ul>
         <div class="clearfix"></div>
     </div>
 
@@ -203,23 +258,22 @@ $this->title = 'My Yii Application';
 
             <ul class="list-unstyled timeline widget">
                <?php if( !empty($getZeroStock) ): ?>
-                   <?php foreach( $getZeroStock as $zStock ): ?>
-                        
+                   <?php foreach( $getZeroStock as $zStock ): ?>        
                         <li>
-                        <div class="block">
-                            <div class="block_content">
-                                <h2 class="title"><a style="font-size: 12.5px; text-transform: uppercase; font-family: Tahoma;"><center><?php echo $zStock['product_name']; ?></center></a></h2>
+                            <div class="block">
+                                <div class="block_content">
+                                    <h2 class="title"><a style="font-size: 11px; text-transform: uppercase; font-family: Tahoma;"><center><?php echo $zStock['product_name']; ?></center></a></h2>
+                                </div>
                             </div>
-                        </div>
-                    </li>   
-
+                        </li>   
                     <?php endforeach; ?>
+                        <div style="text-align: right;font-style: italic; font-size: 11.5px; font-family: Tahoma;"><a>See All (<?php echo count( $getZeroStock ); ?>)</a></div>
                 <?php else: ?>
 
                     <li>
                         <div class="block">
                             <div class="block_content">
-                                <h2 class="title"><a>No Record Found.</a></h2>
+                                <h2 class="title"><a style="font-size: 12px;">No Record Found.</a></h2>
                             </div>
                         </div>
                     </li>  

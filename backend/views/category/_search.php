@@ -9,7 +9,6 @@ use yii\helpers\Url;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-</style>
 
  <div class="row">
 
@@ -19,8 +18,7 @@ use yii\helpers\Url;
         </div> 
     </div>
     <br/><br/>
-<!-- 'id' => 'demo-form2' -->
-<!-- , 'class' => 'form-inline' -->
+    
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
     <div class="col-md-4">

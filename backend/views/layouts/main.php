@@ -120,55 +120,6 @@ foreach ($getUserPermission as $key => $value) {
 }
 
 
-// if(isset($_GET['r'])) {
-    // $getClass = $_GET['r'];
-    // $url = explode('/', $_GET['r']);
-    
-    // if( $url ) {
-    //     $getClass = $url[0];
-    // }
-
-    // if( $getClass == 'customer' ) {
-    //     $isCustomer = true;
-    // }
-
-    // if( $getClass == 'user' ) {
-    //     $isUser = true;
-    // }
-
-    // if( $getClass == 'role' ) {
-    //     $isRole = true;
-    // }
-
-    // if( $getClass == 'modules' ) {
-    //     $isModules = true;
-    // }
-
-    // if( $getClass == 'modules-access' ) {
-    //     $isModulesAccess = true;
-    // }
-
-    // if( $getClass == 'inventory' ) {
-    //     $isInventory = true;
-    // }
-
-    // if( $getClass == 'category' ) {
-    //     $isCategory = true;
-    // }
-
-    // if( $getClass == 'supplier' ) {
-    //     $isSupplier = true;
-    // }
-
-    // if( $getClass == 'product' ) {
-    //     $isProduct = true;
-    // }
-
-    // if( $getClass == 'inventory' ) {
-    //     $isInventory = true;
-    // }
-// }
-
 $userFullname = Yii::$app->user->identity->fullname;
 
 ?>
@@ -313,9 +264,9 @@ $userFullname = Yii::$app->user->identity->fullname;
                                 <?php endif; ?>
                                 <li><a id="nav-reports" ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
-                                    <li><a href="media_gallery.html">Best Selling Product</a></li>
-                                    <li><a href="media_gallery.html">Monthly Sales Report</a></li>
-                                        <li><a href="general_elements.html">Monthly Stocks Report</a></li>
+                                        <li><a href="?r=reports/best-selling-product-report">Best Selling Product</a></li>
+                                        <li><a href="?r=reports/monthly-sales-report">Monthly Sales Report</a></li>
+                                        <li><a href="?r=reports/monthly-stock-report">Monthly Stocks Report</a></li>
                                     </ul>
                                 </li>
                                 <?php if($isGst || $isProductLevel): ?>
@@ -371,88 +322,13 @@ $userFullname = Yii::$app->user->identity->fullname;
                                     <span class=" fa fa-angle-down"></span> </b>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
-                                    <li><a href="javascript:;">
-                                            <span class="badge bg-red pull-right">50%</span>
-                                            <span>Settings</span>
+                                    <li><a href="#">
+                                            <span><center id="top-nav"><b><i class="fa fa-wrench"></i> Settings</center></b></span>
                                         </a>
                                     </li>
-                                    <li><a href="javascript:;">Help</a></li>
                                     <li><?php
-                                        echo Html::beginForm(['/site/logout'], 'post',['id' => 'logout-form']) . '<a href="#" onclick="document.getElementById(\'logout-form\').submit(); return false;" class="form-btn btn btn-link btn-flat" style="color: #5A738E; border-top: solid 1px #5A738E;"><i class="fa fa-sign-out"></i> Sign out</a>'. Html::endForm();
+                                        echo Html::beginForm(['/site/logout'], 'post',['id' => 'logout-form']) . '<a href="#" onclick="document.getElementById(\'logout-form\').submit(); return false;" class="form-btn btn btn-link btn-flat" style="color: #5A738E; "><i class="fa fa-power-off"></i> Sign out</a>'. Html::endForm();
                                       ?>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <li role="presentation" class="dropdown">
-                                <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-envelope-o"></i>
-                                    <span class="badge bg-green">6</span>
-                                </a>
-                                <ul id="menu1" class="dropdown-menu list-unstyled msg_list animated fadeInDown" role="menu">
-                                    <li>
-                                        <a>
-                                            <span class="image">
-                                        <img src="assets/bootstrap/images/user.png" alt="Profile Image" />
-                                    </span>
-                                            <span>
-                                        <span>John Smith</span>
-                                            <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                        Film festivals used to be do-or-die moments for movie makers. They were where... 
-                                    </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                                            <span class="image">
-                                        <img src="assets/bootstrap/images/user.png" alt="Profile Image" />
-                                    </span>
-                                            <span>
-                                        <span>John Smith</span>
-                                            <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                        Film festivals used to be do-or-die moments for movie makers. They were where... 
-                                    </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                                            <span class="image">
-                                        <img src="assets/bootstrap/images/user.png" alt="Profile Image" />
-                                    </span>
-                                            <span>
-                                        <span>John Smith</span>
-                                            <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                        Film festivals used to be do-or-die moments for movie makers. They were where... 
-                                    </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                                            <span class="image">
-                                        <img src="assets/bootstrap/images/user.png" alt="Profile Image" />
-                                    </span>
-                                            <span>
-                                        <span>John Smith</span>
-                                            <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                        Film festivals used to be do-or-die moments for movie makers. They were where... 
-                                    </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <div class="text-center">
-                                            <a>
-                                                <strong>See All Alerts</strong>
-                                                <i class="fa fa-angle-right"></i>
-                                            </a>
-                                        </div>
                                     </li>
                                 </ul>
                             </li>
@@ -614,6 +490,9 @@ $userFullname = Yii::$app->user->identity->fullname;
 
     <!-- customer -->
     <script type="text/javascript" src="assets/bootstrap/js/customer.js"></script>
+
+    <!-- main -->
+    <script type="text/javascript" src="assets/bootstrap/js/main.js"></script>
 
     </body>   
 

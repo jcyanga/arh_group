@@ -41,8 +41,8 @@ class Quotation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['quotation_code', 'user_id', 'customer_id', 'branch_id', 'date_issue', 'grand_total', 'remarks', 'created_at', 'created_by', 'updated_at', 'updated_by', 'delete'], 'required'],
-            [['user_id', 'customer_id', 'branch_id', 'created_by', 'updated_by', 'delete'], 'integer'],
+            [['quotation_code', 'user_id', 'customer_id', 'branch_id', 'date_issue', 'grand_total', 'remarks', 'created_at', 'created_by', 'updated_at', 'updated_by', 'delete', 'invoice'], 'required'],
+            [['user_id', 'customer_id', 'branch_id', 'created_by', 'updated_by', 'delete', 'invoice'], 'integer'],
             [['date_issue', 'created_at', 'updated_at'], 'safe'],
             [['grand_total'], 'number'],
             [['remarks'], 'string'],
@@ -96,6 +96,7 @@ class Quotation extends \yii\db\ActiveRecord
 
         $result = $rows->select(['id','code','name as branchList'])
         ->from('branch')
+        ->where('id > 1')
         ->all();
 
         if( count($result) > 0 ) {
@@ -170,9 +171,11 @@ class Quotation extends \yii\db\ActiveRecord
     public function getPartsList() {
         $rows = new Query();
 
-        $result = $rows->select(['product.id', 'product.product_name', 'category.category'])
-        ->from('product')
-        ->join('INNER JOIN', 'category', 'product.category_id = category.id')
+        $result = $rows->select(['inventory.id', 'inventory.product_id as productId', 'product.product_name', 'category.category', 'supplier.supplier_name'])
+        ->from('inventory')
+        ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
+        ->join('LEFT JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+        ->join('LEFT JOIN', 'category', 'product.category_id = category.id')
         ->all();
 
         if( count($result) > 0 ) {
@@ -185,11 +188,25 @@ class Quotation extends \yii\db\ActiveRecord
 
     }
 
+    // get part info
+    public function getPartInfo($ItemId) {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'inventory.product_id', 'product.product_name'])
+        ->from('inventory')
+        ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+        ->where(['inventory.id' => $ItemId])
+        ->one();
+
+        return $result;
+
+    }
+
     // getLastInsertQuotation
     public function getLastInsertQuotation($quotationId) {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'customer.make', 'customer.model', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.task'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'customer.make', 'customer.model', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.task', 'quotation.invoice'])
             ->from('quotation')
             ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
@@ -220,7 +237,8 @@ class Quotation extends \yii\db\ActiveRecord
 
         $part = $rows->select(['quotation_detail.id', 'product.product_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal'])
             ->from('quotation_detail')
-            ->join('INNER JOIN', 'product', 'quotation_detail.service_part_id = product.id')
+            ->join('LEFT JOIN', 'inventory', 'quotation_detail.service_part_id = inventory.id')
+            ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
             ->where(['quotation_detail.quotation_id' => $id])
             ->andWhere('quotation_detail.type = 1')
             ->all();
@@ -232,7 +250,7 @@ class Quotation extends \yii\db\ActiveRecord
     public function getQuotation($id) {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.branch_id', 'quotation.customer_id', 'quotation.user_id', 'quotation.created_at', 'quotation.created_by', 'quotation.updated_at', 'quotation.updated_by', 'quotation.delete', 'quotation.task', 'quotation.paid'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.branch_id', 'quotation.customer_id', 'quotation.user_id', 'quotation.created_at', 'quotation.created_by', 'quotation.updated_at', 'quotation.updated_by', 'quotation.delete', 'quotation.task'])
             ->from('quotation')
             ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
@@ -262,9 +280,10 @@ class Quotation extends \yii\db\ActiveRecord
     public function getQuotationDetailPart($id) {
         $rows = new Query();
 
-        $part = $rows->select(['quotation_detail.id', 'product.id as productId', 'product.product_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal', 'quotation_detail.task', 'quotation_detail.created_at', 'quotation_detail.created_by', 'quotation_detail.type'])
+        $part = $rows->select(['quotation_detail.id', 'quotation_detail.quotation_id', 'inventory.id as productId', 'product.product_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal', 'quotation_detail.task', 'quotation_detail.created_at', 'quotation_detail.created_by', 'quotation_detail.type'])
             ->from('quotation_detail')
-            ->join('INNER JOIN', 'product', 'quotation_detail.service_part_id = product.id')
+            ->join('LEFT JOIN', 'inventory', 'quotation_detail.service_part_id = inventory.id')
+            ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
             ->where(['quotation_detail.quotation_id' => $id])
             ->andWhere('quotation_detail.type = 1')
             ->all();

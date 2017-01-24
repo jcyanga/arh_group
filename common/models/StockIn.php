@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 
+use yii\db\Query;
 /**
  * This is the model class for table "stock_in".
  *
@@ -56,5 +57,37 @@ class StockIn extends \yii\db\ActiveRecord
             'created_at' => 'Created At',
             'created_by' => 'Created By',
         ];
+    }
+
+    // getMonthlyStockReport
+    public function getMonthlyStock() {
+        $rows = new Query();
+
+        $result = $rows->select([ 'stock_in.id', 'stock_in.product_id', 'product.product_code', 'product.product_name', 'stock_in.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'stock_in.quantity', 'stock_in.cost_price', 'stock_in.selling_price', 'stock_in.date_imported', 'stock_in.created_by', 'user.fullname' ])
+                ->from('stock_in')
+                ->join('LEFT JOIN', 'product', 'stock_in.product_id = product.id')
+                ->join('LEFT JOIN', 'supplier', 'stock_in.supplier_id = supplier.id')
+                ->join('LEFT JOIN', 'user', 'stock_in.created_by = user.id')
+                ->groupBy('stock_in.product_id')
+                ->all();
+
+        return $result;
+    }
+
+    // getMonthlyStockReportByDateRange
+    public function getMonthlyStockByDateRange($date_start,$date_end) {
+        $rows = new Query();
+
+        $result = $rows->select([ 'stock_in.id', 'stock_in.product_id', 'product.product_code', 'product.product_name', 'stock_in.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'stock_in.quantity', 'stock_in.cost_price', 'stock_in.selling_price', 'stock_in.date_imported', 'stock_in.created_by', 'user.fullname' ])
+                ->from('stock_in')
+                ->join('LEFT JOIN', 'product', 'stock_in.product_id = product.id')
+                ->join('LEFT JOIN', 'supplier', 'stock_in.supplier_id = supplier.id')
+                ->join('LEFT JOIN', 'user', 'stock_in.created_by = user.id')
+                ->where("stock_in.date_imported >= '$date_start'")
+                ->andWhere("stock_in.date_imported <= '$date_end'")
+                ->groupBy('stock_in.product_id')
+                ->all();
+
+        return $result;
     }
 }

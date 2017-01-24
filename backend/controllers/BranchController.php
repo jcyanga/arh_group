@@ -66,6 +66,12 @@ class BranchController extends Controller
                         'actions' => $action['staff'],
                         'allow' => $allow['staff'],
                         'roles' => ['staff'],
+                    ],
+
+                    [
+                        'actions' => $action['customer'],
+                        'allow' => $allow['customer'],
+                        'roles' => ['customer'],
                     ]
        
                 ],
@@ -95,9 +101,11 @@ class BranchController extends Controller
                 $getBranch = $searchModel->searchBranch($name);
 
         }elseif ( Yii::$app->request->get('SearchBranch')['name'] == "" ) {
-                $getBranch = Branch::find()->all();
+                $getBranch = Branch::find()->where('id > 1')->all();
+        
         }else {
-                $getBranch = Branch::find()->all();
+                $getBranch = Branch::find()->where('id > 1')->all();
+
         }
 
         return $this->render('index', ['searchModel' => $searchModel, 'getBranch' => $getBranch, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
@@ -138,7 +146,7 @@ class BranchController extends Controller
                 $searchModel = new SearchBranch();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-                $getBranch = Branch::find()->all();
+                $getBranch = Branch::find()->where('id > 1')->all();
 
                 return $this->render('index', ['searchModel' => $searchModel, 'getBranch' => $getBranch,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
@@ -167,7 +175,7 @@ class BranchController extends Controller
             $searchModel = new SearchBranch();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
             
-            $getBranch = Branch::find()->all();
+            $getBranch = Branch::find()->where('id > 1')->all();
 
             return $this->render('index', ['searchModel' => $searchModel, 'getBranch' => $getBranch,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
@@ -204,7 +212,7 @@ class BranchController extends Controller
 
         $this->findModel($id)->delete();
 
-        $getBranch = Branch::find()->all();
+        $getBranch = Branch::find()->where('id > 1')->all();
 
         return $this->render('index', ['searchModel' => $searchModel, 'getBranch' => $getBranch,
                     'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);

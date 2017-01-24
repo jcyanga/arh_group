@@ -9,6 +9,8 @@ use common\models\User;
 use common\models\LoginForm;
 
 use common\models\Inventory;
+use common\models\ProductLevel;
+use common\models\SearchService;
 
 /**
  * Site controller
@@ -64,12 +66,21 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $model = new Inventory();
+        $getPartLevel = new ProductLevel();
+        $searchPendingService = new SearchService();
+
+        $getPartLevel = ProductLevel::find()->one();
+        $criticalLevel = $getPartLevel->critical_level;
+        $minimumLevel = $getPartLevel->minimum_level;
         
         $getZeroStock = $model->getZeroStock();
-        $getCriticalStock = $model->getCriticalStock();
-        $getWarningStock = $model->getWarningStock();
+        $getCriticalStock = $model->getCriticalStock($criticalLevel);
+        $getWarningStock = $model->getWarningStock($minimumLevel);
 
-        return $this->render('index', ['getZeroStock' => $getZeroStock, 'getCriticalStock' => $getCriticalStock, 'getWarningStock' => $getWarningStock]);
+        $pendingServices = $searchPendingService->getPendingServices();
+        $pendingInvoiceServices = $searchPendingService->getPendingInvoiceServices();
+
+        return $this->render('index', ['getZeroStock' => $getZeroStock, 'getCriticalStock' => $getCriticalStock, 'getWarningStock' => $getWarningStock, 'pendingServices' => $pendingServices, 'pendingInvoiceServices' => $pendingInvoiceServices ]);
     }
 
     /**

@@ -19,7 +19,7 @@ class SearchQuotation extends Quotation
     public function rules()
     {
         return [
-            [['id', 'user_id', 'customer_id', 'branch_id', 'created_by', 'updated_by', 'delete'], 'integer'],
+            [['id', 'user_id', 'customer_id', 'branch_id', 'created_by', 'updated_by', 'delete', 'invoice'], 'integer'],
             [['quotation_code', 'date_issue', 'remarks', 'created_at', 'updated_at'], 'safe'],
             [['grand_total'], 'number'],
         ];
@@ -84,12 +84,29 @@ class SearchQuotation extends Quotation
     public function getQuotation() {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.paid', 'quotation.date_issue', 'quotation.task'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.date_issue', 'quotation.task', 'quotation.invoice'])
             ->from('quotation')
             ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
             ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
             ->where('quotation.delete = 0')
+            ->all();
+
+        return $result;
+    }
+
+    // getQuotationByDateRange
+    public function getQuotationByDateRange($date_start,$date_end) {
+        $rows = new Query();
+
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.paid', 'quotation.date_issue', 'quotation.task', 'quotation.invoice'])
+            ->from('quotation')
+            ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
+            ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
+            ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
+            ->where("quotation.date_issue >= '$date_start'")
+            ->andWhere("quotation.date_issue <= '$date_end'")
+            ->andWhere('quotation.delete = 0')
             ->all();
 
         return $result;
