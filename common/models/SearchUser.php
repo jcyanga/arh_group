@@ -81,7 +81,8 @@ class SearchUser extends User
         return $dataProvider;
     }
 
-    public function searchUser($fullname) {
+    // Search box result
+    public function searchUserFullname($fullname) {
         $rows = new Query();
 
         $result = $rows->select(['user.id', 'role.role', 'branch.name', 'user.fullname', 'user.username', 'user.email', 'user.status'])
@@ -95,6 +96,23 @@ class SearchUser extends User
         return $result;            
     }
 
+    // Search if with same user.
+    public function getUsernameAndEmail($username, $email) {
+        $rows = new Query();
+
+        $result = $rows->select(['username','email'])
+            ->from('user')
+            ->where(['username' => $username])
+            ->andWhere(['email' => $email])
+            ->all();
+            
+            if( count($result) > 0 ) {
+                return TRUE;
+            }else {
+                return 0;
+            }
+    }
+    
     public function getUser() {
         $rows = new Query();
 

@@ -9,7 +9,6 @@ use yii\helpers\Url;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-</style>
 
 <div  class="inventory-search">
     <div class="search-label-container">

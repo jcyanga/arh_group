@@ -30,7 +30,7 @@ $this->title = 'Users';
  <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4>User Maintenance</h4></span>
+        <span class="form-header"><h4><i class="fa fa-user"></i> User Maintenance</h4></span>
     </div>
     <hr/>
 
@@ -68,13 +68,13 @@ $this->title = 'Users';
 
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
-        <tr style="font-size: 11px;" class="headings">
-            <th> BRANCH </th>
-            <th> ROLE </th>
-            <th> FULLNAME </th>
-            <th> E-MAIL </th>
-            <th> STATUS </th>
-            <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
+        <tr class="headings">
+            <th class="tblalign_center" > BRANCH </th>
+            <th class="tblalign_center" > ROLE </th>
+            <th class="tblalign_center" > FULLNAME </th>
+            <th class="tblalign_center" > E-MAIL </th>
+            <th class="tblalign_center" > STATUS </th>
+            <th class="no-link last tblalign_center"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
     </thead>
@@ -82,16 +82,16 @@ $this->title = 'Users';
     <tbody>
         <?php if( !empty($getUser) ): ?>
             <?php foreach( $getUser as $row){ ?>
-                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
-                    <td class=" "><?php echo $row['name'];  ?></td>
-                    <td class=" "><?php echo $row['role'];  ?></td>
-                    <td class=" "><?php echo $row['fullname'];  ?></td>
-                    <td class=" "><?php echo $row['email'];  ?></td>
-                    <td class=" "><?php echo ( $row['status'] == 1 ) ? 'Active' : 'Inactive'; ?></td>
-                    <td style="text-align: center; font-size: 13px;" class=" last">
-                        <a href="?r=user/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a> |
-                        <a href="?r=user/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-pencil-square"><span class="actionTooltiptext">Update record</span></li> </a> | 
-                        <a href="?r=user/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
+                <tr class="even_odd pointer">
+                    <td class="tblalign_center" ><?php echo $row['name'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['role'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['fullname'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['email'];  ?></td>
+                    <td class="tblalign_center" ><?php echo ( $row['status'] == 1 ) ? 'Active' : 'Inactive'; ?></td>
+                    <td class="last tblalign_center">
+                        <a href="?r=user/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a> |
+                        <a href="?r=user/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-pencil-square"></li> </a> | 
+                        <a href="?r=user/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a>
                     </td>
                 </tr>
             <?php } ?> 

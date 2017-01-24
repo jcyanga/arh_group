@@ -13,7 +13,7 @@ use common\models\Inventory;
 /* @var $searchModel common\models\SearchCustomer */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Inventories';
+$this->title = 'Stocks';
 
 ?>
 
@@ -69,8 +69,8 @@ $this->title = 'Inventories';
  
  <div>
         <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
-        <button type="submit" name="btn-updateQty" class="form-btn btn btn-success"><i class="fa fa-edit"></i> Update Parts Quantity</button>
         <button type="button" name="btn-checkAll" class="form-btn btn btn-info " id="checkAllParts" ><i class="fa fa-check-square"></i> Select All</button>
+        <button type="submit" name="btn-updateQty" class="form-btn btn btn-dark"><i class="fa fa-edit"></i> Update Parts Quantity</button>
  </div>
 
 </div> 
@@ -81,29 +81,29 @@ $this->title = 'Inventories';
 
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
-        <tr style="font-size: 11px;" class="headings">
+        <tr class="headings">
             <th class="tblalign_center" > <i class="fa fa-check"></i> </th>
             <th class="tblalign_center" ><b>SUPPLIER</b></th>
             <th class="tblalign_center" ><b>PRODUCT CODE</b></th>
             <th class="tblalign_center" ><b>PRODUCT NAME</b></th>
             <th class="tblalign_center" ><b>QUANTITY</b></th>
             <th class="tblalign_center" ><b>COST PRICE</b></th>
-            <th style="text-align: center;" ><b>SELLING PRICE</b></th>
+            <th class="tblalign_center" ><b>SELLING PRICE</b></th>
         </tr>
     </thead>
 
     <tbody>
         <?php if( !empty($getProductInInventory) ): ?>
             <?php foreach( $getProductInInventory as $row){ ?>
-                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
+                <tr class="tblalign_center" >
                     <td style="text-align: center;" class=" ">
                         <input type="checkbox" name="updateQty[]" value="<?php echo $row['id'] . '|' . $row['product_name'] . '|' . $row['quantity'] . '|' . $row['product_id'] . '|' . $row['supplier_id'] . '|' . $row['cost_price'] . '|' . $row['selling_price'];  ?>" id="updateQty" class="updateQty" /></td>
-                    <td class="tblalign_center"><?php echo $row['supplier_name'];  ?></td>
-                    <td class="tblalign_center"><?php echo $row['product_code'];  ?></td>
-                    <td class="tblalign_center"><?php echo $row['product_name'];  ?></td>
-                    <td class="stockTableQty"><a><?php echo $row['quantity'];  ?></a></td>
-                    <td class="tblalign_center"><?php echo $row['cost_price'];  ?></td>
-                    <td class="tblalign_center"><?php echo $row['selling_price'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['supplier_name'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['product_code'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['product_name'];  ?></td>
+                    <td class="stockTableQty" ><a><?php echo $row['quantity'];  ?></a></td>
+                    <td class="tblalign_center" ><?php echo '$'.$row['cost_price'].'.00';  ?></td>
+                    <td class="tblalign_center" ><?php echo '$'.$row['selling_price'].'.00';  ?></td>
                 </tr>
             <?php } ?>    
             <?php else: ?>

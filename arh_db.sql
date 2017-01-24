@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 13, 2017 at 12:31 PM
+-- Generation Time: Jan 18, 2017 at 12:47 PM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -37,9 +37,10 @@ CREATE TABLE `auth_assignment` (
 --
 
 INSERT INTO `auth_assignment` (`item_name`, `user_id`, `created_at`) VALUES
-('admin', '2', 1483941731),
+('admin', '3', 1484709852),
 ('developer', '1', 123456789),
-('staff', '3', 1483941758);
+('developer', '2', 123456789),
+('staff', '4', 1484710535);
 
 -- --------------------------------------------------------
 
@@ -62,9 +63,10 @@ CREATE TABLE `auth_item` (
 --
 
 INSERT INTO `auth_item` (`name`, `type`, `description`, `rule_name`, `data`, `created_at`, `updated_at`) VALUES
-('admin', 1, 'Admin', NULL, NULL, 1483927743, 1483927743),
-('developer', 1, 'Developer', NULL, NULL, 1483927743, 1483927743),
-('staff', 1, 'Staff', NULL, NULL, 1483927743, 1483927743);
+('admin', 1, 'Admin', NULL, NULL, 1484537877, 1484537877),
+('customer', 1, 'Customer', NULL, NULL, 1484537877, 1484537877),
+('developer', 1, 'Developer', NULL, NULL, 1484537877, 1484537877),
+('staff', 1, 'Staff', NULL, NULL, 1484537877, 1484537877);
 
 -- --------------------------------------------------------
 
@@ -100,7 +102,7 @@ CREATE TABLE `branch` (
   `id` int(11) NOT NULL,
   `code` varchar(50) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `address` varchar(50) NOT NULL,
+  `address` varchar(100) NOT NULL,
   `contact_no` varchar(50) NOT NULL,
   `status` int(5) NOT NULL,
   `created_at` date NOT NULL,
@@ -114,8 +116,9 @@ CREATE TABLE `branch` (
 --
 
 INSERT INTO `branch` (`id`, `code`, `name`, `address`, `contact_no`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'BRANCH-2017-32021', 'FCS-Singapore', '158 Kallang Way, #03-05, Performance Building, Kal', '+65 6848 4984', 1, '2017-01-08', 1, '2017-01-08', 1),
-(2, 'BRANCH-2017-79961', 'FCS-Philippines', '27th floor, BPI Buendia Center, Makati Ave. Makati', '09959575415', 1, '2017-01-10', 1, '2017-01-10', 1);
+(1, 'BRANCH-2017-55778', 'developer-branch', '27th Floor BPI Buendia Center, Makati Ave. Makati City', '09959575415', 1, '2017-01-17', 1, '2017-01-17', 1),
+(2, 'BRANCH-2017-87720', 'fcs-philippines', '27th floor, BPI Buendia Center, Makati Ave. Makati City', '9515785', 1, '2017-01-18', 1, '2017-01-18', 1),
+(3, 'BRANCH-2017-23944', 'fcs-singapore', '158 Kallang Way, #03-05, Performance Building, Kallang 349245, Singapore City', '+65 6848 4984', 1, '2017-01-18', 1, '2017-01-18', 1);
 
 -- --------------------------------------------------------
 
@@ -133,18 +136,28 @@ CREATE TABLE `category` (
 --
 
 INSERT INTO `category` (`id`, `category`) VALUES
-(1, 'body'),
+(1, 'body components'),
 (2, 'doors'),
 (3, 'windows'),
 (4, 'audio/video devices'),
 (5, 'cameras'),
 (6, 'charging system'),
 (7, 'electrical supply system'),
-(8, 'gauges and meters'),
-(9, 'ignition electronic system'),
-(10, 'lighting and signaling system'),
-(11, 'sensors'),
-(12, 'starting system');
+(8, 'gauge and meters'),
+(9, 'lightning and signaling'),
+(10, 'sensors'),
+(11, 'car seat'),
+(12, 'braking system'),
+(13, 'engine component and parts'),
+(14, 'engine cooling system'),
+(15, 'engine oil system'),
+(16, 'exhaust system'),
+(17, 'fuel supply system'),
+(18, 'suspension and steering system'),
+(19, 'transmission system'),
+(20, 'aircondition system'),
+(21, 'bearings'),
+(22, 'hose');
 
 -- --------------------------------------------------------
 
@@ -181,11 +194,9 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`id`, `ic`, `fullname`, `race`, `carplate`, `address`, `hanphone_no`, `office_no`, `email`, `make`, `model`, `remarks`, `is_blacklist`, `is_member`, `points`, `member_expiry`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, '', 'Jose Czar Yanga', 'Filipino', 'JCY-028', '148 Sanchez street manggahan commonwealth quezon city', '9515747', '09959575415', 'jcyanga412060@gmail.com', 'red', 'rolls royce', '', 0, '1', 100, '2017-01-14', 1, '2016-12-14 18:41:00', 1, '2016-12-14 18:41:00', 1),
-(4, '', 'mary gracielle samonte', 'Filipino', 'bot-602', '123 bagong barrio caloocan city', '9515747', '09959575415', 'mariagraciasamonte@yahoo.com', 'white', 'ferrari', '', 0, '0', 1000, '0000-00-00', 1, '2016-12-16 04:18:11', 0, '2016-12-16 04:18:11', 0),
-(7, 'phi', 'Jaybee Lamsin', 'filipino', 'DCE-017', 'east avenue medical center', '9515747', '09987894565', 'dice17@yahoo.com', 'Red', 'Mitsubishi GT-X', '', 0, '1', 500, '2017-01-06', 1, '2017-01-09 11:01:02', 1, '2017-01-09 11:01:02', 0),
-(8, 'ronald20', 'ronald patawaran', 'filipino', 'RND-010', '27th floor bpi buendia center makati city', '09297894561', '9515664', 'ronaldbente@yahoo.com', 'blue', 'Hyundai Accent', '', 0, '1', 10000, '2017-01-11', 1, '2017-01-09 10:56:26', 1, '2017-01-09 10:56:26', 0),
-(9, 'jack_lim', 'jack lim', 'Filipino-Chinese', 'JCK-024', 'Blk 1 Lot 2 Mount Carmel Subdivision North Fairview, Quezon City', '9515242', '09087894563', 'jacklim@gmail.com', 'Red', 'Lamborgini', 'Manager of HSBC.', 0, '1', 1000, '2017-01-20', 1, '2017-01-11 05:10:37', 1, '2017-01-11 05:10:37', 0);
+(1, 'tony_lim', 'tony lim', 'chinese', 'AXU-765', '1st-4th floor altas bldg. pascal st. sta. cruz, binondo manila', '09091234567', '9557898', 'tonylim@gmai.com', 'Black', 'Hyundai SantaFe', 'President of Tony Software Inc.', 0, '1', 995, '2017-01-25', 1, '2017-01-18 11:51:57', 2, '2017-01-18 11:51:57', 0),
+(2, 'michael_angelo', 'michael angelo', 'Filipino-American', 'UVX-210', 'Blk 1. Lot 7. Gumamela Street. Don Jose Subd. Fairview Quezon City', '09287894561', '4272558', 'michael_angelo@yahoo.com.ph', 'Silver', 'Mazda3', 'Software Engineer at Emerson', 0, '0', 970, '2017-01-25', 1, '2017-01-18 12:30:49', 2, '2017-01-18 12:30:49', 0),
+(3, 'ericka_lee', 'ericka lee', 'Japanese', 'ICA-725', '24th floor High-Rise Sun Condominium, Welcome Rotonda Manila City.', '09254561230', '9954515', 'ericka@yahoo.com.ph', 'Red', 'Toyota Rav4', 'HR. Manager at JP Chase and Morgan.', 0, '1', 1000, '2017-01-25', 1, '2017-01-18 12:36:39', 2, '2017-01-18 12:36:39', 0);
 
 -- --------------------------------------------------------
 
@@ -204,8 +215,8 @@ CREATE TABLE `gst` (
 --
 
 INSERT INTO `gst` (`id`, `gst`, `branch_id`) VALUES
-(1, '1.12', 1),
-(2, '1.12', 2);
+(1, '1.12', 2),
+(2, '1.12', 3);
 
 -- --------------------------------------------------------
 
@@ -231,27 +242,50 @@ CREATE TABLE `inventory` (
 --
 
 INSERT INTO `inventory` (`id`, `product_id`, `supplier_id`, `quantity`, `cost_price`, `selling_price`, `date_imported`, `status`, `created_at`, `created_by`) VALUES
-(1, 1, 1, 27, 1000, 1200, '2017-01-04', 0, '2017-01-04', 1),
-(2, 4, 1, 18, 500, 700, '2017-01-04', 0, '2017-01-04', 1),
-(3, 3, 1, 10, 1500, 1800, '2017-01-04', 0, '2017-01-04', 1),
-(4, 2, 1, 18, 900, 1000, '2017-01-04', 0, '2017-01-04', 1),
-(5, 19, 11, 20, 150, 170, '2017-01-08', 0, '2017-01-08', 1),
-(6, 11, 6, 37, 250, 275, '2017-01-08', 0, '2017-01-08', 1),
-(7, 3, 9, 10, 100, 250, '2017-01-08', 0, '2017-01-08', 1),
-(8, 19, 9, 20, 175, 200, '2017-01-08', 0, '2017-01-08', 1),
-(9, 16, 11, 17, 99, 110, '2017-01-09', 0, '2017-01-09', 1),
-(10, 11, 11, 37, 75, 100, '2017-01-09', 0, '2017-01-09', 1),
-(11, 18, 11, 17, 100, 125, '2017-01-09', 0, '2017-01-09', 1),
-(12, 20, 2, 10, 150, 175, '2017-01-13', 0, '2017-01-13', 1),
-(13, 21, 7, 15, 125, 150, '2017-01-13', 0, '2017-01-13', 1),
-(14, 23, 7, 20, 100, 110, '2017-01-13', 0, '2017-01-13', 1),
-(15, 9, 10, 10, 75, 100, '2017-01-13', 0, '2017-01-13', 1),
-(16, 22, 10, 20, 200, 250, '2017-01-13', 0, '2017-01-13', 1),
-(17, 17, 10, 20, 95, 105, '2017-01-13', 0, '2017-01-13', 1),
-(18, 2, 2, 18, 2, 2, '2017-01-13', 0, '2017-01-13', 1),
-(19, 3, 2, 10, 1, 1, '2017-01-13', 0, '2017-01-13', 1),
-(20, 9, 1, 10, 75, 100, '2017-01-13', 0, '2017-01-13', 1),
-(21, 22, 0, 20, 200, 250, '2017-01-13', 0, '2017-01-13', 1);
+(1, 1, 1, 20, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(2, 2, 1, 14, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(3, 3, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(4, 4, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(5, 5, 1, 14, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(6, 6, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(7, 7, 1, 14, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(8, 8, 1, 13, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(9, 10, 1, 14, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(10, 11, 1, 13, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(11, 12, 1, 14, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(12, 13, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(13, 14, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(14, 15, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(15, 16, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(16, 17, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(17, 18, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(18, 19, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(19, 20, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(20, 21, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(21, 22, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(22, 23, 1, 14, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(23, 24, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(24, 25, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(25, 26, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(26, 27, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(27, 28, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(28, 29, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(29, 30, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(30, 31, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(31, 32, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(32, 33, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(33, 34, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(34, 35, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(35, 36, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(36, 37, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(37, 38, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(38, 39, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(39, 40, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(40, 41, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(41, 42, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(42, 43, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(43, 44, 2, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(44, 1, 2, 12, 100, 105, '2017-01-16', 0, '2017-01-16', 1);
 
 -- --------------------------------------------------------
 
@@ -275,17 +309,18 @@ CREATE TABLE `invoice` (
   `updated_by` int(10) NOT NULL,
   `delete` int(5) NOT NULL,
   `task` int(5) NOT NULL,
-  `paid` int(5) NOT NULL
+  `paid` int(5) NOT NULL,
+  `paid_type` int(5) NOT NULL,
+  `status` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `invoice`
 --
 
-INSERT INTO `invoice` (`id`, `quotation_code`, `invoice_no`, `user_id`, `customer_id`, `branch_id`, `date_issue`, `grand_total`, `remarks`, `created_at`, `created_by`, `updated_at`, `updated_by`, `delete`, `task`, `paid`) VALUES
-(1, 'QUO-2017-514941', 'INVOICE-2017-42537-1', 3, 9, 2, '2017-01-14', 4424, 'god bless us.', '2017-01-13', 1, '2017-01-13', 1, 0, 1, 0),
-(2, 'QUO-2017-458043', 'INVOICE-2017-44670-2', 3, 8, 2, '2017-01-14', 2128, 'just always pray at night', '2017-01-13', 1, '2017-01-13', 1, 0, 0, 0),
-(6, '', 'INVOICE-2017-69219-3', 3, 4, 2, '2017-01-15', 2968, 'keep safe and keep it up.', '2017-01-13', 1, '2017-01-13', 1, 0, 0, 0);
+INSERT INTO `invoice` (`id`, `quotation_code`, `invoice_no`, `user_id`, `customer_id`, `branch_id`, `date_issue`, `grand_total`, `remarks`, `created_at`, `created_by`, `updated_at`, `updated_by`, `delete`, `task`, `paid`, `paid_type`, `status`) VALUES
+(1, 'QUO-2017-868093', 'INVOICE-2017-72449-1', 4, 2, 2, '2017-01-19', 487.2, 'keep safe.', '2017-01-18', 2, '2017-01-18', 2, 0, 0, 1, 2, 1),
+(2, '0', 'INVOICE-2017-86634-2', 4, 1, 3, '2017-01-19', 893.76, 'god bless us and keep faith.', '2017-01-18', 2, '2017-01-18', 2, 0, 0, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -303,23 +338,22 @@ CREATE TABLE `invoice_detail` (
   `created_at` date NOT NULL,
   `created_by` int(10) NOT NULL,
   `type` int(5) NOT NULL,
-  `task` int(5) NOT NULL
+  `task` int(5) NOT NULL,
+  `status` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `invoice_detail`
 --
 
-INSERT INTO `invoice_detail` (`id`, `invoice_id`, `service_part_id`, `quantity`, `selling_price`, `subTotal`, `created_at`, `created_by`, `type`, `task`) VALUES
-(1, 1, 1, 1, 150, 150, '2017-01-13', 1, 0, 1),
-(2, 1, 2, 1, 200, 200, '2017-01-13', 1, 0, 0),
-(3, 1, 1, 3, 1200, 3600, '2017-01-13', 1, 1, 0),
-(4, 2, 2, 1, 200, 200, '2017-01-13', 1, 0, 1),
-(5, 2, 2, 1, 1000, 1000, '2017-01-13', 1, 0, 0),
-(6, 2, 4, 1, 700, 700, '2017-01-13', 1, 1, 0),
-(14, 6, 5, 1, 500, 500, '2017-01-13', 1, 0, 1),
-(15, 6, 3, 1, 1800, 1800, '2017-01-13', 1, 0, 1),
-(16, 6, 7, 1, 350, 350, '2017-01-13', 1, 0, 1);
+INSERT INTO `invoice_detail` (`id`, `invoice_id`, `service_part_id`, `quantity`, `selling_price`, `subTotal`, `created_at`, `created_by`, `type`, `task`, `status`) VALUES
+(1, 1, 3, 1, 300, 300, '2017-01-18', 2, 0, 1, 1),
+(2, 1, 7, 1, 135, 135, '2017-01-18', 2, 0, 1, 0),
+(16, 2, 2, 2, 99, 198, '2017-01-18', 2, 0, 1, 1),
+(17, 2, 6, 1, 200, 200, '2017-01-18', 2, 0, 0, 0),
+(18, 2, 10, 2, 100, 200, '2017-01-18', 2, 1, 0, 0),
+(19, 2, 9, 1, 100, 100, '2017-01-18', 2, 1, 0, 0),
+(20, 2, 2, 1, 100, 100, '2017-01-18', 2, 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -374,7 +408,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m170111_061422_create_invoice_table', 1484115376),
 ('m170111_063217_create_invoice_detail_table', 1484116390),
 ('m170112_053810_create_payment_table', 1484199747),
-('m170112_071611_create_product_level_table', 1484205472);
+('m170112_071611_create_product_level_table', 1484205472),
+('m170116_033646_create_rbac_init', 1484537877);
 
 -- --------------------------------------------------------
 
@@ -407,7 +442,9 @@ INSERT INTO `modules` (`id`, `modules`) VALUES
 (13, 'User-Role Module'),
 (14, 'Modules List Module'),
 (15, 'User-Permission Module'),
-(16, 'User Module');
+(16, 'User Module'),
+(17, 'set gst module'),
+(18, 'part critical and minimum level module');
 
 -- --------------------------------------------------------
 
@@ -451,16 +488,9 @@ CREATE TABLE `payment` (
 --
 
 INSERT INTO `payment` (`id`, `invoice_id`, `invoice_no`, `customer_id`, `amount`, `discount`, `payment_method`, `payment_type`, `points_earned`, `points_redeem`, `remarks`, `payment_date`, `payment_time`, `status`) VALUES
-(1, 2, 'INVOICE-2017-84953-1', 8, 5000, 1000, 1, 'cash payment', 125, 100, 'good job', '2017-01-12', '18:06:32', 1),
-(2, 2, 'INVOICE-2017-84953-1', 8, 5000, 100, 1, 'Cheque', 150, 10, 'just do it.', '2017-01-13', '11:11:45', 1),
-(3, 2, 'INVOICE-2017-84953-1', 8, 2200, 75, 2, 'Cheque', 125, 5, 'thru cheque payment.', '2017-01-13', '11:20:15', 1),
-(4, 2, 'INVOICE-2017-84953-1', 8, 2200, 50, 2, 'Cheque', 15, 25, 'pay thru cheque payment.', '2017-01-13', '11:27:48', 1),
-(5, 2, 'INVOICE-2017-84953-1', 8, 1, 1, 2, 'Cash_Payment', 1, 1, 'thru cash payment.', '2017-01-13', '11:30:31', 1),
-(6, 2, 'INVOICE-2017-84953-1', 8, 2, 2, 2, 'Cheque', 2, 2, 'thru cheque payment.', '2017-01-13', '11:30:31', 1),
-(7, 1, 'INVOICE-2017-42537-1', 9, 5000, 100, 1, 'Cash_Payment', 25, 100, 'task done.', '2017-01-13', '14:58:54', 1),
-(8, 1, 'INVOICE-2017-42537-1', 9, 5000, 100, 1, 'Cash_Payment', 25, 100, 'task done.', '2017-01-13', '14:58:54', 1),
-(9, 6, 'INVOICE-2017-69219-3', 4, 100, 200, 2, 'Money_Orders', 300, 10, 'pay thru money orders.', '2017-01-13', '18:21:06', 1),
-(10, 6, 'INVOICE-2017-69219-3', 4, 500, 10, 2, 'Cheque', 50, 20, 'pay thru cheque.', '2017-01-13', '18:21:06', 1);
+(1, 2, 'INVOICE-2017-86634-2', 1, 900, 90, 1, 'Cash Payment', 5, 40, 'pay via cash payment.', '2017-01-18', '19:06:32', 1),
+(2, 1, 'INVOICE-2017-72449-1-0', 2, 300, 30, 2, 'Cash Payment', 10, 20, 'pay via cash payment.', '2017-01-18', '19:08:53', 1),
+(3, 1, 'INVOICE-2017-72449-1-1', 2, 200, 20, 2, 'Cheque', 10, 10, 'pay via cheque payment.', '2017-01-18', '19:08:53', 1);
 
 -- --------------------------------------------------------
 
@@ -485,29 +515,50 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `product_code`, `product_name`, `product_image`, `unit_of_measure`, `status`, `category_id`, `created_at`, `created_by`) VALUES
-(1, 'PARTS-2017-93490', 'bonnet/hood', '4.jpg', 'big', 1, 1, '2017-01-04', 1),
-(2, 'PARTS-2017-44268', 'bumper', 'american-express.png', 'medium', 1, 1, '2017-01-04', 1),
-(3, 'PARTS-2017-90457', 'cowl screen', 'mastercard.png', 'small', 1, 1, '2017-01-04', 1),
-(4, 'PARTS-2017-80694', 'decklid', 'forward_enabled.png', 'medium', 1, 1, '2017-01-04', 1),
-(5, 'PARTS-2017-09315', 'fascia', '', 'small', 1, 1, '2017-01-04', 1),
-(6, 'PARTS-2017-31812', 'Front Right Outer door handles', 'sprite-skin-flat.png', 'small', 1, 2, '2017-01-04', 1),
-(7, 'PARTS-2017-99031', 'Front Left Side Outer door handles', '1.png', 'medium', 1, 2, '2017-01-04', 1),
-(8, 'PARTS-2017-86564', 'Rear Right Side Outer door handles', 'picture-2.jpg', 'small', 1, 2, '2017-01-04', 1),
-(9, 'PARTS-2017-84942', 'Rear Left Side Outer door handles', 'prod3.jpg', 'big', 1, 2, '2017-01-04', 1),
-(10, 'PARTS-2017-28295', 'Front Right Side Inner door handles', 'prod5.jpg', 'small', 1, 2, '2017-01-04', 1),
-(11, 'PARTS-2017-93813', 'Glass', 'sort_both.png', 'pieces', 1, 3, '2017-01-04', 1),
-(12, 'PARTS-2017-99275', 'Front Right Side Door Glass', 'data.png', 'pieces', 1, 3, '2017-01-04', 1),
-(13, 'PARTS-2017-24204', 'Front Left Side Door Glass', 'prod2.jpg', 'pieces', 1, 3, '2017-01-04', 1),
-(14, 'PARTS-2017-81929', 'Rear Right Side Door Glass', 'data.png', 'pieces', 1, 3, '2017-01-04', 1),
-(15, 'PARTS-2017-85939', 'Rear Left Side Door Glass', '', 'pieces', 1, 3, '2017-01-04', 1),
-(16, 'PARTS-2017-59390', 'Antenna assembly ', 'back_disabled.png', 'meters', 1, 4, '2017-01-04', 1),
-(17, 'PARTS-2017-25824', 'Radio and media player', 'picture-2.jpg', 'meters', 1, 4, '2017-01-04', 1),
-(18, 'PARTS-2017-47125', 'Speaker', 'picture2.jpg', 'pieces', 1, 4, '2017-01-04', 1),
-(19, 'PARTS-2017-93699', 'Backup camera', 'sort_asc_disabled.png', 'pieces', 1, 5, '2017-01-04', 1),
-(20, 'PARTS-2017-18750', 'Dashcam', 'sort_desc_disabled.png', 'pieces', 1, 5, '2017-01-04', 1),
-(21, 'PARTS-2017-70885', 'Alternator', 'sprite-skin-simple.png', 'volts', 1, 6, '2017-01-04', 1),
-(22, 'PARTS-2017-32538', 'Battery', 'sprite-skin-simple.png', 'volts', 1, 7, '2017-01-04', 1),
-(23, 'PARTS-2017-61216', 'Ammeter', 'sprite-skin-flat.png', 'long', 1, 8, '2017-01-04', 1);
+(1, 'PARTS-2017-71044', 'bonnet/hood ', 'picture.jpg', 'pieces', 1, 1, '2017-01-16', 1),
+(2, 'PARTS-2017-90165', 'bumper', 'picture.jpg', 'pieces', 1, 1, '2017-01-16', 1),
+(3, 'PARTS-2017-93472', 'Front Right Outer door handles', 'picture.jpg', 'pieces', 1, 2, '2017-01-16', 1),
+(4, 'PARTS-2017-53931', 'Front Left Side Outer door handle', 'picture.jpg', 'pieces', 1, 2, '2017-01-16', 1),
+(5, 'PARTS-2017-04741', 'Front Right Side Door Glass', 'picture.jpg', 'pieces', 1, 3, '2017-01-16', 1),
+(6, 'PARTS-2017-00095', 'Front Left Side Door Glass', 'picture.jpg', 'pieces', 1, 3, '2017-01-16', 1),
+(7, 'PARTS-2017-75879', 'Antenna assembly', 'picture.jpg', 'pieces', 1, 4, '2017-01-16', 1),
+(8, 'PARTS-2017-42521', 'Radio and media player', 'picture.jpg', 'pieces', 1, 4, '2017-01-16', 1),
+(9, 'PARTS-2017-58248', 'Backup camera', 'picture.jpg', 'pieces', 1, 5, '2017-01-16', 1),
+(10, 'PARTS-2017-56251', 'Dashcam', 'picture.jpg', 'pieces', 1, 5, '2017-01-16', 1),
+(11, 'PARTS-2017-48587', 'Alternator bearing', 'picture.jpg', 'pieces', 1, 6, '2017-01-16', 1),
+(12, 'PARTS-2017-06121', 'Alternator bracket', 'picture.jpg', 'pieces', 1, 6, '2017-01-16', 1),
+(13, 'PARTS-2017-26259', 'Battery', 'picture.jpg', 'pieces', 1, 7, '2017-01-16', 1),
+(14, 'PARTS-2017-10365', 'Voltage regulator', 'picture.jpg', 'pieces', 1, 7, '2017-01-16', 1),
+(15, 'PARTS-2017-02077', 'Ammeter', 'picture.jpg', 'pieces', 1, 8, '2017-01-16', 1),
+(16, 'PARTS-2017-05426', 'Clinometer', 'picture.jpg', 'pieces', 1, 8, '2017-01-16', 1),
+(17, 'PARTS-2017-58978', 'Engine bay lighting', 'picture.jpg', 'pieces', 1, 9, '2017-01-16', 1),
+(18, 'PARTS-2017-79066', 'Halogen', 'picture.jpg', 'pieces', 1, 9, '2017-01-16', 1),
+(19, 'PARTS-2017-07104', 'Airbag sensors', 'picture.jpg', 'pieces', 1, 10, '2017-01-16', 1),
+(20, 'PARTS-2017-71693', 'Automatic transmission speed sensor', 'picture.jpg', 'pieces', 1, 10, '2017-01-16', 1),
+(21, 'PARTS-2017-71602', 'Bench seat', 'picture.jpg', 'pieces', 1, 11, '2017-01-16', 1),
+(22, 'PARTS-2017-08683', 'Bucket seat', 'picture.jpg', 'pieces', 1, 11, '2017-01-16', 1),
+(23, 'PARTS-2017-13998', 'Anti-lock braking system', 'picture.jpg', 'pieces', 1, 12, '2017-01-16', 1),
+(24, 'PARTS-2017-36669', 'Adjusting mechanism', 'picture.jpg', 'pieces', 1, 12, '2017-01-16', 1),
+(25, 'PARTS-2017-70124', 'Accessory belt', 'picture.jpg', 'pieces', 1, 13, '2017-01-16', 1),
+(26, 'PARTS-2017-16328', 'Air duct', 'picture.jpg', 'pieces', 1, 13, '2017-01-16', 1),
+(27, 'PARTS-2017-54973', 'Coolant hose', 'picture.jpg', 'pieces', 1, 14, '2017-01-16', 1),
+(28, 'PARTS-2017-82373', 'Cooling fan', 'picture.jpg', 'pieces', 1, 14, '2017-01-16', 1),
+(29, 'PARTS-2017-72842', 'Oil filter', 'picture.jpg', 'pieces', 1, 15, '2017-01-16', 1),
+(30, 'PARTS-2017-79776', 'Oil gasket', 'picture.jpg', 'pieces', 1, 15, '2017-01-16', 1),
+(31, 'PARTS-2017-89418', 'Catalytic converter', 'picture.jpg', 'pieces', 1, 16, '2017-01-16', 1),
+(32, 'PARTS-2017-49172', 'xhaust clamp and bracket', 'picture.jpg', 'pieces', 1, 16, '2017-01-16', 1),
+(33, 'PARTS-2017-96868', 'Air filter', 'picture.jpg', 'pieces', 1, 17, '2017-01-16', 1),
+(34, 'PARTS-2017-77547', 'Choke cable', 'picture.jpg', 'pieces', 1, 17, '2017-01-16', 1),
+(35, 'PARTS-2017-10267', 'Beam axle', 'picture.jpg', 'pieces', 1, 18, '2017-01-16', 1),
+(36, 'PARTS-2017-45492', 'Control arm', 'picture.jpg', 'pieces', 1, 18, '2017-01-16', 1),
+(37, 'PARTS-2017-65443', 'Axle shaft', 'picture.jpg', 'pieces', 1, 19, '2017-01-16', 1),
+(38, 'PARTS-2017-38052', 'Bell housing', 'picture.jpg', 'pieces', 1, 19, '2017-01-16', 1),
+(39, 'PARTS-2017-36638', 'A/C Clutch', 'picture.jpg', 'pieces', 1, 20, '2017-01-16', 1),
+(40, 'PARTS-2017-05926', 'A/C Compressor', 'picture.jpg', 'pieces', 1, 20, '2017-01-16', 1),
+(41, 'PARTS-2017-23604', 'Grooved ball bearing', 'picture.jpg', 'pieces', 1, 21, '2017-01-16', 1),
+(42, 'PARTS-2017-74772', 'Needle bearing', 'picture.jpg', 'pieces', 1, 21, '2017-01-16', 1),
+(43, 'PARTS-2017-50657', 'Fuel vapour hose', 'picture.jpg', 'pieces', 1, 22, '2017-01-16', 1),
+(44, 'PARTS-2017-81711', 'Washer hose', 'picture.jpg', 'pieces', 1, 22, '2017-01-16', 1);
 
 -- --------------------------------------------------------
 
@@ -526,7 +577,7 @@ CREATE TABLE `product_level` (
 --
 
 INSERT INTO `product_level` (`id`, `minimum_level`, `critical_level`) VALUES
-(1, 7, 5);
+(1, 10, 5);
 
 -- --------------------------------------------------------
 
@@ -549,17 +600,17 @@ CREATE TABLE `quotation` (
   `updated_by` int(10) NOT NULL,
   `delete` int(5) NOT NULL,
   `task` int(5) NOT NULL,
-  `paid` int(5) NOT NULL
+  `invoice` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `quotation`
 --
 
-INSERT INTO `quotation` (`id`, `quotation_code`, `user_id`, `customer_id`, `branch_id`, `date_issue`, `grand_total`, `remarks`, `created_at`, `created_by`, `updated_at`, `updated_by`, `delete`, `task`, `paid`) VALUES
-(1, 'QUO-2017-514941', 3, 9, 2, '2017-01-14', 4424, 'god bless us.', '2017-01-13', 1, '2017-01-13', 1, 0, 1, 0),
-(2, 'QUO-2017-323932', 3, 1, 1, '2017-01-14', 1736, 'god bless us.', '2017-01-13', 1, '2017-01-13', 1, 0, 0, 0),
-(4, 'QUO-2017-458043', 3, 8, 2, '2017-01-14', 2128, 'just always pray at night', '2017-01-13', 1, '2017-01-13', 1, 0, 1, 0);
+INSERT INTO `quotation` (`id`, `quotation_code`, `user_id`, `customer_id`, `branch_id`, `date_issue`, `grand_total`, `remarks`, `created_at`, `created_by`, `updated_at`, `updated_by`, `delete`, `task`, `invoice`) VALUES
+(1, 'QUO-2017-413791', 4, 3, 2, '2017-01-19', 336, 'god bless us.', '2017-01-18', 2, '2017-01-18', 2, 0, 0, 1),
+(2, 'QUO-2017-512132', 4, 2, 3, '2017-01-19', 728, 'god bless us.', '2017-01-18', 2, '2017-01-18', 2, 0, 0, 1),
+(3, 'QUO-2017-868093', 4, 2, 2, '2017-01-19', 487.2, 'keep safe.', '2017-01-18', 2, '2017-01-18', 2, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -577,23 +628,23 @@ CREATE TABLE `quotation_detail` (
   `created_at` date NOT NULL,
   `created_by` int(10) NOT NULL,
   `type` int(5) NOT NULL,
-  `task` int(5) NOT NULL
+  `task` int(5) NOT NULL,
+  `invoice` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `quotation_detail`
 --
 
-INSERT INTO `quotation_detail` (`id`, `quotation_id`, `service_part_id`, `quantity`, `selling_price`, `subTotal`, `created_at`, `created_by`, `type`, `task`) VALUES
-(1, 1, 1, 1, 150, 150, '2017-01-13', 1, 0, 1),
-(2, 1, 2, 1, 200, 200, '2017-01-13', 1, 0, 0),
-(3, 1, 1, 3, 1200, 3600, '2017-01-13', 1, 1, 0),
-(4, 2, 1, 1, 150, 150, '2017-01-13', 1, 0, 0),
-(5, 2, 2, 2, 200, 400, '2017-01-13', 1, 0, 0),
-(6, 2, 2, 1, 1000, 1000, '2017-01-13', 1, 1, 0),
-(9, 4, 2, 1, 200, 200, '2017-01-13', 1, 0, 1),
-(10, 4, 2, 1, 1000, 1000, '2017-01-13', 1, 0, 0),
-(11, 4, 4, 1, 700, 700, '2017-01-13', 1, 1, 0);
+INSERT INTO `quotation_detail` (`id`, `quotation_id`, `service_part_id`, `quantity`, `selling_price`, `subTotal`, `created_at`, `created_by`, `type`, `task`, `invoice`) VALUES
+(20, 2, 5, 1, 150, 150, '2017-01-18', 2, 0, 1, 1),
+(21, 2, 13, 1, 200, 200, '2017-01-18', 2, 0, 1, 1),
+(22, 2, 8, 2, 100, 200, '2017-01-18', 2, 1, 0, 1),
+(23, 2, 11, 1, 100, 100, '2017-01-18', 2, 1, 0, 1),
+(24, 1, 13, 1, 200, 200, '2017-01-18', 2, 0, 0, 1),
+(25, 1, 5, 1, 100, 100, '2017-01-18', 2, 1, 0, 1),
+(26, 3, 3, 1, 300, 300, '2017-01-18', 2, 0, 1, 1),
+(27, 3, 7, 1, 135, 135, '2017-01-18', 2, 0, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -613,7 +664,8 @@ CREATE TABLE `role` (
 INSERT INTO `role` (`id`, `role`) VALUES
 (1, 'developer'),
 (2, 'admin'),
-(3, 'staff');
+(3, 'staff'),
+(4, 'customer');
 
 -- --------------------------------------------------------
 
@@ -639,19 +691,20 @@ CREATE TABLE `service` (
 --
 
 INSERT INTO `service` (`id`, `service_category_id`, `service_name`, `description`, `default_price`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 1, 'Air Conditioning', 'Maintain a comfortable temperature for you and your vehicle', 150, 1, '2017-01-04', 1, '2017-01-04', 1),
-(2, 1, 'Brake-system repair', 'Feel confident in your vehicle''s stopping power with regular brake checks.', 200, 1, '2017-01-04', 1, '2017-01-04', 1),
-(3, 1, 'Fluid-exchange services', 'A vehicle''s fluids must be maintained for it to run properly.', 300, 1, '2017-01-04', 1, '2017-01-04', 1),
-(4, 1, 'Oil, Lube & Filter', 'Drive smoothly by maintaining your vehicle''s oil.', 299, 1, '2017-01-04', 1, '2017-01-04', 1),
-(5, 1, 'Batteries', 'he performance of the engine, alternator, and secondary electrical systems depend on the battery.', 500, 1, '2017-01-04', 1, '2017-01-04', 1),
-(6, 1, 'Check-engine light', 'Keep your ignition, fuel, and emission-control systems doing what they should by maintaining your engine diagnostics.', 750, 1, '2017-01-04', 1, '2017-01-04', 1),
-(7, 1, 'Heating & Cooling System', 'Maintain a comfortable temperature for you and your vehicle.', 350, 1, '2017-01-04', 1, '2017-01-04', 1),
-(8, 1, 'Steering & Suspension', 'Experience a smooth, controlled ride with a properly functioning suspension system.', 150, 1, '2017-01-04', 1, '2017-01-04', 1),
-(9, 1, 'Belts & Hoses', 'Avoid breaking down in your vehicle by maintaining its belts and hoses.', 200, 1, '2017-01-04', 1, '2017-01-04', 1),
-(10, 1, 'Mufflers & Exhaust', 'Failing an emissions test is usually the fault of either the muffler or the exhaust system.', 450, 1, '2017-01-04', 1, '2017-01-04', 1),
-(11, 1, 'Tune-Up', 'Help your vehicle last longer by scheduling regular tune-ups.', 499, 1, '2017-01-04', 1, '2017-01-04', 1),
-(12, 2, 'Tire installation', 'Proper installation enables tires to function fully and correctly.', 299, 1, '2017-01-04', 1, '2017-01-04', 1),
-(13, 2, 'Wheel Alignment', 'Proper wheel alignment helps you maintain control of your car.', 99, 1, '2017-01-04', 1, '2017-01-04', 1);
+(1, 1, 'Oil Change, Lube & Filter', 'Drive smoothly by maintaining your vehicle''s oil.', 100, 1, '2017-01-16', 1, '2017-01-16', 1),
+(2, 1, 'Tire Repair', 'Regular tire inspection and timely repair can help keep you driving safely.', 99, 1, '2017-01-16', 1, '2017-01-16', 1),
+(3, 1, 'TOW365', 'Towing assistance, 24/7, to your nearest participating Goodyear Tire & Service Network location.', 300, 1, '2017-01-16', 1, '2017-01-16', 1),
+(4, 1, 'Wheel Alignment', 'Proper wheel alignment helps your vehicle run safely and efficiently.', 100, 1, '2017-01-16', 1, '2017-01-16', 1),
+(5, 2, 'Air Conditioning', 'Maintain a comfortable temperature for you and your vehicle.', 150, 1, '2017-01-16', 1, '2017-01-16', 1),
+(6, 2, 'Batteries', 'The performance of the engine, alternator, and secondary electrical systems depend on the battery.', 200, 1, '2017-01-16', 1, '2017-01-16', 1),
+(7, 2, 'Belts & Hoses', 'Avoid breaking down in your vehicle by maintaining its belts and hoses.', 135, 1, '2017-01-16', 1, '2017-01-16', 1),
+(8, 2, 'Brake Service', 'Feel confident in your vehicle''s stopping power with regular brake checks.', 100, 1, '2017-01-16', 1, '2017-01-16', 1),
+(9, 2, 'Check-Engine Light', 'Keep your ignition, fuel, and emission-control systems doing what they should by maintaining your engine diagnostics.', 125, 1, '2017-01-16', 1, '2017-01-16', 1),
+(10, 2, 'Drivelines', 'Drivelines are responsible for the speed of your vehicle, so it''s important to keep them in good working order.', 99, 1, '2017-01-16', 1, '2017-01-16', 1),
+(11, 3, 'Tire Installation', 'Proper installation enables tires to function fully and correctly.', 110, 1, '2017-01-16', 1, '2017-01-16', 1),
+(12, 3, 'Tire Rotation', 'Avoid uneven treadwear and extend a tire''s life by rotating your tires.', 120, 1, '2017-01-16', 1, '2017-01-16', 1),
+(13, 3, 'Tire Pressure Monitoring System (TPMS)', 'Maintain fuel efficiency and prolong tire life by getting your tire pressure monitoring system checked regularly.', 200, 1, '2017-01-16', 1, '2017-01-16', 1),
+(14, 3, 'Wheel Balance', 'Routinely balance your tires to avoid uneven wear, vibration, and potentially unsafe driving conditions.', 100, 1, '2017-01-16', 1, '2017-01-16', 1);
 
 -- --------------------------------------------------------
 
@@ -675,8 +728,9 @@ CREATE TABLE `service_category` (
 --
 
 INSERT INTO `service_category` (`id`, `name`, `description`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'Automotive Services', 'All car-parts services aside tire services', 1, '2017-01-04', 1, '2017-01-04', 1),
-(2, 'Tire services', 'all tire services aside car parts services', 1, '2017-01-04', 1, '2017-01-04', 1);
+(1, 'Popular Auto & Tire Services', 'For Popular Auto & Tire Services', 1, '2017-01-16', 1, '2017-01-16', 1),
+(2, 'Additional Auto Services', 'For Additional Auto Services', 1, '2017-01-16', 1, '2017-01-16', 1),
+(3, 'Additional Tire Services', 'For Additional Tire Services', 1, '2017-01-16', 1, '2017-01-16', 1);
 
 -- --------------------------------------------------------
 
@@ -702,103 +756,106 @@ CREATE TABLE `stock_in` (
 --
 
 INSERT INTO `stock_in` (`id`, `product_id`, `supplier_id`, `quantity`, `cost_price`, `selling_price`, `date_imported`, `time_imported`, `created_at`, `created_by`) VALUES
-(1, 19, 11, 10, 150, 170, '2017-01-08', '00:00:00', '0000-00-00', 1),
-(2, 11, 6, 25, 250, 275, '2017-01-08', '08:14:51', '2017-01-08', 1),
-(3, 3, 9, 5, 100, 250, '2017-01-08', '09:17:55', '2017-01-08', 1),
-(4, 19, 9, 7, 175, 200, '2017-01-08', '09:17:55', '2017-01-08', 1),
-(5, 10, 9, 10, 150, 175, '2017-01-08', '09:17:55', '2017-01-08', 1),
-(7, 1, 1, 22, 1000, 1200, '2017-01-08', '09:55:56', '2017-01-08', 1),
-(8, 4, 1, 28, 500, 700, '2017-01-08', '09:55:56', '2017-01-08', 1),
-(9, 3, 1, 42, 1500, 1800, '2017-01-08', '09:55:56', '2017-01-08', 1),
-(10, 2, 1, 36, 900, 1000, '2017-01-08', '09:55:56', '2017-01-08', 1),
-(11, 19, 11, 12, 150, 170, '2017-01-08', '09:55:56', '2017-01-08', 1),
-(12, 11, 6, 28, 250, 275, '2017-01-08', '09:55:57', '2017-01-08', 1),
-(13, 3, 9, 7, 100, 250, '2017-01-08', '09:55:57', '2017-01-08', 1),
-(14, 19, 9, 10, 175, 200, '2017-01-08', '09:55:57', '2017-01-08', 1),
-(15, 16, 11, 5, 99, 110, '2017-01-09', '12:09:37', '2017-01-09', 1),
-(16, 11, 11, 7, 75, 100, '2017-01-09', '12:09:37', '2017-01-09', 1),
-(17, 18, 11, 9, 100, 125, '2017-01-09', '12:09:37', '2017-01-09', 1),
-(19, 1, 1, 23, 1000, 1200, '2017-01-09', '13:47:14', '2017-01-09', 1),
-(20, 4, 1, 30, 500, 700, '2017-01-09', '13:47:14', '2017-01-09', 1),
-(21, 3, 1, 42, 1500, 1800, '2017-01-09', '13:47:14', '2017-01-09', 1),
-(22, 2, 1, 27, 900, 1000, '2017-01-09', '13:47:14', '2017-01-09', 1),
-(23, 19, 11, 14, 150, 170, '2017-01-09', '13:47:15', '2017-01-09', 1),
-(24, 11, 6, 32, 250, 275, '2017-01-09', '13:47:15', '2017-01-09', 1),
-(25, 3, 9, 12, 100, 250, '2017-01-09', '13:47:15', '2017-01-09', 1),
-(26, 19, 9, 11, 175, 200, '2017-01-09', '13:47:15', '2017-01-09', 1),
-(27, 16, 11, 7, 99, 110, '2017-01-09', '13:47:15', '2017-01-09', 1),
-(28, 11, 11, 10, 75, 100, '2017-01-09', '13:47:15', '2017-01-09', 1),
-(29, 1, 1, 23, 1000, 1200, '2017-01-09', '13:50:22', '2017-01-09', 1),
-(30, 4, 1, 30, 500, 700, '2017-01-09', '13:50:23', '2017-01-09', 1),
-(31, 3, 1, 42, 1500, 1800, '2017-01-09', '13:50:23', '2017-01-09', 1),
-(32, 2, 1, 27, 900, 1000, '2017-01-09', '13:50:23', '2017-01-09', 1),
-(33, 19, 11, 14, 150, 170, '2017-01-09', '13:50:23', '2017-01-09', 1),
-(34, 11, 6, 32, 250, 275, '2017-01-09', '13:50:23', '2017-01-09', 1),
-(35, 3, 9, 12, 100, 250, '2017-01-09', '13:50:23', '2017-01-09', 1),
-(36, 19, 9, 11, 175, 200, '2017-01-09', '13:50:23', '2017-01-09', 1),
-(37, 16, 11, 7, 99, 110, '2017-01-09', '13:50:24', '2017-01-09', 1),
-(38, 11, 11, 10, 75, 100, '2017-01-09', '13:50:24', '2017-01-09', 1),
-(39, 1, 1, 23, 1000, 1200, '2017-01-09', '13:50:25', '2017-01-09', 1),
-(40, 4, 1, 30, 500, 700, '2017-01-09', '13:50:25', '2017-01-09', 1),
-(41, 3, 1, 42, 1500, 1800, '2017-01-09', '13:50:25', '2017-01-09', 1),
-(42, 2, 1, 27, 900, 1000, '2017-01-09', '13:50:25', '2017-01-09', 1),
-(43, 19, 11, 14, 150, 170, '2017-01-09', '13:50:25', '2017-01-09', 1),
-(44, 11, 6, 32, 250, 275, '2017-01-09', '13:50:26', '2017-01-09', 1),
-(45, 3, 9, 12, 100, 250, '2017-01-09', '13:50:26', '2017-01-09', 1),
-(46, 19, 9, 11, 175, 200, '2017-01-09', '13:50:26', '2017-01-09', 1),
-(47, 16, 11, 7, 99, 110, '2017-01-09', '13:50:26', '2017-01-09', 1),
-(48, 11, 11, 10, 75, 100, '2017-01-09', '13:50:26', '2017-01-09', 1),
-(49, 1, 1, 23, 1000, 1200, '2017-01-09', '13:50:43', '2017-01-09', 1),
-(50, 4, 1, 30, 500, 700, '2017-01-09', '13:50:43', '2017-01-09', 1),
-(51, 3, 1, 42, 1500, 1800, '2017-01-09', '13:50:43', '2017-01-09', 1),
-(52, 2, 1, 27, 900, 1000, '2017-01-09', '13:50:43', '2017-01-09', 1),
-(53, 19, 11, 14, 150, 170, '2017-01-09', '13:50:44', '2017-01-09', 1),
-(54, 11, 6, 32, 250, 275, '2017-01-09', '13:50:44', '2017-01-09', 1),
-(55, 3, 9, 12, 100, 250, '2017-01-09', '13:50:44', '2017-01-09', 1),
-(56, 19, 9, 11, 175, 200, '2017-01-09', '13:50:44', '2017-01-09', 1),
-(57, 16, 11, 7, 99, 110, '2017-01-09', '13:50:45', '2017-01-09', 1),
-(58, 11, 11, 10, 75, 100, '2017-01-09', '13:50:45', '2017-01-09', 1),
-(59, 1, 1, 20, 1000, 1200, '2017-01-12', '16:03:11', '2017-01-12', 1),
-(60, 4, 1, 20, 500, 700, '2017-01-12', '16:03:11', '2017-01-12', 1),
-(61, 3, 1, 10, 1500, 1800, '2017-01-12', '16:03:11', '2017-01-12', 1),
-(62, 2, 1, 20, 900, 1000, '2017-01-12', '16:03:11', '2017-01-12', 1),
-(63, 19, 11, 21, 150, 170, '2017-01-12', '16:03:11', '2017-01-12', 1),
-(64, 11, 6, 37, 250, 275, '2017-01-12', '16:03:11', '2017-01-12', 1),
-(65, 3, 9, 22, 100, 250, '2017-01-12', '16:03:11', '2017-01-12', 1),
-(66, 19, 9, 21, 175, 200, '2017-01-12', '16:03:11', '2017-01-12', 1),
-(67, 16, 11, 17, 99, 110, '2017-01-12', '16:03:12', '2017-01-12', 1),
-(68, 11, 11, 37, 75, 100, '2017-01-12', '16:03:12', '2017-01-12', 1),
-(69, 18, 11, 17, 100, 125, '2017-01-12', '16:03:20', '2017-01-12', 1),
-(70, 20, 2, 10, 150, 175, '2017-01-13', '13:34:09', '2017-01-13', 1),
-(71, 21, 7, 15, 125, 150, '2017-01-13', '13:35:12', '2017-01-13', 1),
-(72, 23, 7, 20, 100, 110, '2017-01-13', '13:35:12', '2017-01-13', 1),
-(73, 9, 10, 10, 75, 100, '2017-01-13', '13:36:42', '2017-01-13', 1),
-(74, 22, 10, 20, 200, 250, '2017-01-13', '13:36:42', '2017-01-13', 1),
-(75, 17, 10, 20, 95, 105, '2017-01-13', '13:36:42', '2017-01-13', 1),
-(76, 2, 2, 2, 2, 2, '2017-01-13', '13:56:00', '2017-01-13', 1),
-(77, 3, 2, 1, 1, 1, '2017-01-13', '13:56:49', '2017-01-13', 1),
-(78, 1, 1, 30, 1000, 1200, '2017-01-13', '14:11:07', '2017-01-13', 1),
-(79, 4, 1, 19, 500, 700, '2017-01-13', '14:11:07', '2017-01-13', 1),
-(80, 3, 1, 11, 1500, 1800, '2017-01-13', '14:11:07', '2017-01-13', 1),
-(81, 2, 1, 22, 900, 1000, '2017-01-13', '14:11:07', '2017-01-13', 1),
-(82, 19, 11, 20, 150, 170, '2017-01-13', '14:11:07', '2017-01-13', 1),
-(83, 11, 6, 37, 250, 275, '2017-01-13', '14:11:07', '2017-01-13', 1),
-(84, 3, 9, 8, 100, 250, '2017-01-13', '14:11:07', '2017-01-13', 1),
-(85, 19, 9, 20, 175, 200, '2017-01-13', '14:11:07', '2017-01-13', 1),
-(86, 16, 11, 17, 99, 110, '2017-01-13', '14:11:07', '2017-01-13', 1),
-(87, 11, 11, 37, 75, 100, '2017-01-13', '14:11:07', '2017-01-13', 1),
-(88, 1, 1, 30, 1000, 1200, '2017-01-13', '14:12:11', '2017-01-13', 1),
-(89, 4, 1, 19, 500, 700, '2017-01-13', '14:12:11', '2017-01-13', 1),
-(90, 3, 1, 11, 1500, 1800, '2017-01-13', '14:12:11', '2017-01-13', 1),
-(91, 2, 1, 22, 900, 1000, '2017-01-13', '14:12:12', '2017-01-13', 1),
-(92, 19, 11, 20, 150, 170, '2017-01-13', '14:12:12', '2017-01-13', 1),
-(93, 11, 6, 37, 250, 275, '2017-01-13', '14:12:12', '2017-01-13', 1),
-(94, 3, 9, 8, 100, 250, '2017-01-13', '14:12:12', '2017-01-13', 1),
-(95, 19, 9, 20, 175, 200, '2017-01-13', '14:12:12', '2017-01-13', 1),
-(96, 16, 11, 17, 99, 110, '2017-01-13', '14:12:12', '2017-01-13', 1),
-(97, 11, 11, 37, 75, 100, '2017-01-13', '14:12:12', '2017-01-13', 1),
-(98, 9, 1, 10, 75, 100, '2017-01-13', '14:43:02', '2017-01-13', 1),
-(99, 22, 0, 20, 200, 250, '2017-01-13', '14:43:02', '2017-01-13', 1);
+(1, 1, 1, 10, 99, 100, '2017-01-16', '12:54:35', '2017-01-16', 1),
+(2, 2, 1, 10, 99, 100, '2017-01-16', '12:54:35', '2017-01-16', 1),
+(3, 3, 1, 10, 99, 100, '2017-01-16', '12:54:35', '2017-01-16', 1),
+(4, 4, 1, 10, 99, 100, '2017-01-16', '12:54:35', '2017-01-16', 1),
+(5, 5, 1, 10, 99, 100, '2017-01-16', '12:54:35', '2017-01-16', 1),
+(6, 6, 1, 10, 99, 100, '2017-01-16', '12:54:35', '2017-01-16', 1),
+(7, 7, 1, 10, 99, 100, '2017-01-16', '12:54:35', '2017-01-16', 1),
+(8, 8, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(9, 10, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(10, 11, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(11, 12, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(12, 13, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(13, 14, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(14, 15, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(15, 16, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(16, 17, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(17, 18, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(18, 19, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(19, 20, 1, 10, 99, 100, '2017-01-16', '12:54:36', '2017-01-16', 1),
+(20, 21, 1, 10, 99, 100, '2017-01-16', '12:54:37', '2017-01-16', 1),
+(21, 22, 1, 10, 99, 100, '2017-01-16', '12:54:37', '2017-01-16', 1),
+(22, 23, 1, 10, 99, 100, '2017-01-16', '12:54:37', '2017-01-16', 1),
+(23, 24, 1, 10, 99, 100, '2017-01-16', '12:54:37', '2017-01-16', 1),
+(24, 25, 1, 10, 99, 100, '2017-01-16', '12:54:37', '2017-01-16', 1),
+(25, 26, 1, 10, 99, 100, '2017-01-16', '12:54:37', '2017-01-16', 1),
+(26, 27, 1, 10, 99, 100, '2017-01-16', '12:54:37', '2017-01-16', 1),
+(27, 28, 1, 10, 99, 100, '2017-01-16', '12:54:37', '2017-01-16', 1),
+(28, 29, 2, 10, 99, 100, '2017-01-16', '13:00:11', '2017-01-16', 1),
+(29, 30, 2, 10, 99, 100, '2017-01-16', '13:00:11', '2017-01-16', 1),
+(30, 31, 2, 10, 99, 100, '2017-01-16', '13:00:11', '2017-01-16', 1),
+(31, 32, 2, 10, 99, 100, '2017-01-16', '13:00:11', '2017-01-16', 1),
+(32, 33, 2, 10, 99, 100, '2017-01-16', '13:00:11', '2017-01-16', 1),
+(33, 34, 2, 10, 99, 100, '2017-01-16', '13:00:11', '2017-01-16', 1),
+(34, 35, 2, 10, 99, 100, '2017-01-16', '13:00:11', '2017-01-16', 1),
+(35, 36, 2, 10, 99, 100, '2017-01-16', '13:00:11', '2017-01-16', 1),
+(36, 37, 2, 10, 99, 100, '2017-01-16', '13:00:11', '2017-01-16', 1),
+(37, 38, 2, 10, 99, 100, '2017-01-16', '13:00:11', '2017-01-16', 1),
+(38, 39, 2, 10, 99, 100, '2017-01-16', '13:00:12', '2017-01-16', 1),
+(39, 40, 2, 10, 99, 100, '2017-01-16', '13:00:12', '2017-01-16', 1),
+(40, 41, 2, 10, 99, 100, '2017-01-16', '13:00:12', '2017-01-16', 1),
+(41, 42, 2, 10, 99, 100, '2017-01-16', '13:00:12', '2017-01-16', 1),
+(42, 43, 2, 10, 99, 100, '2017-01-16', '13:00:12', '2017-01-16', 1),
+(43, 44, 2, 10, 99, 100, '2017-01-16', '13:00:12', '2017-01-16', 1),
+(44, 2, 1, 15, 99, 100, '2017-01-16', '14:09:39', '2017-01-16', 1),
+(45, 1, 1, 15, 99, 100, '2017-01-16', '14:12:08', '2017-01-16', 1),
+(46, 3, 1, 15, 99, 100, '2017-01-16', '14:12:08', '2017-01-16', 1),
+(47, 1, 2, 10, 100, 105, '2017-01-16', '14:12:48', '2017-01-16', 1),
+(48, 1, 2, 13, 100, 105, '2017-01-16', '14:13:10', '2017-01-16', 1),
+(49, 1, 2, 15, 100, 105, '2017-01-16', '14:13:36', '2017-01-16', 1),
+(50, 1, 1, 15, 99, 100, '2017-01-16', '14:39:40', '2017-01-16', 1),
+(51, 4, 1, 15, 99, 100, '2017-01-16', '14:39:40', '2017-01-16', 1),
+(52, 5, 1, 15, 99, 100, '2017-01-16', '14:39:40', '2017-01-16', 1),
+(53, 6, 1, 15, 99, 100, '2017-01-16', '14:39:40', '2017-01-16', 1),
+(54, 7, 1, 15, 99, 100, '2017-01-16', '14:39:40', '2017-01-16', 1),
+(55, 8, 1, 15, 99, 100, '2017-01-16', '14:39:40', '2017-01-16', 1),
+(56, 10, 1, 15, 99, 100, '2017-01-16', '14:39:40', '2017-01-16', 1),
+(57, 11, 1, 15, 99, 100, '2017-01-16', '14:39:40', '2017-01-16', 1),
+(58, 12, 1, 15, 99, 100, '2017-01-16', '14:40:03', '2017-01-16', 1),
+(59, 13, 1, 15, 99, 100, '2017-01-16', '14:40:03', '2017-01-16', 1),
+(60, 14, 1, 15, 99, 100, '2017-01-16', '14:40:03', '2017-01-16', 1),
+(61, 15, 1, 15, 99, 100, '2017-01-16', '14:40:03', '2017-01-16', 1),
+(62, 16, 1, 15, 99, 100, '2017-01-16', '14:40:03', '2017-01-16', 1),
+(63, 17, 1, 15, 99, 100, '2017-01-16', '14:40:03', '2017-01-16', 1),
+(64, 18, 1, 15, 99, 100, '2017-01-16', '14:40:03', '2017-01-16', 1),
+(65, 19, 1, 15, 99, 100, '2017-01-16', '14:40:03', '2017-01-16', 1),
+(66, 20, 1, 15, 99, 100, '2017-01-16', '14:40:03', '2017-01-16', 1),
+(67, 21, 1, 15, 99, 100, '2017-01-16', '14:40:04', '2017-01-16', 1),
+(68, 22, 1, 15, 99, 100, '2017-01-16', '14:40:19', '2017-01-16', 1),
+(69, 23, 1, 15, 99, 100, '2017-01-16', '14:40:19', '2017-01-16', 1),
+(70, 24, 1, 15, 99, 100, '2017-01-16', '14:40:19', '2017-01-16', 1),
+(71, 25, 1, 15, 99, 100, '2017-01-16', '14:40:19', '2017-01-16', 1),
+(72, 26, 1, 15, 99, 100, '2017-01-16', '14:40:19', '2017-01-16', 1),
+(73, 27, 1, 15, 99, 100, '2017-01-16', '14:40:20', '2017-01-16', 1),
+(74, 28, 1, 15, 99, 100, '2017-01-16', '14:40:20', '2017-01-16', 1),
+(75, 29, 2, 15, 99, 100, '2017-01-16', '14:40:20', '2017-01-16', 1),
+(76, 30, 2, 15, 99, 100, '2017-01-16', '14:40:20', '2017-01-16', 1),
+(77, 31, 2, 15, 99, 100, '2017-01-16', '14:40:20', '2017-01-16', 1),
+(78, 32, 2, 15, 99, 100, '2017-01-16', '14:40:35', '2017-01-16', 1),
+(79, 33, 2, 15, 99, 100, '2017-01-16', '14:40:35', '2017-01-16', 1),
+(80, 34, 2, 15, 99, 100, '2017-01-16', '14:40:36', '2017-01-16', 1),
+(81, 35, 2, 15, 99, 100, '2017-01-16', '14:40:36', '2017-01-16', 1),
+(82, 36, 2, 15, 99, 100, '2017-01-16', '14:40:36', '2017-01-16', 1),
+(83, 37, 2, 15, 99, 100, '2017-01-16', '14:40:36', '2017-01-16', 1),
+(84, 38, 2, 15, 99, 100, '2017-01-16', '14:40:36', '2017-01-16', 1),
+(85, 39, 2, 15, 99, 100, '2017-01-16', '14:40:36', '2017-01-16', 1),
+(86, 40, 2, 15, 99, 100, '2017-01-16', '14:40:36', '2017-01-16', 1),
+(87, 41, 2, 15, 99, 100, '2017-01-16', '14:40:36', '2017-01-16', 1),
+(88, 42, 2, 15, 99, 100, '2017-01-16', '14:40:48', '2017-01-16', 1),
+(89, 43, 2, 15, 99, 100, '2017-01-16', '14:40:49', '2017-01-16', 1),
+(90, 44, 2, 15, 99, 100, '2017-01-16', '14:40:49', '2017-01-16', 1),
+(92, 1, 1, 20, 99, 100, '2017-01-18', '14:57:22', '2017-01-18', 2),
+(93, 2, 1, 15, 99, 100, '2017-01-18', '14:57:22', '2017-01-18', 2),
+(94, 3, 1, 15, 99, 100, '2017-01-18', '14:57:22', '2017-01-18', 2),
+(95, 4, 1, 15, 99, 100, '2017-01-18', '14:57:22', '2017-01-18', 2),
+(96, 5, 1, 15, 99, 100, '2017-01-18', '14:57:22', '2017-01-18', 2),
+(97, 6, 1, 15, 99, 100, '2017-01-18', '14:57:22', '2017-01-18', 2),
+(98, 7, 1, 15, 99, 100, '2017-01-18', '14:57:22', '2017-01-18', 2),
+(99, 8, 1, 15, 99, 100, '2017-01-18', '14:57:22', '2017-01-18', 2),
+(100, 10, 1, 15, 99, 100, '2017-01-18', '14:57:22', '2017-01-18', 2),
+(101, 11, 1, 15, 99, 100, '2017-01-18', '14:57:22', '2017-01-18', 2);
 
 -- --------------------------------------------------------
 
@@ -819,17 +876,8 @@ CREATE TABLE `supplier` (
 --
 
 INSERT INTO `supplier` (`id`, `supplier_code`, `supplier_name`, `address`, `contact_number`) VALUES
-(1, 'SUPPLIERS-2017-73680', ' SM Oil Seal Parts Center', '1044 G. Masangkay Street Manila, 1006 Metro Manila ', '02-2447804'),
-(2, 'SUPPLIERS-2017-77059', 'Cabasal Trading', '649 Evangelista Street Manila, Metro Manila', '09097894561'),
-(3, 'SUPPLIERS-2017-72327', 'A-1 Auto Supply', 'G/F, Ina Ng Awa Building, 1064 C. M. Recto Avenue Manila, 1000 Metro Manila ', '02-2447353 '),
-(4, 'SUPPLIERS-2017-75671', 'Jcsc Enterprises', '944 Gandara Street Manila, Metro Manila ', '09087894561'),
-(5, 'SUPPLIERS-2017-48286', 'Autowide Automotive CTR', ' 1114 Arlegui Street Manila, Metro Manila Phone number', '09097894561'),
-(6, 'SUPPLIERS-2017-00828', 'Ng, Tin Si Auto Parts and Supplies', '1114 Artegui Street Manila, 1000 Metro Manila', '02-7339197'),
-(7, 'SUPPLIERS-2017-54497', 'Joaquin’s Auto Supply', '753 Gandara Street Manila, 1100 Metro Manila ', '02-7337441 '),
-(8, 'SUPPLIERS-2017-58915', 'Silicon Electrical Supply', '678 Evangelista Street Manila, Metro Manila', '02-7338341'),
-(9, 'SUPPLIERS-2017-94490', ' Commander Auto Supply', '408 C M Recto Avenue Manila, 1000 Metro Manila', '02-2450581'),
-(10, 'SUPPLIERS-2017-94168', ' Giap Gue Second Auto Supply', '920 Gandara Street Manila, 1000 Metro Manila', '02-2441895 '),
-(11, 'SUPPLIERS-2017-50875', ' Jm Auto Parts & General Merchandise', ' 1053 Pgil Street Manila, Metro Manila Phone number', '09981234567');
+(1, 'SUPPLIERS-2017-17645', 'SM Oil Seal Parts Center', '1044 G. Masangkay Street Manila, 1006 Metro Manila', '02-2447804'),
+(2, 'SUPPLIERS-2017-40846', 'Cabasal Trading', '649 Evangelista Street Manila, Metro Manila', '02-2447353');
 
 -- --------------------------------------------------------
 
@@ -864,9 +912,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `role_id`, `branch_id`, `role`, `fullname`, `username`, `password`, `password_hash`, `password_reset_token`, `email`, `photo`, `auth_key`, `status`, `login`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted`) VALUES
-(1, 1, 2, 20, 'Jose Czar L Yanga', 'jcyanga28', 'password', '$2y$13$KLYNdyN9n.CXY4uELu9Td.6LJ1BoXrXQY0dmrnb9HUMegb1dPw.YK', '', 'jcyanga412060@gmail.com', 'user.png', 'R5BJVsB83hg7xshurVUaXb6qYn4HrFi8', 1, '2017-01-09 10:25:00', '2017-01-09 10:25:00', 1, '2017-01-09 10:25:00', 1, 0),
-(2, 2, 2, 20, 'administrator', 'admin02', '', '$2y$13$CFVuI8rWieiEpY8l/UE6iufRW5E5iuQG5FFnq.zrHQJEHEzpQ9sDG', '', 'admin02@gmail.com', '', 'zV4R0IdpVy3NPDaGp6HabuE5eroU3i1c', 1, '0000-00-00 00:00:00', '2017-01-09 14:02:11', 1, '0000-00-00 00:00:00', 0, 0),
-(3, 3, 2, 20, 'mystaff', 'mystaff02', '', '$2y$13$Nrdp18n8eoOOEMwf97e5Bu4dc1w/I1g2vgkhNAl77m60jruC/m7W.', '', 'mystaff02@gmail.com', '', 'JEp_A3vFmIAsvBoBeUctw4VOHfJpwLGP', 1, '0000-00-00 00:00:00', '2017-01-09 14:02:38', 1, '0000-00-00 00:00:00', 0, 0);
+(1, 1, 1, 20, 'Jose Czar L. Yanga', 'jcyanga28', 'password', '$2y$13$KLYNdyN9n.CXY4uELu9Td.6LJ1BoXrXQY0dmrnb9HUMegb1dPw.YK', '', 'jcyanga412060@gmail.com', 'user.png', 'R5BJVsB83hg7xshurVUaXb6qYn4HrFi8', 1, '2017-01-17 19:00:00', '2017-01-17 19:00:00', 1, '2017-01-17 19:00:00', 1, 0),
+(2, 1, 1, 20, 'developer', 'developer', 'password', '$2y$13$KLYNdyN9n.CXY4uELu9Td.6LJ1BoXrXQY0dmrnb9HUMegb1dPw.YK', '', 'developer@yahoo.com', 'user.png', 'R5BJVsB83hg7xshurVUaXb6qYn4HrFi8', 1, '2017-01-17 19:00:00', '2017-01-17 19:00:00', 1, '2017-01-17 19:00:00', 1, 0),
+(3, 2, 2, 20, 'administrator', 'admin', '', '$2y$13$zvzcAB5xJ9zzbZMCITRla.Jm4O/uVC1MlEsna8no5vg2pL9cHfFia', '', 'admin@fcs.com.ph', '', 'GaGsWm5FvDSQbfZxLgeYOw5TLbuMhUo1', 1, '0000-00-00 00:00:00', '2017-01-18 11:24:12', 2, '0000-00-00 00:00:00', 0, 0),
+(4, 3, 2, 20, 'mystaff', 'staff', '', '$2y$13$85BwH9D2aHynPNYQK9rRM.GEPQ0IKzBjPwZJPQv9zzs/WGOHnky6a', '', 'mystaff@fcs.com.ph', '', 'Z9l0E4yRXgdryGhmE4cb_MwzDE15QjqU', 1, '0000-00-00 00:00:00', '2017-01-18 11:35:35', 2, '0000-00-00 00:00:00', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1153,40 +1202,6 @@ INSERT INTO `user_permission` (`id`, `controller`, `action`, `role_id`) VALUES
 (342, 'Gst', 'update', 2),
 (343, 'Gst', 'delete', 2),
 (344, 'Gst', 'delete-column', 2),
-(345, 'Quotation', 'index', 2),
-(346, 'Quotation', 'view', 2),
-(347, 'Quotation', 'create', 2),
-(348, 'Quotation', 'preview', 2),
-(349, 'Quotation', 'update', 2),
-(350, 'Quotation', 'delete', 2),
-(351, 'Quotation', 'delete-column', 2),
-(352, 'Quotation', 'delete-selected-quotation-detail', 2),
-(353, 'Quotation', 'price', 2),
-(354, 'Quotation', 'insert-in-list', 2),
-(361, 'Quotation', 'index', 1),
-(362, 'Quotation', 'view', 1),
-(363, 'Quotation', 'create', 1),
-(364, 'Quotation', 'preview', 1),
-(365, 'Quotation', 'update', 1),
-(366, 'Quotation', 'delete', 1),
-(367, 'Quotation', 'delete-column', 1),
-(368, 'Quotation', 'delete-selected-quotation-detail', 1),
-(369, 'Quotation', 'price', 1),
-(370, 'Quotation', 'insert-in-list', 1),
-(371, 'Quotation', 'insert-invoice', 1),
-(401, 'Invoice', 'index', 1),
-(402, 'Invoice', 'view', 1),
-(403, 'Invoice', 'create', 1),
-(404, 'Invoice', 'preview', 1),
-(405, 'Invoice', 'update', 1),
-(406, 'Invoice', 'delete', 1),
-(407, 'Invoice', 'delete-column', 1),
-(408, 'Invoice', 'delete-selected-quotation-detail', 1),
-(409, 'Invoice', 'price', 1),
-(410, 'Invoice', 'insert-in-list', 1),
-(411, 'Invoice', 'payment-method', 1),
-(412, 'Invoice', 'save-payment', 1),
-(413, 'Invoice', 'insert-in-payment-list', 1),
 (414, 'Inventory', 'index', 1),
 (415, 'Inventory', 'view', 1),
 (416, 'Inventory', 'create', 1),
@@ -1203,7 +1218,74 @@ INSERT INTO `user_permission` (`id`, `controller`, `action`, `role_id`) VALUES
 (427, 'ProductLevel', 'view', 1),
 (428, 'ProductLevel', 'create', 1),
 (429, 'ProductLevel', 'update', 1),
-(430, 'ProductLevel', 'delete', 1);
+(430, 'ProductLevel', 'delete', 1),
+(431, 'Site', 'index', 4),
+(432, 'Site', 'login', 4),
+(433, 'Site', 'logout', 4),
+(470, 'ProductLevel', 'index', 2),
+(471, 'ProductLevel', 'view', 2),
+(472, 'ProductLevel', 'create', 2),
+(473, 'ProductLevel', 'update', 2),
+(474, 'ProductLevel', 'delete', 2),
+(487, 'Reports', 'index', 1),
+(488, 'Reports', 'month-stock-report', 1),
+(489, 'Quotation', 'index', 1),
+(490, 'Quotation', 'view', 1),
+(491, 'Quotation', 'create', 1),
+(492, 'Quotation', 'preview', 1),
+(493, 'Quotation', 'update', 1),
+(494, 'Quotation', 'delete', 1),
+(495, 'Quotation', 'delete-column', 1),
+(496, 'Quotation', 'price', 1),
+(497, 'Quotation', 'insert-in-list', 1),
+(498, 'Quotation', 'insert-invoice', 1),
+(499, 'Quotation', 'export-excel', 1),
+(500, 'Quotation', 'export-pdf', 1),
+(529, 'Quotation', 'index', 2),
+(530, 'Quotation', 'view', 2),
+(531, 'Quotation', 'create', 2),
+(532, 'Quotation', 'preview', 2),
+(533, 'Quotation', 'update', 2),
+(534, 'Quotation', 'delete', 2),
+(535, 'Quotation', 'delete-column', 2),
+(536, 'Quotation', 'price', 2),
+(537, 'Quotation', 'insert-in-list', 2),
+(538, 'Quotation', 'insert-invoice', 2),
+(539, 'Quotation', 'export-excel', 2),
+(540, 'Quotation', 'export-pdf', 2),
+(556, 'Invoice', 'index', 1),
+(557, 'Invoice', 'view', 1),
+(558, 'Invoice', 'create', 1),
+(559, 'Invoice', 'preview', 1),
+(560, 'Invoice', 'update', 1),
+(561, 'Invoice', 'delete', 1),
+(562, 'Invoice', 'delete-column', 1),
+(563, 'Invoice', 'delete-selected-quotation-detail', 1),
+(564, 'Invoice', 'price', 1),
+(565, 'Invoice', 'insert-in-list', 1),
+(566, 'Invoice', 'payment-method', 1),
+(567, 'Invoice', 'save-payment', 1),
+(568, 'Invoice', 'insert-in-payment-list', 1),
+(569, 'Invoice', 'print-invoice', 1),
+(570, 'Invoice', 'print-multiple-invoice', 1),
+(571, 'Invoice', 'export-excel', 1),
+(572, 'Invoice', 'index', 2),
+(573, 'Invoice', 'view', 2),
+(574, 'Invoice', 'create', 2),
+(575, 'Invoice', 'preview', 2),
+(576, 'Invoice', 'update', 2),
+(577, 'Invoice', 'delete', 2),
+(578, 'Invoice', 'delete-column', 2),
+(579, 'Invoice', 'delete-selected-quotation-detail', 2),
+(580, 'Invoice', 'price', 2),
+(581, 'Invoice', 'insert-in-list', 2),
+(582, 'Invoice', 'payment-method', 2),
+(583, 'Invoice', 'save-payment', 2),
+(584, 'Invoice', 'insert-in-payment-list', 2),
+(585, 'Invoice', 'print-invoice', 2),
+(586, 'Invoice', 'print-multiple-invoice', 2),
+(587, 'Invoice', 'export-excel', 2),
+(588, 'Invoice', 'index', 3);
 
 --
 -- Indexes for dumped tables
@@ -1220,8 +1302,8 @@ ALTER TABLE `auth_assignment`
 --
 ALTER TABLE `auth_item`
   ADD PRIMARY KEY (`name`),
-  ADD KEY `rule_name` (`rule_name`),
-  ADD KEY `type` (`type`);
+  ADD KEY `type` (`type`),
+  ADD KEY `rule_name` (`rule_name`);
 
 --
 -- Indexes for table `auth_item_child`
@@ -1376,17 +1458,17 @@ ALTER TABLE `user_permission`
 -- AUTO_INCREMENT for table `branch`
 --
 ALTER TABLE `branch`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `category`
 --
 ALTER TABLE `category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `gst`
 --
@@ -1396,22 +1478,22 @@ ALTER TABLE `gst`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 --
 -- AUTO_INCREMENT for table `invoice`
 --
 ALTER TABLE `invoice`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `invoice_detail`
 --
 ALTER TABLE `invoice_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 --
 -- AUTO_INCREMENT for table `modules`
 --
 ALTER TABLE `modules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 --
 -- AUTO_INCREMENT for table `module_access`
 --
@@ -1421,12 +1503,12 @@ ALTER TABLE `module_access`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 --
 -- AUTO_INCREMENT for table `product_level`
 --
@@ -1436,47 +1518,47 @@ ALTER TABLE `product_level`
 -- AUTO_INCREMENT for table `quotation`
 --
 ALTER TABLE `quotation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `quotation_detail`
 --
 ALTER TABLE `quotation_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `service`
 --
 ALTER TABLE `service`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT for table `service_category`
 --
 ALTER TABLE `service_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `stock_in`
 --
 ALTER TABLE `stock_in`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 --
 -- AUTO_INCREMENT for table `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `user_permission`
 --
 ALTER TABLE `user_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=431;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=589;
 --
 -- Constraints for dumped tables
 --
@@ -1485,13 +1567,13 @@ ALTER TABLE `user_permission`
 -- Constraints for table `auth_assignment`
 --
 ALTER TABLE `auth_assignment`
-  ADD CONSTRAINT `auth_assignment_ibfk_1` FOREIGN KEY (`item_name`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `auth_assignment_ibfk_1` FOREIGN KEY (`item_name`) REFERENCES `auth_item` (`name`);
 
 --
 -- Constraints for table `auth_item`
 --
 ALTER TABLE `auth_item`
-  ADD CONSTRAINT `auth_item_ibfk_1` FOREIGN KEY (`rule_name`) REFERENCES `auth_rule` (`name`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `auth_item_ibfk_1` FOREIGN KEY (`rule_name`) REFERENCES `auth_rule` (`name`);
 
 --
 -- Constraints for table `auth_item_child`

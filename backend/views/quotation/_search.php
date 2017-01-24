@@ -2,56 +2,45 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\SearchQuotation */
+/* @var $model common\models\SearchCustomer */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="quotation-search">
+ <div class="row">
 
-    <?php $form = ActiveForm::begin([
-        'action' => ['index'],
-        'method' => 'get',
-    ]); ?>
+    <div class="col-md-12">
+        <div class="search-label-container">
+            <span class="search-label"><li class="fa fa-calendar-o"></li> Enter Date-range here</span>
+        </div> 
+    </div>
+    <br/><br/>
+    
+    <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
-    <?= $form->field($model, 'id') ?>
-
-    <?= $form->field($model, 'quotation_code') ?>
-
-    <?= $form->field($model, 'user_id') ?>
-
-    <?= $form->field($model, 'customer_id') ?>
-
-    <?= $form->field($model, 'branch_id') ?>
-
-    <?php // echo $form->field($model, 'date_issue') ?>
-
-    <?php // echo $form->field($model, 'type') ?>
-
-    <?php // echo $form->field($model, 'no_of_services') ?>
-
-    <?php // echo $form->field($model, 'no_of_parts') ?>
-
-    <?php // echo $form->field($model, 'grand_total') ?>
-
-    <?php // echo $form->field($model, 'remarks') ?>
-
-    <?php // echo $form->field($model, 'created_at') ?>
-
-    <?php // echo $form->field($model, 'created_by') ?>
-
-    <?php // echo $form->field($model, 'updated_at') ?>
-
-    <?php // echo $form->field($model, 'updated_by') ?>
-
-    <?php // echo $form->field($model, 'delete') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-default']) ?>
+    <div class="col-md-3">
+        <input type="text" name="date_start" id="datestart" class="form_input form-control" placeholder="Date Start" readonly />
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <div class="col-md-3">
+        <input type="text" name="date_end" id="dateend" class="form_input form-control" placeholder="Date End" readonly />
+    </div>
 
-</div>
+    <div class="col-md-3">
+        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
+        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
+    </div>
+
+    <div class="col-md-3"></div>
+
+    <?php ActiveForm::end(); ?>
+    <br/>
+
+ </div>
+
+
+
+
+

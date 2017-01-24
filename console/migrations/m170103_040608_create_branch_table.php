@@ -16,7 +16,7 @@ class m170103_040608_create_branch_table extends Migration
             'id' => $this->primaryKey(),
             'code' => $this->string(50)->notNull(),
             'name' => $this->string(50)->notNull(),
-            'address' => $this->string(50)->notNull(),
+            'address' => $this->string(100)->notNull(),
             'contact_no' => $this->string(50)->notNull(),
             'status' => $this->integer(5)->notNull(),
             'created_at' => $this->date()->notNull(),

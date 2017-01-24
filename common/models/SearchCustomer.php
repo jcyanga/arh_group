@@ -89,7 +89,9 @@ class SearchCustomer extends Customer
         return $dataProvider;
     }
 
-    public function searchCustomer($fullname) {
+    // Search box result
+    public function searchCustomerFullname($fullname) 
+    {
         $rows = new Query();
 
         $result = $rows->select(['*'])
@@ -98,5 +100,70 @@ class SearchCustomer extends Customer
                     ->all();
 
         return $result;            
-    }   
+    }
+
+    // Search if with same name.
+    public function getNameAndEmail($fullname, $email) 
+    {
+       $rows = new Query();
+    
+       $result = $rows->select(['fullname', 'email'])
+        ->from('customer')
+        ->where(['fullname' => $fullname])
+        ->andWhere(['email' => $email])
+        ->all();
+        
+        if( count($result) > 0 ) {
+            return TRUE;
+        }else {
+            return 0;
+        }
+    }
+
+    // get customer quotation by search
+    public function getCustomerQuotationBySearch($keyword) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select([ 'quotation.id as quotationId', 'quotation.quotation_code as quotationCode', 'quotation.user_id', 'user.fullname as salesPerson', 'quotation.customer_id', 'customer.fullname as customerName', 'customer.carplate', 'quotation.branch_id', 'branch.name', 'quotation.date_issue', 'quotation.grand_total', 'quotation.remarks as quotationRemarks', 'quotation_detail.id as quotationDetailId', 'quotation_detail.service_part_id', 'category.category', 'product.product_name', 'inventory.selling_price', 'quotation_detail.quantity', 'quotation_detail.selling_price as quotationPartsPrice', 'quotation_detail.subTotal' ])
+                ->from('quotation')
+                ->join('LEFT JOIN', 'user', 'quotation.user_id = user.id')
+                ->join('LEFT JOIN', 'customer', 'quotation.customer_id = customer.id')
+                ->join('LEFT JOIN', 'branch', 'quotation.branch_id = branch.id')
+                ->join('LEFT JOIN', 'quotation_detail', 'quotation.id = quotation_detail.quotation_id')
+                ->join('LEFT JOIN', 'inventory', 'quotation_detail.service_part_id = inventory.id')
+                ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
+                ->join('LEFT JOIN', 'category', 'product.category_id = category.id')
+                ->where(['LIKE', 'customer.fullname', $keyword ])
+                ->orWhere(['LIKE', 'customer.carplate', $keyword ])
+                ->orWhere(['LIKE', 'product.product_name',  $keyword ])
+                ->orderBy('date_issue','desc')
+                ->all();
+
+        return $result;
+    }
+
+    // get customer invoice by search
+    public function getCustomerInvoiceBySearch($keyword) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select([ 'invoice.id as invoiceId', 'invoice.invoice_no as invoiceNo', 'invoice.user_id', 'user.fullname as salesPerson', 'invoice.customer_id', 'customer.fullname as customerName', 'customer.carplate', 'invoice.branch_id', 'branch.name', 'invoice.date_issue', 'invoice.grand_total', 'invoice.remarks as invoiceRemarks', 'invoice_detail.id as invoiceDetailId', 'invoice_detail.service_part_id', 'category.category', 'product.product_name', 'inventory.selling_price', 'invoice_detail.quantity', 'invoice_detail.selling_price as invoicePartsPrice', 'invoice_detail.subTotal' ])
+                ->from('invoice')
+                ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+                ->join('LEFT JOIN', 'customer', 'invoice.customer_id = customer.id')
+                ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+                ->join('LEFT JOIN', 'invoice_detail', 'invoice.id = invoice_detail.invoice_id')
+                ->join('LEFT JOIN', 'inventory', 'invoice_detail.service_part_id = inventory.id')
+                ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
+                ->join('LEFT JOIN', 'category', 'product.category_id = category.id')
+                ->where(['LIKE', 'customer.fullname', $keyword ])
+                ->orWhere(['LIKE', 'customer.carplate', $keyword ])
+                ->orWhere(['LIKE', 'product.product_name',  $keyword ])
+                ->orderBy('date_issue','desc')
+                ->all();
+
+        return $result;
+    }
+
 }

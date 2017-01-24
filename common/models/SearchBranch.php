@@ -76,14 +76,35 @@ class SearchBranch extends Branch
         return $dataProvider;
     }
 
-    public function searchBranch($name) {
+    // Search box result.
+    public function searchBranchName($name) 
+    {
         $rows = new Query();
 
         $result = $rows->select(['*'])
                     ->from('branch')
                     ->where(['like', 'name', $name])
+                    ->andWhere('id > 1')
                     ->all();
 
         return $result;  
     }
+
+    // Search if with same name.
+    public function getBranch($name) 
+    {
+       $rows = new Query();
+    
+       $result = $rows->select(['name'])
+        ->from('branch')
+        ->where(['name' => $name])
+        ->all();
+        
+        if( count($result) > 0 ) {
+            return TRUE;
+        }else {
+            return 0;
+        }
+    }
+
 }

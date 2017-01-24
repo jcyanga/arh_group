@@ -10,11 +10,9 @@ use common\models\Branch;
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
-$dataBranch = ArrayHelper::map(Branch::find()->all(), 'id', 'name');
+$dataBranch = ArrayHelper::map(Branch::find()->where('id > 1')->all(), 'id', 'name');
 
 ?>
-
-</style>
 
  <div class="row">
 
@@ -24,8 +22,7 @@ $dataBranch = ArrayHelper::map(Branch::find()->all(), 'id', 'name');
         </div> 
     </div>
     <br/><br/>
-<!-- 'id' => 'demo-form2' -->
-<!-- , 'class' => 'form-inline' -->
+    
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
     <div class="col-md-4">

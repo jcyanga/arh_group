@@ -30,7 +30,7 @@ $this->title = 'GST';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4>Set GST</h4></span>
+        <span class="form-header"><h4><i class="fa fa-legal"></i> Set GST</h4></span>
     </div>
     <hr/>
 
@@ -68,11 +68,11 @@ $this->title = 'GST';
 
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
-        <tr style="font-size: 11px;" class="headings">
-            <th> # </th>
-            <th> GST </th>
-            <th> BRANCH NAME </th>
-            <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
+        <tr class="headings">
+            <th class="tblalign_center" > # </th>
+            <th class="tblalign_center" > GST </th>
+            <th class="tblalign_center" > BRANCH NAME </th>
+            <th class="no-link last tblalign_center"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
     </thead>
@@ -80,12 +80,12 @@ $this->title = 'GST';
     <tbody>
         <?php if( !empty($getGst) ): ?>
             <?php foreach( $getGst as $row){ ?>
-                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
-                    <td class=" "><?php echo $row['id'];  ?></td>
-                    <td class=" "><?php echo $row['gst'];  ?></td>
-                    <td class=" "><?php echo $row['name'];  ?></td>
-                    <td style="text-align: center; font-size: 13px;" class=" last">
-                        <a href="?r=gst/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
+                <tr class="even_odd pointer">
+                    <td class="tblalign_center" ><?php echo $row['id'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['gst'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['name'];  ?></td>
+                    <td class="last tblalign_center">
+                        <a href="?r=gst/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a>
                     </td>
                 </tr>
             <?php } ?> 

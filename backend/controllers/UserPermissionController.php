@@ -38,7 +38,7 @@ class UserPermissionController extends Controller
             }
 
         }   
-        // print_r($action['developer']); exit;
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -61,6 +61,12 @@ class UserPermissionController extends Controller
                         'actions' => $action['staff'],
                         'allow' => $allow['staff'],
                         'roles' => ['staff'],
+                    ],
+
+                    [
+                        'actions' => $action['customer'],
+                        'allow' => $allow['customer'],
+                        'roles' => ['customer'],
                     ]
        
                 ],
@@ -84,25 +90,22 @@ class UserPermissionController extends Controller
         $searchModel = new SearchUserPermission();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchUserPermission')['role_id'] ) || isset(Yii::$app->request->get('SearchUserPermission')['controller'] )  || isset(Yii::$app->request->get('SearchUserPermission')['action'] ) ) {
+        if( !empty(Yii::$app->request->get('SearchUserPermission')['role_id'] ) || !empty(Yii::$app->request->get('SearchUserPermission')['controller'] )  || !empty(Yii::$app->request->get('SearchUserPermission')['action'] ) ) {
+                $getUserPermission = $searchModel->searchUserPermissionNames(Yii::$app->request->get('SearchUserPermission')['role_id'],Yii::$app->request->get('SearchUserPermission')['controller'],Yii::$app->request->get('SearchUserPermission')['action']);
 
-                $role_id = Yii::$app->request->get('SearchUserPermission')['role_id'];
-                $controller = Yii::$app->request->get('SearchUserPermission')['controller'];
-                $action = Yii::$app->request->get('SearchUserPermission')['action'];
-                $getUserPermission = $searchModel->searchUserPermission($role_id,$controller,$action);
-
-        }elseif ( Yii::$app->request->get('SearchUserPermission')['role_id'] == "" && Yii::$app->request->get('SearchUserPermission')['controller'] == ""  && Yii::$app->request->get('SearchUserPermission')['action'] == "" ) {
-                $model = new UserPermission();
-                $getUserPermission = $model->getUserPermission();
-        
         }else {
-                $model = new UserPermission();
-                $getUserPermission = $model->getUserPermission();
+                $getUserPermission = $searchModel->getUserPermission();
 
         }
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getUserPermission' => $getUserPermission, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-        ]);
+        return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getUserPermission' => $getUserPermission, 
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
+                    ]);
     }
 
     /**
@@ -205,9 +208,11 @@ class UserPermissionController extends Controller
         }
     }
 
-    public function actionSetPermission() {
-
+    public function actionSetPermission() 
+    {
         $model = new UserPermission();
+        $searchModel = new SearchUserPermission();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $controllerlist = array();
         if ($handle = opendir('../controllers')) {
@@ -240,9 +245,8 @@ class UserPermissionController extends Controller
         $userRoleId = 0;
         $controllerNameChosen = '';
         $controllerNameLong = '';
-        $userRole = Role::find()->all();
+        $userRole = Role::find()->where('id > 1')->all();
         $permission = [];
-// ->where('id > 1')
 
         if ( isset( $_GET['c'] ) && !empty( $_GET['c'] ) && isset( $_GET['u'] ) && !empty( $_GET['u'] ) ) {
             $controllerName = $_GET['c'];
@@ -258,9 +262,7 @@ class UserPermissionController extends Controller
             }
         }
 
-        if (Yii::$app->request->post()) {
-            // d(Yii::$app->request->post());exit;
-
+        if ( Yii::$app->request->post() ) {
             $controllerNameLong = Yii::$app->request->post()['controllerName'];
             $getModelName = explode('Controller', $controllerNameLong);
             $controllerName = $getModelName[0];
@@ -273,11 +275,8 @@ class UserPermissionController extends Controller
             foreach ( $getPermission as $gP ) {
                 $permission[] = $gP->action;
             }
-            
-
 
         if ( isset( Yii::$app->request->post()['checkBox'] ) && !empty ( Yii::$app->request->post()['checkBox'] ) )  {
-            // d(Yii::$app->request->post());exit;
                 UserPermission::deleteAll("role_id = $userRoleId AND controller = '$controllerName' ");
                 $checkBox = Yii::$app->request->post()['checkBox'] ;
                 foreach ( $checkBox as $actions => $cB ) {
@@ -287,17 +286,29 @@ class UserPermissionController extends Controller
                     $newPermission->role_id = $userRoleId;
                     $newPermission->save();
                 }
-                return $this->redirect(['set-permission','c' => $controllerName, 'u' => $userRoleId]);
+
+                $getUserPermission = $searchModel->getUserPermission();
+                
+                return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getUserPermission' => $getUserPermission, 
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => 'Success!', 
+                        'errType' => 'alert alert-success', 
+                        'msg' => 'Your record was successfully added in the database.'
+                    ]);
             }
         }
 
-        return $this->render('set-permission', ['model' => $model, 'userRole' => $userRole,
-            'userRoleId' => $userRoleId,
-            'controllerNameLong' => $controllerNameLong,
-            'controllerNameChosen' => $controllerNameChosen,
-            'controllerList' => $controllerList,
-            'controllerActions' => $controllerActions,
-            'permission' => $permission
-            ]);
+        return $this->render('set-permission', [
+                        'model' => $model, 
+                        'userRole' => $userRole,
+                        'userRoleId' => $userRoleId,
+                        'controllerNameLong' => $controllerNameLong,
+                        'controllerNameChosen' => $controllerNameChosen,
+                        'controllerList' => $controllerList,
+                        'controllerActions' => $controllerActions,
+                        'permission' => $permission
+                    ]);
     }
 }

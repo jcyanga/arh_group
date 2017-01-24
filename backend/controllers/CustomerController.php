@@ -40,7 +40,7 @@ class CustomerController extends Controller
             }
 
         }   
-        // print_r($action['developer']); exit;
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -63,6 +63,12 @@ class CustomerController extends Controller
                         'actions' => $action['staff'],
                         'allow' => $allow['staff'],
                         'roles' => ['staff'],
+                    ],
+
+                    [
+                        'actions' => $action['customer'],
+                        'allow' => $allow['customer'],
+                        'roles' => ['customer'],
                     ]
        
                 ],
@@ -86,20 +92,21 @@ class CustomerController extends Controller
         $searchModel = new SearchCustomer();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchCustomer')['fullname'] ) ) {
-
-                $fullname = Yii::$app->request->get('SearchCustomer')['fullname'];
-                $getCustomer = $searchModel->searchCustomer($fullname);
-
-        }elseif ( Yii::$app->request->get('SearchCustomer')['fullname'] == "" ) {
-                $getCustomer = Customer::find()->all();
+        if( !empty(Yii::$app->request->get('SearchCustomer')['fullname'])) {
+                $getCustomer = $searchModel->searchCustomerFullname(Yii::$app->request->get('SearchCustomer')['fullname']);
 
         }else {
                 $getCustomer = Customer::find()->all();
         }
         
-        return $this->render('index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'getCustomer' => $getCustomer, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-        ]);
+        return $this->render('index', [
+                    'searchModel' => $searchModel, 
+                    'dataProvider' => $dataProvider, 
+                    'getCustomer' => $getCustomer, 
+                    'errTypeHeader' => '', 
+                    'errType' => '', 
+                    'msg' => ''
+                ]);
     }
 
     /**
@@ -122,36 +129,52 @@ class CustomerController extends Controller
     public function actionCreate()
     {
         $model = new Customer();
-
+        $searchModel = new SearchCustomer();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $getCustomer = Customer::find()->all();
+        
         if ($model->load(Yii::$app->request->post())) {
+            $result = $searchModel->getNameAndEmail(Yii::$app->request->post('Customer') ['fullname'], Yii::$app->request->post('Customer') ['email']);
 
-            $fullname = Yii::$app->request->post('Customer') ['fullname'];
-            $email = Yii::$app->request->post('Customer') ['email'];
-
-            $result = $model->getNameAndEmail($fullname, $email);
-
-            if( $result == 1 ) {
-                
-                return $this->render('create', ['model' => $model, 'getCustomer' => $getCustomer, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change customer fullname or e-mail.']);
+            if( $result == 1 ) {        
+                return $this->render('create', [
+                                'model' => $model, 
+                                'getCustomer' => $getCustomer, 
+                                'errTypeHeader' => 'Warning!', 
+                                'errType' => 'alert alert-warning', 
+                                'msg' => 'You already enter an existing customer account, Please! Change customer fullname or e-mail.'
+                            ]);
             }
         
-            if($model->save()) {
-                $searchModel = new SearchCustomer();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-                $getCustomer = Customer::find()->all();
-
-                return $this->render('index', ['searchModel' => $searchModel, 'getCustomer' => $getCustomer,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
+            if( $model->save() ) {
+                return $this->render('index', [
+                            'searchModel' => $searchModel, 
+                            'getCustomer' => $getCustomer,
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Your record was successfully added in the database.'
+                        ]);
 
             }else {
 
-                return $this->render('create', ['model' => $model, 'getCustomer' => $getCustomer, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
+                return $this->render('create', [
+                                'model' => $model, 
+                                'getCustomer' => $getCustomer, 
+                                'errTypeHeader' => 'Error!', 
+                                'errType' => 'alert alert-error', 
+                                'msg' => 'You have an error Check All the required fields.'
+                            ]);
             }
 
         } else {
 
-            return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('create', [
+                            'model' => $model, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
         }
     }
 
@@ -164,18 +187,28 @@ class CustomerController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $searchModel = new SearchCustomer();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // return $this->redirect(['view', 'id' => $model->id]);
-            $searchModel = new SearchCustomer();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            
             $getCustomer = Customer::find()->all();
 
-            return $this->render('index', ['searchModel' => $searchModel, 'getCustomer' => $getCustomer,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+            return $this->render('index', [
+                            'searchModel' => $searchModel, 
+                            'getCustomer' => $getCustomer,
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Your record was successfully updated in the database.'
+                        ]);
+
         } else {
-            return $this->render('update', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('update', [
+                                'model' => $model, 
+                                'errTypeHeader' => '', 
+                                'errType' => '', 
+                                'msg' => ''
+                            ]);
         }
     }
 
@@ -194,23 +227,20 @@ class CustomerController extends Controller
 
     public function actionDeleteColumn($id)
     {
-        // $this->findModel($id)->delete();
-        // $model = $this->findModel($id);
-        // $model->deleted = 1;
-        // if ( $model->save() ) {
-        //     Yii::$app->getSession()->setFlash('success', 'Customer deleted');
-        // } else {
-        //     Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
-        // }
         $searchModel = new SearchCustomer();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $this->findModel($id)->delete();
-
         $getCustomer = Customer::find()->all();
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getCustomer' => $getCustomer,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+        return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getCustomer' => $getCustomer,
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => 'Success!', 
+                        'errType' => 'alert alert-success', 
+                        'msg' => 'Your record was successfully deleted in the database.'
+                    ]);
     }
 
     /**
@@ -229,14 +259,19 @@ class CustomerController extends Controller
         }
     }
 
-    public function actionExportExcel() {
-
-        $model = new Customer();
-
-        $result = $model->getCustomerList();
-
+    public function actionExportExcel() 
+    {
+        $result = Customer::find()->all();
+        
         $objPHPExcel = new \PHPExcel();
-                 
+        $styleHeadingArray = array(
+            'font'  => array(
+            'bold'  => true,
+            'color' => array('rgb' => '000000'),
+            'size'  => 11,
+            'name'  => 'Calibri'
+        ));
+
         $sheet=0;
           
         $objPHPExcel->setActiveSheetIndex($sheet);
@@ -253,12 +288,27 @@ class CustomerController extends Controller
              ->setCellValue('F1', 'Race')
              ->setCellValue('G1', 'Car Model')
              ->setCellValue('H1', 'Car Plate')
-             ->setCellValue('I1', 'Member Expiry');
-                 
+             ->setCellValue('I1', 'Member Expiry')
+             ->setCellValue('J1', 'Status');
+             
+             $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('C1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('D1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('E1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('F1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('G1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('H1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('I1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('J1')->applyFromArray($styleHeadingArray);
+
          $row=2;
                                 
                 foreach ($result as $result_row) {  
-                        
+                    
+                    $expiryDate = date('m-d-Y', strtotime($result_row['member_expiry']) );    
+                    $status = ( $result_row['status'] == 1 ) ? 'Active' : 'Inactive';
+
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['fullname']); 
                     $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['address']);
                     $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row['email']);
@@ -267,7 +317,10 @@ class CustomerController extends Controller
                     $objPHPExcel->getActiveSheet()->setCellValue('F'.$row,$result_row['race']);
                     $objPHPExcel->getActiveSheet()->setCellValue('G'.$row,$result_row['model']);
                     $objPHPExcel->getActiveSheet()->setCellValue('H'.$row,$result_row['carplate']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$row,$result_row['member_expiry']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$row,$expiryDate);
+                    $objPHPExcel->getActiveSheet()->setCellValue('J'.$row,$status);
+                    
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
                     $row++ ;
                 }
                         
@@ -280,30 +333,18 @@ class CustomerController extends Controller
 
     }
 
-    public function actionExportPdf() {
-
-        $model = new Customer();
-
-        $result = $model->getCustomerList();
+    public function actionExportPdf() 
+    {
+        $result = Customer::find()->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
-        // instantiate and use the dompdf class
-        // $dompdf = new Dompdf();
-
-        $dompdf     = new Dompdf();
-        //return $pdf->stream();
-
+        
+        $dompdf = new Dompdf();
+        
         $dompdf->loadHtml($content);
-
-        // // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4', 'landscape');
-
-        // // Render the HTML as PDF
         $dompdf->render();
 
-        // Output the generated PDF to Browser
         $dompdf->stream();
-          
-
     }
 
 }

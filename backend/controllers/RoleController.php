@@ -39,7 +39,7 @@ class RoleController extends Controller
             }
 
         }   
-        // print_r($action['developer']); exit;
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -62,6 +62,12 @@ class RoleController extends Controller
                         'actions' => $action['staff'],
                         'allow' => $allow['staff'],
                         'roles' => ['staff'],
+                    ],
+
+                    [
+                        'actions' => $action['customer'],
+                        'allow' => $allow['customer'],
+                        'roles' => ['customer'],
                     ]
        
                 ],
@@ -85,19 +91,22 @@ class RoleController extends Controller
         $searchModel = new SearchRole();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchRole')['role'] ) ) {
+        if( !empty(Yii::$app->request->get('SearchRole')['role'])) {
+                $getRole = $searchModel->searchRoleName(Yii::$app->request->get('SearchRole')['role']);
 
-                $role = Yii::$app->request->get('SearchRole')['role'];
-                $getRole = $searchModel->searchRole($role);
-
-        }elseif ( Yii::$app->request->get('SearchRole')['role'] == "" ) {
-                $getRole = Role::find()->where('id > 1')->all();
         }else {
                 $getRole = Role::find()->where('id > 1')->all();
+        
         }
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getRole' => $getRole, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-        ]);
+        return $this->render('index', [
+                    'searchModel' => $searchModel, 
+                    'getRole' => $getRole,
+                    'dataProvider' => $dataProvider, 
+                    'errTypeHeader' => '', 
+                    'errType' => '', 
+                    'msg' => ''
+                ]);
     }
 
     /**
@@ -120,32 +129,49 @@ class RoleController extends Controller
     public function actionCreate()
     {
         $model = new Role();
+        $searchModel = new SearchRole();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if ($model->load(Yii::$app->request->post())) {
-
-            $role = Yii::$app->request->post('Role') ['role'];
-
-            $result = $model->getRole($role);
+            $result = $searchModel->getRole(Yii::$app->request->post('Role') ['role']);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change the role name.']);
+                return $this->render('create', [
+                                'model' => $model, 
+                                'errTypeHeader' => 'Warning!', 
+                                'errType' => 'alert alert-warning', 
+                                'msg' => 'You already enter an existing name, Please! Change the role name.'
+                            ]);
             }
 
-            if($model->save()) {
-                $searchModel = new SearchRole();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+            if( $model->save() ) {
                 $getRole = Role::find()->where('id > 1')->all();;
 
-                return $this->render('index', ['searchModel' => $searchModel, 'getRole' => $getRole,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
+                return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getRole' => $getRole,
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => 'Success!', 
+                        'errType' => 'alert alert-success', 
+                        'msg' => 'Your record was successfully added in the database.'
+                    ]);
 
             }else {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
+                return $this->render('create', [
+                            'model' => $model, 
+                            'errTypeHeader' => 'Error!', 
+                            'errType' => 'alert alert-error', 
+                            'msg' => 'You have an error Check All the required fields.'
+                        ]);
             }
 
         } else {
-             return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+             return $this->render('create', [
+                            'model' => $model, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
         }
     }
 
@@ -158,18 +184,29 @@ class RoleController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $searchModel = new SearchRole();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // return $this->redirect(['view', 'id' => $model->id]);
-            $searchModel = new SearchRole();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            
+        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {    
             $getRole = Role::find()->where('id > 1')->all();;
 
-            return $this->render('index', ['searchModel' => $searchModel, 'getRole' => $getRole,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+            return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getRole' => $getRole,
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => 'Success!', 
+                        'errType' => 'alert alert-success', 
+                        'msg' => 'Your record was successfully updated in the database.'
+                    ]);
+
         } else {
-            return $this->render('update', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('update', [
+                        'model' => $model, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
+                    ]);
+        
         }
     }
 
@@ -188,23 +225,20 @@ class RoleController extends Controller
 
     public function actionDeleteColumn($id)
     {
-        // $this->findModel($id)->delete();
-        // $model = $this->findModel($id);
-        // $model->deleted = 1;
-        // if ( $model->save() ) {
-        //     Yii::$app->getSession()->setFlash('success', 'Customer deleted');
-        // } else {
-        //     Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
-        // }
         $searchModel = new SearchRole();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $this->findModel($id)->delete();
-
         $getRole = Role::find()->where('id > 1')->all();;
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getRole' => $getRole,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+        return $this->render('index', [
+                    'searchModel' => $searchModel, 
+                    'getRole' => $getRole,
+                    'dataProvider' => $dataProvider, 
+                    'errTypeHeader' => 'Success!', 
+                    'errType' => 'alert alert-success', 
+                    'msg' => 'Your record was successfully deleted in the database.'
+                ]);
     }
 
     /**
@@ -223,10 +257,8 @@ class RoleController extends Controller
         }
     }
 
-    public function actionExportExcel() {
-
-        // $model = new Role();
-
+    public function actionExportExcel() 
+    {
         $result = Role::find()->where('id > 1')->all();;
 
         $objPHPExcel = new \PHPExcel();
@@ -272,29 +304,17 @@ class RoleController extends Controller
 
     }
 
-    public function actionExportPdf() {
-
-        // $model = new Role();
-
+    public function actionExportPdf() 
+    {
         $result = Role::find()->where('id > 1')->all();;
         $content = $this->renderPartial('_pdf', ['result' => $result]);
-        // instantiate and use the dompdf class
-        // $dompdf = new Dompdf();
-
-        $dompdf     = new Dompdf();
-        //return $pdf->stream();
-
+        
+        $dompdf = new Dompdf();
+        
         $dompdf->loadHtml($content);
-
-        // // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4', 'landscape');
-
-        // // Render the HTML as PDF
         $dompdf->render();
 
-        // Output the generated PDF to Browser
-        $dompdf->stream('User-RoleList-' . date('m-d-Y'));
-          
-
+        $dompdf->stream('User-RoleList-' . date('m-d-Y'));       
     }
 }

@@ -7,8 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Customer */
 
 $this->title = 'View User';
-// $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
-// $this->params['breadcrumbs'][] = $this->title;
+ 
 ?>
 
 <div class="row form-container">
@@ -32,7 +31,7 @@ $this->title = 'View User';
  </div>    
  <br/>
 
-    <div class="tbl-container">
+    <div class="tbl-container viewDesign">
         <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -42,7 +41,14 @@ $this->title = 'View User';
             'fullname',
             'email',    
             'username',
-            'created_at',
+            [
+                'label' => 'Status',
+                'value' => $model['status'] ? 'Yes' : 'No',
+            ], 
+            [
+                'label' => 'Created At',
+                'value' => date('m-d-Y', strtotime($model['created_at'])),
+            ], 
         ],
         ]) ?>
         <br/>

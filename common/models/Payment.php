@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 
+use yii\db\Query;
 /**
  * This is the model class for table "payment".
  *
@@ -64,5 +65,6 @@ class Payment extends \yii\db\ActiveRecord
             'payment_time' => 'Payment Time',
             'status' => 'Status',
         ];
-    }
+    }   
+
 }

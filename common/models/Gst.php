@@ -43,23 +43,4 @@ class Gst extends \yii\db\ActiveRecord
         ];
     }
 
-    // get Gst
-    public function getGst() {
-        $rows = new Query();
-
-        $result = $rows->select(['gst.id', 'gst.branch_id', 'branch.name', 'gst.gst'])
-                    ->from('gst')
-                    ->join('INNER JOIN', 'branch', 'gst.branch_id = branch.id')
-                    ->all();
-
-        if( count($result) > 0 ) {
-            return $result;
-
-        }else{
-            return 0;
-
-        }   
-        
-    }
-
 }

@@ -69,7 +69,9 @@ class SearchSupplier extends Supplier
         return $dataProvider;
     }
 
-    public function searchSupplier($supplier_name) {
+    // Search box result
+    public function searchSupplierName($supplier_name) 
+    {
         $rows = new Query();
 
         $result = $rows->select(['*'])
@@ -78,5 +80,22 @@ class SearchSupplier extends Supplier
                     ->all();
 
         return $result;  
+    }
+
+    // Search if with same name.
+    public function getSuppliers($supplier_name) 
+    {
+       $rows = new Query();
+    
+       $result = $rows->select(['supplier_name'])
+        ->from('supplier')
+        ->where(['supplier_name' => $supplier_name])
+        ->all();
+        
+        if( count($result) > 0 ) {
+            return TRUE;
+        }else {
+            return 0;
+        }
     }
 }

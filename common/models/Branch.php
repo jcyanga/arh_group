@@ -62,20 +62,4 @@ class Branch extends \yii\db\ActiveRecord
         ];
     }
 
-    // Search if with same name.
-    public function getBranch($name) {
-           $rows = new Query();
-        
-           $result = $rows->select(['name'])
-            ->from('branch')
-            ->where(['name' => $name])
-            ->all();
-            
-            if( count($result) > 0 ) {
-                return TRUE;
-            }else {
-                return 0;
-            }
-    }
-
 }

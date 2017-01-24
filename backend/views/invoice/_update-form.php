@@ -24,12 +24,10 @@ if( isset($getGst) ) {
 
 }
 
-
 $datetime = date('Y-m-d h:i:s');
 $userId = Yii::$app->user->identity->id;
 $dataSupplier = ArrayHelper::map(Supplier::find()->all(), 'id', 'supplier_name');
 $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
-// $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
 ?>
 
@@ -49,7 +47,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
  <div class="col-md-12 col-sm-12 col-xs-12">
  
     <div class="form-title-container">
-        <span style="color: #666;" class="form-header"><h4><i class="fa fa-pencil"></i> Create Invoice</h4></span>
+        <span class="form-header"><h4><i class="fa fa-pencil"></i> Create Invoice</h4></span>
     </div>
     <hr/>
 
@@ -69,7 +67,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
         </div>
         <br/><br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
             <div class="col-md-6">
                 <div class="row">
@@ -101,7 +99,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
         </div>
         <br/><br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
         <div class="col-md-6">
             <div class="row">
@@ -113,9 +111,13 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
                     <select name="Invoice[selectedBranch]" class="qSelect select3_single" >
                         <option value="<?= $model['branch_id'] ?>">[ <?= $model['code'] ?> ] <?= $model['name'] ?></option>
                         <option value="0">SEARCH BRANCH HERE.</option>
-                        <?php foreach( $getBranchList as $row ): ?>
-                            <option value="<?php echo $row['id']; ?>">[ <?php echo $row['code']; ?> ] <?php echo $row['branchList']; ?></option>
-                        <?php endforeach; ?>
+                        <?php if( !empty($getBranchList) ): ?>
+                            <?php foreach( $getBranchList as $row ): ?>
+                                <option value="<?php echo $row['id']; ?>">[ <?php echo $row['code']; ?> ] <?php echo $row['branchList']; ?></option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="0">NO RECORD FOUND.</option>
+                        <?php endif; ?>
                     </select>
                 </div>
 
@@ -125,7 +127,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
         </div>
         <br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
         <div class="col-md-6">
             <div class="row">
@@ -137,9 +139,13 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
                     <select name="Invoice[selectedCustomer]" class="qSelect select3_single" >
                         <option value="<?= $model['customer_id'] ?>">[ <?= $model['carplate'] ?> ] <?= $model['fullname'] ?></option>
                         <option value="0">SEARCH CUSTOMER HERE.</option>
-                        <?php foreach( $getCustomerList as $row ): ?>
-                            <option value="<?php echo $row['id']; ?>">[ <?php echo $row['carplate']; ?> ] <?php echo $row['customerList']; ?></option>
-                        <?php endforeach; ?>
+                        <?php if( !empty($getCustomerList) ): ?>
+                            <?php foreach( $getCustomerList as $row ): ?>
+                                <option value="<?php echo $row['id']; ?>">[ <?php echo $row['carplate']; ?> ] <?php echo $row['customerList']; ?></option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="0">NO RECORD FOUND.</option>
+                        <?php endif; ?>
                     </select>   
                 </div>
 
@@ -149,7 +155,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
         </div>
         <br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
         <div class="col-md-6">
             <div class="row">
@@ -161,9 +167,13 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
                     <select name="Invoice[selectedUser]" class="qSelect select3_single" >
                         <option value="<?= $model['user_id'] ?>"><?= $model['salesPerson'] ?></option>
                         <option value="0">SEARCH SALES PERSON HERE.</option>
-                        <?php foreach( $getUserList as $row ): ?>
-                            <option value="<?php echo $row['id']; ?>"> <?php echo $row['userList']; ?> </option>
-                        <?php endforeach; ?>
+                        <?php if( !empty($getUserList) ): ?>
+                            <?php foreach( $getUserList as $row ): ?>
+                                <option value="<?php echo $row['id']; ?>"> <?php echo $row['userList']; ?> </option>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <option value="0">NO RECORD FOUND.</option>
+                        <?php endif; ?>
                     </select>
                 </div>
 
@@ -173,13 +183,13 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
         </div>
         <br/><br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
         <div class="col-md-6">
             
             <span class="invoiceLabel" ><i class="fa fa-comment"></i> Remarks </span>
 
-            <textarea name="Invoice[remarks]" placeholder="Write your remarks here." id="message" class="qtxtarea form-control" data-parsley-trigger="keyup" data-parsley-minlength="10" data-parsley-maxlength="100" data-parsley-minlength-message="You need to enter at least a 10 caracters long comment." data-parsley-validation-threshold="10"><?= $model['remarks'] ?></textarea>  
+            <textarea name="Invoice[remarks]" style="font-size: 11.5px;" placeholder="Write your remarks here." id="message" class="qtxtarea form-control" data-parsley-trigger="keyup" data-parsley-minlength="10" data-parsley-maxlength="300" data-parsley-minlength-message="You need to enter at least a 10 caracters long comment." data-parsley-validation-threshold="10"><?= $model['remarks'] ?></textarea>  
         </div>
         
         </div>
@@ -209,7 +219,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
         </div>
         <br/><br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
         <div class="col-md-5">
 
@@ -220,15 +230,23 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
                 <option value="0">SEARCH PARTS OR SERVICES</option>
                 
                 <optgroup label="- SERVICES - ">
-                    <?php foreach($getServicesList as $srowList): ?>
-                        <option value="0-<?php echo $srowList['id']; ?>">[ <?php echo $srowList['name']; ?> ] <?php echo $srowList['service_name']; ?></option>                 
-                    <?php endforeach; ?>
+                    <?php if( !empty($getServicesList) ): ?>
+                        <?php foreach($getServicesList as $srowList): ?>
+                            <option value="0-<?php echo $srowList['id']; ?>">[ <?php echo $srowList['name']; ?> ] <?php echo $srowList['service_name']; ?></option>                 
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                            <option value="0">NO RECORD FOUND.</option>
+                    <?php endif; ?>
                  </optgroup>
 
                  <optgroup label="- PARTS - ">
-                    <?php foreach($getPartsList as $prowList): ?>
-                        <option value="1-<?php echo $prowList['id']; ?>">[ <?php echo $prowList['category']; ?> ] <?php echo $prowList['product_name']; ?></option>                 
-                    <?php endforeach; ?>
+                    <?php if( !empty($getPartsList) ): ?>
+                        <?php foreach($getPartsList as $prowList): ?>
+                            <option value="1-<?php echo $prowList['id']; ?>">[ <?php echo $prowList['supplier_name']; ?> | <?php echo $prowList['category']; ?> ] <?php echo $prowList['product_name']; ?></option>                 
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                            <option value="0">NO RECORD FOUND.</option>
+                    <?php endif; ?>
                  </optgroup>      
             
             </select>
@@ -238,7 +256,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
         </div>
         <br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
             
             <div class="col-md-3">
         
@@ -277,7 +295,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
         </div>
         <br/>
 
-        <div style="margin: 0 auto;" id="invSelectedContainer" class="row">
+        <div id="invSelectedContainer" class="row transactionFormAlign" >
             
             <div class="col-md-12">
                 <b><i class="fa fa-thumbs-up"></i> Selected Services or Parts</b>
@@ -285,7 +303,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
             <hr/>
             
             <?php foreach($getService as $sRow): ?>
-            <div class="col-md-12">    
+            <div class="col-md-12 item-<?= $sRow['id'] ?>">    
                 <div class="row item">
                     <div class="col-md-6">
                         <b> <input type="checkbox" name="InvoiceDetail[task][]" id="task" class="form_invSP task"  value="<?= $sRow['serviceId'] ?>" <?php if( $sRow['task'] == 1 ): ?> checked='checked' <?php endif; ?> /> Pending Service ?</b> 
@@ -300,7 +318,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
                                 <a href="javascript:saveInvSelectedItem(<?= $sRow['id'] ?>)"><i class="fa fa-save"></i> Save</a>
                             </span>
                             <span class="remove-button">
-                                <a href="?r=invoice/delete-selected-quotation-detail&id=<?= $sRow['id'] ?>&invoiceId=<?= $sRow['id'] ?>" onclick="return deleteConfirmation()">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                                <a href="javascript:removeInvSelectedItem(<?= $sRow['id'] ?>)" >&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
                             </span>
                         </div>
                     </div>
@@ -331,7 +349,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
             <?php endforeach; ?>
 
             <?php foreach($getPart as $pRow): ?>
-            <div class="col-md-12">    
+            <div class="col-md-12 item-<?= $pRow['id'] ?>">    
                 <div class="row item">
                     <div class="col-md-6"></div>
 
@@ -344,7 +362,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
                                 <a href="javascript:saveInvSelectedItem(<?= $pRow['id'] ?>)"><i class="fa fa-save"></i> Save</a>
                             </span>
                             <span class="remove-button">
-                                <a href="?r=invoice/delete-selected-quotation-detail&id=<?= $pRow['id'] ?>" onclick="return deleteConfirmation()">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                                <a href="javascript:removeInvSelectedItem(<?= $pRow['id'] ?>)" >&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
                             </span>
                         </div>
                     </div>
@@ -353,7 +371,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
                     
                     <div class="col-md-3">
                         <input type="text" class="form_invSP form-control" id="selected-<?= $pRow['id'] ?>-service" value="<?= $pRow['product_name'] ?>" readonly>
-                        <input type="hidden" class="form-control" name="InvoiceDetail[service_part_id][]" value="0-<?= $pRow['productId'] ?>" readonly>
+                        <input type="hidden" class="form-control" name="InvoiceDetail[service_part_id][]" value="1-<?= $pRow['productId'] ?>" readonly>
 
                     </div>
 
@@ -380,7 +398,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
         </div>
         <br/>
 
-        <div style="margin: 0 auto;" class="row">
+        <div class="row transactionFormAlign" >
 
             <div class="col-md-4"></div>
 

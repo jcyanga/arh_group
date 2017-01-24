@@ -70,18 +70,38 @@ class SearchUserPermission extends UserPermission
         return $dataProvider;
     }
 
-    public function searchUserPermission($role_id,$controller,$action) {
+    // Search box result
+    public function searchUserPermissionNames($role_id,$controller,$action) {
         $rows = new Query();
 
-                $result = $rows->select(['user_permission.id', 'role.role', 'user_permission.controller', 'user_permission.action', 'user_permission.role_id'])
-                    ->from('user_permission')
-                    ->join('INNER JOIN', 'role', 'user_permission.role_id = role.id')
-                    ->where(['like', 'user_permission.role_id', $role_id])
-                    ->andWhere(['like', 'user_permission.controller', $controller])
-                    ->andWhere(['like', 'user_permission.action', $action])
-                    ->andWhere('user_permission.role_id > 1')
-                    ->all();
+        $result = $rows->select(['user_permission.id', 'role.role', 'user_permission.controller', 'user_permission.action', 'user_permission.role_id'])
+            ->from('user_permission')
+            ->join('INNER JOIN', 'role', 'user_permission.role_id = role.id')
+            ->where('user_permission.role_id > 1')
+            ->andWhere(['like', 'user_permission.role_id', $role_id])
+            ->andWhere(['like', 'user_permission.controller', $controller])
+            ->andWhere(['like', 'user_permission.action', $action])
+            ->all();
 
         return $result;            
+    }
+
+    public function getUserPermission() {
+        $rows = new Query();
+
+        $result = $rows->select(['user_permission.id', 'role.role', 'user_permission.controller', 'user_permission.action', 'user_permission.role_id'])
+            ->from('user_permission')
+            ->join('INNER JOIN', 'role', 'user_permission.role_id = role.id')
+            ->where('user_permission.role_id > 1')
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+
+        }else{
+            return 0;
+
+        }   
+
     }
 }

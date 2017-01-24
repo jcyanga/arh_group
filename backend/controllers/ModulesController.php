@@ -40,8 +40,8 @@ class ModulesController extends Controller
                 $allow[$uRName] = true;
             }
 
-        }   
-        // print_r($action['developer']); exit;
+        }    
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -64,6 +64,12 @@ class ModulesController extends Controller
                         'actions' => $action['staff'],
                         'allow' => $allow['staff'],
                         'roles' => ['staff'],
+                    ],
+
+                    [
+                        'actions' => $action['customer'],
+                        'allow' => $allow['customer'],
+                        'roles' => ['customer'],
                     ]
        
                 ],
@@ -88,20 +94,21 @@ class ModulesController extends Controller
         $searchModel = new SearchModules();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchModules')['modules'] ) ) {
+        if( !empty(Yii::$app->request->get('SearchModules')['modules'])) {
+                $getModule = $searchModel->searchModuleName(Yii::$app->request->get('SearchModules')['modules']);
 
-                $module = Yii::$app->request->get('SearchModules')['modules'];
-                $getModule = $searchModel->searchModule($module);
-
-        }elseif ( Yii::$app->request->get('SearchModules')['modules'] == "" ) {
-                $getModule = Modules::find()->all();
         }else {
                 $getModule = Modules::find()->all();
         }
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getModule' => $getModule, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-        ]);
-
+        return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getModule' => $getModule, 
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
+                    ]);
     }
 
     /**
@@ -124,32 +131,49 @@ class ModulesController extends Controller
     public function actionCreate()
     {
         $model = new Modules();
+        $searchModel = new SearchModules();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if ($model->load(Yii::$app->request->post())) {
-
-            $modules = Yii::$app->request->post('Modules') ['modules'];
-
-            $result = $model->getModules($modules);
+            $result = $searchModel->getModules(Yii::$app->request->post('Modules') ['modules']);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change the module name.']);
+                return $this->render('create', [
+                                'model' => $model, 
+                                'errTypeHeader' => 'Warning!', 
+                                'errType' => 'alert alert-warning', 
+                                'msg' => 'You already enter an existing name, Please! Change the module name.'
+                            ]);
             }
 
-            if($model->save()) {
-                $searchModel = new SearchModules();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+            if( $model->save() ) {
                 $getModule = Modules::find()->all();
 
-                return $this->render('index', ['searchModel' => $searchModel, 'getModule' => $getModule,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
+                return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getModule' => $getModule,
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => 'Success!', 
+                        'errType' => 'alert alert-success', 
+                        'msg' => 'Your record was successfully added in the database.'
+                    ]);                
 
             }else {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
+                return $this->render('create', [
+                        'model' => $model, 
+                        'errTypeHeader' => 'Error!', 
+                        'errType' => 'alert alert-error', 
+                        'msg' => 'You have an error Check All the required fields.'
+                    ]);
             }
 
         } else {
-            return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('create', [
+                        'model' => $model, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
+                    ]);
         }
     }
 
@@ -162,18 +186,28 @@ class ModulesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $searchModel = new SearchModules();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // return $this->redirect(['view', 'id' => $model->id]);
-            $searchModel = new SearchModules();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            
+        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
             $getModule = Modules::find()->all();
 
-            return $this->render('index', ['searchModel' => $searchModel, 'getModule' => $getModule,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+            return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getModule' => $getModule,
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => 'Success!', 
+                        'errType' => 'alert alert-success', 
+                        'msg' => 'Your record was successfully updated in the database.'
+                    ]);
+
         } else {
-            return $this->render('update', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('update', [
+                        'model' => $model, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
+                    ]);
         }
     }
 
@@ -192,23 +226,20 @@ class ModulesController extends Controller
 
     public function actionDeleteColumn($id)
     {
-        // $this->findModel($id)->delete();
-        // $model = $this->findModel($id);
-        // $model->deleted = 1;
-        // if ( $model->save() ) {
-        //     Yii::$app->getSession()->setFlash('success', 'Customer deleted');
-        // } else {
-        //     Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
-        // }
         $searchModel = new SearchModules();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $this->findModel($id)->delete();
-
         $getModule = Modules::find()->all();
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getModule' => $getModule,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+        return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getModule' => $getModule,
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => 'Success!', 
+                        'errType' => 'alert alert-success', 
+                        'msg' => 'Your record was successfully deleted in the database.'
+                    ]);
     }
     
     /**
@@ -227,10 +258,8 @@ class ModulesController extends Controller
         }
     }
 
-    public function actionExportExcel() {
-
-        // $model = new Role();
-
+    public function actionExportExcel() 
+    {
         $result = Modules::find()->all();
 
         $objPHPExcel = new \PHPExcel();
@@ -276,29 +305,17 @@ class ModulesController extends Controller
 
     }
 
-    public function actionExportPdf() {
-
-        // $model = new Role();
-
+    public function actionExportPdf() 
+    {
         $result = Modules::find()->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
-        // instantiate and use the dompdf class
-        // $dompdf = new Dompdf();
-
-        $dompdf     = new Dompdf();
-        //return $pdf->stream();
-
+        
+        $dompdf = new Dompdf();
+        
         $dompdf->loadHtml($content);
-
-        // // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4', 'landscape');
-
-        // // Render the HTML as PDF
         $dompdf->render();
 
-        // Output the generated PDF to Browser
         $dompdf->stream('ModulesList-' . date('m-d-Y'));
-          
-
     }
 }

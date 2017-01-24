@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 
+use yii\db\Query;
 /**
  * This is the model class for table "stock_in".
  *
@@ -57,4 +58,5 @@ class StockIn extends \yii\db\ActiveRecord
             'created_by' => 'Created By',
         ];
     }
+
 }

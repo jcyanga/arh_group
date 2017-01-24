@@ -30,7 +30,7 @@ $this->title = 'Suppliers';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4>Parts-Supplier Maintenance</h4></span>
+        <span class="form-header"><h4><i class="fa fa-cogs"></i> Parts-Supplier Maintenance</h4></span>
     </div>
     <hr/>
 
@@ -69,11 +69,11 @@ $this->title = 'Suppliers';
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
         <tr style="font-size: 11px;" class="headings">
-            <th> # </th>
-            <th class="tblalign_center"> SUPPLIER CODE </th>
-            <th class="tblalign_center"> SUPPLIER NAME </th>
-            <th class="tblalign_center"> CONTACT NUMBER </th>
-            <th style="text-align: center;" class=" no-link last"><span class="nobr">RECORD ACTION</span>
+            <th class="tblalign_center" > # </th>
+            <th class="tblalign_center" > SUPPLIER CODE </th>
+            <th class="tblalign_center" > SUPPLIER NAME </th>
+            <th class="tblalign_center" > CONTACT NUMBER </th>
+            <th class="no-link last tblalign_center" ><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
     </thead>
@@ -81,22 +81,21 @@ $this->title = 'Suppliers';
     <tbody>
         <?php if(count($getSupplier) > 0 ): ?>
             <?php foreach( $getSupplier as $row){ ?>
-                <tr style="font-size: 11px; text-transform: uppercase;" class="even_odd pointer">
-                    <td class=" "><?php echo $row['id'];  ?></td>
-                    <td style="text-align: center;" class=" "><?php echo $row['supplier_code'];  ?></td>
-                    <td style="text-align: center;" class=" "><?php echo $row['supplier_name'];  ?></td>
-                    <td style="text-align: center;" class=" "><?php echo $row['contact_number'];  ?></td>
-                    <td style="text-align: center; font-size: 13px;" class=" last">
-                        <a href="?r=supplier/view&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-eye"><span class="actionTooltiptext">View record</span></li> </a> |
-                        <a href="?r=supplier/update&id=<?php echo $row['id']; ?>"><li class="actionTooltip fa fa-pencil-square"><span class="actionTooltiptext">Update record</span></li> </a> | 
-                        <a href="?r=supplier/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()"><li class="actionTooltip fa fa-trash"><span class="actionTooltiptext">Delete record</span></li> </a>
+                <tr class="even_odd pointer">
+                    <td class="tblalign_center" ><?php echo $row['id'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['supplier_code'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['supplier_name'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['contact_number'];  ?></td>
+                    <td class="last tblalign_center">
+                        <a href="?r=supplier/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a> |
+                        <a href="?r=supplier/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-pencil-square"></li> </a> | 
+                        <a href="?r=supplier/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a>
                     </td>
                 </tr>
             <?php } ?> 
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

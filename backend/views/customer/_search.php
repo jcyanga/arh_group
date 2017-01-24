@@ -9,8 +9,6 @@ use yii\helpers\Url;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-</style>
-
  <div class="row">
 
     <div class="col-md-12">
@@ -18,9 +16,8 @@ use yii\helpers\Url;
             <span class="search-label"><li class="fa fa-edit"></li> Enter Keyword here</span>
         </div> 
     </div>
-    <br/><br/>
-<!-- 'id' => 'demo-form2' -->
-<!-- , 'class' => 'form-inline' -->
+    <br/><br/> 
+    
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
     <div class="col-md-4">
@@ -39,44 +36,4 @@ use yii\helpers\Url;
 
 
  
-    <!-- <?= $form->field($model, 'carplate') ?>
-
-    <?= $form->field($model, 'address') ?> -->
-
-    <?php // echo $form->field($model, 'hanphone_no') ?>
-
-    <?php // echo $form->field($model, 'office_no') ?>
-
-    <?php // echo $form->field($model, 'email') ?>
-
-    <?php // echo $form->field($model, 'make') ?>
-
-    <?php // echo $form->field($model, 'model') ?>
-
-    <?php // echo $form->field($model, 'tyre_size') ?>
-
-    <?php // echo $form->field($model, 'batteries') ?>
-
-    <?php // echo $form->field($model, 'belt') ?>
-
-    <?php // echo $form->field($model, 'is_blacklist') ?>
-
-    <?php // echo $form->field($model, 'is_member') ?>
-
-    <?php // echo $form->field($model, 'points') ?>
-
-    <?php // echo $form->field($model, 'member_expiry') ?>
-
-    <?php // echo $form->field($model, 'status') ?>
-
-    <?php // echo $form->field($model, 'created_at') ?>
-
-    <?php // echo $form->field($model, 'created_by') ?>
-
-    <?php // echo $form->field($model, 'updated_at') ?>
-
-    <?php // echo $form->field($model, 'updated_by') ?>
-
-
-
 

@@ -40,7 +40,7 @@ class ServiceCategoryController extends Controller
             }
 
         }   
-        // print_r($action['developer']); exit;
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -63,6 +63,12 @@ class ServiceCategoryController extends Controller
                         'actions' => $action['staff'],
                         'allow' => $allow['staff'],
                         'roles' => ['staff'],
+                    ],
+
+                    [
+                        'actions' => $action['customer'],
+                        'allow' => $allow['customer'],
+                        'roles' => ['customer'],
                     ]
        
                 ],
@@ -86,20 +92,21 @@ class ServiceCategoryController extends Controller
         $searchModel = new SearchServiceCategory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchServiceCategory')['name'] ) ) {
+        if( !empty(Yii::$app->request->get('SearchServiceCategory')['name'])) {
+                $getServiceCategory = $searchModel->searchServiceCategoryName(Yii::$app->request->get('SearchServiceCategory')['name']);
 
-                $name = Yii::$app->request->get('SearchServiceCategory')['name'];
-                $getServiceCategory = $searchModel->searchServiceCategory($name);
-
-        }elseif ( Yii::$app->request->get('SearchServiceCategory')['name'] == "" ) {
-                $getServiceCategory = ServiceCategory::find()->all();
-                
         }else {
                 $getServiceCategory = ServiceCategory::find()->all();
         }
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getServiceCategory' => $getServiceCategory, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-        ]);
+        return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getServiceCategory' => $getServiceCategory, 
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
+                    ]);
     }
 
     /**
@@ -122,31 +129,49 @@ class ServiceCategoryController extends Controller
     public function actionCreate()
     {
         $model = new ServiceCategory();
+        $searchModel = new SearchServiceCategory();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if ($model->load(Yii::$app->request->post())) {
-
-            $name = Yii::$app->request->post('ServiceCategory') ['name'];
-            $result = $model->getServiceCategories($name);
+            $result = $searchModel->getServiceCategories(Yii::$app->request->post('ServiceCategory') ['name']);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change service category name.']);
+                return $this->render('create', [
+                                    'model' => $model, 
+                                    'errTypeHeader' => 'Warning!', 
+                                    'errType' => 'alert alert-warning', 
+                                    'msg' => 'You already enter an existing name, Please! Change service category name.'
+                                ]);
             }
 
-            if($model->save()) {
-                $searchModel = new SearchServiceCategory();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+            if( $model->save() ) {
                 $getServiceCategory = ServiceCategory::find()->all();
 
-                return $this->render('index', ['searchModel' => $searchModel, 'getServiceCategory' => $getServiceCategory,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
+                return $this->render('index', [
+                                    'searchModel' => $searchModel, 
+                                    'getServiceCategory' => $getServiceCategory,
+                                    'dataProvider' => $dataProvider, 
+                                    'errTypeHeader' => 'Success!', 
+                                    'errType' => 'alert alert-success', 
+                                    'msg' => 'Your record was successfully added in the database.'
+                                ]);
 
             }else {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
+                return $this->render('create', [
+                                    'model' => $model, 
+                                    'errTypeHeader' => 'Error!', 
+                                    'errType' => 'alert alert-error', 
+                                    'msg' => 'You have an error Check All the required fields.'
+                                ]);
             }
 
         } else {
-            return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('create', [
+                                'model' => $model, 
+                                'errTypeHeader' => '', 
+                                'errType' => '', 
+                                'msg' => ''
+                            ]);
         }
     }
 
@@ -159,18 +184,28 @@ class ServiceCategoryController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $searchModel = new SearchServiceCategory();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // return $this->redirect(['view', 'id' => $model->id]);
-            $searchModel = new SearchServiceCategory();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            
+        if ( $model->load(Yii::$app->request->post()) && $model->save() ) { 
             $getServiceCategory = ServiceCategory::find()->all();
 
-            return $this->render('index', ['searchModel' => $searchModel, 'getServiceCategory' => $getServiceCategory,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+            return $this->render('index', [
+                            'searchModel' => $searchModel, 
+                            'getServiceCategory' => $getServiceCategory,
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Your record was successfully updated in the database.'
+                        ]);
+
         } else {
-            return $this->render('update', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('update', [
+                            'model' => $model, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
         }
     }
 
@@ -189,23 +224,20 @@ class ServiceCategoryController extends Controller
 
     public function actionDeleteColumn($id)
     {
-        // $this->findModel($id)->delete();
-        // $model = $this->findModel($id);
-        // $model->deleted = 1;
-        // if ( $model->save() ) {
-        //     Yii::$app->getSession()->setFlash('success', 'Customer deleted');
-        // } else {
-        //     Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
-        // }
         $searchModel = new SearchServiceCategory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $this->findModel($id)->delete();
-
         $getServiceCategory = ServiceCategory::find()->all();
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getServiceCategory' => $getServiceCategory,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+        return $this->render('index', [
+                            'searchModel' => $searchModel, 
+                            'getServiceCategory' => $getServiceCategory,
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Your record was successfully deleted in the database.'
+                        ]);
     }
 
     /**
@@ -224,10 +256,8 @@ class ServiceCategoryController extends Controller
         }
     }
 
-    public function actionExportExcel() {
-
-        // $model = new Role();
-
+    public function actionExportExcel() 
+    {
         $result = ServiceCategory::find()->all();
 
         $objPHPExcel = new \PHPExcel();
@@ -264,7 +294,8 @@ class ServiceCategoryController extends Controller
                 foreach ($result as $result_row) {  
                     
                     $dateCreated = date('m-d-Y', strtotime($result_row['created_at']) );    
-                    $status = ( $result_row['status'] == 1 ) ? 'Active' : 'Inactive';    
+                    $status = ( $result_row['status'] == 1 ) ? 'Active' : 'Inactive';   
+
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['id']); 
                     $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['name']);
                     $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row['description']);
@@ -284,30 +315,18 @@ class ServiceCategoryController extends Controller
 
     }
 
-    public function actionExportPdf() {
-
-        // $model = new Role();
-
+    public function actionExportPdf() 
+    {
         $result = ServiceCategory::find()->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
-        // instantiate and use the dompdf class
-        // $dompdf = new Dompdf();
-
-        $dompdf     = new Dompdf();
-        //return $pdf->stream();
-
+        
+        $dompdf = new Dompdf();
+        
         $dompdf->loadHtml($content);
-
-        // // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4', 'landscape');
-
-        // // Render the HTML as PDF
         $dompdf->render();
 
-        // Output the generated PDF to Browser
         $dompdf->stream('Service-CategoryList-' . date('m-d-Y'));
-          
-
     }
 
 }

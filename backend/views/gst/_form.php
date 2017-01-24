@@ -10,7 +10,7 @@ use common\models\Branch;
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
-$dataBranch = ArrayHelper::map(Branch::find()->all(), 'id', 'name');
+$dataBranch = ArrayHelper::map(Branch::find()->where('id > 1')->all(), 'id', 'name');
 
 ?>
 

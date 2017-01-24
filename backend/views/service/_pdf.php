@@ -7,16 +7,16 @@ use yii\helpers\Url;
 ?>
 
 <div>
-	<table border="1" >
+	<table class="pdfTable" >
 		<thead>
 			<tr>
-				<td style="background: #eee; text-align: center;" > # </td>
-				<td style=" background: #eee;" > Service Category </td>
-				<td style=" background: #eee;" > Service Name </td>
-				<td style=" background: #eee;" > Description </td>
-				<td style=" background: #eee;" > Default Price </td>
-				<td style=" background: #eee;" > Date Created </td>
-				<td style=" background: #eee;" > Status </td>
+				<td class="pdf_number" > # </td>
+				<td class="pdf_headBg" > Service Category </td>
+				<td class="pdf_headBg" > Service Name </td>
+				<td class="pdf_headBg" > Description </td>
+				<td class="pdf_headBg" > Price </td>
+				<td class="pdf_headBg" > Date Created </td>
+				<td class="pdf_headBg" > Status </td>
 			</tr>
 		</thead>
 		<tbody>

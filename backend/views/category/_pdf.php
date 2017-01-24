@@ -7,11 +7,11 @@ use yii\helpers\Url;
 ?>
 
 <div>
-	<table border="1" >
+	<table class="pdfTable" >
 		<thead>
 			<tr >
-				<td style="background: #eee; text-align: center;" > # </td>
-				<td style=" background: #eee;" > Parts-Category </td>
+				<td class="pdf_number" > # </td>
+				<td class="pdf_headBg" > Parts-Category </td>
 			</tr>
 		</thead>
 		<tbody>

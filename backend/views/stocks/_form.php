@@ -28,9 +28,9 @@ $getSupplier = Supplier::find()->all();
         <table id="tblStocks" class="table table-hover table-boardered" >
         	<thead>
         		<tr>
-        			<td class="tblstockTh0"><i class="fa fa-cogs"></i> PARTS NAME</td>
-        			<td class="tblstockTh"><i class="fa fa-upload"></i> ADDED STOCKS</td>
-        			<td class="tblstockTh"><i class="fa fa-database"></i> QUANTITY</td>
+        			<td class="tblstockTh0"><i class="fa fa-fire"></i> PRODUCTS NAME</td>
+        			<td class="tblstockTh"><i class="fa fa-pencil"></i> ADDED STOCKS</td>
+        			<td class="tblstockTh"><i class="fa fa-plus-circle"></i> QUANTITY</td>
         		</tr>
         	</thead>
         	<?php foreach($data as $key => $value): ?>

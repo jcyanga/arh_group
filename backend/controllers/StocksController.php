@@ -43,7 +43,7 @@ class StocksController extends Controller
             }
 
         }   
-        // print_r($action['developer']); exit;
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -66,6 +66,12 @@ class StocksController extends Controller
                         'actions' => $action['staff'],
                         'allow' => $allow['staff'],
                         'roles' => ['staff'],
+                    ],
+
+                    [
+                        'actions' => $action['customer'],
+                        'allow' => $allow['customer'],
+                        'roles' => ['customer'],
                     ]
        
                 ],
@@ -91,21 +97,34 @@ class StocksController extends Controller
         $searchModel = new SearchInventory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $getProductInInventory = $model->getProductInInventory();
+        $getProductInInventory = $searchModel->getProductInInventory();
 
-        return $this->render('index', ['model' => $model, 'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'getProductInInventory' => $getProductInInventory, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-        ]);
+        return $this->render('index', [
+                                'model' => $model, 
+                                'searchModel' => $searchModel, 
+                                'dataProvider' => $dataProvider, 
+                                'getProductInInventory' => $getProductInInventory, 
+                                'errTypeHeader' => '', 
+                                'errType' => '', 
+                                'msg' => ''
+                            ]);
     }
 
-    public function actionCreate() {
-
-        $updateQty = Yii::$app->request->post('updateQty');
-
-        if( !empty($updateQty) ) {
-            foreach($updateQty as $key => $value) {
+    public function actionCreate() 
+    {
+        if( !empty( Yii::$app->request->post('updateQty'))) {
+            foreach( Yii::$app->request->post('updateQty') as $key => $value) {
                  $result = explode('|', $value);
 
-                 $array = array('itemId' => $result[0], 'itemName' => $result[1], 'itemQty' => $result[2], 'ProductId' => $result[3], 'SupplierId' => $result[4], 'costPrice' => $result[5], 'sellingPrice' => $result[6]);
+                 $array = array(
+                            'itemId' => $result[0], 
+                            'itemName' => $result[1], 
+                            'itemQty' => $result[2], 
+                            'ProductId' => $result[3], 
+                            'SupplierId' => $result[4], 
+                            'costPrice' => $result[5], 
+                            'sellingPrice' => $result[6]
+                        );
                  
                  $data[] = $array;    
             }
@@ -115,41 +134,38 @@ class StocksController extends Controller
         }else {
 
                 $model = new Inventory();
-
                 $searchModel = new SearchInventory();
                 $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-                $getProductInInventory = $model->getProductInInventory();
+                $getProductInInventory = $searchModel->getProductInInventory();
 
-                return $this->render('index', ['model' => $model, 'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'getProductInInventory' => $getProductInInventory, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error, No record selected.'
-                ]);
-
-
+                return $this->render('index', [
+                                    'model' => $model, 
+                                    'searchModel' => $searchModel, 
+                                    'dataProvider' => $dataProvider, 
+                                    'getProductInInventory' => $getProductInInventory, 
+                                    'errTypeHeader' => 'Error!', 
+                                    'errType' => 'alert alert-error', 
+                                    'msg' => 'You have an error, No record selected.'
+                                ]);
         }
 
     }
 
-    public function actionUpdate() {
+    public function actionUpdate() 
+    {
+        foreach( Yii::$app->request->post('qtyStock') as $key => $value ) {
 
-        $inventoryId = Yii::$app->request->post('inventoryId');
-        $qtyStock = Yii::$app->request->post('qtyStock');
-        $ProductId = Yii::$app->request->post('ProductId');
-        $SupplierId = Yii::$app->request->post('SupplierId');
-        $costPrice = Yii::$app->request->post('costPrice');  
-        $sellingPrice = Yii::$app->request->post('sellingPrice');  
-
-        foreach( $qtyStock as $key => $value ) {
-
-            Yii::$app->db->createCommand()
-                ->update('inventory', ['quantity' => $qtyStock[$key] ], "id = $inventoryId[$key]" )
-                ->execute();
+            $inventory = Inventory::find()->where(['id' => Yii::$app->request->post('inventoryId')[$key] ])->andWhere(['supplier_id' => Yii::$app->request->post('SupplierId')[$key] ])->one();
+            $inventory->quantity = Yii::$app->request->post('qtyStock')[$key];
+            $inventory->save();
             
             $stockin = new StockIn();
-            $stockin->product_id = $ProductId[$key];
-            $stockin->supplier_id = $SupplierId[$key];
-            $stockin->quantity = $qtyStock[$key];
-            $stockin->cost_price = $costPrice[$key];
-            $stockin->selling_price = $sellingPrice[$key];
+            $stockin->product_id = Yii::$app->request->post('ProductId')[$key];
+            $stockin->supplier_id = Yii::$app->request->post('SupplierId')[$key];
+            $stockin->quantity = Yii::$app->request->post('qtyStock')[$key];
+            $stockin->cost_price = Yii::$app->request->post('costPrice')[$key];
+            $stockin->selling_price = Yii::$app->request->post('sellingPrice')[$key];
             $stockin->date_imported = date('Y-m-d');
             $stockin->time_imported = date('H:i:s');
             $stockin->created_at = date("Y-m-d");
@@ -159,15 +175,20 @@ class StocksController extends Controller
         }
 
         $model = new Inventory();
-
         $searchModel = new SearchInventory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $getProductInInventory = $model->getProductInInventory();
+        $getProductInInventory = $searchModel->getProductInInventory();
 
-        return $this->render('index', ['model' => $model, 'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'getProductInInventory' => $getProductInInventory, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Record was successfully updated.'
-        ]);
-    
+        return $this->render('index', [
+                            'model' => $model, 
+                            'searchModel' => $searchModel, 
+                            'dataProvider' => $dataProvider, 
+                            'getProductInInventory' => $getProductInInventory, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Record was successfully updated.'
+                        ]);
     }
 
 }    

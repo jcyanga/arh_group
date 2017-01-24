@@ -29,7 +29,7 @@ $getSupplier = Supplier::find()->all();
     </div>
     <br/>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         <label class="form_label">Parts-Supplier</label>
         <br/>
         <select name="Inventory[supplier_id][]" class="form_input form-control select2_single" id="inventorySupplier" >
@@ -45,7 +45,7 @@ $getSupplier = Supplier::find()->all();
 
 <div class="row">
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         <label class="form_label">Product Name</label>
         <br/>
         <select name="Inventory[product][]" class="form_input form-control select2_single" id="inventoryProduct" >
