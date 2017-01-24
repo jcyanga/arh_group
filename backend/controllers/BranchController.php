@@ -99,7 +99,7 @@ class BranchController extends Controller
             $getBranch = $searchModel->searchBranchName(Yii::$app->request->get('SearchBranch')['name']);
         
         }else {
-            $getBranch = Branch::find()->where('id > 1')->all();
+            $getBranch = Branch::find()->where('id <> 1')->all();
 
         }
 

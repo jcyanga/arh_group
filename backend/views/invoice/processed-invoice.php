@@ -15,7 +15,7 @@ if( isset($getGst->gst) ) {
     $getSubTotal = $customerInfo['grand_total'] / $gst;
 }else{
     $gst = 0.00;
-    $getSubTotal = $customerInfo['grand_total'] / $gst;
+    $getSubTotal = $customerInfo['grand_total'];
 }
 
 $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );

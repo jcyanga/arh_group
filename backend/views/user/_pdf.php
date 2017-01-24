@@ -29,7 +29,7 @@ use yii\helpers\Url;
 				<td><?php echo $row['fullname']; ?></td>
 				<td><?php echo $row['username']; ?></td>
 				<td><?php echo $row['email']; ?></td>
-				<td><?php echo $row['status']; ?></td>
+				<td><?php echo ( $row['status'] == 1 )?'Active':'Inactive'; ?></td>
 				<td><?php echo $row['created_at']; ?></td>
 			</tr>
 			<?php } ?>

@@ -216,9 +216,9 @@ class SearchQuotation extends Quotation
 
         $result = $rows->select(['inventory.id', 'inventory.product_id as productId', 'product.product_name', 'category.category', 'supplier.supplier_name'])
         ->from('inventory')
-        ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
-        ->join('LEFT JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
-        ->join('LEFT JOIN', 'category', 'product.category_id = category.id')
+        ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+        ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+        ->join('INNER JOIN', 'category', 'product.category_id = category.id')
         ->all();
 
         if( count($result) > 0 ) {

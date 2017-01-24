@@ -8,16 +8,6 @@ use yii\helpers\Url;
 /* @var $model common\models\SearchCustomer */
 /* @var $form yii\widgets\ActiveForm */
 
-if( !empty(Yii::$app->request->get('date_start')) || !empty(Yii::$app->request->get('date_end')) ) {
-    $date_start = Yii::$app->request->get('date_start');
-    $date_end = Yii::$app->request->get('date_end');
-
-}else{
-    $date_start = '';
-    $date_end = '';
-
-}
-
 ?>
 
  <div class="row">

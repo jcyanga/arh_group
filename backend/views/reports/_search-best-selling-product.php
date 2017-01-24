@@ -19,7 +19,7 @@ use yii\helpers\Url;
     </div>
     <br/><br/>
     
-    <?php $form = ActiveForm::begin(['action' => '?r=reports/monthly-stock-report','method' => 'get', 'class' => 'form-inline']); ?>
+    <?php $form = ActiveForm::begin(['action' => '?r=reports/best-selling-product-report','method' => 'post', 'class' => 'form-inline']); ?>
 
     <div class="col-md-3">
         <input type="text" name="date_start" id="datestart" class="form_input form-control" placeholder="Date Start" value="<?= $date_start ?>"  readonly />

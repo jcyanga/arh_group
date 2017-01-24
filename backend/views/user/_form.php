@@ -13,8 +13,8 @@ use common\models\Branch;
 
 $datetime = date('Y-m-d h:i:s');
 $userId = Yii::$app->user->identity->id;
-$dataRole = ArrayHelper::map(Role::find()->where('id > 1')->all(), 'id', 'role');
-$dataBranch = ArrayHelper::map(Branch::find()->where('id > 1')->all(), 'id', 'name');
+$dataRole = ArrayHelper::map(Role::find()->where('id <> 1')->all(), 'id', 'role');
+$dataBranch = ArrayHelper::map(Branch::find()->where('id <> 1')->all(), 'id', 'name');
 
 ?>
 
