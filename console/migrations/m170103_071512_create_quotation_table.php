@@ -27,7 +27,7 @@ class m170103_071512_create_quotation_table extends Migration
             'updated_by' => $this->integer(10)->notNull(),
             'delete' => $this->integer(5)->notNull(),
             'task' => $this->integer(5)->notNull(),
-            'paid' => $this->integer(5)->notNull(),
+            'invoice' => $this->integer(5)->notNull(),
         ]);
     }
 

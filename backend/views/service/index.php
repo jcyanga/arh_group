@@ -52,11 +52,11 @@ $this->title = 'Service Categories';
         </a>
 
         <a href="?r=service/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-excel-o"></i> <b> Export to Excel </b>
+            <i class="fa fa-file-excel-o"></i> <b> Print to Excel </b>
         </a>
 
         <a href="?r=service/export-pdf" id="option-list-link" onclick="return pdfPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-pdf-o"></i> <b> Export to PDF </b>
+            <i class="fa fa-file-pdf-o"></i> <b> Print to PDF </b>
         </a>
     </p>
 </div>
@@ -86,7 +86,7 @@ $this->title = 'Service Categories';
                     <td class=" "><?php echo $row['id'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['name'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['service_name'];  ?></td>
-                    <td style="width: 30%;" class="tblalign_center" ><?php echo $row['description'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['description'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['default_price'];  ?></td>
                     <td class="last tblalign_center">
                         <a href="?r=service/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a> |

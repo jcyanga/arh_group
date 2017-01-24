@@ -33,11 +33,7 @@ $this->title = 'View Quotation';
 
         <div class="x_title">
             <h2> Invoice Details.</h2>
-            <ul class="nav navbar-right panel_toolbox">
-                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                <li class="dropdown"></li>
-                <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-            </ul>
+            <ul class="nav navbar-right panel_toolbox"></ul>
             <div class="clearfix"></div>
         </div>
 
@@ -176,13 +172,19 @@ $this->title = 'View Quotation';
         <hr/>
         <div class="row no-print">
             <div class="col-xs-12">
-                
+
+                <a href="?r=invoice/delete-column&id=<?= $customerInfo['id'] ?>" onclick="return deleteConfirmation()"><button class="form-btn btn btn-default pull-right"><i class="fa fa-trash"></i> Delete Invoice</button></a>
+
                 <?php if( $customerInfo['status'] <> 1 ): ?>
-                    <a href="?r=invoice/payment-method&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-default pull-right" > Proceed to Payment <i class="fa fa-chevron-circle-right"></i></button></a>
-                    
-                    <a href="?r=invoice/delete-column&id=<?= $customerInfo['id'] ?>" onclick="return deleteConfirmation()"><button class="form-btn btn btn-danger pull-right"><i class="fa fa-trash"></i> Delete Invoice</button></a>
-                    
-                    <a href="?r=invoice/update&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-info pull-right"><i class="fa fa-edit"></i> Update Invoice</button></a>
+                    <a href="?r=invoice/update&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-default pull-right"><i class="fa fa-edit"></i> Update Invoice</button></a>
+                <?php endif; ?>
+                
+                <?php if( $customerInfo['paid_type'] == 1 ): ?>
+                    <a href="?r=invoice/print-invoice&id=<?= $customerInfo['id'] ?>&invoice_no=<?= $customerInfo['invoice_no'] ?>"><button class="form-btn btn btn-default pull-right" ><i class="fa fa-print"></i> Print Invoice </button></a>
+                <?php elseif( $customerInfo['paid_type'] == 2 ): ?>
+                    <a href="?r=invoice/print-multiple-invoice&id=<?= $customerInfo['id'] ?>&invoice_no=<?= $customerInfo['invoice_no'] ?>"><button class="form-btn btn btn-default pull-right" ><i class="fa fa-print"></i> Print Invoice </button></a>
+                <?php else: ?>
+                    <a href="?r=invoice/payment-method&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-default pull-right" > Proceed to Payment Method <i class="fa fa-chevron-circle-right"></i></button></a>
                 <?php endif; ?>
                     
             </div>

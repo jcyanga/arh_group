@@ -47,7 +47,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
  <div class="col-md-12 col-sm-12 col-xs-12">
  
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-pencil"></i> Create Invoice</h4></span>
+        <span class="form-header"><h4><i class="fa fa-pencil"></i> Update Invoice</h4></span>
     </div>
     <hr/>
 

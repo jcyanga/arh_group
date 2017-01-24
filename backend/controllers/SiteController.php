@@ -18,6 +18,7 @@ use common\models\SearchCustomer;
  */
 class SiteController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -84,7 +85,6 @@ class SiteController extends Controller
         }
 
         // pending services dashboard
-        $pendingQuotationServices = $serviceModel->getPendingServices();
         $pendingInvoiceServices = $serviceModel->getPendingInvoiceServices();
 
         // products dashboard
@@ -107,7 +107,6 @@ class SiteController extends Controller
                         'getTotalCriticalStock' => $getTotalCriticalStock,
                         'getWarningStock' => $getWarningStock, 
                         'getTotalWarningStock' => $getTotalWarningStock,
-                        'pendingQuotationServices' => $pendingQuotationServices, 
                         'pendingInvoiceServices' => $pendingInvoiceServices,
                         'getCustomerQuotationBySearch' => $getCustomerQuotationBySearch,
                         'getCustomerInvoiceBySearch' => $getCustomerInvoiceBySearch,
@@ -148,4 +147,15 @@ class SiteController extends Controller
 
         return $this->goHome();
     }
+
+    public function actionAutoComplete()
+    {
+        $serviceModel = new SearchService();
+
+        // pending services dashboard
+        $pendingInvoiceServices = $serviceModel->getPendingInvoiceServices();
+
+        return json_encode($pendingInvoiceServices);
+    }
+
 }

@@ -197,10 +197,10 @@ $this->title = 'Print Invoice';
             <div class="row">
                 <div class="col-xs-12">
                     <div style="text-align: center">
+                        <button class="form-btn btn btn-info btn-xs print-buttons" id="print_invoice" onclick="invoicePrint()"><i class="fa fa-print"></i> Print Invoice</button>
                         <a href="?r=invoice/invoice-export-pdf&id=<?= $id ?>&invoice_no=<?= $customerInfo['invoice_no'] ?>">
-                            <button class="form-btn btn btn-danger btn-xs print-buttons" id="download_pdf"><i class="fa fa-download"></i> Download to PDF</button>
+                            <button class="form-btn btn btn-danger btn-xs print-buttons" id="download_pdf"><i class="fa fa-close"></i> Close</button>
                         </a>
-                        <button class="form-btn btn btn-warning btn-xs print-buttons" id="print_invoice" onclick="invoicePrint()"><i class="fa fa-print"></i> Print Invoice</button>
                     </div>
                 </div>
             </div>

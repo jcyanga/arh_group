@@ -204,10 +204,10 @@ $id = Yii::$app->request->get('id');
         <div class="row">
             <div class="col-xs-12">
                 <div style="text-align: center">
+                    <button class="form-btn btn btn-info btn-xs print-buttons print_invoice" onclick="multipleInvoicePrint()"><i class="fa fa-print"></i> Print Invoice</button>
                     <a href="?r=invoice/multiple-invoice-export-pdf&id=<?= $iRow['invoice_id'] ?>&invoice_no=<?= $iRow['multipleInvoiceNo'] ?>">
-                        <button class="form-btn btn btn-danger btn-xs print-buttons download_pdf" ><i class="fa fa-download"></i> Download to PDF</button>
+                        <button class="form-btn btn btn-danger btn-xs print-buttons download_pdf" ><i class="fa fa-close"></i> Close</button>
                     </a>
-                    <button class="form-btn btn btn-warning btn-xs print-buttons print_invoice" onclick="multipleInvoicePrint()"><i class="fa fa-print"></i> Print Invoice</button>
                 </div>
             </div>
         </div>

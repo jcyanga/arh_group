@@ -23,7 +23,7 @@ $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
     
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         <?= $form->field($model, 'category_id')->dropDownList($dataCategory,['class' => 'form_input form-control'])->label(false) ?>
     </div>
 
@@ -31,9 +31,10 @@ $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
         <?= $form->field($model, 'product_name')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Write Part Name here.'])->label(false) ?>
     </div>
 
-    <div class="col-md-3">
-        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
-        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
+    <div class="col-md-4">
+        <div style="margin-left: -10px;">
+            <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
+        </div>
     </div>
     
     <?php ActiveForm::end(); ?>

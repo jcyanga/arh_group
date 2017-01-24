@@ -21,7 +21,7 @@ if( isset($getGst->gst) ) {
 
 $getInvoice = Invoice::find()->where(['quotation_code' => $customerInfo['quotation_code'] ])->one();
 
-$this->title = 'Print Quotation';
+$this->title = 'Print Job-Sheet';
 
 
 ?>
@@ -170,10 +170,10 @@ $this->title = 'Print Quotation';
             <div class="row">
                 <div class="col-xs-12">
                     <div style="text-align: center">
-                        <a href="?r=quotation/export-pdf&id=<?= $customerInfo['id'] ?>">
-                            <button class="form-btn btn btn-danger btn-xs print-buttons" id="download_pdf"><i class="fa fa-download"></i> Download to PDF</button>
+                        <button class="form-btn btn btn-info btn-xs print-buttons" id="print_quotation" onclick="quotationPrint()"><i class="fa fa-print"></i> Print </button>
+                        <a href="#">
+                            <button class="form-btn btn btn-danger btn-xs print-buttons" id="download_pdf"><i class="fa fa-close"></i> Close </button>
                         </a>
-                        <button class="form-btn btn btn-warning btn-xs print-buttons" id="print_quotation" onclick="quotationPrint()"><i class="fa fa-print"></i> Print Quotation</button>
                     </div>
                 </div>
             </div>

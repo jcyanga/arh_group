@@ -128,25 +128,6 @@ class SearchService extends Service
         }
     }
 
-    // get pending quotation services for dashboard
-    public function getPendingServices() {
-        $rows = new Query();
-
-        $result = $rows->select([ 'quotation_detail.id', 'quotation.id as quotationId', 'quotation.quotation_code', 'quotation.user_id', 'user.fullname as salesPerson', 'quotation.customer_id', 'customer.fullname', 'quotation.branch_id', 'branch.name', 'quotation.grand_total', 'quotation.date_issue', 'quotation_detail.id', 'quotation_detail.service_part_id', 'service.service_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal' ])
-                ->from('quotation_detail')
-                ->join('LEFT JOIN', 'quotation', 'quotation_detail.quotation_id = quotation.id')
-                ->join('LEFT JOIN', 'user', 'quotation.user_id = user.id')
-                ->join('LEFT JOIN', 'customer', 'quotation.customer_id = customer.id')
-                ->join('LEFT JOIN', 'branch', 'quotation.branch_id = branch.id')
-                ->join('LEFT JOIN', 'service', 'quotation_detail.service_part_id = service.id')
-                ->where('quotation.invoice = 0')
-                ->andWhere('quotation_detail.type = 0')
-                ->andWhere('quotation_detail.task = 1')
-                ->all();
-
-        return $result;
-    }
-
     // get pending invoice services for dashboard
     public function getPendingInvoiceServices() {
         $rows = new Query();

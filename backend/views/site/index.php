@@ -101,65 +101,6 @@ $roleId = Yii::$app->user->identity->role_id;
 <?php endif; ?>
 
 <?php if( $roleId == 1 || $roleId == 2 ): ?>
-<!-- Pending Quotation -->
-<div class="row">
-
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        
-        <div class="dashboard_graph x_panel">
-            
-            <div class="row x_title">
-                <div class="col-md-6">
-                    <h4>
-                        <i class="fa fa-map-marker"></i> Pending Quotation Services 
-                        <small class="searchCustomerLabel">(Non-Invoice with Pending Services)</small>
-                    </h4>
-                </div>
-            </div>
-
-            <?php if( !empty($pendingQuotationServices) ): ?>
-                
-                <table class="table table-boardered table-striped pendingTable">
-                    <thead>
-                        <tr class="headings">
-                            <td class="tblalign_center" ><b> DATE ISSUE </b></td>
-                            <td class="tblalign_center" ><b> QUOTATION CODE </b></td>
-                            <td class="tblalign_center" ><b> CUSTOMER NAME </b></td>
-                            <td class="tblalign_center" ><b> SERVICE NAME </b></td>
-                            <td class="tblalign_center" ><b> QUANTITY </b></td>
-                            <td class="tblalign_center" ><b> SELLING PRICE </b></td>
-                            <td class="tblalign_center" ><b> CHECK QUOTATION </b></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach( $pendingQuotationServices as $qRow): ?>
-                            <tr>
-                                <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($qRow['date_issue']) ); ?></td>
-                                <td class="tblalign_center" ><b><?php echo $qRow['quotation_code']; ?></b></td>
-                                <td class="tblalign_center" ><?php echo $qRow['fullname']; ?></td>
-                                <td class="tblalign_center" ><b><?php echo $qRow['service_name']; ?></b></td>
-                                <td class="tblalign_center" ><?php echo $qRow['quantity']; ?></td>
-                                <td class="tblalign_center" ><?php echo '$'.$qRow['selling_price'].'.00'; ?></td>
-                                <td class="tblalign_center" ><a href="?r=quotation/view&id=<?php echo $qRow['quotationId']; ?>" > <i class="fa fa-search"></i> </a></td>
-                            </tr>
-                        <?php endforeach; ?>     
-                    </tbody>
-                </table>
-            
-            <?php else: ?>
-                <div>
-                    <span class="pendingNoRecordDashboard"> - No Record Found. <span>
-                </div>
-                <br/>
-            <?php endif; ?>
-
-        </div>
-
-    </div>
-
-</div>
-<br/>
-
 <!-- Pending Invoice -->
 <div class="row">
 
@@ -170,7 +111,7 @@ $roleId = Yii::$app->user->identity->role_id;
             <div class="row x_title">
                 <div class="col-md-6">
                     <h4>
-                        <i class="fa fa-map-marker"></i> Pending Invoice Services 
+                        <i class="fa fa-map-marker"></i> Pending Services in Customer
                         <small class="searchCustomerLabel">(Pending Services with Invoice)</small>
                     </h4>
                 </div>
@@ -394,6 +335,8 @@ $roleId = Yii::$app->user->identity->role_id;
 
 </div>
 <?php endif; ?>
+
+<input id="coding_language" />
 
 </div>
 

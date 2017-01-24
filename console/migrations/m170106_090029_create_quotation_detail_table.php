@@ -22,7 +22,8 @@ class m170106_090029_create_quotation_detail_table extends Migration
             'created_at' => $this->date()->notNull(),
             'created_by' => $this->integer(10)->notNull(),
             'type' => $this->integer(5)->notNull(),
-            'task' => $this->integer(5)->notNull()
+            'task' => $this->integer(5)->notNull(),
+            'invoice' => $this->integer(5)->notNull()
         ]);
     }
 

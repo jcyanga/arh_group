@@ -25,12 +25,13 @@ use yii\helpers\Url;
         <?= $form->field($model, 'role')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Enter Role here...'])->label(false) ?>
     </div>
 
-    <div class="col-md-3">
-        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
-        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
+    <div class="col-md-4">
+        <div style="margin-left: -10px;">
+            <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
+        </div>
     </div>
 
-    <div class="col-md-3"></div>
+    <div class="col-md-4"></div>
     
     <?php ActiveForm::end(); ?>
     <br/><br/>

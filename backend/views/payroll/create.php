@@ -8,11 +8,11 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel common\models\SearchCustomer */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Create Quotation';
+$this->title = 'Create Payroll';
 
 ?>
 
-<div class="row transactionform-container">
+<div class="row form-container">
 
 <div>
     <?php if($msg <> ''){ ?>
@@ -22,11 +22,11 @@ $this->title = 'Create Quotation';
         </div>
     <?php } ?>
 </div>
-
+    
  <div class="col-md-12 col-sm-12 col-xs-12">
- 
+
     <div class="form-title-container">
-        <span style="color: #666;" class="form-header"><h4><i class="fa fa-pencil"></i> Create Quotation</h4></span>
+        <span class="form-header"><h4>Create Payroll</h4></span>
     </div>
     <hr/>
 
@@ -34,14 +34,12 @@ $this->title = 'Create Quotation';
     <br/><br/>
 
     <div class="form-crud-container">
-        <?= $this->render('_form', ['model' => $model, 'quotationId' => $quotationId, 'getBranchList' => $getBranchList, 'getUserList' => $getUserList, 'getCustomerList' => $getCustomerList, 'getServicesList' => $getServicesList, 'getPartsList' => $getPartsList, 'errTypeHeader' => $errTypeHeader, 'errType' => $errType, 'msg' => $msg]) ?>
+        <?= $this->render('_form', ['model' => $model,]) ?>
     </div>   
  
  </div>
 
 </div>
 <br/>
-
-
 
 

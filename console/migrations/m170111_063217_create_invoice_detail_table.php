@@ -22,7 +22,8 @@ class m170111_063217_create_invoice_detail_table extends Migration
             'created_at' => $this->date()->notNull(),
             'created_by' => $this->integer(10)->notNull(),
             'type' => $this->integer(5)->notNull(),
-            'task' => $this->integer(5)->notNull()
+            'task' => $this->integer(5)->notNull(),
+            'status' => $this->integer(5)->notNull()
         ]);
     }
 

@@ -39,7 +39,7 @@ $this->title = 'Invoice';
         </a>
 
         <a href="?r=invoice/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-excel-o"></i> <b> Export to Excel </b>
+            <i class="fa fa-file-excel-o"></i> <b> Print to Excel </b>
         </a>
     </p>
 </div>
@@ -65,7 +65,7 @@ $this->title = 'Invoice';
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
         <tr class="headings">
-            <th class="no-link first tblalign_center" ><span class="nobr">PROCESS RECORD</span>
+            <th class="no-link first tblalign_center" ><span class="nobr">INVOICE PAYMENT</span>
             <th class="tblalign_center" ><b>DATE ISSUE</b></th>
             <th class="tblalign_center" ><b>BRANCH</b></th>
             <th class="tblalign_center" ><b>CUSTOMER NAME</b></th>
@@ -82,7 +82,7 @@ $this->title = 'Invoice';
                     <td class="first tblalign_center">
                         <?php if( $row['status'] <> 1 ): ?>
                             <a href="?r=invoice/payment-method&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Proceed" >
-                                 <b style="font-size: 11px;">Process Invoice</b>
+                                 <b style="font-size: 11px;">Process Payment</b>
                             </a>
                         <?php else: ?>
                             <a href="?r=invoice/preview&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Print Processed Invoice?">
