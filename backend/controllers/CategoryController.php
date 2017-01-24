@@ -40,7 +40,7 @@ class CategoryController extends Controller
             }
 
         }   
-        // print_r($action['developer']); exit;
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -92,21 +92,22 @@ class CategoryController extends Controller
         $searchModel = new SearchCategory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchCategory')['category'] ) ) {
-
-                $category = Yii::$app->request->get('SearchCategory')['category'];
-                $getCategory = $searchModel->searchCategory($category);
-
-        }elseif ( Yii::$app->request->get('SearchCategory')['category'] == "" ) {
-                $getCategory = Category::find()->all();
+        if( !empty(Yii::$app->request->get('SearchCategory')['category'] ) ) {
+                $getCategory = $searchModel->searchCategoryName(Yii::$app->request->get('SearchCategory')['category']);
 
         }else {
                 $getCategory = Category::find()->all();
 
         }
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getCategory' => $getCategory, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-        ]);
+        return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getCategory' => $getCategory, 
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
+                    ]);
     }
 
     /**
@@ -129,32 +130,49 @@ class CategoryController extends Controller
     public function actionCreate()
     {
         $model = new Category();
+        $searchModel = new SearchCategory();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if ($model->load(Yii::$app->request->post())) {
-
-            $category = Yii::$app->request->post('Category') ['category'];
-
-            $result = $model->getCategory($category);
+            $result = $searchModel->getCategory($category = Yii::$app->request->post('Category') ['category']);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Change the part category name.']);
+                return $this->render('create', [
+                                    'model' => $model, 
+                                    'errTypeHeader' => 'Warning!', 
+                                    'errType' => 'alert alert-warning', 
+                                    'msg' => 'You already enter an existing name, Please! Change the part category name.'
+                                ]);
             }
 
-            if($model->save()) {
-                $searchModel = new SearchCategory();
-                $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
+            if( $model->save() ) {
                 $getCategory = Category::find()->all();
 
-                return $this->render('index', ['searchModel' => $searchModel, 'getCategory' => $getCategory,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
+                return $this->render('index', [
+                                'searchModel' => $searchModel, 
+                                'getCategory' => $getCategory,
+                                'dataProvider' => $dataProvider, 
+                                'errTypeHeader' => 'Success!', 
+                                'errType' => 'alert alert-success', 
+                                'msg' => 'Your record was successfully added in the database.'
+                            ]);
 
             }else {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
+                return $this->render('create', [
+                                    'model' => $model, 
+                                    'errTypeHeader' => 'Error!', 
+                                    'errType' => 'alert alert-error', 
+                                    'msg' => 'You have an error Check All the required fields.'
+                                ]);
             }
 
         } else {
-            return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('create', [
+                                'model' => $model, 
+                                'errTypeHeader' => '', 
+                                'errType' => '', 
+                                'msg' => ''
+                            ]);
         }
     }
 
@@ -167,18 +185,28 @@ class CategoryController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $searchModel = new SearchCategory();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // return $this->redirect(['view', 'id' => $model->id]);
-            $searchModel = new SearchCategory();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            
+        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
             $getCategory = Category::find()->all();
 
-            return $this->render('index', ['searchModel' => $searchModel, 'getCategory' => $getCategory,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+            return $this->render('index', [
+                            'searchModel' => $searchModel, 
+                            'getCategory' => $getCategory,
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Your record was successfully updated in the database.'
+                        ]);
+
         } else {
-            return $this->render('update', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('update', [
+                                'model' => $model, 
+                                'errTypeHeader' => '', 
+                                'errType' => '', 
+                                'msg' => ''
+                            ]);
         }
     }
 
@@ -197,23 +225,20 @@ class CategoryController extends Controller
 
     public function actionDeleteColumn($id)
     {
-        // $this->findModel($id)->delete();
-        // $model = $this->findModel($id);
-        // $model->deleted = 1;
-        // if ( $model->save() ) {
-        //     Yii::$app->getSession()->setFlash('success', 'Customer deleted');
-        // } else {
-        //     Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
-        // }
         $searchModel = new SearchCategory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $this->findModel($id)->delete();
-
         $getCategory = Category::find()->all();
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getCategory' => $getCategory,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+        return $this->render('index', [
+                            'searchModel' => $searchModel, 
+                            'getCategory' => $getCategory,
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Your record was successfully deleted in the database.'
+                        ]);
     }
 
     /**
@@ -232,10 +257,8 @@ class CategoryController extends Controller
         }
     }
 
-    public function actionExportExcel() {
-
-        // $model = new Role();
-
+    public function actionExportExcel() 
+    {
         $result = Category::find()->all();
 
         $objPHPExcel = new \PHPExcel();
@@ -281,27 +304,17 @@ class CategoryController extends Controller
 
     }
 
-    public function actionExportPdf() {
-
-        // $model = new Role();
-
+    public function actionExportPdf() 
+    {
         $result = Category::find()->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
-        // instantiate and use the dompdf class
-        // $dompdf = new Dompdf();
-
-        $dompdf     = new Dompdf();
-        //return $pdf->stream();
-
+        
+        $dompdf = new Dompdf();
+        
         $dompdf->loadHtml($content);
-
-        // // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4', 'landscape');
-
-        // // Render the HTML as PDF
         $dompdf->render();
 
-        // Output the generated PDF to Browser
         $dompdf->stream('Parts-CategoryList-' . date('m-d-Y'));
           
 

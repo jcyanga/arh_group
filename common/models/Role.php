@@ -43,20 +43,4 @@ class Role extends \yii\db\ActiveRecord
         ];
     }
 
-    // Search if with same name.
-    public function getRole($role) {
-           $rows = new Query();
-        
-           $result = $rows->select(['role'])
-            ->from('role')
-            ->where(['role' => $role])
-            // ->andWhere(['email' => $email])
-            ->all();
-            
-            if( count($result) > 0 ) {
-                return TRUE;
-            }else {
-                return 0;
-            }
-    }
 }

@@ -42,7 +42,7 @@ class GstController extends Controller
             }
 
         }   
-        // print_r($action['developer']); exit;
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -91,28 +91,27 @@ class GstController extends Controller
      */
     public function actionIndex()
     {
-
-        $searchModel = new SearchGst();
         $model = new Gst();
-
+        $searchModel = new SearchGst();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( isset(Yii::$app->request->get('SearchGst')['branch_id'] ) ) {
-
-                $branch_id = Yii::$app->request->get('SearchGst')['branch_id'];
-                $getGst = $searchModel->searchBranch($branch_id);
-
-        }elseif ( Yii::$app->request->get('SearchGst')['branch_id'] == "" ) {
-                $getGst = $model->getGst();
+        if( !empty(Yii::$app->request->get('SearchGst')['branch_id'])) {
+                $getGst = $searchModel->searchBranchWithGst(Yii::$app->request->get('SearchGst')['branch_id']);
 
         }else {
-                $getGst = $model->getGst();
+                $getGst = $searchModel->getGsts();
 
         }
 
         return $this->render('index', [
-            'searchModel' => $searchModel, 'getGst' => $getGst, 'model' => $model, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-        ]);
+                            'searchModel' => $searchModel, 
+                            'getGst' => $getGst, 
+                            'model' => $model, 
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
     }
 
     /**
@@ -135,32 +134,49 @@ class GstController extends Controller
     public function actionCreate()
     {
         $model = new Gst();
-
         $searchModel = new SearchGst();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         if ($model->load(Yii::$app->request->post())) {
-
-            $branch_id = Yii::$app->request->post('Gst') ['branch_id'];
-            $result = $searchModel->searchGst($branch_id);
+            $result = $searchModel->searchExistGst(Yii::$app->request->post('Gst') ['branch_id']);
 
             if( $result == 1 ) {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Warning!', 'errType' => 'alert-warning', 'msg' => 'You already enter an existing account Please! Choose other branch name.']);
+                return $this->render('create', [
+                                        'model' => $model, 
+                                        'errTypeHeader' => 'Warning!', 
+                                        'errType' => 'alert alert-warning', 
+                                        'msg' => 'You already enter an existing branch name, Please! Choose other branch name.'
+                                    ]);
             }
 
-            if($model->save()) {
+            if( $model->save() ) {
+                $getGst = $searchModel->getGsts();
 
-                $getGst = $model->getGst();
-
-                return $this->render('index', ['searchModel' => $searchModel, 'getGst' => $getGst,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);
+                return $this->render('index', [
+                                        'searchModel' => $searchModel, 
+                                        'getGst' => $getGst,
+                                        'dataProvider' => $dataProvider, 
+                                        'errTypeHeader' => 'Success!', 
+                                        'errType' => 'alert alert-success', 
+                                        'msg' => 'Your record was successfully added in the database.'
+                                    ]);
 
             }else {
-                return $this->render('create', ['model' => $model, 'errTypeHeader' => 'Error!', 'errType' => 'alert-error', 'msg' => 'You have an error Check All the required fields.']);
+                return $this->render('create', [
+                                    'model' => $model, 
+                                    'errTypeHeader' => 'Error!', 
+                                    'errType' => 'alert alert-error', 
+                                    'msg' => 'You have an error Check All the required fields.'
+                                ]);
             }
         
         } else {
-            return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('create', [
+                                    'model' => $model, 
+                                    'errTypeHeader' => '', 
+                                    'errType' => '', 
+                                    'msg' => ''
+                                ]);
         }
     }
 
@@ -198,25 +214,21 @@ class GstController extends Controller
 
     public function actionDeleteColumn($id)
     {
-        // $this->findModel($id)->delete();
-        // $model = $this->findModel($id);
-        // $model->deleted = 1;
-        // if ( $model->save() ) {
-        //     Yii::$app->getSession()->setFlash('success', 'Customer deleted');
-        // } else {
-        //     Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
-        // }
+        $model = new Gst();
         $searchModel = new SearchGst();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $this->findModel($id)->delete();
+        $getGst = $searchModel->getGsts();
 
-        $model = new Gst();
-        
-        $getGst = $model->getGst();
-
-        return $this->render('index', ['searchModel' => $searchModel, 'getGst' => $getGst,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+        return $this->render('index', [
+                            'searchModel' => $searchModel, 
+                            'getGst' => $getGst,
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Your record was successfully deleted in the database.'
+                        ]);
     }
 
     /**

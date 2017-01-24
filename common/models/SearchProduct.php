@@ -116,7 +116,9 @@ class SearchProduct extends Product
         return $query;
     }
 
-    public function searchProduct($category_id,$product_name) {
+    // Search box result
+    public function searchProductName($category_id,$product_name) 
+    {
         $rows = new Query();
 
         $result = $rows->select(['product.id', 'category.category', 'product.product_code', 'product.product_name', 'product.unit_of_measure', 'product.category_id', 'product.product_image', 'product.status', 'product.created_at', 'product.created_by'])
@@ -127,6 +129,56 @@ class SearchProduct extends Product
             ->all();
 
         return $result;            
+    }
+
+    // get Product List
+    public function getProducts() 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['product.id', 'category.category', 'product.product_code', 'product.product_name', 'product.unit_of_measure'])
+            ->from('product')
+            ->join('INNER JOIN', 'category', 'product.category_id = category.id')
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        }    
+    }
+
+    // Search if with same name.
+    public function getProductName($product_name) {
+       $rows = new Query();
+    
+       $result = $rows->select(['product_code', 'product_name'])
+        ->from('product')
+        ->where(['product_name' => $product_name])
+        ->all();
+        
+        if( count($result) > 0 ) {
+            return TRUE;
+        }else {
+            return 0;
+        }
+    }
+
+    // get Product by Id
+    public function getProductById($id) {
+        $rows = new Query();
+
+        $result = $rows->select(['product.id', 'category.category', 'product.product_code', 'product.product_name', 'product.unit_of_measure', 'product.category_id', 'product.product_image', 'product.status', 'product.created_at', 'product.created_by'])
+            ->from('product')
+            ->join('INNER JOIN', 'category', 'product.category_id = category.id')
+            ->where(['product.id' => $id])
+            ->one();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        }    
     }
 
 }

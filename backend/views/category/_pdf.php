@@ -7,7 +7,7 @@ use yii\helpers\Url;
 ?>
 
 <div>
-	<table border="1" >
+	<table class="pdfTable" >
 		<thead>
 			<tr >
 				<td class="pdf_number" > # </td>

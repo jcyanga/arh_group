@@ -46,20 +46,4 @@ class Supplier extends \yii\db\ActiveRecord
             'contact_number' => 'Contact Number',
         ];
     }
-
-    // Search if with same name.
-    public function getSuppliers($supplier_name) {
-           $rows = new Query();
-        
-           $result = $rows->select(['supplier_name'])
-            ->from('supplier')
-            ->where(['supplier_name' => $supplier_name])
-            ->all();
-            
-            if( count($result) > 0 ) {
-                return TRUE;
-            }else {
-                return 0;
-            }
-    }
 }

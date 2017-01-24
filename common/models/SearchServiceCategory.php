@@ -74,7 +74,9 @@ class SearchServiceCategory extends ServiceCategory
         return $dataProvider;
     }
 
-    public function searchServiceCategory($name) {
+    // Search box result
+    public function searchServiceCategoryName($name) 
+    {
         $rows = new Query();
 
         $result = $rows->select(['*'])
@@ -83,5 +85,22 @@ class SearchServiceCategory extends ServiceCategory
                     ->all();
 
         return $result;  
+    }
+
+    // Search if with same name.
+    public function getServiceCategories($name) 
+    {
+           $rows = new Query();
+        
+           $result = $rows->select(['name'])
+            ->from('service_category')
+            ->where(['name' => $name])
+            ->all();
+            
+            if( count($result) > 0 ) {
+                return TRUE;
+            }else {
+                return 0;
+            }
     }
 }

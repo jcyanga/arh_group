@@ -74,7 +74,7 @@ class Customer extends \yii\db\ActiveRecord
             'model' => 'Model',
             'remarks' => 'Remarks',
             'is_blacklist' => 'Is Blacklist',
-            'is_member' => 'Already a member.',
+            'is_member' => 'Is Member',
             'points' => 'Points',
             'member_expiry' => 'Member Expiry',
             'status' => 'Status',
@@ -86,29 +86,4 @@ class Customer extends \yii\db\ActiveRecord
         ];
     }
 
-    // Search if with same name.
-    public function getNameAndEmail($fullname, $email) {
-       $rows = new Query();
-    
-       $result = $rows->select(['fullname', 'email'])
-        ->from('customer')
-        ->where(['fullname' => $fullname])
-        ->andWhere(['email' => $email])
-        ->all();
-        
-        if( count($result) > 0 ) {
-            return TRUE;
-        }else {
-            return 0;
-        }
-    }
-
-    public function getCustomerList() {
-        $rows = new Query();
-
-        $result = $rows->from('customer')
-            ->all();
-
-        return $result;    
-    }
 }

@@ -69,7 +69,9 @@ class SearchModules extends Modules
         return $dataProvider;
     }
 
-    public function searchModule($module) {
+    // Search box result
+    public function searchModuleName($module) 
+    {
         $rows = new Query();
 
         $result = $rows->select(['*'])
@@ -78,5 +80,22 @@ class SearchModules extends Modules
                     ->all();
 
         return $result;  
+    }
+
+    // Search if with same name.
+    public function getModules($modules) 
+    {
+       $rows = new Query();
+    
+       $result = $rows->select(['modules'])
+        ->from('modules')
+        ->where(['modules' => $modules])
+        ->all();
+        
+        if( count($result) > 0 ) {
+            return TRUE;
+        }else {
+            return 0;
+        }
     }
 }

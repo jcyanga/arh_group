@@ -45,8 +45,14 @@ class ProductLevelController extends Controller
         
         $getProductLevel = ProductLevel::find()->all();
        
-        return $this->render('index', ['searchModel' => $searchModel, 'getProductLevel' => $getProductLevel, 'dataProvider' => $dataProvider, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-        ]);
+        return $this->render('index', [
+                        'searchModel' => $searchModel, 
+                        'getProductLevel' => $getProductLevel, 
+                        'dataProvider' => $dataProvider, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
+                    ]);
     }
 
     /**
@@ -88,17 +94,28 @@ class ProductLevelController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $searchModel = new SearchProductLevel();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $searchModel = new SearchProductLevel();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-            
+        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
             $getProductLevel = ProductLevel::find()->all();
 
-            return $this->render('index', ['searchModel' => $searchModel, 'getProductLevel' => $getProductLevel,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully updated in the database.']);
+            return $this->render('index', [
+                                'searchModel' => $searchModel, 
+                                'getProductLevel' => $getProductLevel,
+                                'dataProvider' => $dataProvider, 
+                                'errTypeHeader' => 'Success!', 
+                                'errType' => 'alert alert-success', 
+                                'msg' => 'Your record was successfully updated in the database.'
+                            ]);
+
         } else {
-            return $this->render('update', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '']);
+            return $this->render('update', [
+                                    'model' => $model, 
+                                    'errTypeHeader' => '', 
+                                    'errType' => '', 
+                                    'msg' => ''
+                                ]);
         }
     }
 

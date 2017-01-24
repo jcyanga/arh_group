@@ -77,7 +77,9 @@ class SearchService extends Service
         return $dataProvider;
     }
 
-    public function searchService($service_category_id,$service_name) {
+    // Search box result.
+    public function searchServiceName($service_category_id,$service_name) 
+    {
         $rows = new Query();
 
         $result = $rows->select(['service.id','service.service_category_id','service_category.name','service.service_name','service.description','service.default_price','service.status','service.created_at','service.created_by'])
@@ -90,6 +92,43 @@ class SearchService extends Service
         return $result;  
     }
 
+    // get Service list
+    public function getServices() 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['service.id','service.service_category_id','service_category.name','service.service_name','service.description','service.default_price','service.status','service.created_at','service.created_by'])
+            ->from('service')
+            ->join('INNER JOIN', 'service_category', 'service.service_category_id = service_category.id')
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        }
+
+    }
+
+    // get Service same name
+    public function getSameServices($service_category_id,$service_name) 
+    {
+        $rows = new Query();
+        
+        $result = $rows->select(['service_category_id', 'service_name'])
+        ->from('service')
+        ->where(['service_category_id' => $service_category_id])
+        ->andWhere(['service_name' => $service_name])
+        ->all();
+        
+        if( count($result) > 0 ) {
+            return TRUE;
+        }else {
+            return 0;
+        }
+    }
+
+    // get pending quotation services for dashboard
     public function getPendingServices() {
         $rows = new Query();
 
@@ -102,12 +141,13 @@ class SearchService extends Service
                 ->join('LEFT JOIN', 'service', 'quotation_detail.service_part_id = service.id')
                 ->where('quotation_detail.type = 0')
                 ->andWhere('quotation_detail.task = 1')
-                ->andWhere('quotation_detail.invoice = 0')
+                // ->andWhere('quotation_detail.invoice = 0')
                 ->all();
 
         return $result;
     }
 
+    // get pending invoice services for dashboard
     public function getPendingInvoiceServices() {
         $rows = new Query();
 
@@ -120,7 +160,7 @@ class SearchService extends Service
                 ->join('LEFT JOIN', 'service', 'invoice_detail.service_part_id = service.id')
                 ->where('invoice_detail.type = 0')
                 ->andWhere('invoice_detail.task = 1')
-                ->andWhere('invoice_detail.status = 0')
+                // ->andWhere('invoice_detail.status = 0')
                 ->all();
 
         return $result;

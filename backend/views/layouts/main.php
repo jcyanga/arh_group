@@ -270,13 +270,13 @@ $userFullname = Yii::$app->user->identity->fullname;
                                     </ul>
                                 </li>
                                 <?php if($isGst || $isProductLevel): ?>
-                                <li><a id="nav-reports" ><i class="fa fa-gear"></i> Utilities <span class="fa fa-chevron-down"></span></a>
+                                <li><a id="nav-reports" ><i class="fa fa-legal"></i> Utilities <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
                                         <?php if($isGst): ?>
                                         <li><a href="?r=gst">Set GST</a></li>
                                         <?php endif; ?>
                                         <?php if($isProductLevel): ?>
-                                        <li><a href="?r=product-level">Part Critical & Minimum Level</a></li>
+                                        <li><a href="?r=product-level">Set Parts Warning Level</a></li>
                                         <?php endif; ?>
                                     </ul>
                                 </li>

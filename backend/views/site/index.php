@@ -14,7 +14,7 @@ $this->title = 'My Yii Application';
         <div class="dashboard_graph x_panel">
             <div class="row x_title">
                 <div class="col-md-6">
-                    <h3>Customer List <small style="font-style: italic;">Search by: Customer Name/Carplate/Parts Name/Service Name.</small></h3>
+                    <h4><i class="fa fa-clipboard"></i> Customer List <small style="font-style: italic; font-size: 12px;">(<b>Search by:</b> Customer Name / Carplate/ Parts Name / Service Name)</small></h4>
                 </div>
                 <div class="col-md-6">
             
@@ -35,7 +35,7 @@ $this->title = 'My Yii Application';
         <div class="dashboard_graph x_panel">
             <div class="row x_title">
                 <div class="col-md-6">
-                    <h4><i class="fa fa-warning"></i> Pending Quotation Services </h4>
+                    <h4><i class="fa fa-map-marker"></i> Pending Quotation Services </h4>
                 </div>
             </div>
 
@@ -95,7 +95,7 @@ $this->title = 'My Yii Application';
         <div class="dashboard_graph x_panel">
             <div class="row x_title">
                 <div class="col-md-6">
-                    <h4><i class="fa fa-warning"></i> Pending Invoice Services </h4>
+                    <h4><i class="fa fa-map-marker"></i> Pending Invoice Services </h4>
                 </div>
             </div>
 
@@ -156,7 +156,7 @@ $this->title = 'My Yii Application';
     <div class="x_panel">
 
     <div class="x_title">
-        <h5><b><i class="fa fa-cog"></i> Parts in Warning Stock</b></h5>
+        <h5><b><i class="fa fa-cubes"></i> Parts in Warning Stock</b></h5>
         <ul class="nav navbar-right panel_toolbox"></ul>
         <div class="clearfix"></div>
     </div>
@@ -202,7 +202,7 @@ $this->title = 'My Yii Application';
     <div class="x_panel">
 
     <div class="x_title">
-        <h5><b><i class="fa fa-cog"></i> Parts in Critical Stock</b></h5>
+        <h5><b><i class="fa fa-cubes"></i> Parts in Critical Stock</b></h5>
         <ul class="nav navbar-right panel_toolbox"></ul>
         <div class="clearfix"></div>
     </div>
@@ -248,7 +248,7 @@ $this->title = 'My Yii Application';
     <div class="x_panel">
 
     <div class="x_title">
-        <h5><b><i class="fa fa-cog"></i> Parts in Zero Stock</b></h5>
+        <h5><b><i class="fa fa-cubes"></i> Parts in Zero Stock</b></h5>
         <ul class="nav navbar-right panel_toolbox"></ul>
         <div class="clearfix"></div>
     </div>

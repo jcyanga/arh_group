@@ -19,6 +19,8 @@ use yii\web\Response;
 use common\models\Product;
 use common\models\StockIn;
 use common\models\Supplier;
+
+use common\models\SearchProduct;
 /**
  * InventoryController implements the CRUD actions for Inventory model.
  */
@@ -47,7 +49,7 @@ class InventoryController extends Controller
             }
 
         }   
-        // print_r($action['developer']); exit;
+
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -97,14 +99,20 @@ class InventoryController extends Controller
     public function actionIndex()
     {
         $model = new Inventory();
-
         $searchModel = new SearchInventory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $getProductInInventory = $model->getProductInInventory();
+        $getProductInInventory = $searchModel->getProductInInventory();
 
-        return $this->render('index', ['model' => $model, 'searchModel' => $searchModel, 'dataProvider' => $dataProvider, 'getProductInInventory' => $getProductInInventory, 'errTypeHeader' => '', 'errType' => '', 'msg' => ''
-        ]);
+        return $this->render('index', [
+                                'model' => $model, 
+                                'searchModel' => $searchModel, 
+                                'dataProvider' => $dataProvider, 
+                                'getProductInInventory' => $getProductInInventory, 
+                                'errTypeHeader' => '', 
+                                'errType' => '', 
+                                'msg' => ''
+                            ]);
     }
 
     /**
@@ -114,12 +122,11 @@ class InventoryController extends Controller
      */
     public function actionView($id)
     {
-        $model = new Inventory();
-
+        $model = new SearchInventory();
         $getProductInInventoryById = $model->getProductInInventoryById($id);
 
         return $this->render('view', [
-            'model' => $getProductInInventoryById,
+                        'model' => $getProductInInventoryById,
         ]);
     }
 
@@ -132,80 +139,70 @@ class InventoryController extends Controller
     {
 
         $model = new Inventory();
-
         $searchModel = new SearchInventory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $searchProductModel = new SearchProduct();
+
         if ($model->load(Yii::$app->request->post())) {
-
-            $supplier_id = Yii::$app->request->post('Inventory')['supplier_id'];
             
-            // $product_id = Yii::$app->request->post('product_id');
-            //  array_pop($product_id);
-            // $quantity = Yii::$app->request->post('quantity');
-            //  array_pop($quantity);
-            // $cost_price = Yii::$app->request->post('cost_price');
-            //  array_pop($cost_price);
-            // $selling_price = Yii::$app->request->post('selling_price');
-            //  array_pop($selling_price); 
-            $productId = Yii::$app->request->post('Inventory')['product'];
-            $quantity = Yii::$app->request->post('Inventory')['quantity'];
-            $cost_price = Yii::$app->request->post('Inventory')['cost_price'];
-            $selling_price = Yii::$app->request->post('Inventory')['selling_price'];
-
-            $date_imported = Yii::$app->request->post('Inventory')['date_imported'];
-            $created_at = Yii::$app->request->post('Inventory')['created_at'];
-            $created_by = Yii::$app->request->post('Inventory')['created_by'];
+            foreach ( Yii::$app->request->post('Inventory')['product'] as $key => $value) {
             
-            foreach ($productId as $key => $value) {
-            
-            $result = $model->selectSupplierNameandProductName($supplier_id[$key], $value);
+            $result = $searchModel->selectSupplierNameandProductName(Yii::$app->request->post('Inventory')['supplier_id'][$key], $value);
 
                 $inventory = new Inventory();
-                $inventory->supplier_id = $supplier_id[$key];
+                $inventory->supplier_id = Yii::$app->request->post('Inventory')['supplier_id'][$key];
                 $inventory->product_id = $value;
-                $inventory->quantity = $quantity[$key];
-                $inventory->cost_price = $cost_price[$key];
-                $inventory->selling_price = $selling_price[$key];
-                $inventory->date_imported = $date_imported;
-                $inventory->created_at = $created_at;
-                $inventory->created_by = $created_by;
+                $inventory->quantity = Yii::$app->request->post('Inventory')['quantity'][$key];
+                $inventory->cost_price = Yii::$app->request->post('Inventory')['cost_price'][$key];
+                $inventory->selling_price = Yii::$app->request->post('Inventory')['selling_price'][$key];
+                $inventory->date_imported = Yii::$app->request->post('Inventory')['date_imported'];
+                $inventory->created_at = Yii::$app->request->post('Inventory')['created_at'];
+                $inventory->created_by = Yii::$app->request->post('Inventory')['created_by'];
 
                 if( $result != 1) { 
                     $inventory->save();  
                 }
 
                 $stockin = new StockIn();
-                $stockin->supplier_id = $supplier_id[$key];
+                $stockin->supplier_id = Yii::$app->request->post('Inventory')['supplier_id'][$key];
                 $stockin->product_id = $value;
-                $stockin->quantity = $quantity[$key];
-                $stockin->cost_price = $cost_price[$key];
-                $stockin->selling_price = $selling_price[$key];
-                $stockin->date_imported = date("Y-m-d");
+                $stockin->quantity = Yii::$app->request->post('Inventory')['quantity'][$key];
+                $stockin->cost_price =Yii::$app->request->post('Inventory')['cost_price'][$key];
+                $stockin->selling_price = Yii::$app->request->post('Inventory')['selling_price'][$key];
+                $stockin->date_imported = Yii::$app->request->post('Inventory')['date_imported'];
                 $stockin->time_imported = date("H:i:s");
-                $stockin->created_at = date("Y-m-d");
-                $stockin->created_by = Yii::$app->user->identity->id;
+                $stockin->created_at = Yii::$app->request->post('Inventory')['created_at'];
+                $stockin->created_by = Yii::$app->request->post('Inventory')['created_by'];
 
                 if( $result != 1) { 
                     $stockin->save();  
                 }
                     
             }
-            
-            $searchModel = new SearchInventory();
-            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-            $getProductInInventory = $model->getProductInInventory();
+            $getProductInInventory = $searchModel->getProductInInventory();
 
-            return $this->render('index', ['searchModel' => $searchModel, 'getProductInInventory' => $getProductInInventory,
-                'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully added in the database.']);        
+            return $this->render('index', [
+                            'searchModel' => $searchModel, 
+                            'getProductInInventory' => $getProductInInventory,
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Your record was successfully added in the database.'
+                        ]);        
 
         } else {
+                
+                $getProductList = $searchProductModel->getProducts();
 
-                $searchProductModel = new Product();
-                $getProductList = $searchProductModel->getProduct();
-
-            return $this->render('create', ['model' => $model, 'errTypeHeader' => '', 'errType' => '', 'msg' => '', 'getProductList' => $getProductList ]);
+            return $this->render('create', [
+                                'model' => $model, 
+                                'errTypeHeader' => '', 
+                                'errType' => '', 
+                                'msg' => '', 
+                                'getProductList' => $getProductList 
+                            ]);
         }
 
     }
@@ -218,17 +215,15 @@ class InventoryController extends Controller
      */
     public function actionUpdate()
     {
-        // $model = $this->findModel($id);
+        $model = $this->findModel($id);
 
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        return ['message' => 'success' , 'content' => 'Your record was selected in the database.'];
-        // if ($model->load(Yii::$app->request->post()) && $model->save()) {
-        //     return $this->redirect(['view', 'id' => $model->id]);
-        // } else {
-        //     return $this->render('update', [
-        //         'model' => $model,
-        //     ]);
-        // }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        } else {
+            return $this->render('update', [
+                'model' => $model,
+            ]);
+        }
     }
     
     /**
@@ -246,14 +241,6 @@ class InventoryController extends Controller
 
     public function actionDeleteColumn($id,$product_id,$date_imported)
     {
-        // $this->findModel($id)->delete();
-        // $model = $this->findModel($id);
-        // $model->deleted = 1;
-        // if ( $model->save() ) {
-        //     Yii::$app->getSession()->setFlash('success', 'Customer deleted');
-        // } else {
-        //     Yii::$app->getSession()->setFlash('danger', 'Unable to delete Customer');
-        // }
         $searchModel = new SearchInventory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -265,7 +252,14 @@ class InventoryController extends Controller
 
         $getProductInInventory = $searchModel->getProductInInventory();
 
-        return $this->render('index', ['searchModel' => $searchModel, 'getProductInInventory' => $getProductInInventory, 'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+        return $this->render('index', [
+                            'searchModel' => $searchModel, 
+                            'getProductInInventory' => $getProductInInventory, 
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Your record was successfully deleted in the database.'
+                        ]);
     }
 
     /**
@@ -284,10 +278,10 @@ class InventoryController extends Controller
         }
     }
 
-    public function actionExportExcel() {
-
-        $getResult = new Inventory();
-        $result = $getResult->getProductInInventory();
+    public function actionExportExcel() 
+    {
+        $searchModel = new SearchInventory();
+        $result = $searchModel->getProductInInventory();
 
         $objPHPExcel = new \PHPExcel();
         $styleHeadingArray = array(
@@ -350,33 +344,24 @@ class InventoryController extends Controller
 
     }
 
-    public function actionExportPdf() {
-
-        $getResult = new Inventory();
-        $result = $getResult->getProductInInventory();
+    public function actionExportPdf() 
+    {
+        $searchModel = new SearchInventory();
+        $result = $searchModel->getProductInInventory();
 
         $content = $this->renderPartial('_pdf', ['result' => $result]);
-        // instantiate and use the dompdf class
-        // $dompdf = new Dompdf();
-
-        $dompdf     = new Dompdf();
-        //return $pdf->stream();
-
+        
+        $dompdf = new Dompdf();
+        
         $dompdf->loadHtml($content);
-
-        // // (Optional) Setup the paper size and orientation
         $dompdf->setPaper('A4', 'landscape');
-
-        // // Render the HTML as PDF
         $dompdf->render();
 
-        // Output the generated PDF to Browser
         $dompdf->stream('PartsInventory-' . date('m-d-Y'));
-          
-
     }
 
-    public function actionInsertInInventory() {
+    public function actionInsertInInventory() 
+    {
         $detail = new Inventory();
         $this->layout = false;
 
@@ -394,17 +379,16 @@ class InventoryController extends Controller
         $inventorySupplierName = $getSupplierName->supplier_name;
 
         return $this->render('product-lists',[
-
-                'n' => $n,
-                'inventorySupplier' => $inventorySupplierId,
-                'inventorySupplierName' => $inventorySupplierName,
-                'inventoryProduct' => $inventoryProductId,
-                'inventoryProductName' => $inventoryProductName,
-                'inventoryQty' => $inventoryQty,
-                'inventoryCost' => $inventoryCost,
-                'inventorySelling' => $inventorySelling,
-                'detail' => $detail
-            ]);
+                                        'n' => $n,
+                                        'inventorySupplier' => $inventorySupplierId,
+                                        'inventorySupplierName' => $inventorySupplierName,
+                                        'inventoryProduct' => $inventoryProductId,
+                                        'inventoryProductName' => $inventoryProductName,
+                                        'inventoryQty' => $inventoryQty,
+                                        'inventoryCost' => $inventoryCost,
+                                        'inventorySelling' => $inventorySelling,
+                                        'detail' => $detail
+                                    ]);
     }
 
 

@@ -7,8 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Customer */
 
 $this->title = 'View Supplier';
-// $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
-// $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 
 <div class="row form-container">
@@ -25,14 +24,12 @@ $this->title = 'View Supplier';
     <div style="text-align: right;">
         <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
 
-        <?= Html::a( '<i class="fa fa-pencil-square"></i> Update', '?r=supplier/update&id=' . $model['id'], ['class' => 'form-btn btn btn-info']); ?>
-
-        <?= Html::a( '<i class="fa fa-trash"></i> Delete', '?r=supplier/delete-column&id=' . $model['id'], ['class' => 'form-btn btn btn-danger', 'onclick' => 'return deleteConfirmation()']); ?>
+        <?= Html::a( '<i class="fa fa-trash"></i> Delete', '?r=inventory/delete-column&id=' . $model['id'], ['class' => 'form-btn btn btn-danger', 'onclick' => 'return deleteConfirmation()']); ?>
     </div>
  </div>    
  <br/>
 
-    <div class="tbl-container">
+    <div class="tbl-container viewDesign">
         <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -45,7 +42,14 @@ $this->title = 'View Supplier';
             'cost_price',
             'selling_price',
             'date_imported',
-            'created_at',
+            [
+                'label' => 'Status',
+                'value' => $model['status'] ? 'Yes' : 'No',
+            ], 
+            [
+                'label' => 'Created At',
+                'value' => date('m-d-Y', strtotime($model['created_at'])),
+            ], 
         ],
         ]) ?>
         <br/>

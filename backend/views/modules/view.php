@@ -7,8 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Customer */
 
 $this->title = 'View Module';
-// $this->params['breadcrumbs'][] = ['label' => 'Customers', 'url' => ['index']];
-// $this->params['breadcrumbs'][] = $this->title;
+ 
 ?>
 
 <div class="row form-container">
@@ -32,16 +31,12 @@ $this->title = 'View Module';
  </div>    
  <br/>
 
-    <div class="tbl-container">
+    <div class="tbl-container viewDesign">
         <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
-            'modules'
-            // 'created_at',
-            // 'created_by',
-            // 'updated_at',
-            // 'updated_by',
+            'modules' 
         ],
         ]) ?>
         <br/>

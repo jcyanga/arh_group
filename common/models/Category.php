@@ -42,21 +42,4 @@ class Category extends \yii\db\ActiveRecord
             'category' => 'Category',
         ];
     }
-
-    // Search if with same name.
-    public function getCategory($category) {
-           $rows = new Query();
-        
-           $result = $rows->select(['category'])
-            ->from('category')
-            ->where(['category' => $category])
-            // ->andWhere(['email' => $email])
-            ->all();
-            
-            if( count($result) > 0 ) {
-                return TRUE;
-            }else {
-                return 0;
-            }
-    }
 }

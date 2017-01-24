@@ -31,21 +31,12 @@ $this->title = 'Branches';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-cog"></i> SET PARTS CRITICAL & MINIMUM LEVEL</h4></span>
+        <span class="form-header"><h4><i class="fa fa-legal"></i> SET PARTS WARNING LEVEL</h4></span>
     </div>
     <hr/>
-
-    <div class="form-search-container">    
-      <?php echo $this->render('_search', ['model' => $searchModel]); ?>
-    </div>   
- 
+  
  </div>
 
-</div>
-<br/>
-
-<div class="row table-container">
- 
  <div class="col-md-12 col-sm-12 col-xs-12">
  <br/><br/>
 
@@ -53,7 +44,7 @@ $this->title = 'Branches';
     <thead>
         <tr class="headings">
             <th class="tblalign_center" > PARTS CRITICAL LEVEL </th>
-            <th class="tblalign_center" > PARTS MINIMUL LEVEL </th>
+            <th class="tblalign_center" > PARTS MINIMUM LEVEL </th>
             <th class="no-link last tblalign_center"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
