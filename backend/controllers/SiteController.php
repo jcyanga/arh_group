@@ -73,12 +73,10 @@ class SiteController extends Controller
         
         // customer list
         if( Yii::$app->request->post()) {
-            $getCustomerQuotationBySearch = $customerModel->getCustomerQuotationBySearch(Yii::$app->request->post('customerSearchkeyword'));
             $getCustomerInvoiceBySearch = $customerModel->getCustomerInvoiceBySearch(Yii::$app->request->post('customerSearchkeyword'));
             $keywordValue = Yii::$app->request->post('customerSearchkeyword');
 
         }else{
-            $getCustomerQuotationBySearch = '';
             $getCustomerInvoiceBySearch = '';
             $keywordValue = '';
 
@@ -108,7 +106,6 @@ class SiteController extends Controller
                         'getWarningStock' => $getWarningStock, 
                         'getTotalWarningStock' => $getTotalWarningStock,
                         'pendingInvoiceServices' => $pendingInvoiceServices,
-                        'getCustomerQuotationBySearch' => $getCustomerQuotationBySearch,
                         'getCustomerInvoiceBySearch' => $getCustomerInvoiceBySearch,
                         'keywordValue' => $keywordValue,
                     ]);
@@ -122,11 +119,15 @@ class SiteController extends Controller
     public function actionLogin()
     {
         $this->layout=false;
+        
         if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+            return $this->render('login', [
+                'model' => $model,
+            ]);
         }
-
+        
         $model = new LoginForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         } else {

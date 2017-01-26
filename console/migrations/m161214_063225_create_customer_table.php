@@ -14,8 +14,12 @@ class m161214_063225_create_customer_table extends Migration
     {
         $this->createTable('customer', [
             'id' => $this->primaryKey(),
+            'role' => $this->integer(5)->notNull(),
             'fullname' => $this->string(50)->notNull(),
             'ic' => $this->string(50)->notNull(),
+            'password' => $this->string(50)->notNull(),
+            'password_hash' => $this->string(100)->notNull(),
+            'auth_key' => $this->string(100)->notNull(),
             'race' => $this->string(50)->notNull(),
             'carplate' => $this->string(50)->notNull(),
             'address' => $this->text()->notNull(),
@@ -34,7 +38,8 @@ class m161214_063225_create_customer_table extends Migration
             'created_at' => $this->datetime()->notNull(),
             'created_by' => $this->integer(10)->notNull(),
             'updated_at' => $this->datetime()->notNull(),
-            'updated_by' => $this->integer(10)->notNull()
+            'updated_by' => $this->integer(10)->notNull(),
+            'deleted' => $this->integer(5)->notNull(),
         ]);
     }
 

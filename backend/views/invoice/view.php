@@ -32,7 +32,7 @@ $this->title = 'View Quotation';
     <div class="x_panel invoiceViewContainer">
 
         <div class="x_title">
-            <h2> Invoice Details.</h2>
+            <h2> <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?> </h2>
             <ul class="nav navbar-right panel_toolbox"></ul>
             <div class="clearfix"></div>
         </div>
@@ -48,7 +48,7 @@ $this->title = 'View Quotation';
             <div class="col-md-12 invoice-col">
             <br/>
                 <address class="branchRowContainer">
-                    <h4><b><?= strtoupper($customerInfo['name']) ?></b></h4>
+                    <h4><b><i class="fa fa-car"></i> <?= strtoupper($customerInfo['name']) ?></b></h4>
                     <?= $customerInfo['address'] ?>
                     <br><b>Contact #:</b>  <?= $customerInfo['branchNumber'] ?>
                     <br><b>Prepared By:</b> <?= $customerInfo['salesPerson'] ?>
@@ -62,7 +62,7 @@ $this->title = 'View Quotation';
         <div class="row">
             <div class="col-xs-12 invoice-header">
                 <h3>
-                <small class="pull-left"><i class="fa fa-globe"></i> <?=$customerInfo['invoice_no'] ?></small>
+                <small class="pull-left"><i class="fa fa-globe"></i> Invoice: <?=$customerInfo['invoice_no'] ?></small>
                 <small class="pull-right"><i class="fa fa-calendar"></i> Date Issue: <?= $dateIssue ?></small>
                 </h3>
             </div>

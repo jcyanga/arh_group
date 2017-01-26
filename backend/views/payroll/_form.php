@@ -3,7 +3,6 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
-use yii\helpers\ArrayHelper;
 
 use common\models\Staff;
 
@@ -13,7 +12,7 @@ use common\models\Staff;
 
 $dateNow = date('Y-m-d');
 $userId = Yii::$app->user->identity->id;
-$dataStaff = ArrayHelper::map(Staff::find()->all(),'id','fullname');
+$getStaff = Staff::find()->all();
 
 ?>
 
@@ -39,7 +38,16 @@ $dataStaff = ArrayHelper::map(Staff::find()->all(),'id','fullname');
 
     <div class="col-md-4">
         <label class="form_label">Staff Fullname</label>
-        <?= $form->field($model, 'staff_id')->dropDownList($dataStaff,['class' => 'form_input form-control select2_single'])->label(false) ?>
+        <select name="Quotation[selectedBranch]" class="qSelect select3_single">
+            <option value="0">SEARCH STAFF HERE.</option>
+            <?php if( !empty($getStaff) ): ?>
+                <?php foreach( $getStaff as $row ): ?>
+                    <option value="<?php echo $row['id']; ?>">[ <?php echo $row['staff_code']; ?> ] <?php echo $row['fullname']; ?></option>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <option value="0">NO RECORD FOUND.</option>
+            <?php endif; ?>
+        </select>
     </div>
 
 </div>

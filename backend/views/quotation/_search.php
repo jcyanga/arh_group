@@ -20,12 +20,20 @@ use yii\helpers\Url;
     
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
-    <div class="col-md-3">
-        <input type="text" name="date_start" id="datestart" class="form_input form-control" placeholder="Date Start" readonly />
+    <div class="col-md-2">
+        <input type="text" name="date_start" id="datestart" class="form_input form-control" placeholder="Date Start" value="<?= $date_start ?>" readonly />
     </div>
 
-    <div class="col-md-3">
-        <input type="text" name="date_end" id="dateend" class="form_input form-control" placeholder="Date End" readonly />
+    <div class="col-md-2">
+        <input type="text" name="date_end" id="dateend" class="form_input form-control" placeholder="Date End" value="<?= $date_end ?>" readonly />
+    </div>
+    
+    <div class="col-md-2">
+        <input type="text" name="customer_name" id="customer_name" class="form_input form-control" placeholder="Enter Customer Name here." />
+    </div>
+
+    <div class="col-md-2">
+        <input type="text" name="carplate" id="carplate" class="form_input form-control" placeholder="Enter Vehicle Number here." />
     </div>
 
     <div class="col-md-3">

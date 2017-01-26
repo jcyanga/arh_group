@@ -7,213 +7,293 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Customer */
 
 use common\models\Gst;
+use common\models\TermsAndConditions;
+
+$getTermsAndConditions = TermsAndConditions::find()->all();
 
 $this->title = 'Print Multiple Invoice';
 
 $id = Yii::$app->request->get('id');
 
+$n = 0;
+$i = 1;
 ?>
 
-<div class="book">
-    
-    <?php foreach( $multipleInvoiceInfo as $iRow): ?>
-        <?php
-            $getGst = Gst::find()->where(['branch_id' => $iRow['branch_id'] ])->one();
-                if( isset($getGst->gst) ) {
-                    $gst = $getGst->gst;
-                    $getSubTotal = $iRow['grand_total'] / $gst;
-                }else{
-                    $gst = 1;
-                    $getSubTotal = $iRow['grand_total'];
-                }
-        ?>    
-        <div class="page">  
-        
-                <div class="subpage">
-                    
-                    <div class="x_panel">
+<?php foreach( $multipleInvoiceInfo as $iRow): ?>
+    <?php
+        $getGst = Gst::find()->where(['branch_id' => $iRow['branch_id'] ])->one();
+            if( isset($getGst->gst) ) {
+                $gst = $getGst->gst;
+                $getSubTotal = $iRow['grand_total'] / $gst;
+            }else{
+                $gst = 1;
+                $getSubTotal = $iRow['grand_total'];
+            }
+    ?>  
 
-                        <div class="x_title">
-                            <small class="pull-right printquotationDate"><i class="fa fa-calendar"></i> Date Issue: <?= date('m-d-Y', strtotime($iRow['date_issue']) ) ?></small>
-                            <div class="clearfix"></div>
-                        </div>
+<div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <img src="assets/bootstrap/images/arh_receipt_logo.png" style="height: 55%; width: 100%; max-width:500px;">
+                                <br/>
 
-                        <div class="x_content">
+                                <div class="row" style="text-align: left; font-size: 12px; text-transform: uppercase;">
+                                    
+                                    <div class="col-md-12">
+                                        <b>Name : </b> <?= Html::encode($iRow['name']) ?>
+                                    </div>
 
-                        <!-- branch info row -->
-                        <div class="row printinvoiceBranchContainer">
-                            <div class="col-md-6">
-                                <div>
-                                    <address>
-                                        <h5><b><?= strtoupper($iRow['name']) ?></b></h5>
-                                        <?= $iRow['address'] ?>
-                                        <br><b>Contact #:</b>  <?= $iRow['branchNumber'] ?>
-                                        <br><b>Prepared By:</b> <?= $iRow['salesPerson'] ?>
-                                    </address>
+                                    <div style="margin-top: -20px;" class="col-md-12">
+                                        <b>Billing Address : </b> <?= Html::encode($iRow['address']) ?>
+                                    </div>
+
                                 </div>
-                            </div>              
-                        </div>
-                        <!-- /.row -->
 
-                        <section class="content invoice">
-
-                        <!-- quotation code info row -->
-                        <div class="row">
-                            <div class="col-xs-12 invoice-header">
-                                <h4><small class="pull-right"><i class="fa fa-globe"></i> <?= $iRow['invoice_no'] ?></small></h4>
-                            </div>
-                        </div>
-                        <br/>
-                        <!-- /.row -->
-
-
-                        <!-- customer info row -->
-                        <div class="row invoice-info customerRowWrapper">    
-                            <div class="col-sm-12 invoice-col">
-                            <br/>
-                                <address class="customerRowContainer" >
-                                    <b>Customer Name:</b> <?= $iRow['fullname'] ?>
-                                    <br><b>Address:</b> <?= $iRow['customerAddress'] ?>
-                                    <br><b>Phone:</b> <?= $iRow['hanphone_no'] ?> / <b>Office #</b> <?= $iRow['office_no'] ?>
-                                    <br><b>CarPlate:</b> <?= $iRow['carplate'] ?>
-                                    <br><b>Model:</b> <?= $iRow['carplate'] ?>
-                                </address>
-                            </div>
-                        </div>
-                        <br/>
-                        <!-- /.row -->
+                            </td>
                             
+                            <td style="width: 45%">
+                                    <div class="row" style="text-align: left; font-size: 12px;">
+                                     
+                                     <div class="col-md-12"><b>INVOICE / CASH BILL</b></div>
+                                     <br/>
 
-                        <!-- Services and Parts Info row -->
-                        <div id="selectedServicesParts" class="row">
-                            <div class="col-xs-12 table">
-                                <table id="selecteditems" class="table table-boardered">
-                                    <thead>
-                                        <tr class="qpreviewth">
-                                            <th class="servicespartsContainerHeader" ><i class="fa fa-cogs"></i> Parts & Services</th>
-                                            <th class="servicespartsContainerHeader" ><i class="fa fa-database"></i> Qty</th>
-                                            <th class="servicespartsContainerHeader" ><i class="fa fa-dollar"></i> Selling Price</th>
-                                            <th class="servicespartsContainerHeader" ><i class="fa fa-money"></i> Subtotal</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach($services as $sRow): ?>
-                                            <tr >
-                                                <td class="servicespartsLists" ><?php echo $sRow['service_name']; ?></td>
-                                                <td class="servicespartsLists" ><?php echo $sRow['quantity']; ?></td>
-                                                <td class="servicespartsLists" ><?php echo '$'.$sRow['selling_price'].'.00'; ?></td>
-                                                <td class="servicespartsLists" ><?php echo $sRow['subTotal']; ?></td>
-                                            </tr>
-                                        <?php endforeach; ?>  
-                                        <?php foreach($parts as $pRow): ?>
-                                            <tr>
-                                                <td class="servicespartsLists" ><?php echo $pRow['product_name']; ?></td>
-                                                <td class="servicespartsLists" ><?php echo $pRow['quantity']; ?></td>
-                                                <td class="servicespartsLists" ><?php echo '$'.$pRow['selling_price'].'.00'; ?></td>
-                                                <td class="servicespartsLists" ><?php echo $pRow['subTotal']; ?></td>
-                                            </tr>
-                                        <?php endforeach; ?> 
+                                     <div class="col-md-6">
+                                         
+                                         <div class="col-md-12"><b>Invoice No.</b></div>
+                                         <br/>
 
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!-- /.row -->
+                                         <div class="col-md-12"><b>Terms</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Date & Time In</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Date & Time Out</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Vehicle No.</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Make</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Model</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Company Tel.</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Home Tel.</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Mobile</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Mileage</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Balance Points</b></div>
+
+                                     </div>
+                                     
+                                     <div class="col-md-6">
+                                         
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($iRow['invoice_no']) ?> 
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($iRow['paymenttypeName']) ?> 
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode(date('d M Y', strtotime($iRow['created_at']))) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode(date('d M Y', strtotime($iRow['created_at']))) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($iRow['carplate']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($iRow['make']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($iRow['model']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($iRow['office_no']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($iRow['hanphone_no']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($iRow['hanphone_no']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : 0
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($iRow['points']) ?>
+                                         </div>
+
+                                     </div>
+
+                    
+                                        
+                                    </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr  class="heading">
+                <table class="headers">
+                <tr>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center;" > S/No </td>
+                
+                <td class="servicespartsContainerHeader" style="width: 40%; text-align: center" > Description </td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center" > Unit Price</td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center" > Qty</td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center" > Member Discount</td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center" > Additional Discount</td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center" > Line Total w/o GST</td>
+                </tr></table>
+            </tr>
+
+            <tr class="details">
+              
+                <table border="1" style="border: solid 1px #eee; " cellspacing ="0" cellpadding ="0" >
+                    <tbody>
+                        <?php foreach($services as $sRow): ?>
+                            <?php $n++; ?>
+                            <tr>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center;" ><?php echo $n; ?></td>
+                                <td class="servicespartsLists" style="width: 40%; text-align: center" ><?php echo $sRow['service_name']; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo '$ '.$sRow['selling_price'].'.00'; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo $sRow['quantity']; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center" >-</td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center" >-</td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo '$ '.$sRow['subTotal'].'.00'; ?></td>
+                            </tr>
+                        <?php endforeach; ?>  
+                        <?php foreach($parts as $pRow): ?>
+                            <?php $i += $n; ?>
+                            <tr>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center;" ><?php echo $i; ?></td>
+                                <td class="servicespartsLists" style="width: 40%; text-align: center" ><?php echo $pRow['product_name']; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo '$ '.$pRow['selling_price'].'.00'; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo $pRow['quantity']; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center" >-</td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center" >-</td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo '$ '.$pRow['subTotal'].'.00'; ?></td>
+                            </tr>
+
+                        <?php endforeach; ?> 
 
 
-                        <!-- Remarks and Amount Due Info row -->
-                        <div id="paymentMethod" class="row remarksamountdueWrapper">
-                            <div class="col-xs-6">
-                            <br>
-                                <p class="lead remarksamountdueHeader"><i class="fa fa-tasks"></i> Remarks.</p>
-                                <p class="text-muted well well-sm no-shadow quoPreviewRemarks remarksContent" >
-                                    - <?= $iRow['remarks'] ?>
-                                </p>
-                            </div>
-                        
-                            <div class="col-xs-6 amountdueContainer">
-                            <br/>
-                                <p class="lead remarksamountdueHeader"><i class="fa fa-calculator"></i> Amount Due.</p>
-                                <div class="table-responsive">
-                                    <table class="table amountdueTbl">
-                                        <tbody>
-                                            <tr>
-                                                <th style="width:50%;" class="amountdueTh" >Subtotal:</th>
-                                                <td class="amountdueTd" >$<?= $getSubTotal.'.00' ?></td>
-                                            </tr>
-                                            <tr>
-                                                <th class="amountdueTh" >Gst(7%):</th>
-                                                <td class="amountdueTd" >$<?= $gst ?></td>
-                                            </tr>
-                                            <tr>
-                                                <th class="amountdueTh" >Total:</th>
-                                                <td class="amountdueTd" >$<?= $iRow['grand_total'].'.00' ?></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /.row -->
+                    </tbody>
+                </table>
+                
+                <table border="1" style="border: solid 1px #eee; " cellspacing ="0" cellpadding ="0" >
+                    <tr>
+                        <td class="servicespartsLists" style="width: 90%; text-align: right"><b>Gross Total</b></td>
+                        <td class="servicespartsLists" style="width: 10%; text-align: center" ><b><?php echo '$ '.$getSubTotal.'.00' ?></b></td>
+                    </tr>
+                    <tr>
+                        <td class="servicespartsLists" style="width: 90%; text-align: right;" ><b>Membership : Reward Member Discount : 0.00%</b></td>
+                        <td class="servicespartsLists" style="width: 10%; text-align: center" ><b>0.00</b></td>
+                    </tr>
+                    <tr>
+                        <td class="servicespartsLists" style="width: 90%; text-align: right;" ><b>GST(7.00%)</b></td>
+                        <td class="servicespartsLists" style="width: 10%; text-align: center" ><b><?php echo $gst; ?></b></td>
+                    </tr>
+                    <tr>
+                        <td class="servicespartsLists" style="width: 90%; text-align: right;" ><b>Nett Total:</b></td>
+                        <td class="servicespartsLists" style="width: 10%; text-align: center" ><b><?php echo '$ '.$iRow['grand_total'].'.00'; ?></b></td>
+                    </tr>
+                </table>
+            </tr>
 
+            <tr class="item">
+                <small style="font-size: 12px;"><b>Terms and Conditions</b></small>
+                <br/>
+                        <?php foreach($getTermsAndConditions as $tcRow): ?>
+                           
+                                <span style="text-align: left; font-size: 9px;font-weight: 600;"><?php echo $tcRow['id'] . '.)'; ?> <?php echo $tcRow['descriptions']; ?></span>
+                                <br/>
 
-                        <!-- Payment History Info Row  -->
-                        <h5><i class="fa fa-history"></i> Payment History</h5>
-                        <div id="paymentMethod" class="row remarkspaymentsWrapper">
-                            <div class="col-xs-6">
-                            <br>
-                                <p class="lead remarksamountdueHeader"><i class="fa fa-comments"></i> Remarks.</p>
-                                <p class="text-muted well well-sm no-shadow quoPreviewRemarks remarksContent" >
-                                    - <?= $iRow['paymentRemarks'] ?>
-                                </p>
-                            </div>
-                       
-                        <div class="col-xs-6 paymentsContainer">
-                            <br/>
-                                <p class="lead remarksamountdueHeader"><i class="fa fa-money"></i> Amount Pay.</p>
-                                <div class="table-responsive">
-                                    <table class="table paymentsTbl">
-                                        <tbody>
-                                            <tr>
-                                                <th style="width:50%;"" class="amountdueTh" >Discount:</th>
-                                                <td class="amountdueTd" >$<?= $iRow['discount'] ?></td>
-                                            </tr>
-                                            <tr>
-                                                <th class="amountdueTh" >Total Amount:</th>
-                                                <td class="amountdueTd" >$<?= $iRow['amount'] ?></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <!-- /.col -->
-                        </div>
-                        <!-- /.row -->
+                        <?php endforeach; ?> 
+            </tr>
 
-                        </section>
-                        
-                        </div>
+            <tr class="item">
+              
+                <table >
+                    <tbody>
+                        <tr>
+                            <td style="width: 25%;">
+                            <hr/>
+                            <h5 style="text-align: center; font-size: 12px;">Attended by</h5>
+                            </td>
 
-                    </div>
+                            <td style="width: 25%;">
+                            <hr/>
+                            <h5 style="text-align: center; font-size: 12px;">Date</h5>
+                            </td>
 
-                </div>    
+                            <td style="width: 50%;">
+                            <hr/>
+                            <h5 style="text-align: center; font-size: 12px;">Name, NRIC & Signature or Authorised Signature & Company Shop</h5>
+                            </td>
 
-        </div>
+                            
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+           
+            </tr>
 
-        <!-- print-buttons -->
-        <div class="row">
-            <div class="col-xs-12">
-                <div style="text-align: center">
-                    <button class="form-btn btn btn-info btn-xs print-buttons print_invoice" onclick="multipleInvoicePrint()"><i class="fa fa-print"></i> Print Invoice</button>
-                    <a href="?r=invoice/multiple-invoice-export-pdf&id=<?= $iRow['invoice_id'] ?>&invoice_no=<?= $iRow['multipleInvoiceNo'] ?>">
-                        <button class="form-btn btn btn-danger btn-xs print-buttons download_pdf" ><i class="fa fa-close"></i> Close</button>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <br/><br/>
-
-    <?php endforeach; ?>
-
-
+        </table>
 </div>
+<br/>
+<?php endforeach; ?>
+
+<!-- Print Buttons -->   
+<div class="row">
+    <div class="col-xs-12">
+        <div style="text-align: center">
+            <button class="form-btn btn btn-info btn-xs print-buttons" id="print_invoice" onclick="invoicePrint()"><i class="fa fa-print"></i> Print </button>
+       
+            <button class="form-btn btn btn-danger btn-xs print-buttons close_invoice_print" id="close_print"><i class="fa fa-close"></i> Close </button>
+      
+        </div>
+    </div>
+</div>
+
+<br/><br/>

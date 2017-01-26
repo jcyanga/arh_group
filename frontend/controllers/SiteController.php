@@ -13,11 +13,14 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 
+use common\models\SearchService;
+use common\models\SearchInvoice;
+
 /**
  * Site controller
  */
 class SiteController extends Controller
-{
+{ 
     /**
      * @inheritdoc
      */
@@ -72,7 +75,20 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $searchModel = new SearchService();
+        $invoiceModel = new SearchInvoice();
+
+        $session = Yii::$app->session;
+
+        $getPendInvoiceServices = $searchModel->getPendingInvoiceServicesByCustomer($session->get('id'));
+        $getPendQuotationServices = $searchModel->getPendingQuotationServicesByCustomer($session->get('id'));
+        
+        $this->view->params['getInvoiceNotification'] = $invoiceModel->getInvoiceForNotification($session->get('id'));
+
+        return $this->render('index', [
+                        'getPendInvoiceServices' => $getPendInvoiceServices,
+                        'getPendQuotationServices' => $getPendQuotationServices,
+                    ]);
     }
 
     /**
@@ -82,12 +98,23 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
+        $this->layout=false;
         $model = new LoginForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            $getCustomerInfo = $model->getCustomerInfo(Yii::$app->request->post('LoginForm')['ic'], Yii::$app->request->post('LoginForm')['password']);
+            $session = Yii::$app->session;
+
+            if( $session->isActive ) {
+                $session->open();
+
+                    $session->set('id', $getCustomerInfo['id']);
+                    $session->set('fullname', $getCustomerInfo['fullname']);
+                    $session->set('carplate', $getCustomerInfo['carplate']);
+
+                $session->close();
+            }
+            
             return $this->goBack();
         } else {
             return $this->render('login', [

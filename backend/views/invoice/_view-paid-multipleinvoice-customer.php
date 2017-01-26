@@ -1,0 +1,220 @@
+<?php
+
+use yii\helpers\Html;
+use yii\widgets\DetailView;
+
+/* @var $this yii\web\View */
+/* @var $model common\models\Customer */
+
+use common\models\Gst;
+
+$this->title = 'View Invoice By Customer Search';
+$n = 0;
+?>
+
+<div class="row ">
+
+<div class="col-md-12">
+<br/>
+
+    <div class="x_panel invoiceViewContainer">
+
+        <div class="x_title">
+            <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
+            <ul class="nav navbar-right panel_toolbox"></ul>
+            <div class="clearfix"></div>
+        </div>
+
+    <?php foreach( $multipleInvoiceInfo as $iRow): ?>
+        <?php
+            $n++;
+            
+            $getGst = Gst::find()->where(['branch_id' => $iRow['branch_id'] ])->one();
+                if( isset($getGst->gst) ) {
+                    $gst = $getGst->gst;
+                    $getSubTotal = $iRow['grand_total'] / $gst;
+                }else{
+                    $gst = 1;
+                    $getSubTotal = $iRow['grand_total'];
+                }
+        ?>  
+
+    <div class="x_content">
+
+    <section class="content invoice">
+
+        <!-- branch info row -->
+        <div class="row">
+            
+            <div class="col-md-12 invoice-col">
+                <address class="branchRowContainer">
+                    <h4><b><i class="fa fa-car"></i> <?= strtoupper($iRow['name']) ?></b></h4>
+                    <?= $iRow['address'] ?>
+                    <br><b>Contact #:</b>  <?= $iRow['branchNumber'] ?>
+                    <br><b>Prepared By:</b> <?= $iRow['salesPerson'] ?>
+                </address>
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+        <!-- code and date row -->
+        <div class="row">
+            <div class="col-xs-12 invoice-header">
+                <h3>
+                    <small class="pull-left"><i class="fa fa-globe"></i> <?= $iRow['invoice_no'] ?></small>
+                    <small class="pull-right"><i class="fa fa-calendar"></i> Date Issue: <?= date('M-d-Y', strtotime($iRow['date_issue']) ) ?></small>
+                </h3>
+            </div>
+        </div>
+        <br/>
+        <!-- /.row -->
+
+
+        <!-- customer info row -->
+        <div class="row invoice-info customerRowWrapper">    
+            <div class="col-sm-12 invoice-col">
+            <br/>
+                <address class="customerRowContainer" >
+                    <b>Customer Name:</b> <?= $iRow['fullname'] ?>
+                    <br><b>Address:</b> <?= $iRow['customerAddress'] ?>
+                    <br><b>Phone:</b> <?= $iRow['hanphone_no'] ?> / <b>Office #</b> <?= $iRow['office_no'] ?>
+                    <br><b>CarPlate:</b> <?= $iRow['carplate'] ?>
+                    <br><b>Model:</b> <?= $iRow['carplate'] ?>
+                </address>
+            </div>
+        </div>
+        <br/>
+        <!-- /.row -->
+        
+
+        <!-- Services and Parts Info row -->
+        <div id="selectedServicesParts" class="row">
+            <div class="col-xs-12 table">
+                <table id="selecteditems" class="table table-boardered">
+                    <thead>
+                        <tr class="qpreviewth">
+                            <th class="servicespartsContainerHeader" ><i class="fa fa-cogs"></i> Parts & Services</th>
+                            <th class="servicespartsContainerHeader" ><i class="fa fa-database"></i> Qty</th>
+                            <th class="servicespartsContainerHeader" ><i class="fa fa-dollar"></i> Selling Price</th>
+                            <th class="servicespartsContainerHeader" ><i class="fa fa-money"></i> Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($services as $sRow): ?>
+                            <tr >
+                                <td class="servicespartsLists" ><?php echo $sRow['service_name']; ?></td>
+                                <td class="servicespartsLists" ><?php echo $sRow['quantity']; ?></td>
+                                <td class="servicespartsLists" ><?php echo '$'.$sRow['selling_price'].'.00'; ?></td>
+                                <td class="servicespartsLists" ><?php echo $sRow['subTotal']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>  
+                        <?php foreach($parts as $pRow): ?>
+                            <tr>
+                                <td class="servicespartsLists" ><?php echo $pRow['product_name']; ?></td>
+                                <td class="servicespartsLists" ><?php echo $pRow['quantity']; ?></td>
+                                <td class="servicespartsLists" ><?php echo '$'.$pRow['selling_price'].'.00'; ?></td>
+                                <td class="servicespartsLists" ><?php echo $pRow['subTotal']; ?></td>
+                            </tr>
+                        <?php endforeach; ?> 
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- /.row -->
+        
+
+        <!-- Remarks and Amount Due Info row -->
+        <div id="paymentMethod" class="row remarksamountdueWrapper">
+            <div class="col-xs-6">
+            <br>
+                <p class="lead remarksamountdueHeader"><i class="fa fa-tasks"></i> Remarks.</p>
+                <p class="text-muted well well-sm no-shadow quoPreviewRemarks remarksContent" >
+                    - <?= $iRow['remarks'] ?>
+                </p>
+            </div>
+        
+            <div class="col-xs-6 amountdueContainer">
+            <br/>
+                <p class="lead remarksamountdueHeader"><i class="fa fa-calculator"></i> Amount Due.</p>
+                <div class="table-responsive">
+                    <table class="table amountdueTbl">
+                        <tbody>
+                            <tr>
+                                <th style="width:50%;" class="amountdueTh" >Subtotal:</th>
+                                <td class="amountdueTd" >$<?= $getSubTotal.'.00' ?></td>
+                            </tr>
+                            <tr>
+                                <th class="amountdueTh" >Gst(7%):</th>
+                                <td class="amountdueTd" >$<?= $gst ?></td>
+                            </tr>
+                            <tr>
+                                <th class="amountdueTh" >Total:</th>
+                                <td class="amountdueTd" >$<?= $iRow['grand_total'].'.00' ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+
+
+        <!-- Payment History Info Row  -->
+        <h5><i class="fa fa-history"></i> Payment History</h5>
+        <div id="paymentMethod" class="row remarkspaymentsWrapper">
+            <div class="col-xs-6">
+            <br>
+                <p class="lead remarksamountdueHeader"><i class="fa fa-comments"></i> Remarks.</p>
+                <p class="text-muted well well-sm no-shadow quoPreviewRemarks remarksContent" >
+                    - <?= $iRow['paymentRemarks'] ?>
+                </p>
+            </div>
+       
+        <div class="col-xs-6 paymentsContainer">
+            <br/>
+                <p class="lead remarksamountdueHeader"><i class="fa fa-money"></i> Amount Pay.</p>
+                <div class="table-responsive">
+                    <table class="table paymentsTbl">
+                        <tbody>
+                            <tr>
+                                <th style="width:50%;"" class="amountdueTh" >Discount:</th>
+                                <td class="amountdueTd" >$<?= $iRow['discount'] ?></td>
+                            </tr>
+                            <tr>
+                                <th class="amountdueTh" >Total Amount:</th>
+                                <td class="amountdueTd" >$<?= $iRow['amount'] ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+    <div style="text-align: right;">
+        <label>Page <?= Html::encode($n) ?></label>
+    </div>
+
+    </section>
+    <hr/>
+
+    </div>
+
+    <?php endforeach; ?>
+    
+    </div>
+
+</div>
+
+</div>
+<br/>
+
+
+
+
+
+
+

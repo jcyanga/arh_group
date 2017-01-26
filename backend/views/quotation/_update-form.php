@@ -88,9 +88,9 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
                 <div class="col-md-8">
 
-                    <span class="quotationLabel" style="margin-left: 45px;" ><i class="fa fa-calendar"></i> Date Issue </span>
+                    <span class="quotationLabel" ><i class="fa fa-calendar"></i> Date Issue </span>
 
-                    <input type="text" name="Quotation[dateIssue]" style="margin-left: 40px;" id="expiry_date" class="form_qRInput form-control" readonly="readonly" value="<?= $model['date_issue'] ?>" placeholder="CHOOSE DATE HERE" /> 
+                    <input type="text" name="Quotation[dateIssue]" id="expiry_date" class="form_qRInput form-control" readonly="readonly" value="<?= $model['date_issue'] ?>" placeholder="CHOOSE DATE HERE" /> 
                 </div>
 
                 </div>
@@ -196,7 +196,8 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
         <br/>
 
     </div>   
- 
+    <br/>
+    
  </div>
 
 </div>
@@ -222,7 +223,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
         <div class="col-md-5">
 
-            <div style="text-align: center;"> <b><span><i class="fa fa-battery-quarter"></i> Services | <i class="fa fa-cogs"></i> Parts </span></b> 
+            <div class="quoSPLabel"> <b><span><i class="fa fa-list"></i> Services & Parts </span></b> 
             </div>
 
             <select class="select2_group form-control" id="services_parts" onchange="quoGetSellingPrice()" >
@@ -233,6 +234,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                         <?php foreach($getServicesList as $srowList): ?>
                             <option value="0-<?php echo $srowList['id']; ?>">[ <?php echo $srowList['name']; ?> ] <?php echo $srowList['service_name']; ?></option>                 
                         <?php endforeach; ?>
+                        <option value="otherServices">Other Services.</option>
                     <?php else: ?>
                         <option value="0">NO RECORD FOUND.</option>
                     <?php endif; ?>
@@ -243,6 +245,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                         <?php foreach($getPartsList as $prowList): ?>
                             <option value="1-<?php echo $prowList['id']; ?>">[ <?php echo $prowList['supplier_name']; ?> | <?php echo $prowList['category']; ?> ] <?php echo $prowList['product_name']; ?></option>                 
                         <?php endforeach; ?>
+                        <option value="otherParts">Other Parts.</option>
                     <?php else: ?>
                         <option value="0">NO RECORD FOUND.</option>
                     <?php endif; ?>
@@ -296,8 +299,8 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
         <div id="quoSelectedContainer"  class="row transactionFormAlign" >
             
-            <div class="col-md-12">
-                <b><i class="fa fa-thumbs-up"></i> Selected Services or Parts</b>
+            <div class="col-md-12 selectedContainerHeader">
+                <b><i class="fa fa-list-alt"></i> Selected Services or Parts</b>
             </div>
             <hr/>
             
@@ -305,19 +308,19 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
             <div class="col-md-12 item-<?= $sRow['id'] ?>">    
                 <div class="row item">
                     <div class="col-md-6">
-                        <b> <input type="checkbox" name="QuotationDetail[task][]" id="task" class="form_quoSP task"  value="<?= $sRow['serviceId'] ?>" <?php if( $sRow['task'] == 1 ): ?> checked='checked' <?php endif; ?> /> Pending Service ?</b> 
+                        <b> <input type="checkbox" name="QuotationDetail[task][]" id="task" class="task"  value="<?= $sRow['serviceId'] ?>" <?php if( $sRow['task'] == 1 ): ?> checked='checked' <?php endif; ?> /> Pending Service ?</b> 
                     </div>
 
                     <div class="col-md-6">
                         <div style="text-align: right;">
                             <span class="edit-button<?= $sRow['id'] ?> edit-button">
-                                <a href="javascript:editSelectedItem(<?= $sRow['id'] ?>)"><i class="fa fa-pencil"></i> Edit</a>
+                                <a href="javascript:editSelectedItem(<?= $sRow['id'] ?>)" id="quoEditItemList"><i class="fa fa-pencil"></i> Edit</a>
                             </span>
                             <span class="save-button<?= $sRow['id'] ?> save-button hidden">
-                                <a href="javascript:saveSelectedItem(<?= $sRow['id'] ?>)"><i class="fa fa-save"></i> Save</a>
+                                <a href="javascript:saveSelectedItem(<?= $sRow['id'] ?>)" id="quoSaveItemList"><i class="fa fa-save"></i> Save</a>
                             </span>
                             <span class="remove-button">
-                                <a href="javascript:removeSelectedItem(<?= $sRow['id'] ?>)" >&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                                <a href="javascript:removeSelectedItem(<?= $sRow['id'] ?>)" id="quoDeleteItemList">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
                             </span>
                         </div>
                     </div>
@@ -355,13 +358,13 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
                     <div class="col-md-6">
                         <div style="text-align: right;">
                             <span class="edit-button<?= $pRow['id'] ?> edit-button">
-                                <a href="javascript:editSelectedItem(<?= $pRow['id'] ?>)"><i class="fa fa-pencil"></i> Edit</a>
+                                <a href="javascript:editSelectedItem(<?= $pRow['id'] ?>)" id="quoEditItemList"><i class="fa fa-pencil"></i> Edit</a>
                             </span>
                             <span class="save-button<?= $pRow['id'] ?> save-button hidden">
-                                <a href="javascript:saveSelectedItem(<?= $pRow['id'] ?>)"><i class="fa fa-save"></i> Save</a>
+                                <a href="javascript:saveSelectedItem(<?= $pRow['id'] ?>)" id="quoSaveItemList"><i class="fa fa-save"></i> Save</a>
                             </span>
                             <span class="remove-button">
-                                <a href="javascript:removeSelectedItem(<?= $pRow['id'] ?>)" >&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                                <a href="javascript:removeSelectedItem(<?= $pRow['id'] ?>)" id="quoDeleteItemList">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
                             </span>
                         </div>
                     </div>

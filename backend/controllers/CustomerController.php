@@ -145,8 +145,30 @@ class CustomerController extends Controller
                                 'msg' => 'You already enter an existing customer account, Please! Change customer fullname or e-mail.'
                             ]);
             }
-        
+            
+                if ( !empty( $model->password ) ) {
+                    $model->password_hash = Yii::$app->security->generatePasswordHash($model->password); 
+                    $model->generateAuthKey();
+                    $model->role = 10;
+                    $model->deleted = 1;
+                }
+
+                $model->member_expiry = date('Y-m-d', strtotime(Yii::$app->request->post('Customer')['member_expiry']));
+            
             if( $model->save() ) {
+
+                // $emailFrom = 'no-reply@firstcom.com.sg';
+                // $emailTo = 'jcyanga28@yahoo.com';
+
+                // Yii::$app->mailer->compose("layouts/invoice-mail",[
+                //             'model' => $model,
+                //             'fullname' => Yii::$app->request->post('Customer')['fullname'],
+                //         ])
+                //    ->setFrom($emailFrom)
+                //    ->setTo($emailTo)
+                //    ->setSubject('Arh Group - Customer Membership Confirmation.')
+                //    ->send();
+
                 return $this->render('index', [
                             'searchModel' => $searchModel, 
                             'getCustomer' => $getCustomer,
@@ -190,10 +212,14 @@ class CustomerController extends Controller
         $searchModel = new SearchCustomer();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $getCustomer = Customer::find()->all();
+        if ( $model->load(Yii::$app->request->post()) ) {
+            $model->member_expiry = date('Y-m-d', strtotime(Yii::$app->request->post('Customer')['member_expiry']));
 
-            return $this->render('index', [
+            if($model->save()) {
+
+                $getCustomer = Customer::find()->all();
+
+                return $this->render('index', [
                             'searchModel' => $searchModel, 
                             'getCustomer' => $getCustomer,
                             'dataProvider' => $dataProvider, 
@@ -201,6 +227,8 @@ class CustomerController extends Controller
                             'errType' => 'alert alert-success', 
                             'msg' => 'Your record was successfully updated in the database.'
                         ]);
+
+            }
 
         } else {
             return $this->render('update', [

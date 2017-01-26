@@ -8,6 +8,8 @@ use yii\helpers\ArrayHelper;
 use common\models\Branch;
 use common\models\Supplier;
 use common\models\Product;
+use common\models\ServiceCategory;
+use common\models\Category;
 /* @var $this yii\web\View */
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
@@ -26,8 +28,9 @@ if( isset($getGst) ) {
 
 $datetime = date('Y-m-d h:i:s');
 $userId = Yii::$app->user->identity->id;
-$dataSupplier = ArrayHelper::map(Supplier::find()->all(), 'id', 'supplier_name');
-$dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
+$dataServiceCategory = ServiceCategory::find()->all();
+$dataSupplier = Supplier::find()->all();
+$dataCategory = Category::find()->all();
 
 ?>
 
@@ -87,9 +90,9 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 
                 <div class="col-md-8">
 
-                    <span class="invoiceLabel" style="margin-left: 45px;" ><i class="fa fa-calendar"></i> Date Issue </span>
+                    <span class="invoiceLabel" ><i class="fa fa-calendar"></i> Date Issue </span>
 
-                    <input type="text" name="Invoice[dateIssue]" style="margin-left: 40px;" id="expiry_date" class="form_qRInput form-control" readonly="readonly" value="<?= $model['date_issue'] ?>" placeholder="CHOOSE DATE HERE" />    
+                    <input type="text" name="Invoice[dateIssue]" id="expiry_date" class="form_qRInput form-control" readonly="readonly" value="<?= $model['date_issue'] ?>" placeholder="CHOOSE DATE HERE" />    
                 </div>
 
                 </div>
@@ -196,6 +199,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
         <br/>  
  
     </div>
+    <br/>
 
  </div>
 
@@ -221,9 +225,9 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
 
         <div class="row transactionFormAlign" >
 
-        <div class="col-md-5">
+        <div class="col-md-4">
 
-            <div style="text-align: center;"> <b><span><i class="fa fa-battery-quarter"></i> Services & <i class="fa fa-cogs"></i> Parts </span></b> 
+            <div class="invSPLabel"> <b><span><i class="fa fa-list"></i> Services & Parts </span></b> 
             </div>
 
             <select class="select2_group form-control" id="services_parts" onchange="invGetSellingPrice()" >
@@ -234,6 +238,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
                         <?php foreach($getServicesList as $srowList): ?>
                             <option value="0-<?php echo $srowList['id']; ?>">[ <?php echo $srowList['name']; ?> ] <?php echo $srowList['service_name']; ?></option>                 
                         <?php endforeach; ?>
+                        <option value="otherServices">Other Services.</option>
                     <?php else: ?>
                             <option value="0">NO RECORD FOUND.</option>
                     <?php endif; ?>
@@ -244,6 +249,7 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
                         <?php foreach($getPartsList as $prowList): ?>
                             <option value="1-<?php echo $prowList['id']; ?>">[ <?php echo $prowList['supplier_name']; ?> | <?php echo $prowList['category']; ?> ] <?php echo $prowList['product_name']; ?></option>                 
                         <?php endforeach; ?>
+                        <option value="otherParts">Other Parts.</option>
                     <?php else: ?>
                             <option value="0">NO RECORD FOUND.</option>
                     <?php endif; ?>
@@ -306,19 +312,19 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
             <div class="col-md-12 item-<?= $sRow['id'] ?>">    
                 <div class="row item">
                     <div class="col-md-6">
-                        <b> <input type="checkbox" name="InvoiceDetail[task][]" id="task" class="form_invSP task"  value="<?= $sRow['serviceId'] ?>" <?php if( $sRow['task'] == 1 ): ?> checked='checked' <?php endif; ?> /> Pending Service ?</b> 
+                        <b> <input type="checkbox" name="InvoiceDetail[task][]" id="task" class="task"  value="<?= $sRow['serviceId'] ?>" <?php if( $sRow['task'] == 1 ): ?> checked='checked' <?php endif; ?> /> Pending Service ?</b> 
                     </div>
 
                     <div class="col-md-6">
                         <div style="text-align: right;">
                             <span class="edit-button<?= $sRow['id'] ?> edit-button">
-                                <a href="javascript:editInvSelectedItem(<?= $sRow['id'] ?>)"><i class="fa fa-pencil"></i> Edit</a>
+                                <a href="javascript:editInvSelectedItem(<?= $sRow['id'] ?>)" id="invEditItemList"><i class="fa fa-pencil"></i> Edit</a>
                             </span>
                             <span class="save-button<?= $sRow['id'] ?> save-button hidden">
-                                <a href="javascript:saveInvSelectedItem(<?= $sRow['id'] ?>)"><i class="fa fa-save"></i> Save</a>
+                                <a href="javascript:saveInvSelectedItem(<?= $sRow['id'] ?>)" id="invSaveItemList"><i class="fa fa-save"></i> Save</a>
                             </span>
                             <span class="remove-button">
-                                <a href="javascript:removeInvSelectedItem(<?= $sRow['id'] ?>)" >&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                                <a href="javascript:removeInvSelectedItem(<?= $sRow['id'] ?>)"  id="invDeleteItemList">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
                             </span>
                         </div>
                     </div>
@@ -356,13 +362,13 @@ $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
                     <div class="col-md-6">
                         <div style="text-align: right;">
                             <span class="edit-button<?= $pRow['id'] ?> edit-button">
-                                <a href="javascript:editInvSelectedItem(<?= $pRow['id'] ?>)"><i class="fa fa-pencil"></i> Edit</a>
+                                <a href="javascript:editInvSelectedItem(<?= $pRow['id'] ?>)" id="invEditItemList"><i class="fa fa-pencil"></i> Edit</a>
                             </span>
                             <span class="save-button<?= $pRow['id'] ?> save-button hidden">
-                                <a href="javascript:saveInvSelectedItem(<?= $pRow['id'] ?>)"><i class="fa fa-save"></i> Save</a>
+                                <a href="javascript:saveInvSelectedItem(<?= $pRow['id'] ?>)" id="invSaveItemList"><i class="fa fa-save"></i> Save</a>
                             </span>
                             <span class="remove-button">
-                                <a href="javascript:removeInvSelectedItem(<?= $pRow['id'] ?>)" >&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                                <a href="javascript:removeInvSelectedItem(<?= $pRow['id'] ?>)"  id="invDeleteItemList">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
                             </span>
                         </div>
                     </div>

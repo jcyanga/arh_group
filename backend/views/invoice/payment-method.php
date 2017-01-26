@@ -3,13 +3,15 @@
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\widgets\ActiveForm;
-
+use yii\helpers\ArrayHelper;
 /* @var $this yii\web\View */
 /* @var $model common\models\Customer */
 
 use common\models\Gst;
+use common\models\PaymentType;
 
 $getGst = Gst::find()->where(['branch_id' => $customerInfo['BranchId'] ])->one();
+$dataPaymentType = PaymentType::find()->all();
 
 if( isset($getGst->gst) ) {
     $gst = $getGst->gst;
@@ -77,13 +79,9 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
 
                     <select  name="Payment[payment_type]" style="width: 100%;" class="form_pm form-control select3_single" >
                         <option value="0">CHOOSE PAYMENT HERE.</option>
-                        <option value="Cash Payment">Cash Payment</option>
-                        <option value="Telegraphic Transfer">Telegraphic Transfer</option>
-                        <option value="Money Orders">Money Orders</option>
-                        <option value="Bill of Exchange">Bill of Exchange</option>
-                        <option value="Promissory Notes">Promissory Notes</option>
-                        <option value="Cheque">Cheque</option>
-                        <option value="Bank Draft">Bank Draft</option>
+                        <?php foreach($dataPaymentType as $ptRow): ?>
+                            <option value="<?php echo $ptRow['id']; ?>"><?php echo $ptRow['name']; ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -183,13 +181,9 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
 
                     <select  name="Payment[mPayment_type]" style="width: 100%;" class="form_pm form-control select3_single" id="mPayment_type" >
                         <option value="0">CHOOSE PAYMENT HERE.</option>
-                        <option value="Cash Payment">Cash Payment</option>
-                        <option value="Telegraphic Transfer">Telegraphic Transfer</option>
-                        <option value="Money Orders">Money Orders</option>
-                        <option value="Bill of Exchange">Bill of Exchange</option>
-                        <option value="Promissory Notes">Promissory Notes</option>
-                        <option value="Cheque">Cheque</option>
-                        <option value="Bank Draft">Bank Draft</option>
+                        <?php foreach($dataPaymentType as $ptRow): ?>
+                            <option value="<?php echo $ptRow['id']; ?>"><?php echo $ptRow['name']; ?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 
@@ -310,7 +304,7 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
             <div class="col-md-12 invoice-col">
             <br/>
                 <address class="branchRowContainer">
-                    <h4><b><?= strtoupper($customerInfo['name']) ?></b></h4>
+                    <h4><b><i class="fa fa-car"></i> <?= strtoupper($customerInfo['name']) ?></b></h4>
                     <?= $customerInfo['address'] ?>
                     <br><b>Contact #:</b>  <?= $customerInfo['branchNumber'] ?>
                     <br><b>Prepared By:</b> <?= $customerInfo['salesPerson'] ?>
@@ -324,7 +318,7 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
         <div class="row">
             <div class="col-xs-12 invoice-header">
                 <h4>
-                <small class="pull-left"><i class="fa fa-globe"></i> <?=$customerInfo['invoice_no'] ?></small>
+                <small class="pull-left"><i class="fa fa-globe"></i> Invoice: <?=$customerInfo['invoice_no'] ?></small>
                 <small class="pull-right"><i class="fa fa-calendar"></i> Date Issue: <?= $dateIssue ?></small>
                 </h4>
             </div>

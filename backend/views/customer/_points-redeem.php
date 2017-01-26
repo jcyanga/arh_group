@@ -30,10 +30,8 @@ $this->title = 'View Redeem Points';
 <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
     
     <div class="tile-stats">
-    <br/>
         
-        <div class="icon">
-        <br/>
+        <br/><div class="icon"><br/>
             <i class="fa fa-bell-o"></i>
         </div>
 
@@ -41,18 +39,18 @@ $this->title = 'View Redeem Points';
             <?= $customerPoints ?>
         </div>
 
-        <h3>TOTAL POINTS</h3>
-
-    <br/>
+        <h3>TOTAL POINTS</h3><br/>
     </div>
 
 </div>
-<br/>
+
 
  <div class="col-md-12 col-sm-12 col-xs-12">
+ <hr/>
 
     <div class="tbl-container viewDesign">
         
+        <h4><i class="fa fa-minus-circle"></i> Redeemed Points List </h4>
         <?php if( !empty($getRedeemPoints) ): ?>
         
             <table style="border: solid 1px #eee;" class="table table-hover table-striped">

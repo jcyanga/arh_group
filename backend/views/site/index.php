@@ -26,7 +26,7 @@ $roleId = Yii::$app->user->identity->role_id;
                 <div class="col-md-6">
                     <h4>
                         <i class="fa fa-clipboard"></i> Customer List 
-                        <small class="searchCustomerLabel">(<b>Search by:</b> Customer Name / Carplate/ Parts Name)</small>
+                        <small class="searchCustomerLabel">(<b>Search by:</b> Customer Name / Carplate )</small>
                     </h4>
                 </div>
             </div>
@@ -42,44 +42,39 @@ $roleId = Yii::$app->user->identity->role_id;
                     </div>
                 <?php ActiveForm::end(); ?>
 
-                <?php if( !empty($getCustomerQuotationBySearch) || !empty($getCustomerInvoiceBySearch) ): ?>
+                <?php if( !empty($getCustomerInvoiceBySearch) ): ?>
                     
                     <table class="table table-boardered table-striped pendingTable">
                         <thead>
                             <tr class="headings">
-                                <td class="tblalign_center" ><b> DATE ISSUE </b></td>
-                                <td class="tblalign_center" ><b> SALES PERSON </b></td>
-                                <td class="tblalign_center" ><b> CUSTOMER NAME </b></td>
-                                <td class="tblalign_center" ><b> CAR-PLATE </b></td>
-                                <td class="tblalign_center" ><b> QUOTATION CODE / INVOICE NUMBER </b></td>
-                                <td class="tblalign_center" ><b> PRODUCT NAME </b></td>
-                                <td class="tblalign_center" ><b> QUOTATION PRICE </b></td>
+                                <td class="tblalign_center" ><b><i class="fa fa-calendar-o"></i> DATE ISSUE </b></td>
+                                <td class="tblalign_center" ><b><i class="fa fa-user"></i> SALES PERSON </b></td>
+                                <td class="tblalign_center" ><b><i class="fa fa-users"></i> CUSTOMER NAME </b></td>
+                                <td class="tblalign_center" ><b><i class="fa fa-credit-card"></i> CAR-PLATE </b></td>
+                                <td class="tblalign_center" ><b><i class="fa fa-file"></i> INVOICE NUMBER </b></td>
+                                <td class="tblalign_center" ><b><i class="fa fa-money"></i> TOTAL PRICE </b></td>
+                                <td class="tblalign_center" ><b><i class="fa fa-thumbs-up"></i> PAID ? </b></td>
+                                <td class="tblalign_center" ><b><i class="fa fa-search"></i> View Transaction </b></td>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach( $getCustomerQuotationBySearch as $custqRow): ?>
+                            <?php foreach( $getCustomerInvoiceBySearch as $custiRow): ?>
                                 <tr>
-                                    <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($custqRow['date_issue']) ); ?></td>
-                                    <td class="tblalign_center" ><?php echo $custqRow['salesPerson']; ?></td>
-                                    <td class="tblalign_center" ><b><?php echo $custqRow['customerName']; ?></b></td>
-                                    <td class="tblalign_center" ><b><?php echo $custqRow['carplate']; ?></b></td>
-                                    <td class="tblalign_center" ><?php echo $custqRow['quotationCode']; ?></td>
-                                    <td class="tblalign_center" ><b><?php echo $custqRow['product_name']; ?></b></td>
-                                    <td class="tblalign_center" ><b><?php echo '$'.$custqRow['quotationPartsPrice'].'.00'; ?></b></td>
+                                    <td class="tblalign_center" ><b><?php echo date('m-d-Y', strtotime($custiRow['date_issue']) ); ?></b></td>
+                                    <td class="tblalign_center" ><?php echo $custiRow['salesPerson']; ?></td>
+                                    <td class="tblalign_center" ><b><?php echo $custiRow['customerName']; ?></b></td>
+                                    <td class="tblalign_center" ><?php echo $custiRow['carplate']; ?></td>
+                                    <td class="tblalign_center" ><b><?php echo $custiRow['invoiceNo']; ?></b></td>
+                                    <td class="tblalign_center" ><b><?php echo '$'.$custiRow['grandTotal'].'.00'; ?></b></td>
+                                    <td class="tblalign_center" ><b style="font-style: italic;"><?php echo ( $custiRow['paid'] == 1)? 'Yes': 'Not Yet'; ?></b></td>
+                                    <td class="tblalign_center" >
+                                     <a href="?r=invoice/view-by-customer-search&id=<?php echo $custiRow['invoiceId']; ?>&invoiceNo=<?php echo $custiRow['invoiceNo']; ?>&paidStatus=<?php echo $custiRow['paid']; ?>&paidType=<?php echo $custiRow['paid_type']; ?>" >
+                                        <b>View</b>
+                                     </a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>    
 
-                            <?php foreach( $getCustomerInvoiceBySearch as $custiRow): ?>
-                                <tr>
-                                    <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($custiRow['date_issue']) ); ?></td>
-                                    <td class="tblalign_center" ><?php echo $custiRow['salesPerson']; ?></td>
-                                    <td class="tblalign_center" ><b><?php echo $custiRow['customerName']; ?></b></td>
-                                    <td class="tblalign_center" ><b><?php echo $custiRow['carplate']; ?></b></td>
-                                    <td class="tblalign_center" ><?php echo $custiRow['invoiceNo']; ?></td>
-                                    <td class="tblalign_center" ><b><?php echo $custiRow['product_name']; ?></b></td>
-                                    <td class="tblalign_center" ><b><?php echo '$'.$custiRow['invoicePartsPrice'].'.00'; ?></b></td>
-                                </tr>
-                            <?php endforeach; ?>    
                         </tbody>
                     </table>
                 
@@ -117,6 +112,69 @@ $roleId = Yii::$app->user->identity->role_id;
                 </div>
             </div>
 
+            <?php if( !empty($pendingInvoiceServices) ): ?>
+                
+                <table class="table table-boardered table-striped pendingTable">
+                    <thead>
+                        <tr class="headings">
+                            <td class="tblalign_center" ><b> DATE ISSUE </b></td>
+                            <td class="tblalign_center" ><b> INVOICE NUMBER </b></td>
+                            <td class="tblalign_center" ><b> CUSTOMER NAME </b></td>
+                            <td class="tblalign_center" ><b> SERVICE NAME </b></td>
+                            <td class="tblalign_center" ><b> QUANTITY </b></td>
+                            <td class="tblalign_center" ><b> SELLING PRICE </b></td>
+                            <td class="tblalign_center" ><b> CHECK INVOICE </b></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach( $pendingInvoiceServices as $iRow): ?>
+                            <tr>
+                                <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($iRow['date_issue']) ); ?></td>
+                                <td class="tblalign_center" ><b><?php echo $iRow['invoice_no']; ?></b></td>
+                                <td class="tblalign_center" ><?php echo $iRow['fullname']; ?></td>
+                                <td class="tblalign_center" ><b><?php echo $iRow['service_name']; ?></b></td>
+                                <td class="tblalign_center" ><?php echo $iRow['quantity']; ?></td>
+                                <td class="tblalign_center" ><?php echo '$'.$iRow['selling_price'].'.00'; ?></td>
+                                <td class="tblalign_center" ><a href="?r=invoice/view&id=<?php echo $iRow['invoiceId']; ?>" > <i class="fa fa-search"></i> </a></td>
+                            </tr>
+                        <?php endforeach; ?>     
+                    </tbody>
+                </table>
+            
+            <?php else: ?>
+                <div>
+                    <span class="pendingNoRecordDashboard"> - No Record Found. <span>
+                </div>
+                <br/>
+            <?php endif; ?>
+
+        </div>
+
+    </div>
+
+</div>
+<br/>
+<?php endif; ?>
+
+<?php if( $roleId == 1 || $roleId == 2 ): ?>
+<!-- Pending Invoice -->
+<div class="row">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        
+        <div class="dashboard_graph x_panel">
+            
+            <div class="row x_title">
+                <div class="col-md-6">
+                    <h4>
+                        <i class="fa fa-pie-chart"></i> Daily Sales
+                        <small class="searchCustomerLabel"></small>
+                    </h4>
+                </div>
+            </div>
+
+            <canvas id="canvas" height="450" width="600"></canvas>
+                        
             <?php if( !empty($pendingInvoiceServices) ): ?>
                 
                 <table class="table table-boardered table-striped pendingTable">
@@ -335,8 +393,6 @@ $roleId = Yii::$app->user->identity->role_id;
 
 </div>
 <?php endif; ?>
-
-<input id="coding_language" />
 
 </div>
 

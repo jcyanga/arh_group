@@ -108,16 +108,22 @@ class QuotationController extends Controller
 
         if( Yii::$app->request->get('date_start') <> "" && Yii::$app->request->get('date_end') <> "" ) {
             $getQuotation = $searchModel->getQuotationByDateRange(Yii::$app->request->get('date_start'), Yii::$app->request->get('date_end'));
+            $date_start = Yii::$app->request->get('date_start');
+            $date_end = Yii::$app->request->get('date_end');
 
         } else {
             $getQuotation = $searchModel->getQuotation();
+            $date_start = '';
+            $date_end = '';
 
         }
 
         return $this->render('index', [
                             'searchModel' => $searchModel,
                             'dataProvider' => $dataProvider,
-                            'getQuotation' => $getQuotation, 
+                            'getQuotation' => $getQuotation,
+                            'date_start' => $date_start,
+                            'date_end' => $date_end, 
                             'errTypeHeader' => '', 
                             'errType' => '', 
                             'msg' => ''
@@ -196,7 +202,7 @@ class QuotationController extends Controller
                 $model->user_id = Yii::$app->request->post('Quotation')['selectedUser'];
                 $model->customer_id = Yii::$app->request->post('Quotation')['selectedCustomer'];
                 $model->branch_id = Yii::$app->request->post('Quotation')['selectedBranch'];
-                $model->date_issue = Yii::$app->request->post('Quotation')['dateIssue'];
+                $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('Quotation')['dateIssue']));
                 $model->grand_total = $totalWithGst;
                 $model->remarks = Yii::$app->request->post('Quotation')['remarks'];
                 $model->created_by = Yii::$app->user->identity->id;
@@ -224,15 +230,6 @@ class QuotationController extends Controller
                         $getServicePart = explode('-', Yii::$app->request->post('QuotationDetail')['service_part_id'][$key]);
                         $getType = $getServicePart[0];
                         $getServicePartId = $getServicePart[1];
-
-                        // if( $getType == 1 ) {
-                        //     $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
-                        //     $totalQty = $getPart->quantity - $value;
-                            
-                        //     $invQty = Inventory::findOne($getServicePartId);
-                        //     $invQty->quantity = $totalQty;
-                        //     $invQty->save();        
-                        // }
 
                         $quoD->quotation_id = $quotationId;
                         $quoD->service_part_id = $getServicePartId;
@@ -362,7 +359,7 @@ class QuotationController extends Controller
             $findModel->user_id = Yii::$app->request->post('Quotation')['selectedUser'];
             $findModel->customer_id = Yii::$app->request->post('Quotation')['selectedCustomer'];
             $findModel->branch_id = Yii::$app->request->post('Quotation')['selectedBranch'];
-            $findModel->date_issue = Yii::$app->request->post('Quotation')['dateIssue'];
+            $findModel->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('Quotation')['dateIssue']));
             $findModel->grand_total = $totalWithGst;
             $findModel->remarks = Yii::$app->request->post('Quotation')['remarks'];
             $findModel->updated_at = date("Y-m-d");
@@ -521,7 +518,8 @@ class QuotationController extends Controller
         }
     }
 
-    public function actionPrice() {
+    public function actionPrice() 
+    {
 
         $this->layout = false;
 
@@ -572,7 +570,8 @@ class QuotationController extends Controller
         }
     }
 
-    public function actionInsertInList() {
+    public function actionInsertInList() 
+    {
         $detail = new QuotationDetail();
         $this->layout = false;
 
@@ -610,6 +609,88 @@ class QuotationController extends Controller
                     'partName' => $partName,
                     'itemType' => $ItemType,
                     'detail' => $detail,
+                ]);
+        }  
+
+    }
+
+    public function actionInsertOtherService() 
+    {
+        $this->layout = false;
+
+        if( Yii::$app->request->post() ) {
+            $service = new Service();
+            $service->service_category_id = Yii::$app->request->post()['serviceCategory']; 
+            $service->service_name = Yii::$app->request->post()['service']; 
+            $service->description = 'Other Services.'; 
+            $service->default_price = Yii::$app->request->post()['defaultPrice'];
+            $service->status = 1;
+            $service->created_at = date('Y-m-d');
+            $service->created_by = Yii::$app->user->identity->id;
+            $service->updated_at = date('Y-m-d');
+            $service->updated_by = Yii::$app->user->identity->id;
+
+            $service->save();
+
+            $inventoryId = false;
+            $partName = false;
+
+            return $this->render('item-list', [
+                    'n' => Yii::$app->request->post('n'),
+                    'itemQty' => 1,
+                    'itemPriceValue' => Yii::$app->request->post()['defaultPrice'],
+                    'itemSubTotal' => Yii::$app->request->post()['defaultPrice'],
+                    'serviceId' => $service->id,
+                    'serviceName' => Yii::$app->request->post()['service'],
+                    'partId' => $inventoryId,
+                    'partName' => $partName,
+                    'itemType' => 0,
+                ]);
+        }  
+
+    }
+
+    public function actionInsertOtherPart() 
+    {
+        $this->layout = false;
+
+        if( Yii::$app->request->post() ) {
+            $product = new Product();
+            $product->product_code = 'PARTS' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
+            $product->product_name = Yii::$app->request->post()['parts']; 
+            $product->product_image = 'picture.jpg'; 
+            $product->unit_of_measure = Yii::$app->request->post()['parts_uom']; 
+            $product->category_id = Yii::$app->request->post()['parts_category']; 
+            $product->status = 1;
+            $product->created_at = date('Y-m-d');
+            $product->created_by = Yii::$app->user->identity->id;
+            $product->save();
+
+            $inventory = new Inventory();
+            $inventory->product_id = $product->id;
+            $inventory->supplier_id = Yii::$app->request->post()['parts_supplier'];
+            $inventory->quantity = 20;
+            $inventory->cost_price = 1;
+            $inventory->selling_price = Yii::$app->request->post()['sellingPrice'];
+            $inventory->date_imported = date('Y-m-d');
+            $inventory->status = 1;
+            $inventory->created_at = date('Y-m-d');
+            $inventory->created_by = Yii::$app->user->identity->id;
+            $inventory->save();
+
+            $serviceId = false;
+            $serviceName = false;
+
+            return $this->render('item-list', [
+                    'n' => Yii::$app->request->post('n'),
+                    'itemQty' => 1,
+                    'itemPriceValue' => Yii::$app->request->post()['sellingPrice'],
+                    'itemSubTotal' => Yii::$app->request->post()['sellingPrice'],
+                    'serviceId' => $serviceId,
+                    'serviceName' => $serviceName,
+                    'partId' => $inventory->id,
+                    'partName' => Yii::$app->request->post()['parts'],
+                    'itemType' => 1,
                 ]);
         }  
 
@@ -733,7 +814,16 @@ class QuotationController extends Controller
                                 'msg' => 'You already enter an existing customer account, Please! Change customer fullname or e-mail.'
                             ]);
             }
-        
+            
+                if ( !empty( $model->password ) ) {
+                    $model->password_hash = Yii::$app->security->generatePasswordHash($model->password); 
+                    $model->generateAuthKey();
+                    $model->role = 10;
+                    $model->deleted = 1;
+                }
+
+                $model->member_expiry = date('Y-m-d', strtotime(Yii::$app->request->post('Customer')['member_expiry']));
+
             if( $model->save() ) {
 
                 return $this->redirect(['create-quotation', 'id' => $model->id ]);
@@ -803,7 +893,7 @@ class QuotationController extends Controller
                 $model->user_id = Yii::$app->request->post('Quotation')['selectedUser'];
                 $model->customer_id = $id;
                 $model->branch_id = Yii::$app->request->post('Quotation')['selectedBranch'];
-                $model->date_issue = Yii::$app->request->post('Quotation')['dateIssue'];
+                $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('Quotation')['dateIssue']));
                 $model->grand_total = $totalWithGst;
                 $model->remarks = Yii::$app->request->post('Quotation')['remarks'];
                 $model->created_by = Yii::$app->user->identity->id;
