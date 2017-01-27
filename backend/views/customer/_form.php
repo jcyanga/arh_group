@@ -9,10 +9,10 @@ use yii\helpers\Url;
 /* @var $form yii\widgets\ActiveForm */
 
 $member_list = array('0' => 'No', '1' => 'Yes');
-
 $datetime = date('Y-m-d h:i:s');
-
 $userId = Yii::$app->user->identity->id;
+$passwordCode = substr(uniqid('', true), -8);
+
 ?>
 
 <?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
@@ -134,6 +134,7 @@ $userId = Yii::$app->user->identity->id;
         <?= $form->field($model, 'status')->textInput(['type' => 'hidden', 'value' => '1'])->label(false) ?>
         <?= $form->field($model, 'is_blacklist')->textInput(['type' => 'hidden', 'value' => '0'])->label(false) ?>
         <?= $form->field($model, 'created_by')->textInput(['type' => 'hidden', 'value' => $userId])->label(false) ?>
+        <?= $form->field($model, 'password')->hiddenInput(['value' => $passwordCode])->label(false) ?>
      </div>     
      <br/>
 

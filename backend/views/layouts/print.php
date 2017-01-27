@@ -116,7 +116,8 @@ $userFullname = Yii::$app->user->identity->fullname;
     <link rel="stylesheet" href="assets/bootstrap/css/switchery/switchery.min.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/datatables/tools/css/dataTables.tableTools.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/dashboard-styles.css" />
-
+    <link rel="stylesheet" href="assets/bootstrap/css/cssprint.css" media="print" />
+    
 <style type="text/css">
      body {
         margin: 0;

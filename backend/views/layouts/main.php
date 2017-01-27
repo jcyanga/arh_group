@@ -37,6 +37,8 @@ $isMonthlySales = false;
 $isMonthlyStock = false;
 $isGst = false;
 $isProductLevel = false;
+$isPaymentType = false;
+$isTermsConditions = false;
 
 $roleId = Yii::$app->user->identity->role_id;
 $getUserPermission = UserPermission::find()->where(['role_id' => $roleId])->groupBy('controller')->all();
@@ -116,6 +118,7 @@ foreach ($getUserPermission as $key => $value) {
             $isBestSelling = true;
             $isMonthlySales = true;
             $isMonthlyStock = true;
+        break;
 
         case 'Gst': 
             $isGst = true;
@@ -123,6 +126,14 @@ foreach ($getUserPermission as $key => $value) {
 
         case 'ProductLevel':
             $isProductLevel = true;
+        break;
+
+        case 'PaymentType':
+            $isPaymentType = true;
+        break;
+
+        case 'TermsAndConditions':
+            $isTermsConditions = true;
         break;
 
         default:
@@ -133,6 +144,26 @@ foreach ($getUserPermission as $key => $value) {
 }
 
 $userFullname = Yii::$app->user->identity->fullname;
+
+$array=array
+(
+    '0' => array
+        (
+            'product' => 'abc',
+            'total' => 21
+        ),
+    '1' => array
+        (
+            'product' => 'xyz',
+            'total' => 1
+        ),
+    '2' => array
+        (
+            'product' => 'pqr',
+            'total' => 13
+        )
+);
+
 
 ?>
 
@@ -163,6 +194,12 @@ $userFullname = Yii::$app->user->identity->fullname;
     <link rel="stylesheet" href="assets/bootstrap/css/switchery/switchery.min.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/datatables/tools/css/dataTables.tableTools.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/dashboard-styles.css" />
+    
+     <style>
+            canvas{
+            }
+        </style>
+
 </head>
 
 <body class="nav-md">
@@ -199,9 +236,8 @@ $userFullname = Yii::$app->user->identity->fullname;
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
                         <div class="menu_section">
-                            <h3>General</h3>
+                            <h3 style="color:transparent;">-</h3>
                             <ul class="nav side-menu">
-                                <li id="menu_header_bg"><a> <span id="nav-menu-header"> <i class="fa fa-list"></i> Menu Navigation </span> </a></li>
                                 <?php if($isDashboard): ?>
                                 <li><a href="?"><i class="fa fa-home"></i> Dashboard </a></li>
                                 <?php endif; ?>
@@ -301,6 +337,12 @@ $userFullname = Yii::$app->user->identity->fullname;
                                         <?php if($isProductLevel): ?>
                                         <li><a href="?r=product-level">Set Parts Warning Level</a></li>
                                         <?php endif; ?>
+                                        <?php if($isPaymentType): ?>
+                                        <li><a href="?r=payment-type">Set Payment Type</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isTermsConditions): ?>
+                                        <li><a href="?r=terms-and-conditions">Set Terms & Conditions</a></li>
+                                        <?php endif; ?>
                                     </ul>
                                 </li>
                                 <?php endif; ?>
@@ -329,7 +371,7 @@ $userFullname = Yii::$app->user->identity->fullname;
                                     <span class=" fa fa-angle-down"></span> </b>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
-                                    <li><a href="#">
+                                    <li><a href="?r=settings">
                                             <span><center id="top-nav"><b><i class="fa fa-wrench"></i> Settings</center></b></span>
                                         </a>
                                     </li>
@@ -489,7 +531,39 @@ $userFullname = Yii::$app->user->identity->fullname;
 
     <!-- main -->
     <script type="text/javascript" src="assets/bootstrap/js/main.js"></script>
+    
+    <script>
+        var lab=[];
+        var data=[];
+        <?php 
+        foreach($array as $tem)
+        {
 
+            ?>
+
+            lab.push('<?php echo $tem['product']; ?>');
+            data.push('<?php echo $tem['total']; ?>');
+        <?php }
+
+        ?>
+
+        var barChartData = {
+            labels : lab,
+            datasets : [
+                {
+                    fillColor : "rgba(220,220,220,0.5)",
+                    strokeColor : "rgba(220,220,220,1)",
+                    data : data
+                },
+
+            ]
+
+        }
+
+    var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData);
+
+    </script>
+    
     </body>   
 
 </html>

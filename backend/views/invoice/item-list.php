@@ -10,20 +10,20 @@ use yii\helpers\Url;
 <div class="row item-<?= $n ?>">
     <div class="col-md-6">
         <?php if ( $itemType == '0' ) {  ?>
-            <b> <input type="checkbox" name="InvoiceDetail[task][]" id="task" class="form_invSP task" value="<?= $serviceId ?>" /> Pending Service ?</b>
+            <b> <input type="checkbox" name="InvoiceDetail[task][]" id="task" class="task" value="<?= $serviceId ?>" /> Pending Service ?</b>
         <?php } ?>
     </div>
 
     <div class="col-md-6">
         <div style="text-align: right;">
             <span class="edit-button<?= $n ?> edit-button">
-                <a href="javascript:editInvSelectedItem(<?= $n ?>)"><i class="fa fa-pencil"></i> Edit</a>
+                <a href="javascript:editInvSelectedItem(<?= $n ?>)" id="invEditItemList" ><i class="fa fa-pencil"></i> Edit</a>
             </span>
             <span class="save-button<?= $n ?> save-button hidden">
-                <a href="javascript:saveInvSelectedItem(<?= $n ?>)"><i class="fa fa-save"></i> Save</a>
+                <a href="javascript:saveInvSelectedItem(<?= $n ?>)" id="invSaveItemList" ><i class="fa fa-save"></i> Save</a>
             </span>
             <span class="remove-button">
-                <a href="javascript:removeInvSelectedItem(<?= $n ?>)">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                <a href="javascript:removeInvSelectedItem(<?= $n ?>)" id="invDeleteItemList" >&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
             </span>
         </div>
     </div>

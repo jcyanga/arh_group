@@ -10,20 +10,20 @@ use yii\helpers\Url;
 <div class="row item-<?= $n ?>">
     <div class="col-md-6">
         <?php if ( $itemType == '0' ) {  ?>
-            <b> <input type="checkbox" name="QuotationDetail[task][]" id="task" class="form_quoSP task" value="<?= $serviceId ?>" /> Pending Service ?</b>
+            <b> <input type="checkbox" name="QuotationDetail[task][]" id="task" class="task" value="<?= $serviceId ?>" /> Pending Service ?</b>
         <?php } ?>
     </div>
 
     <div class="col-md-6">
         <div style="text-align: right;">
             <span class="edit-button<?= $n ?> edit-button">
-                <a href="javascript:editSelectedItem(<?= $n ?>)"><i class="fa fa-pencil"></i> Edit</a>
+                <a href="javascript:editSelectedItem(<?= $n ?>)" id="quoEditItemList"><i class="fa fa-pencil"></i> Edit</a>
             </span>
             <span class="save-button<?= $n ?> save-button hidden">
-                <a href="javascript:saveSelectedItem(<?= $n ?>)"><i class="fa fa-save"></i> Save</a>
+                <a href="javascript:saveSelectedItem(<?= $n ?>)" id="quoSaveItemList"><i class="fa fa-save"></i> Save</a>
             </span>
             <span class="remove-button">
-                <a href="javascript:removeSelectedItem(<?= $n ?>)">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
+                <a href="javascript:removeSelectedItem(<?= $n ?>)" id="quoDeleteItemList">&nbsp;&nbsp;<i class="fa fa-trash"></i> Remove</a>
             </span>
         </div>
     </div>

@@ -47,7 +47,7 @@ class Customer extends \yii\db\ActiveRecord
         
         // 'is_blacklist', 'is_member', 'status', 'created_by', 'updated_by'
         return [
-            [['fullname', 'ic', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'remarks', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at'], 'required'],
+            [['fullname', 'ic', 'password', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'remarks', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at'], 'required'],
             [['fullname', 'ic', 'address', 'is_member'], 'string'],
             [['hanphone_no', 'office_no', 'points', 'is_blacklist', 'created_by'], 'integer'],
             [['email'], 'email'],
@@ -84,6 +84,40 @@ class Customer extends \yii\db\ActiveRecord
             'ic' => 'IC',
             // 'updated_by' => 'Updated By',
         ];
+    }
+
+    /**
+     * Generates password hash from password and sets it to the model
+     *
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * Generates "remember me" authentication key
+     */
+    public function generateAuthKey()
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    /**
+     * Generates new password reset token
+     */
+    public function generatePasswordResetToken()
+    {
+        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+    }
+
+    /**
+     * Removes password reset token
+     */
+    public function removePasswordResetToken()
+    {
+        $this->password_reset_token = null;
     }
 
 }

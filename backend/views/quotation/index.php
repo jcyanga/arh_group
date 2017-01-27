@@ -63,18 +63,21 @@ $this->title = 'Quotation';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-desktop"></i> JOB SHEET</h4></span>
+        <span class="form-header"><h4><i class="fa fa-desktop"></i> Job Sheet</h4></span>
     </div>
     <hr/>
 
     <div class="form-search-container">    
-      <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+      <?php echo $this->render('_search', [
+                            'model' => $searchModel, 
+                            'date_start' => $date_start, 
+                            'date_end' => $date_end
+                        ]); ?>
     </div> 
     
 </div>
 
  <div class="col-md-12 col-sm-12 col-xs-12">
- <br/>
 
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
@@ -82,6 +85,7 @@ $this->title = 'Quotation';
             <th class="tblalign_center" ><b>DATE ISSUE</b></th>
             <th class="tblalign_center" ><b>BRANCH</b></th>
             <th class="tblalign_center" ><b>CUSTOMER NAME</b></th>
+            <th class="tblalign_center" ><b>VEHICLE NUMBER</b></th>
             <th class="tblalign_center" ><b>SALES PERSON</b></th>
             <th class="no-link last tblalign_center"><span class="nobr">RECORD ACTION</span>
             </th>
@@ -96,6 +100,7 @@ $this->title = 'Quotation';
                     <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($row['date_issue']) );  ?></td>
                     <td class="tblalign_center" ><?php echo $row['name'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['fullname'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['carplate'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['salesPerson'];  ?></td>
                     <td class="last tblalign_center">
                        <a href="?r=quotation/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a>

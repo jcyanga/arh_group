@@ -8,16 +8,20 @@ use yii\helpers\ArrayHelper;
 use common\models\Branch;
 use common\models\Supplier;
 use common\models\Product;
+use common\models\ServiceCategory;
+use common\models\Category;
 /* @var $this yii\web\View */
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
 $datetime = date('Y-m-d h:i:s');
 $userId = Yii::$app->user->identity->id;
-$dataSupplier = ArrayHelper::map(Supplier::find()->all(), 'id', 'supplier_name');
 $dataProduct = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
-$quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
-$quotationCodeValue = $quotationCode . $quotationId;
+$dataServiceCategory = ServiceCategory::find()->all();
+$dataSupplier = Supplier::find()->all();
+$dataCategory = Category::find()->all();
+$quotationCode = 'JS' . '/' . $quotationId . '/' .  substr(uniqid('', true), -5);
+$quotationCodeValue = $quotationCode;
 
 ?>
 
@@ -77,16 +81,16 @@ $quotationCodeValue = $quotationCode . $quotationId;
 
                 <div class="col-md-8">
 
-                    <span class="quotationLabel" style="margin-left: 45px;" ><i class="fa fa-calendar"></i> Date Issue </span>
+                    <span class="quotationLabel" ><i class="fa fa-calendar"></i> Date Issue </span>
 
-                    <input type="text" name="Quotation[dateIssue]" style="margin-left: 40px;" id="expiry_date" class="form_qRInput form-control" readonly="readonly" placeholder="CHOOSE DATE HERE" />    
+                    <input type="text" name="Quotation[dateIssue]" id="expiry_date" class="form_qRInput form-control" readonly="readonly" placeholder="CHOOSE DATE HERE" />    
                 </div>
 
                 </div>
             </div>
             
         </div>
-        <br/><br/>
+        <br/>
 
         <div class="row transactionFormAlign" >
 
@@ -167,7 +171,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
         </div>
         
         </div>
-        <br/><br/>
+        <br/>
 
         <div class="row transactionFormAlign" >
 
@@ -181,9 +185,10 @@ $quotationCodeValue = $quotationCode . $quotationId;
         <br/>
 
     </div>   
- 
- </div>
+    <br/>
 
+ </div>
+ 
 </div>
 
 <div class="row transactionform-container">
@@ -205,9 +210,9 @@ $quotationCodeValue = $quotationCode . $quotationId;
 
         <div class="row transactionFormAlign" >
 
-        <div class="col-md-5">
+        <div class="col-md-4">
 
-            <div style="text-align: center;"> <b><span><i class="fa fa-battery-quarter"></i> Services & <i class="fa fa-cogs"></i> Parts </span></b> 
+            <div class="quoSPLabel"> <b><span><i class="fa fa-list"></i> Services & Parts </span></b> 
             </div>
 
             <select class="select2_group form-control" id="services_parts" onchange="quoGetSellingPrice()" >
@@ -218,6 +223,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
                         <?php foreach($getServicesList as $srowList): ?>
                             <option value="0-<?php echo $srowList['id']; ?>">[ <?php echo $srowList['name']; ?> ] <?php echo $srowList['service_name']; ?></option>                 
                         <?php endforeach; ?>
+                        <option value="otherServices">Other Services.</option>
                     <?php else: ?>
                         <option value="0">NO RECORD FOUND.</option>
                     <?php endif; ?>
@@ -228,6 +234,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
                         <?php foreach($getPartsList as $prowList): ?>
                             <option value="1-<?php echo $prowList['id']; ?>">[ <?php echo $prowList['supplier_name']; ?> | <?php echo $prowList['category']; ?> ] <?php echo $prowList['product_name']; ?></option>                 
                         <?php endforeach; ?>
+                        <option value="otherParts">Other Parts.</option>
                     <?php else: ?>
                         <option value="0">NO RECORD FOUND.</option>
                     <?php endif; ?>
@@ -277,12 +284,12 @@ $quotationCodeValue = $quotationCode . $quotationId;
             </div>
 
         </div>
-        <br/>
+        <br/><br/>
 
         <div id="quoSelectedContainer" class="row transactionFormAlign" >
             
-            <div class="col-md-12">
-                <b><i class="fa fa-thumbs-up"></i> Selected Services or Parts</b>
+            <div class="col-md-12 selectedContainerHeader">
+                <b><i class="fa fa-list-alt"></i> Selected Services or Parts</b>
             </div>
             <hr/>
             
@@ -329,8 +336,95 @@ $quotationCodeValue = $quotationCode . $quotationId;
 
 <?php ActiveForm::end(); ?>
 
+<div class="modal fade" id="modal-launcher-service" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa fa-battery-quarter"></i> New Service</h4>
+            </div>
 
+        <div class="modal-body">
 
+            <form id="sc-modal-form" class="sc-modal-form" method="POST">
+
+                <label>Service Category</label>
+                <select class="mform_input form-control select3_single" style="width: 100%;" name="service_category" id="service_category">
+                    <?php foreach($dataServiceCategory as $scRow): ?>
+                        <option value="<?php echo $scRow['id']; ?>"><?php echo $scRow['name']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <br/><br/>
+
+                <label>Service Name</label>
+                <input type="text" class="mform_input form-control" placeholder="Enter Service Name here." name="service" id="service" />
+                <br/>
+
+                <label>Price</label>
+                <input type="text" class="mform_input form-control" placeholder="Enter Service Price here." name="default_price" id="default_price" />
+
+            </form>
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" id="modal-submit-s" class="form-btn btn btn-primary">Submit</button>
+        </div>
+
+        </div>
+    </div>
+</div>
+​
+<div class="modal fade" id="modal-launcher-part" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa fa-cogs"></i> New Parts</h4>
+            </div>
+
+        <div class="modal-body">
+
+            <form id="p-modal-form" class="p-modal-form" method="POST">
+
+                <label>Parts Supplier</label>
+                <select class="mform_input form-control select3_single" style="width: 100%;" name="parts_supplier" id="parts_supplier">
+                    <?php foreach($dataSupplier as $sRow): ?>
+                        <option value="<?php echo $sRow['id']; ?>"><?php echo $sRow['supplier_name']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <br/><br/>
+
+                <label>Parts Category</label>
+                <select class="mform_input form-control select3_single" style="width: 100%;" name="parts_category" id="parts_category">
+                    <?php foreach($dataCategory as $cRow): ?>
+                        <option value="<?php echo $cRow['id']; ?>"><?php echo $cRow['category']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <br/><br/>
+
+                <label>Parts Name</label>
+                <input type="text" class="mform_input form-control" placeholder="Enter Parts Name here." name="parts" id="parts" />
+                <br/>
+
+                <label>Unit of Measure</label>
+                <input type="text" class="mform_input form-control" placeholder="Enter Parts Unit of Measure here." name="parts_uom" id="parts_uom" />
+                <br/>
+
+                <label>Price</label>
+                <input type="text" class="mform_input form-control" placeholder="Enter Parts Price here." name="selling_price" id="selling_price" />
+
+            </form>
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" id="modal-submit-p" class="form-btn btn btn-primary">Submit</button>
+        </div>
+
+        </div>
+    </div>
+</div>
 
 
 

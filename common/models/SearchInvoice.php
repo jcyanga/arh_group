@@ -121,7 +121,7 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task'])
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task', 'invoice.status'])
             ->from('invoice')
             ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
@@ -344,9 +344,10 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks' ])
+        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'customer.make', 'customer.model', 'customer.points', 'payment.remarks as paymentRemarks', 'invoice.created_at', 'payment_type.name as paymenttypeName' ])
                     ->from('payment')
                     ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
+                    ->join('LEFT JOIN', 'payment_type', 'payment.payment_type = payment_type.id')
                     ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
                     ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
                     ->join('LEFT JOIN', 'customer', 'payment.customer_id = customer.id')
@@ -393,9 +394,10 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks', 'invoice.invoice_no as multipleInvoiceNo' ])
+        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'customer.make', 'customer.model', 'customer.points', 'payment.remarks as paymentRemarks', 'invoice.invoice_no as multipleInvoiceNo', 'invoice.created_at', 'payment_type.name as paymenttypeName' ])
                 ->from('payment')
                 ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
+                ->join('LEFT JOIN', 'payment_type', 'payment.payment_type = payment_type.id')
                 ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
                 ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
                 ->join('LEFT JOIN', 'customer', 'payment.customer_id = customer.id')
@@ -425,9 +427,10 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks' ])
+        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'customer.make', 'customer.model', 'customer.points', 'payment.remarks as paymentRemarks', 'invoice.created_at', 'payment_type.name as paymenttypeName' ])
                     ->from('payment')
                     ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
+                    ->join('LEFT JOIN', 'payment_type', 'payment.payment_type = payment_type.id')
                     ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
                     ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
                     ->join('LEFT JOIN', 'customer', 'payment.customer_id = customer.id')
@@ -460,9 +463,10 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks', 'invoice.invoice_no as multipleInvoiceNo' ])
+        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'customer.make', 'customer.model', 'customer.points', 'payment.remarks as paymentRemarks', 'invoice.invoice_no as multipleInvoiceNo', 'invoice.created_at', 'payment_type.name as paymenttypeName' ])
                 ->from('payment')
                 ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
+                ->join('LEFT JOIN', 'payment_type', 'payment.payment_type = payment_type.id')
                 ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
                 ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
                 ->join('LEFT JOIN', 'customer', 'payment.customer_id = customer.id')
@@ -471,6 +475,60 @@ class SearchInvoice extends Invoice
                 ->andWhere([ 'payment.customer_id' => $customerId ])
                 ->all();
         
+        return $result;
+    }
+
+    // get Invoice for Customer
+    public function getInvoiceForCustomer($id) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task', 'invoice.status'])
+            ->from('invoice')
+            ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
+            ->join('INNER JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->where(['invoice.customer_id' => $id])
+            ->andWhere('invoice.delete = 0')
+            ->all();
+
+        return $result;
+    }
+
+    // getInvoiceByDateRange for Customer
+    public function getInvoiceByDateRangeForCustomer($id,$date_start,$date_end) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task'])
+            ->from('invoice')
+            ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
+            ->join('INNER JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->where(['invoice.customer_id' => $id])
+            ->andWhere("invoice.date_issue >= '$date_start'")
+            ->andWhere("invoice.date_issue <= '$date_end'")
+            ->andWhere('invoice.delete = 0')
+            ->all();
+
+        return $result;
+    }
+
+    // get Invoice for Notification
+    public function getInvoiceForNotification($id) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task', 'invoice.status'])
+            ->from('invoice')
+            ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
+            ->join('INNER JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->where(['invoice.customer_id' => $id])
+            ->andWhere('invoice.paid = 0')
+            ->andWhere('invoice.status = 0')
+            ->all();
+
         return $result;
     }
 

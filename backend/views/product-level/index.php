@@ -31,7 +31,7 @@ $this->title = 'Branches';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-legal"></i> SET PARTS WARNING LEVEL</h4></span>
+        <span class="form-header"><h4><i class="fa fa-legal"></i> Set Parts-Warning Level </h4></span>
     </div>
     <hr/>
   

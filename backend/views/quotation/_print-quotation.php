@@ -8,6 +8,7 @@ use yii\widgets\DetailView;
 
 use common\models\Gst;
 use common\models\Invoice;
+use common\models\TermsAndConditions;
 
 $getGst = Gst::find()->where(['branch_id' => $customerInfo['BranchId'] ])->one();
 
@@ -20,171 +21,262 @@ if( isset($getGst->gst) ) {
 }
 
 $getInvoice = Invoice::find()->where(['quotation_code' => $customerInfo['quotation_code'] ])->one();
+$getTermsAndConditions = TermsAndConditions::find()->all();
 
 $this->title = 'Print Job-Sheet';
 
-
+$n = 0;
+$i = 1;
 ?>
-
-<div class="book">
     
-    <div class="page">
-        
-        <div class="subpage">      
+<div class="invoice-box">
 
-            <div class="x_panel">
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                <img src="assets/bootstrap/images/arh_receipt_logo.png" style="height: 55%; width: 100%; max-width:500px;">
+                                <br/>
 
-                <div class="x_title">
-                    <small class="pull-right printquotationDate"><i class="fa fa-calendar"></i> Date Issue: <?= date('m-d-Y', strtotime($customerInfo['date_issue']) ) ?></small>
-                    <div class="clearfix"></div>
-                </div>
+                                <div class="row" style="text-align: left; font-size: 12px; text-transform: uppercase;">
+                                    
+                                    <div class="col-md-12">
+                                        <b>Name : </b> <?= Html::encode($customerInfo['name']) ?>
+                                    </div>
 
-                <div class="x_content">
+                                    <div style="margin-top: -20px;" class="col-md-12">
+                                        <b>Address : </b> <?= Html::encode($customerInfo['address']) ?>
+                                    </div>
 
-                <!-- branch info row -->
-                <div class="row printquotationBranchContainer">
-                    <div class="col-md-6">
-                        <div>
-                            <address>
-                                <h5><b><?= strtoupper($customerInfo['name']) ?></b></h5>
-                                <?= $customerInfo['address'] ?>
-                                <br><b>Contact #:</b>  <?= $customerInfo['branchNumber'] ?>
-                                <br><b>Prepared By:</b> <?= $customerInfo['salesPerson'] ?>
-                            </address>
-                        </div>
-                    </div>              
-                </div>
-                <!-- /.row -->
+                                </div>
 
-                <section class="content invoice">
+                            </td>
+                            
+                            <td style="width: 45%">
+                                    <div class="row" style="text-align: left; font-size: 12px;">
+                                     
+                                     <div class="col-md-12"><b>JOB SHEET</b></div>
+                                     <br/>
 
-                    <!-- quotation code info row -->
-                    <div class="row">
-                        <div class="col-xs-12 invoice-header">
-                            <h4><small class="pull-right"><i class="fa fa-globe"></i> <?= $customerInfo['quotation_code'] ?></small></h4>
-                        </div>
-                    </div>
-                    <br/>
-                    <!-- /.row -->
+                                     <div class="col-md-6">
+                                         
+                                         <div class="col-md-12"><b>Date</b></div>
+                                         <br/>
 
+                                         <div class="col-md-12"><b>Jobsheet No.</b></div>
+                                         <br/>
 
-                    <!-- customer info row -->
-                    <div class="row invoice-info customerRowWrapper">    
-                        <div class="col-sm-12 invoice-col">
-                        <br/>
-                            <address class="customerRowContainer" >
-                                <b>Customer Name:</b> <?= $customerInfo['fullname'] ?>
-                                <br><b>Address:</b> <?= $customerInfo['customerAddress'] ?>
-                                <br><b>Phone:</b> <?= $customerInfo['hanphone_no'] ?> / <b>Office #</b> <?= $customerInfo['office_no'] ?>
-                                <br><b>CarPlate:</b> <?= $customerInfo['carplate'] ?>
-                                <br><b>Model:</b> <?= $customerInfo['carplate'] ?>
-                            </address>
-                        </div>
-                    </div>
-                    <br/>
-                    <!-- /.row -->
+                                         <div class="col-md-12"><b>Vehicle No.</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Make</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Model</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Date & Time In</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Date & Time Out</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Company Tel.</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Home Tel.</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Mobile</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Mileage</b></div>
+                                         <br/>
+
+                                         <div class="col-md-12"><b>Balance Points</b></div>
+
+                                     </div>
+                                     
+                                     <div class="col-md-6">
+                                         
+                                         <div class="col-md-12">
+                                            : <?= Html::encode(date('d M Y', strtotime($customerInfo['date_issue']))) ?> 
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($customerInfo['quotation_code']) ?> 
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($customerInfo['carplate']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($customerInfo['make']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($customerInfo['model']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode(date('d M Y', strtotime($customerInfo['created_at']))) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode(date('d M Y', strtotime($customerInfo['created_at']))) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($customerInfo['office_no']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($customerInfo['hanphone_no']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($customerInfo['hanphone_no']) ?>
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : 0
+                                         </div>
+                                         <br/>
+
+                                         <div class="col-md-12">
+                                            : <?= Html::encode($customerInfo['points']) ?>
+                                         </div>
+
+                                     </div>
+
                     
+                                        
+                                    </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
 
-                    <!-- Services and Parts Info row -->
-                    <div id="showPrices">
-                        <input type="checkbox" class="showPrices" checked="checked" value="" /> <b style="font-size: 12px;"> Show Prices? </b>
-                    </div>
-                    <div id="selectedServicesParts" class="row">
-                        <div class="col-xs-12 table">
-                            <table id="selecteditems" class="table table-boardered">
-                                <thead>
-                                    <tr class="qpreviewth">
-                                        <th class="servicespartsContainerHeader" ><i class="fa fa-cogs"></i> Parts & Services</th>
-                                        <th class="servicespartsContainerHeader" ><i class="fa fa-database"></i> Qty</th>
-                                        <th class="servicespartsContainerHeader" ><i class="fa fa-dollar"></i> Selling Price</th>
-                                        <th class="servicespartsContainerHeader" ><i class="fa fa-money"></i> Subtotal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php foreach($services as $sRow): ?>
-                                        <tr >
-                                            <td class="servicespartsLists" ><?php echo $sRow['service_name']; ?></td>
-                                            <td class="servicespartsLists" ><?php echo $sRow['quantity']; ?></td>
-                                            <td class="servicespartsLists" ><?php echo '$'.$sRow['selling_price'].'.00'; ?></td>
-                                            <td class="servicespartsLists" ><?php echo $sRow['subTotal']; ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>  
-                                    <?php foreach($parts as $pRow): ?>
-                                        <tr>
-                                            <td class="servicespartsLists" ><?php echo $pRow['product_name']; ?></td>
-                                            <td class="servicespartsLists" ><?php echo $pRow['quantity']; ?></td>
-                                            <td class="servicespartsLists" ><?php echo '$'.$pRow['selling_price'].'.00'; ?></td>
-                                            <td class="servicespartsLists" ><?php echo $pRow['subTotal']; ?></td>
-                                        </tr>
-                                    <?php endforeach; ?> 
+            <tr  class="heading">
+                <table class="headers">
+                <tr>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center;" > S/No </td>
+                
+                <td class="servicespartsContainerHeader" style="width: 50%; text-align: center" > Description </td>
+                <td class="servicespartsContainerHeader" style="width: 20%; text-align: center" > Qty</td>
+                <td class="servicespartsContainerHeader" style="width: 20%; text-align: center" > Line Total w/o GST</td>
+                </tr></table>
+            </tr>
 
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- /.row -->
+            <tr class="details">
+              
+                <table border="1" style="border: solid 1px #eee; " cellspacing ="0" cellpadding ="0" >
+                    <tbody>
+                        <?php foreach($services as $sRow): ?>
+                            <?php $n++; ?>
+                            <tr>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center;" ><?php echo $n; ?></td>
+                                <td class="servicespartsLists" style="width: 50%; text-align: center" ><?php echo $sRow['service_name']; ?></td>
+                                <td class="servicespartsLists" style="width: 20%; text-align: center" ><?php echo $sRow['quantity']; ?></td>
+                                <td class="servicespartsLists" style="width: 20%; text-align: center" ><?php echo '$ '.$sRow['subTotal'].'.00'; ?></td>
+                            </tr>
+                        <?php endforeach; ?>  
+                        <?php foreach($parts as $pRow): ?>
+                            <?php $i += $n; ?>
+                            <tr>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center;" ><?php echo $i; ?></td>
+                                <td class="servicespartsLists" style="width: 50%; text-align: center" ><?php echo $pRow['product_name']; ?></td>
+                                <td class="servicespartsLists" style="width: 20%; text-align: center" ><?php echo $pRow['quantity']; ?></td>
+                                <td class="servicespartsLists" style="width: 20%; text-align: center" ><?php echo '$ '.$pRow['subTotal'].'.00'; ?></td>
+                            </tr>
 
+                        <?php endforeach; ?> 
+                    </tbody>
+                </table>
+            
+            </tr>
 
-                    <!-- Remarks and Amount Due Info row -->
-                    <div id="paymentMethod" class="row remarksamountdueWrapper">
-                        <div class="col-xs-6">
-                        <br>
-                            <p class="lead remarksamountdueHeader"><i class="fa fa-tasks"></i> Remarks.</p>
-                            <p class="text-muted well well-sm no-shadow quoPreviewRemarks remarksContent" >
-                                - <?= $customerInfo['remarks'] ?>
-                            </p>
-                        </div>
-                    
-                        <div class="col-xs-6 amountdueContainer">
-                        <br/>
-                            <p class="lead remarksamountdueHeader"><i class="fa fa-calculator"></i> Amount Due.</p>
-                            <div class="table-responsive">
-                                <table class="table amountdueTbl">
-                                    <tbody>
-                                        <tr>
-                                            <th style="width:50%;" class="amountdueTh" >Subtotal:</th>
-                                            <td class="amountdueTd" >$<?= $getSubTotal.'.00' ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th class="amountdueTh" >Gst(7%):</th>
-                                            <td class="amountdueTd" >$<?= $gst ?></td>
-                                        </tr>
-                                        <tr>
-                                            <th class="amountdueTh" >Total:</th>
-                                            <td class="amountdueTd" >$<?= $customerInfo['grand_total'].'.00' ?></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.row -->
+            <tr class="item">
+                
+                <table >
+                    <tbody>
+                        <tr>
+                            <td><img src="assets/bootstrap/images/arh_receipt_carimages.png" style="width: 100%; height: 100%;"></img></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-                </section>
+            </tr>
 
-                </div>
+            <tr class="item">
+                <small style="font-size: 12px;"><b>Terms and Conditions</b></small>
+                <br/>
+                        <?php foreach($getTermsAndConditions as $tcRow): ?>
+                           
+                                <span style="text-align: left; font-size: 9px;font-weight: 600;"><?php echo $tcRow['id'] . '.)'; ?> <?php echo $tcRow['descriptions']; ?></span>
+                                <br/>
 
-            </div>
+                        <?php endforeach; ?>  
+            </tr>
 
-            <!-- Print Buttons -->   
-            <div class="row">
-                <div class="col-xs-12">
-                    <div style="text-align: center">
-                        <button class="form-btn btn btn-info btn-xs print-buttons" id="print_quotation" onclick="quotationPrint()"><i class="fa fa-print"></i> Print </button>
-                        <a href="#">
-                            <button class="form-btn btn btn-danger btn-xs print-buttons" id="download_pdf"><i class="fa fa-close"></i> Close </button>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <tr><br/></tr>
 
-        </div>    
-    </div>
+            <tr class="item">
+              
+                <table >
+                    <tbody>
+                        <tr>
+                            <td style="width: 25%;">
+                            <hr/>
+                            <h5 style="text-align: center; font-size: 12px;">Attended by</h5>
+                            </td>
+
+                            <td style="width: 25%;">
+                            <hr/>
+                            <h5 style="text-align: center; font-size: 12px;">Date</h5>
+                            </td>
+
+                            <td style="width: 50%;">
+                            <hr/>
+                            <h5 style="text-align: center; font-size: 12px;">Name, NRIC & Signature or Authorised Signature & Company Shop</h5>
+                            </td>
+
+                            
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+           
+            </tr>
+
+        </table>
 </div>
 
-   
-
-
+<!-- Print Buttons -->   
+<div class="row">
+    <div class="col-xs-12">
+        <div style="text-align: center">
+            <button class="form-btn btn btn-info btn-xs print-buttons" id="print_quotation" onclick="quotationPrint()"><i class="fa fa-print"></i> Print </button>
+       
+            <button class="form-btn btn btn-danger btn-xs print-buttons close_print" id="close_print"><i class="fa fa-close"></i> Close </button>
+      
+        </div>
+    </div>
+</div>
 
 
 

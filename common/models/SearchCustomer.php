@@ -23,7 +23,7 @@ class SearchCustomer extends Customer
         // , 'is_blacklist', 'is_member', created_by', 'updated_by'
         return [
             [['id'], 'integer'],
-            [['fullname', 'ic', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'remarks', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at'], 'safe'],
+            [['fullname', 'role', 'ic', 'password', 'password_hash', 'auth_key', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'remarks', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at', 'deleted'], 'safe'],
         ];
     }
 
@@ -148,18 +148,13 @@ class SearchCustomer extends Customer
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'invoice.id as invoiceId', 'invoice.invoice_no as invoiceNo', 'invoice.user_id', 'user.fullname as salesPerson', 'invoice.customer_id', 'customer.fullname as customerName', 'customer.carplate', 'invoice.branch_id', 'branch.name', 'invoice.date_issue', 'invoice.grand_total', 'invoice.remarks as invoiceRemarks', 'invoice_detail.id as invoiceDetailId', 'invoice_detail.service_part_id', 'category.category', 'product.product_name', 'inventory.selling_price', 'invoice_detail.quantity', 'invoice_detail.selling_price as invoicePartsPrice', 'invoice_detail.subTotal' ])
+        $result = $rows->select([ 'invoice.id as invoiceId', 'invoice.invoice_no as invoiceNo', 'invoice.user_id', 'invoice.customer_id', 'customer.fullname as customerName', 'customer.carplate', 'invoice.date_issue', 'invoice.grand_total as grandTotal', 'invoice.remarks as invoiceRemarks', 'invoice.paid', 'user.fullname as salesPerson', 'invoice.paid_type' ])
                 ->from('invoice')
                 ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
                 ->join('LEFT JOIN', 'customer', 'invoice.customer_id = customer.id')
-                ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
-                ->join('LEFT JOIN', 'invoice_detail', 'invoice.id = invoice_detail.invoice_id')
-                ->join('LEFT JOIN', 'inventory', 'invoice_detail.service_part_id = inventory.id')
-                ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
-                ->join('LEFT JOIN', 'category', 'product.category_id = category.id')
                 ->where(['LIKE', 'customer.fullname', $keyword ])
                 ->orWhere(['LIKE', 'customer.carplate', $keyword ])
-                ->orWhere(['LIKE', 'product.product_name',  $keyword ])
+                ->groupBy('invoice_no')
                 ->orderBy('date_issue','desc')
                 ->all();
 

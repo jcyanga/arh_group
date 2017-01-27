@@ -18,7 +18,7 @@ $this->title = 'Monthly Stock Report';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-bar-chart"></i> BEST SELLING PRODUCT REPORT</h4></span>
+        <span class="form-header"><h4><i class="fa fa-bar-chart"></i> Best Selling Product Report</h4></span>
     </div>
     <hr/>
 

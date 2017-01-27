@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
                         <h1>Customer Login</h1>
                         <div>
-                            <?= $form->field($model, 'username')->textInput(['autofocus' => true, 'class' => 'form-username form-control', 'id' => 'form-username', 'placeholder' => 'Username...'])->label(false) ?>
+                            <?= $form->field($model, 'ic')->textInput(['autofocus' => true, 'class' => 'form-username form-control', 'id' => 'form-username', 'placeholder' => 'IC..'])->label(false) ?>
                         </div>
                         <div>
                             <?= $form->field($model, 'password')->passwordInput(['autofocus' => true, 'class' => 'form-password form-control', 'id' => 'form-password', 'placeholder' => 'Password...'])->label(false) ?>

@@ -33,8 +33,10 @@ $this->title = 'View Quotation';
     <div class="x_panel quotationViewContainer">
 
         <div class="x_title">
-            <h2> Job-Sheet Details.</h2>
-            <ul class="nav navbar-right panel_toolbox"></ul>
+            <h2> <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?> </h2>
+            <ul class="nav navbar-right panel_toolbox">
+                
+            </ul>
             <div class="clearfix"></div>
         </div>
 
@@ -49,7 +51,7 @@ $this->title = 'View Quotation';
             <div class="col-md-12 invoice-col">
             <br/>
                 <address class="branchRowContainer">
-                    <h4><b><?= strtoupper($customerInfo['name']) ?></b></h4>
+                    <h4><b><i class="fa fa-car"></i> <?= strtoupper($customerInfo['name']) ?></b></h4>
                     <?= $customerInfo['address'] ?>
                     <br><b>Contact #:</b>  <?= $customerInfo['branchNumber'] ?>
                     <br><b>Prepared By:</b> <?= $customerInfo['salesPerson'] ?>
@@ -197,6 +199,3 @@ $this->title = 'View Quotation';
 
 </div>
 <br/>
-
-
-    
