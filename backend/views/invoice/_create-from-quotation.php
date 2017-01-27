@@ -90,7 +90,7 @@ $dataCategory = Category::find()->all();
 
                 <div class="col-md-8">
 
-                    <span class="invoiceLabel" ><i class="fa fa-calendar"></i> Date Issue </span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-calendar"></i> Date Issue </span>
 
                     <input type="text" name="Invoice[dateIssue]" id="expiry_date" class="form_qRInput form-control" readonly="readonly" value="<?= $model['date_issue'] ?>" placeholder="CHOOSE DATE HERE" />    
                 </div>
@@ -109,7 +109,7 @@ $dataCategory = Category::find()->all();
 
                 <div class="col-md-8">
                     
-                    <span class="invoiceLabel" ><i class="fa fa-globe"></i> Branch </span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-globe"></i> Branch </span>
 
                     <select name="Invoice[selectedBranch]" class="qSelect select3_single" >
                         <option value="<?= $model['branch_id'] ?>">[ <?= $model['code'] ?> ] <?= $model['name'] ?></option>
@@ -137,7 +137,7 @@ $dataCategory = Category::find()->all();
 
                 <div class="col-md-8">
                     
-                    <span class="invoiceLabel" ><i class="fa fa-users"></i> Customer Name</span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-users"></i> Customer Name</span>
                     
                     <select name="Invoice[selectedCustomer]" class="qSelect select3_single" >
                         <option value="<?= $model['customer_id'] ?>">[ <?= $model['carplate'] ?> ] <?= $model['fullname'] ?></option>
@@ -165,7 +165,7 @@ $dataCategory = Category::find()->all();
 
                 <div class="col-md-8">
                     
-                    <span class="invoiceLabel" ><i class="fa fa-user"></i> Sales Person </span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-user"></i> Sales Person </span>
 
                     <select name="Invoice[selectedUser]" class="qSelect select3_single" >
                         <option value="<?= $model['user_id'] ?>"><?= $model['salesPerson'] ?></option>
@@ -227,7 +227,7 @@ $dataCategory = Category::find()->all();
 
         <div class="col-md-4">
 
-            <div class="invSPLabel"> <b><span><i class="fa fa-list"></i> Services & Parts </span></b> 
+            <div class="invSPLabel"> <?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <b><span><i class="fa fa-list"></i> Services & Parts </span></b> 
             </div>
 
             <select class="select2_group form-control" id="services_parts" onchange="invGetSellingPrice()" >
@@ -266,7 +266,7 @@ $dataCategory = Category::find()->all();
             
             <div class="col-md-3">
         
-                <div class="invSPLabel"> <b><span><i class="fa fa-database"></i> Quantity </span></b> </div>
+                <div class="invSPLabel"> <?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <b><span><i class="fa fa-database"></i> Quantity </span></b> </div>
     
                 <input type="text"  id="itemQty" onchange="invUpdateSubTotal()" class="quantity form_invSP form-control" placeholder="Qty" />
 
@@ -274,7 +274,7 @@ $dataCategory = Category::find()->all();
 
             <div class="col-md-3">
         
-                <div class="invSPLabel"> <b><span><i class="fa fa-usd"></i> Selling Price </span></b> </div>
+                <div class="invSPLabel"> <?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <b><span><i class="fa fa-usd"></i> Selling Price </span></b> </div>
            
                 <input type="text" id="itemPriceValue" onchange="invUpdateSubTotal()" class="unit_price form_invSP form-control" placeholder="0.00" />
 
@@ -442,5 +442,93 @@ $dataCategory = Category::find()->all();
 
 <?php ActiveForm::end(); ?>  
     
+<div class="modal fade" id="modal-launcher-service" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa fa-battery-quarter"></i> New Service</h4>
+            </div>
 
+        <div class="modal-body">
+
+            <form id="sc-modal-form" class="sc-modal-form" method="POST">
+
+                <label>Service Category</label>
+                <select class="mform_input form-control select3_single" style="width: 100%;" name="service_category" id="service_category">
+                    <?php foreach($dataServiceCategory as $scRow): ?>
+                        <option value="<?php echo $scRow['id']; ?>"><?php echo $scRow['name']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <br/><br/>
+
+                <label>Service Name</label>
+                <input type="text" class="mform_input form-control" placeholder="Enter Service Name here." name="service" id="service" />
+                <br/>
+
+                <label>Price</label>
+                <input type="text" class="mform_input form-control" placeholder="Enter Service Price here." name="default_price" id="default_price" />
+
+            </form>
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" id="modal-submit-s" class="form-btn btn btn-primary">Submit</button>
+        </div>
+
+        </div>
+    </div>
+</div>
+​
+<div class="modal fade" id="modal-launcher-part" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel"><i class="fa fa-cogs"></i> New Parts</h4>
+            </div>
+
+        <div class="modal-body">
+
+            <form id="p-modal-form" class="p-modal-form" method="POST">
+
+                <label>Parts Supplier</label>
+                <select class="mform_input form-control select3_single" style="width: 100%;" name="parts_supplier" id="parts_supplier">
+                    <?php foreach($dataSupplier as $sRow): ?>
+                        <option value="<?php echo $sRow['id']; ?>"><?php echo $sRow['supplier_name']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <br/><br/>
+
+                <label>Parts Category</label>
+                <select class="mform_input form-control select3_single" style="width: 100%;" name="parts_category" id="parts_category">
+                    <?php foreach($dataCategory as $cRow): ?>
+                        <option value="<?php echo $cRow['id']; ?>"><?php echo $cRow['category']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <br/><br/>
+
+                <label>Parts Name</label>
+                <input type="text" class="mform_input form-control" placeholder="Enter Parts Name here." name="parts" id="parts" />
+                <br/>
+
+                <label>Unit of Measure</label>
+                <input type="text" class="mform_input form-control" placeholder="Enter Parts Unit of Measure here." name="parts_uom" id="parts_uom" />
+                <br/>
+
+                <label>Price</label>
+                <input type="text" class="mform_input form-control" placeholder="Enter Parts Price here." name="selling_price" id="selling_price" />
+
+            </form>
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" id="modal-submit-p" class="form-btn btn btn-primary">Submit</button>
+        </div>
+
+        </div>
+    </div>
+</div>
 

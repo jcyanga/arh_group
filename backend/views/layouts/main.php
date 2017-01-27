@@ -145,26 +145,6 @@ foreach ($getUserPermission as $key => $value) {
 
 $userFullname = Yii::$app->user->identity->fullname;
 
-$array=array
-(
-    '0' => array
-        (
-            'product' => 'abc',
-            'total' => 21
-        ),
-    '1' => array
-        (
-            'product' => 'xyz',
-            'total' => 1
-        ),
-    '2' => array
-        (
-            'product' => 'pqr',
-            'total' => 13
-        )
-);
-
-
 ?>
 
 <?php $this->beginPage() ?>
@@ -212,8 +192,12 @@ $array=array
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
 
-                    <div class="navbar nav_title" style="border: 0;">
-                        <a href="?" class="site_title"><i class="fa fa-car"></i> <span> Arh Group Pte Ltd. </span></a>
+                    <div class="navbar nav_title" >
+                        <a href="?" class="site_title" >
+                            <div style="text-align: center;">
+                                <span class="fa fa-car" id="logoContainer"></span>
+                            </div>
+                        </a>
                     </div>
                     <div class="clearfix"></div>
 
@@ -536,6 +520,26 @@ $array=array
         var lab=[];
         var data=[];
         <?php 
+
+        $array=array
+        (
+            '0' => array
+                (
+                    'product' => 'Cash',
+                    'total' => 21
+                ),
+            '1' => array
+                (
+                    'product' => 'Credit Card',
+                    'total' => 10
+                ),
+            '2' => array
+                (
+                    'product' => 'Nets Payment',
+                    'total' => 13
+                ),
+        );
+
         foreach($array as $tem)
         {
 
@@ -563,7 +567,7 @@ $array=array
     var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData);
 
     </script>
-    
+
     </body>   
 
 </html>

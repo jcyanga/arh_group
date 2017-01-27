@@ -111,6 +111,11 @@ class QuotationController extends Controller
             $date_start = Yii::$app->request->get('date_start');
             $date_end = Yii::$app->request->get('date_end');
 
+        } elseif ( Yii::$app->request->get('customer_name') || Yii::$app->request->get('carplate') ) {
+            $getQuotation = $searchModel->getQuotationByCustomerInformation(Yii::$app->request->get('customer_name'), Yii::$app->request->get('carplate'));
+            $date_start = '';
+            $date_end = '';
+        
         } else {
             $getQuotation = $searchModel->getQuotation();
             $date_start = '';
@@ -182,7 +187,13 @@ class QuotationController extends Controller
                 $totalWithGst = Yii::$app->request->post('Quotation')['grand_total'];
             }
 
-                if( Yii::$app->request->post('Quotation')['dateIssue'] == "" || Yii::$app->request->post('Quotation')['selectedBranch'] == 0 || Yii::$app->request->post('Quotation')['selectedCustomer'] == 0 || Yii::$app->request->post('Quotation')['selectedUser'] == 0 || Yii::$app->request->post('Quotation')['remarks'] == "" ) {
+            if( empty(Yii::$app->request->post('QuotationDetail')['remarks']) ) {
+                $remarks = 'No remarks.';
+            } else {
+                $remarks = Yii::$app->request->post('QuotationDetail')['remarks'];
+            }
+
+                if( Yii::$app->request->post('Quotation')['dateIssue'] == "" || Yii::$app->request->post('Quotation')['selectedBranch'] == 0 || Yii::$app->request->post('Quotation')['selectedCustomer'] == 0 || Yii::$app->request->post('Quotation')['selectedUser'] == 0 ) {
                         
                         return $this->render('_form', [
                                             'model' => $model,
@@ -194,7 +205,7 @@ class QuotationController extends Controller
                                             'getPartsList' => $getPartsList, 
                                             'errTypeHeader' => 'Error!', 
                                             'errType' => 'alert alert-error', 
-                                            'msg' => 'Fill-up all the fields in the form.'
+                                            'msg' => 'Fill-up all the *required fields in the form.'
                                         ]);
                 }
 
@@ -204,9 +215,10 @@ class QuotationController extends Controller
                 $model->branch_id = Yii::$app->request->post('Quotation')['selectedBranch'];
                 $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('Quotation')['dateIssue']));
                 $model->grand_total = $totalWithGst;
-                $model->remarks = Yii::$app->request->post('Quotation')['remarks'];
+                $model->remarks = $remarks;
                 $model->created_by = Yii::$app->user->identity->id;
                 $model->created_at = date("Y-m-d");
+                $model->time_created = date("H:i:s");
                 $model->updated_by = Yii::$app->user->identity->id;
                 $model->updated_at = date("Y-m-d");
                 $model->delete = 0;
@@ -336,10 +348,19 @@ class QuotationController extends Controller
                 $totalWithGst = Yii::$app->request->post('Quotation')['grand_total'];
             }
 
-            if( Yii::$app->request->post('Quotation')['dateIssue'] == "" || Yii::$app->request->post('Quotation')['selectedBranch'] == 0 || Yii::$app->request->post('Quotation')['selectedCustomer'] == 0 || Yii::$app->request->post('Quotation')['selectedUser'] == 0 || Yii::$app->request->post('Quotation')['remarks'] == "" ) {
+            if( empty(Yii::$app->request->post('QuotationDetail')['remarks']) ) {
+                $remarks = 'No remarks.';
+            } else {
+                $remarks = Yii::$app->request->post('QuotationDetail')['remarks'];
+            }
+
+            if( Yii::$app->request->post('Quotation')['dateIssue'] == "" || Yii::$app->request->post('Quotation')['selectedBranch'] == 0 || Yii::$app->request->post('Quotation')['selectedCustomer'] == 0 || Yii::$app->request->post('Quotation')['selectedUser'] == 0 ) {
                     
                     return $this->render('_update-form', [
-                                                'model' => $model,
+                                                'model' => $getProcessedQuotationbyId,
+                                                'getService' => $getProcessedServicesById,
+                                                'getPart' => $getProcessedPartsById,
+                                                'getLastId' => $getLastId,
                                                 'quotationId' => $id,
                                                 'getBranchList' => $getBranchList,
                                                 'getUserList' => $getUserList,
@@ -348,7 +369,7 @@ class QuotationController extends Controller
                                                 'getPartsList' => $getPartsList, 
                                                 'errTypeHeader' => 'Error!', 
                                                 'errType' => 'alert alert-error', 
-                                                'msg' => 'Fill-up all the fields in the form.'
+                                                'msg' => 'Fill-up all the *required fields in the form.'
                                             ]);
 
             }
@@ -361,7 +382,7 @@ class QuotationController extends Controller
             $findModel->branch_id = Yii::$app->request->post('Quotation')['selectedBranch'];
             $findModel->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('Quotation')['dateIssue']));
             $findModel->grand_total = $totalWithGst;
-            $findModel->remarks = Yii::$app->request->post('Quotation')['remarks'];
+            $findModel->remarks = $remarks;
             $findModel->updated_at = date("Y-m-d");
             $findModel->updated_by = Yii::$app->user->identity->id;
             $findModel->delete = 0;
@@ -707,7 +728,7 @@ class QuotationController extends Controller
         $getQuotation = $searchModel->getProcessedQuotationbyId($id);
         $getInvoiceId = $searchInvoice->getInvoiceId();
 
-        $invoiceNo = 'INVOICE' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5) . '-' . $getInvoiceId;
+        $invoiceNo = $getInvoiceId . '/' .  substr(uniqid('', true), -5);
 
         $getService = $searchModel->getProcessedServicesById($id);
         $getPart = $searchModel->getProcessedPartsById($id);
@@ -727,6 +748,7 @@ class QuotationController extends Controller
             $invoice->grand_total = $getQuotation['grand_total'];
             $invoice->remarks = $getQuotation['remarks'];
             $invoice->created_at = $getQuotation['created_at'];
+            $invoice->time_created = $getQuotation['time_created'];
             $invoice->created_by = $getQuotation['created_by'];
             $invoice->updated_at = $getQuotation['updated_at'];
             $invoice->updated_by = $getQuotation['updated_by'];
@@ -872,7 +894,13 @@ class QuotationController extends Controller
                 $totalWithGst = Yii::$app->request->post('Quotation')['grand_total'];
             }
 
-                if( Yii::$app->request->post('Quotation')['dateIssue'] == "" || Yii::$app->request->post('Quotation')['selectedBranch'] == 0 ||  Yii::$app->request->post('Quotation')['selectedUser'] == 0 || Yii::$app->request->post('Quotation')['remarks'] == "" ) {
+            if( empty(Yii::$app->request->post('QuotationDetail')['remarks']) ) {
+                $remarks = 'No remarks.';
+            } else {
+                $remarks = Yii::$app->request->post('QuotationDetail')['remarks'];
+            }
+            
+                if( Yii::$app->request->post('Quotation')['dateIssue'] == "" || Yii::$app->request->post('Quotation')['selectedBranch'] == 0 ||  Yii::$app->request->post('Quotation')['selectedUser'] == 0 ) {
                         
                         return $this->render('_quotation-form', [
                                             'model' => $model,
@@ -885,7 +913,7 @@ class QuotationController extends Controller
                                             'getPartsList' => $getPartsList, 
                                             'errTypeHeader' => 'Error!', 
                                             'errType' => 'alert alert-error', 
-                                            'msg' => 'Fill-up all the fields in the form.'
+                                            'msg' => 'Fill-up all the *required fields in the form.'
                                         ]);
                 }
 
@@ -895,9 +923,10 @@ class QuotationController extends Controller
                 $model->branch_id = Yii::$app->request->post('Quotation')['selectedBranch'];
                 $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('Quotation')['dateIssue']));
                 $model->grand_total = $totalWithGst;
-                $model->remarks = Yii::$app->request->post('Quotation')['remarks'];
+                $model->remarks = $remarks;
                 $model->created_by = Yii::$app->user->identity->id;
                 $model->created_at = date("Y-m-d");
+                $model->time_created = date("H:i:s");
                 $model->updated_by = Yii::$app->user->identity->id;
                 $model->updated_at = date("Y-m-d");
                 $model->delete = 0;

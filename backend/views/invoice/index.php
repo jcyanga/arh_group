@@ -35,7 +35,7 @@ $this->title = 'Invoice';
 
     <p>
         <a href="?r=invoice/create" id="option-list-link" class="btn btn-app">
-            <i class="fa fa-desktop"></i> <b> New Invoice </b>
+            <i class="fa fa-plus-circle"></i> <b> New Invoice </b>
         </a>
 
         <a href="?r=invoice/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">

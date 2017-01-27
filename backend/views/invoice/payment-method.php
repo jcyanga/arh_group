@@ -59,23 +59,22 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
         <br/>
 
         <div class="paymentContainer" id="singleMethod">
+        <div class="paymentContainerHeader">
+            <div class="paymentContainerHeaderLabel">
+                
+                <div>
+                <br/>
+                    <span style="font-weight: 600;"><i class="fa fa-mail-reply"></i> Single Payment</span>
+                </div>
+            </div>
+
+        </div>
         <br/>
 
             <div class="row transactionFormAlign" >
                 
                 <div class="col-md-6">
-
-                    <input type="text" value="<?= $datetime ?>" class="form-control form_pmInput" name="datetime" readonly/>
-                </div>
-
-            </div>
-            <br/><br/>
-
-            <div  class="row transactionFormAlign">
-
-                <div class="col-md-6">
                     <span class="pmLabel" > MODE OF PAYMENT </span>   
-                    <br/>
 
                     <select  name="Payment[payment_type]" style="width: 100%;" class="form_pm form-control select3_single" >
                         <option value="0">CHOOSE PAYMENT HERE.</option>
@@ -83,6 +82,14 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
                             <option value="<?php echo $ptRow['id']; ?>"><?php echo $ptRow['name']; ?></option>
                         <?php endforeach; ?>
                     </select>
+                </div>
+
+                <div class="col-md-6">
+
+                    <span class="pmLabel" > Date & Time </span>   
+                    <br/>
+
+                    <input type="text" value="<?= $datetime ?>" class="form-control form_pmInput" name="datetime" readonly/>
                 </div>
 
             </div>
@@ -96,16 +103,16 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
                     <input type="text" name="Payment[amount]" class="form_pm form-control" placeholder="Enter Amount here." />
                 </div>
 
-            </div>
-            <br/>
-
-            <div  class="row transactionFormAlign">
-
                 <div class="col-md-6">
                     <span class="pmLabel" > DISCOUNT </span>
 
                     <input type="text" name="Payment[discount]" class="form_pm form-control" placeholder="Enter Discount here." />
                 </div>
+            
+            </div>
+            <br/>
+
+            <div  class="row transactionFormAlign">
 
                 <div class="col-md-6">
                     <span class="pmLabel" > POINTS EARNED </span>
@@ -125,7 +132,7 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
                 </div>
 
             </div>
-            <br/><br/>
+            <br/>
 
             <div  class="row transactionFormAlign">
 
@@ -158,26 +165,25 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
             <br/>
 
         </div>
-        
+        <br/>
         
         <div class="paymentContainer" id="multipleMethod">
-        <br/>
-
-            <div  class="row transactionFormAlign">
+        <div class="paymentContainerHeader">
+            <div class="paymentContainerHeaderLabel">
                 
-                <div class="col-md-6">
-
-                    <input type="text" value="<?= $datetime ?>" class="form-control form_pmInput" name="datetime" readonly/>
+                <div>
+                <br/>
+                    <span style="font-weight: 600;"><i class="fa fa-mail-reply-all"></i> Multiple Payment</span>
                 </div>
-
             </div>
-            <br/><br/>
+            
+        </div>
+        <br/>
 
             <div  class="row transactionFormAlign">
 
                 <div class="col-md-6">
                     <span class="pmLabel" > MODE OF PAYMENT </span>   
-                    <br/>
 
                     <select  name="Payment[mPayment_type]" style="width: 100%;" class="form_pm form-control select3_single" id="mPayment_type" >
                         <option value="0">CHOOSE PAYMENT HERE.</option>
@@ -185,6 +191,13 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
                             <option value="<?php echo $ptRow['id']; ?>"><?php echo $ptRow['name']; ?></option>
                         <?php endforeach; ?>
                     </select>
+                </div>
+
+                <div class="col-md-6">
+                    <span class="pmLabel" > Date & Time </span>   
+                    <br/>
+
+                    <input type="text" value="<?= $datetime ?>" class="form-control form_pmInput" name="datetime" readonly/>
                 </div>
 
             </div>
@@ -198,17 +211,16 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
                     <input type="text" name="Payment[mAmount]" class="form_pm form-control" id="mAmount" placeholder="Enter Amount here." />
                 </div>
 
-            </div>
-            <br/>
-
-            <div  class="row transactionFormAlign">
-
                 <div class="col-md-6">
                     <span class="pmLabel" > DISCOUNT </span>
 
                     <input type="text" name="Payment[mDiscount]" class="form_pm form-control" id="mDiscount" placeholder="Enter Discount here." />
                 </div>
+            
+            </div>
+            <br/>
 
+            <div  class="row transactionFormAlign">
                 <div class="col-md-6">
                     <span class="pmLabel" > POINTS EARNED </span>
 
@@ -238,7 +250,6 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
                 </div>
 
             </div>
-            <br/>
 
             <div  class="row transactionFormAlign">
 
@@ -249,7 +260,6 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
                 </div>
 
             </div>
-            <hr/>
 
             <div class="added-payment-lists" id="added-payment-lists"></div>
 
@@ -275,6 +285,7 @@ $dateIssue = date('m-d-Y', strtotime($customerInfo['date_issue']) );
             <br/>
 
     </div>
+    <br/>
 
 </div>
 

@@ -66,7 +66,7 @@ $fullName = $getCustomerInfo['fullname'];
 
         <div class="row transactionFormAlign" >
             <div class="col-md-12">
-                <h4 style="text-transform: uppercase;">Customer Name: <?= Html::encode($fullName) ?></h4>
+                <h4 style="text-transform: uppercase; color: #2A3F54;"><i class="fa fa-users"></i> Customer Name: <?= Html::encode($fullName) ?></h4>
             </div>    
         </div>
         <br/>

@@ -18,6 +18,7 @@ use common\models\Gst;
 use common\models\Payment;
 use common\models\ProductLevel;
 use common\models\Customer;
+use common\models\PaymentType;
 
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -173,7 +174,13 @@ class InvoiceController extends Controller
                 $totalWithGst = Yii::$app->request->post('Invoice')['grand_total'];
             }
 
-            if( Yii::$app->request->post('Invoice')['dateIssue'] == "" || Yii::$app->request->post('Invoice')['selectedBranch'] == 0 || Yii::$app->request->post('Invoice')['selectedCustomer'] == 0 || Yii::$app->request->post('Invoice')['selectedUser'] == 0 || Yii::$app->request->post('Invoice')['remarks'] == "" ) {
+            if( empty(Yii::$app->request->post('QuotationDetail')['remarks']) ) {
+                $remarks = 'No remarks.';
+            } else {
+                $remarks = Yii::$app->request->post('QuotationDetail')['remarks'];
+            }
+
+            if( Yii::$app->request->post('Invoice')['dateIssue'] == "" || Yii::$app->request->post('Invoice')['selectedBranch'] == 0 || Yii::$app->request->post('Invoice')['selectedCustomer'] == 0 || Yii::$app->request->post('Invoice')['selectedUser'] == 0 ) {
                     
                     return $this->render('_form', [
                                         'model' => $model,
@@ -185,7 +192,7 @@ class InvoiceController extends Controller
                                         'getPartsList' => $getPartsList, 
                                         'errTypeHeader' => 'Error!', 
                                         'errType' => 'alert alert-error', 
-                                        'msg' => 'Fill-up all the fields in the form.'
+                                        'msg' => 'Fill-up all the *required fields in the form.'
                                     ]);
             }
 
@@ -196,9 +203,10 @@ class InvoiceController extends Controller
             $model->branch_id = Yii::$app->request->post('Invoice')['selectedBranch'];
             $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('Invoice')['dateIssue']));
             $model->grand_total = $totalWithGst;
-            $model->remarks = Yii::$app->request->post('Invoice')['remarks'];
+            $model->remarks = $remarks;
             $model->created_by = Yii::$app->user->identity->id;
             $model->created_at = date("Y-m-d");
+            $model->time_created = date("H:i:s");
             $model->updated_by = Yii::$app->user->identity->id;
             $model->updated_at = date("Y-m-d");
             $model->delete = 0;
@@ -330,10 +338,13 @@ class InvoiceController extends Controller
                 $quotationCode = Yii::$app->request->post('Quotation')['quotationCode'];
             }
 
-            if( Yii::$app->request->post('Invoice')['dateIssue'] == "" || Yii::$app->request->post('Invoice')['selectedBranch'] == 0 || Yii::$app->request->post('Invoice')['selectedCustomer'] == 0 || Yii::$app->request->post('Invoice')['selectedUser'] == 0 || Yii::$app->request->post('Invoice')['remarks'] == "" ) {
+            if( Yii::$app->request->post('Invoice')['dateIssue'] == "" || Yii::$app->request->post('Invoice')['selectedBranch'] == 0 || Yii::$app->request->post('Invoice')['selectedCustomer'] == 0 || Yii::$app->request->post('Invoice')['selectedUser'] == 0 ) {
                     
                     return $this->render('_update-form', [
-                                                'model' => $model,
+                                                'model' => $getInvoice, 
+                                                'getService' => $getService,
+                                                'getPart' => $getPart,
+                                                'getLastId' => $getLastId,
                                                 'invoiceId' => $invoiceId,
                                                 'getBranchList' => $getBranchList,
                                                 'getUserList' => $getUserList,
@@ -342,7 +353,7 @@ class InvoiceController extends Controller
                                                 'getPartsList' => $getPartsList, 
                                                 'errTypeHeader' => 'Error!', 
                                                 'errType' => 'alert alert-error', 
-                                                'msg' => 'Fill-up all the fields in the form.'
+                                                'msg' => 'Fill-up all the *required fields in the form.'
                                             ]);
             }
 
@@ -715,14 +726,19 @@ class InvoiceController extends Controller
                                         'services' => $getServices,
                                         'parts' => $getParts
                                     ]);
-                }else{ 
-                     $getInvoice = $searchModel->getInvoice();
+                } else { 
 
-                     return $this->render('index', [
-                                    'searchModel' => $searchModel,
-                                    'dataProvider' => $dataProvider,
-                                    'getInvoice' => $getInvoice
-                                 ]);
+                        $getInvoice = $searchModel->getPaidInvoiceById(Yii::$app->request->post('Payment')['invoice_id'], Yii::$app->request->post('Payment')['invoice_no']);
+                        $getServices = $searchModel->getInvoiceServiceDetail(Yii::$app->request->post('Payment')['invoice_id']);
+                        $getParts = $searchModel->getInvoicePartDetail(Yii::$app->request->post('Payment')['invoice_id']);
+
+                        $this->layout = 'print';
+
+                        return $this->render('_print-invoice',[
+                            'customerInfo' => $getInvoice,
+                            'services' => $getServices,
+                            'parts' => $getParts
+                        ]);
                 }
 
             }else{
@@ -732,6 +748,10 @@ class InvoiceController extends Controller
                     } else {
                         $mlPointsRedeem = Yii::$app->request->post('Payment')['mlPoints_redeem'];
                     }
+
+                    $checkIfExist = $searchModel->checkMultipleInvoice(Yii::$app->request->post('Payment')['mInvoice_id'], Yii::$app->request->post('Payment')['mInvoice_no'], Yii::$app->request->post('Payment')['mCustomer_id']);
+
+                    if( $checkIfExist == 0 ) {
 
                     $getId = array();
 
@@ -798,6 +818,22 @@ class InvoiceController extends Controller
                       'services' => $getServices,
                       'parts' => $getParts
                      ]);
+
+                    } else {
+
+                        $multipleInvoiceInfo = $searchModel->getPaidMultipleInvoiceById(Yii::$app->request->post('Payment')['mInvoice_id'], Yii::$app->request->post('Payment')['mInvoice_no']);
+                        $getServices = $searchModel->getInvoiceServiceDetail(Yii::$app->request->post('Payment')['mInvoice_id']);
+                        $getParts = $searchModel->getInvoicePartDetail(Yii::$app->request->post('Payment')['mInvoice_id']);
+
+                        $this->layout = 'print';
+
+                        return $this->render('_print-multiple-invoice',[
+                            'multipleInvoiceInfo' => $multipleInvoiceInfo,
+                            'services' => $getServices,
+                            'parts' => $getParts
+                        ]);
+
+                    }
             }
 
         }
@@ -809,9 +845,11 @@ class InvoiceController extends Controller
         $detail = new Payment();
         $this->layout = false;
 
+        $getPaymentTypeName = PaymentType::find()->where(['id' => Yii::$app->request->post('mPayment_type') ])->one();
+
         return $this->render('add-payment-lists', [
                             'n' => Yii::$app->request->post('n'),
-                            'mPayment_type' => Yii::$app->request->post('mPayment_type'),
+                            'mPayment_type' => $getPaymentTypeName['name'],
                             'mAmount' => Yii::$app->request->post('mAmount'),
                             'mDiscount' => Yii::$app->request->post('mDiscount'),
                             'mPoints_redeem' => Yii::$app->request->post('mPoints_redeem'),
@@ -1034,7 +1072,7 @@ class InvoiceController extends Controller
                 $quotationCode = Yii::$app->request->post('Quotation')['quotationCode'];
             }
 
-            if( Yii::$app->request->post('Invoice')['dateIssue'] == "" || Yii::$app->request->post('Invoice')['selectedBranch'] == 0 || Yii::$app->request->post('Invoice')['selectedCustomer'] == 0 || Yii::$app->request->post('Invoice')['selectedUser'] == 0 || Yii::$app->request->post('Invoice')['remarks'] == "" ) {
+            if( Yii::$app->request->post('Invoice')['dateIssue'] == "" || Yii::$app->request->post('Invoice')['selectedBranch'] == 0 || Yii::$app->request->post('Invoice')['selectedCustomer'] == 0 || Yii::$app->request->post('Invoice')['selectedUser'] == 0 ) {
                     
                     return $this->render('_update-form', [
                                                 'model' => $model,
@@ -1046,7 +1084,7 @@ class InvoiceController extends Controller
                                                 'getPartsList' => $getPartsList, 
                                                 'errTypeHeader' => 'Error!', 
                                                 'errType' => 'alert alert-error', 
-                                                'msg' => 'Fill-up all the fields in the form.'
+                                                'msg' => 'Fill-up all the *required fields in the form.'
                                             ]);
             }
 

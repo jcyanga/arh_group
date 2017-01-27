@@ -106,7 +106,7 @@ $roleId = Yii::$app->user->identity->role_id;
             <div class="row x_title">
                 <div class="col-md-6">
                     <h4>
-                        <i class="fa fa-map-marker"></i> Pending Services in Customer
+                        <i class="fa fa-map-marker"></i> Pending Services
                         <small class="searchCustomerLabel">(Pending Services with Invoice)</small>
                     </h4>
                 </div>
@@ -173,43 +173,69 @@ $roleId = Yii::$app->user->identity->role_id;
                 </div>
             </div>
 
-            <canvas id="canvas" height="450" width="600"></canvas>
-                        
-            <?php if( !empty($pendingInvoiceServices) ): ?>
-                
-                <table class="table table-boardered table-striped pendingTable">
-                    <thead>
-                        <tr class="headings">
-                            <td class="tblalign_center" ><b> DATE ISSUE </b></td>
-                            <td class="tblalign_center" ><b> INVOICE NUMBER </b></td>
-                            <td class="tblalign_center" ><b> CUSTOMER NAME </b></td>
-                            <td class="tblalign_center" ><b> SERVICE NAME </b></td>
-                            <td class="tblalign_center" ><b> QUANTITY </b></td>
-                            <td class="tblalign_center" ><b> SELLING PRICE </b></td>
-                            <td class="tblalign_center" ><b> CHECK INVOICE </b></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach( $pendingInvoiceServices as $iRow): ?>
-                            <tr>
-                                <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($iRow['date_issue']) ); ?></td>
-                                <td class="tblalign_center" ><b><?php echo $iRow['invoice_no']; ?></b></td>
-                                <td class="tblalign_center" ><?php echo $iRow['fullname']; ?></td>
-                                <td class="tblalign_center" ><b><?php echo $iRow['service_name']; ?></b></td>
-                                <td class="tblalign_center" ><?php echo $iRow['quantity']; ?></td>
-                                <td class="tblalign_center" ><?php echo '$'.$iRow['selling_price'].'.00'; ?></td>
-                                <td class="tblalign_center" ><a href="?r=invoice/view&id=<?php echo $iRow['invoiceId']; ?>" > <i class="fa fa-search"></i> </a></td>
-                            </tr>
-                        <?php endforeach; ?>     
-                    </tbody>
-                </table>
-            
-            <?php else: ?>
-                <div>
-                    <span class="pendingNoRecordDashboard"> - No Record Found. <span>
+            <div class="row">
+
+                <div class="col-md-6">
+                    <canvas id="canvas" height="350" width="600"></canvas>
                 </div>
-                <br/>
-            <?php endif; ?>
+                
+                <div class="col-md-6">
+                <br/><br/>
+                
+                    <div class="row">
+                        <div class="col-md-11 revenuesDashboard">
+                            <div class="revenuesContainer">
+                                <h4>Total Sales</h4>
+                                <?php if( !empty($getTotalDailySales) ): ?>
+                                  <?= Html::encode('$ '.$getTotalDailySales.'.00') ?>
+                                <?php else: ?>  
+                                   0
+                                <?php endif; ?>
+                            </div>
+                            <br/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 revenuesDashboard">
+                            <div class="revenuesContainer">
+                                <h4>Cash Payment</h4>
+                                <?php if( !empty($getTotalDailyCashSales) ): ?>
+                                  <?= Html::encode('$ '.$getTotalDailyCashSales.'.00') ?>
+                                <?php else: ?>  
+                                   0
+                                <?php endif; ?>            
+                            </div>
+                            <br/>
+                        </div>
+                        
+                        <div class="col-md-3 revenuesDashboard">
+                            <div class="revenuesContainer">
+                                <h4>Credit Card </h4>
+                                <?php if( !empty($getTotalDailyCreditCardSales) ): ?>
+                                  <?= Html::encode('$ '.$getTotalDailyCreditCardSales.'.00') ?>
+                                <?php else: ?>  
+                                   0
+                                <?php endif; ?>            
+                            </div>
+                            <br/>
+                        </div>
+                        
+                        <div class="col-md-4 revenuesDashboard">
+                            <div class="revenuesContainer">
+                                <h4>Nets Payment</h4>
+                                <?php if( !empty($getTotalDailyNetsSales) ): ?>
+                                  <?= Html::encode('$ '.$getTotalDailyNetsSales.'.00') ?>
+                                <?php else: ?>  
+                                   0
+                                <?php endif; ?>            
+                            </div>
+                            <br/>
+                        </div>
+
+
+                    </div>
+
+                </div>
 
         </div>
 

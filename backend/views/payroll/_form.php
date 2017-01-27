@@ -38,7 +38,7 @@ $getStaff = Staff::find()->all();
 
     <div class="col-md-4">
         <label class="form_label">Staff Fullname</label>
-        <select name="Quotation[selectedBranch]" class="qSelect select3_single">
+        <select name="Payroll[staff_id]" class="qSelect select3_single">
             <option value="0">SEARCH STAFF HERE.</option>
             <?php if( !empty($getStaff) ): ?>
                 <?php foreach( $getStaff as $row ): ?>
