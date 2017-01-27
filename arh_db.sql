@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 26, 2017 at 08:34 PM
+-- Generation Time: Jan 27, 2017 at 10:38 AM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -110,14 +110,6 @@ CREATE TABLE `branch` (
   `updated_by` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `branch`
---
-
-INSERT INTO `branch` (`id`, `code`, `name`, `address`, `contact_no`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'BRANCH-2017-30563', 'Jose Czar Yanga', '148 Sanchez St Manggahan Commonwealth Quezon City', '09959575415', 1, '2017-01-25', 1, '2017-01-25', 1),
-(2, 'BRANCH-2017-21232', 'Arh Group Pte Ltd. ', '25th street. testing only', '09087894562', 1, '2017-01-25', 1, '2017-01-25', 1);
-
 -- --------------------------------------------------------
 
 --
@@ -193,16 +185,6 @@ CREATE TABLE `customer` (
   `deleted` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `customer`
---
-
-INSERT INTO `customer` (`id`, `role`, `ic`, `password`, `password_hash`, `auth_key`, `fullname`, `race`, `carplate`, `address`, `hanphone_no`, `office_no`, `email`, `make`, `model`, `remarks`, `is_blacklist`, `is_member`, `points`, `member_expiry`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted`) VALUES
-(1, 10, 'jamaicalee', '04681409', '$2y$13$2tWieVX1U0FQWjCLrFWB/O5fXRGbqCONnWa919nloT1H5D5he0Sgq', '0Jb9QT_fVH-dwcLXg9E0M5vO5Mr7c1Si', 'jamaica lee', 'Filipina - Japanese', 'LEE-123', '245 japan homes shaw blvd. mandaluyong quezon city', '09287894561', '09959575415', 'jamaicalee@japanhomes.com.ph', 'Blue', 'Mercedez Benz', 'for testing only.', 0, '1', 800, '2017-02-01', 1, '2017-01-25 12:04:10', 2, '2017-01-25 12:04:10', 0, 1),
-(2, 10, 'tony_lim', '96543340', '$2y$13$gtVUTyp4w5VV.bEP/D.vJOkCqbtVL.MWtgIwmtZU94GnAPwYbbH5K', 'f6DzcBIGnqv06xbHQmhQ43Ilq51Lu7ta', 'tony lim', 'Japanese', 'AXU-765', 'Blk 1. Lot 7. Gumamela Street. Don Jose Subd. Fairview Quezon City', '09287894561', '09959575415', 'tonylim@gmai.com', 'Red', 'Porsche', 'for testing case only.', 0, '1', 900, '2017-02-01', 1, '2017-01-25 02:44:57', 2, '2017-01-25 02:44:57', 0, 1),
-(3, 10, 'bennyu', '77868293', '$2y$13$Gtq70GFAmeokb2vJA1bUP.gVUieffe5S7LJCwEqkPWuzR2NJSZFMm', 'asvz-VTZoAUrXW4BQps_ZQCmUdAt3ViB', 'Benny Yu', 'Chinese', 'SGY1597Z', '235 Katipunan Street Chinatown Binondo Manila', '09287894561', '09987894565', 'bennyu@yahoo.com', 'Honda', 'Civic 2.0', 'for testing only', 0, '1', 800, '2017-01-27', 1, '2017-01-26 06:58:31', 2, '2017-01-26 06:58:31', 0, 1),
-(4, 10, 'vicky_ross', '52051424', '$2y$13$5P48/1aV4iVRwyahImgA6erVGbUKWb5nMI7N1XzvVNU0jfznVB/OS', 'qBqhQVs7a3Mb8nouL185_DXJN_uv-K-X', 'Vicky Ross', 'American', 'THY1597Z', '28th Floor City Garden Bldg. Makati Ave. Makati City', '09081234567', '09087896541', 'vicky_ross@yahoo.com', 'Honda', 'Jazz', 'for test only.', 0, '1', 900, '2017-01-27', 1, '2017-01-26 11:45:32', 2, '2017-01-26 11:45:32', 0, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -240,7 +222,7 @@ CREATE TABLE `inventory` (
 
 INSERT INTO `inventory` (`id`, `product_id`, `supplier_id`, `quantity`, `cost_price`, `selling_price`, `date_imported`, `status`, `created_at`, `created_by`) VALUES
 (1, 1, 1, 14, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
-(2, 2, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
+(2, 2, 1, 17, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
 (3, 3, 1, 13, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
 (4, 4, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
 (5, 5, 1, 15, 99, 100, '2017-01-16', 0, '2017-01-16', 1),
@@ -304,6 +286,7 @@ CREATE TABLE `invoice` (
   `grand_total` double NOT NULL,
   `remarks` text NOT NULL,
   `created_at` date NOT NULL,
+  `time_created` time NOT NULL,
   `created_by` int(10) NOT NULL,
   `updated_at` date NOT NULL,
   `updated_by` int(10) NOT NULL,
@@ -313,14 +296,6 @@ CREATE TABLE `invoice` (
   `paid_type` int(5) NOT NULL,
   `status` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `invoice`
---
-
-INSERT INTO `invoice` (`id`, `quotation_code`, `invoice_no`, `user_id`, `customer_id`, `branch_id`, `date_issue`, `grand_total`, `remarks`, `created_at`, `created_by`, `updated_at`, `updated_by`, `delete`, `task`, `paid`, `paid_type`, `status`) VALUES
-(1, '0', '1/92781', 3, 4, 2, '2017-01-29', 697, 'for test only and god bless always.', '2017-01-27', 2, '2017-01-27', 2, 0, 0, 1, 1, 1),
-(2, '0', '2/84606', 3, 3, 2, '2017-01-28', 399, 'for testing purposes.', '2017-01-27', 1, '2017-01-27', 1, 0, 0, 1, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -341,29 +316,6 @@ CREATE TABLE `invoice_detail` (
   `task` int(5) NOT NULL,
   `status` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `invoice_detail`
---
-
-INSERT INTO `invoice_detail` (`id`, `invoice_id`, `service_part_id`, `quantity`, `selling_price`, `subTotal`, `created_at`, `created_by`, `type`, `task`, `status`) VALUES
-(1, 2, 1, 1, 100, 100, '2017-01-25', 2, 0, 1, 1),
-(2, 2, 2, 1, 99, 99, '2017-01-25', 2, 0, 1, 1),
-(3, 3, 1, 1, 100, 100, '2017-01-26', 2, 0, 0, 0),
-(4, 4, 2, 4, 99, 396, '2017-01-26', 2, 0, 1, 0),
-(5, 4, 4, 4, 100, 400, '2017-01-26', 2, 0, 0, 1),
-(6, 4, 9, 4, 125, 500, '2017-01-26', 2, 0, 0, 1),
-(7, 4, 9, 1, 100, 100, '2017-01-26', 2, 1, 0, 1),
-(8, 5, 1, 1, 100, 100, '2017-01-26', 2, 0, 0, 1),
-(9, 5, 2, 1, 99, 99, '2017-01-26', 2, 0, 0, 1),
-(10, 5, 15, 1, 100, 100, '2017-01-26', 2, 1, 0, 1),
-(11, 5, 42, 2, 100, 200, '2017-01-26', 2, 1, 0, 1),
-(12, 1, 1, 1, 100, 100, '2017-01-27', 2, 0, 0, 1),
-(13, 1, 2, 2, 99, 198, '2017-01-27', 2, 0, 0, 1),
-(14, 1, 23, 1, 199, 199, '2017-01-27', 2, 0, 0, 1),
-(15, 1, 47, 1, 200, 200, '2017-01-27', 2, 1, 0, 1),
-(16, 2, 2, 1, 99, 99, '2017-01-27', 1, 0, 0, 1),
-(17, 2, 3, 1, 300, 300, '2017-01-27', 1, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -497,18 +449,6 @@ CREATE TABLE `payment` (
   `status` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `payment`
---
-
-INSERT INTO `payment` (`id`, `invoice_id`, `invoice_no`, `customer_id`, `amount`, `discount`, `payment_method`, `payment_type`, `points_earned`, `points_redeem`, `remarks`, `payment_date`, `payment_time`, `status`) VALUES
-(2, 4, 'INVOICE-2017-63422-4', 2, 1000, 100, 1, '1', 100, 200, 'pay via cash payment.', '2017-01-26', '10:34:08', 1),
-(3, 5, 'INVOICE-2017-16490-5-0', 1, 300, 30, 2, '1', 50, 80, 'pay via cash payment.', '2017-01-26', '15:08:31', 1),
-(4, 5, 'INVOICE-2017-16490-5-1', 1, 200, 100, 2, '1', 100, 100, 'pay via cheque payment.', '2017-01-26', '15:08:31', 1),
-(5, 1, '1/92781', 4, 700, 10, 1, '1', 50, 150, 'pay via cash payment', '2017-01-27', '00:42:40', 1),
-(6, 2, '2/84606-0', 3, 200, 20, 2, '1', 20, 50, 'first pay via cash payment.', '2017-01-27', '02:40:23', 1),
-(7, 2, '2/84606-1', 3, 200, 30, 2, '5', 30, 50, 'second pay via credit card payment.', '2017-01-27', '02:40:23', 1);
-
 -- --------------------------------------------------------
 
 --
@@ -530,11 +470,9 @@ CREATE TABLE `payment_type` (
 --
 
 INSERT INTO `payment_type` (`id`, `name`, `description`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'Cash Payment', 'Customer can pay thru cash payment.', '2017-01-26', 2, '2017-01-26', 2),
-(3, 'ATM Payment', 'Customer can pay thru atm payment.', '2017-01-26', 2, '2017-01-26', 2),
-(4, 'Checks Payment', 'Customer can pay thru check payment.', '2017-01-26', 2, '2017-01-26', 2),
-(5, 'Credit Cards Payment', 'Customer can pay thru credit card payment.', '2017-01-26', 2, '2017-01-26', 2),
-(6, 'Cashless Payment', 'Customer can pay thru cashless payment.', '2017-01-26', 2, '2017-01-26', 2);
+(1, 'Cash Payment', 'Customer can pay thru cash payment.', '2017-01-27', 2, '2017-01-27', 2),
+(2, 'Credit Cards Payment', 'Customer can pay thru credit card payment.', '2017-01-27', 2, '2017-01-27', 2),
+(3, 'Nets Payment', 'Customer can pay thru nets payment.', '2017-01-27', 2, '2017-01-27', 2);
 
 -- --------------------------------------------------------
 
@@ -565,14 +503,6 @@ CREATE TABLE `payroll` (
   `updated_at` date NOT NULL,
   `updated_by` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `payroll`
---
-
-INSERT INTO `payroll` (`id`, `staff_id`, `ic_no`, `pay_date`, `basic`, `overtime_hours`, `rate_per_hour`, `commission`, `allowance`, `employees_cpf`, `employers_cpf`, `sinda`, `advance_loan`, `income_tax`, `reimbursement`, `prepared_by`, `approved_by`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 1, '123456', '2017-01-25', 30000, 1, 30, 100, 20000, 4000, 5000, 1000, 3500, 3000, 100, 'jc yanga', 'jose czar yanga', '2017-01-24', 2, '2017-01-24', 2),
-(2, 2, '7894', '2017-01-25', 789, 456, 123, 789, 456, 123, 789, 456, 123, 789, 456, 'celina james', 'dennis chiu', '2017-01-24', 2, '2017-01-24', 2);
 
 -- --------------------------------------------------------
 
@@ -640,10 +570,7 @@ INSERT INTO `product` (`id`, `product_code`, `product_name`, `product_image`, `u
 (41, 'PARTS-2017-23604', 'Grooved ball bearing', 'picture.jpg', 'pieces', 1, 21, '2017-01-16', 1),
 (42, 'PARTS-2017-74772', 'Needle bearing', 'picture.jpg', 'pieces', 1, 21, '2017-01-16', 1),
 (43, 'PARTS-2017-50657', 'Fuel vapour hose', 'picture.jpg', 'pieces', 1, 22, '2017-01-16', 1),
-(44, 'PARTS-2017-81711', 'Washer hose', 'picture.jpg', 'pieces', 1, 22, '2017-01-16', 1),
-(45, 'PARTS-2017-01076', 'testing', 'picture.jpg', 'grams', 1, 23, '2017-01-19', 1),
-(46, 'PARTS-2017-32443', 'qwerty', 'picture.jpg', 'kilo', 1, 1, '2017-01-26', 2),
-(47, 'PARTS-2017-64747', 'driver seat door', 'picture.jpg', 'piece', 1, 2, '2017-01-27', 2);
+(44, 'PARTS-2017-81711', 'Washer hose', 'picture.jpg', 'pieces', 1, 22, '2017-01-16', 1);
 
 -- --------------------------------------------------------
 
@@ -680,6 +607,7 @@ CREATE TABLE `quotation` (
   `grand_total` double NOT NULL,
   `remarks` text NOT NULL,
   `created_at` date NOT NULL,
+  `time_created` time NOT NULL,
   `created_by` int(10) NOT NULL,
   `updated_at` date NOT NULL,
   `updated_by` int(10) NOT NULL,
@@ -687,16 +615,6 @@ CREATE TABLE `quotation` (
   `task` int(5) NOT NULL,
   `invoice` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `quotation`
---
-
-INSERT INTO `quotation` (`id`, `quotation_code`, `user_id`, `customer_id`, `branch_id`, `date_issue`, `grand_total`, `remarks`, `created_at`, `created_by`, `updated_at`, `updated_by`, `delete`, `task`, `invoice`) VALUES
-(1, 'JS/1/40009', 3, 2, 2, '2017-01-27', 408, 'for testing only', '2017-01-26', 2, '2017-01-26', 2, 0, 0, 0),
-(2, 'JS/2/57381', 3, 3, 2, '2017-01-28', 250, 'for testing only', '2017-01-26', 1, '2017-01-26', 1, 0, 0, 0),
-(3, 'JS/3/76421', 3, 3, 2, '2017-01-28', 1000, 'for test only.', '2017-01-26', 2, '2017-01-26', 2, 0, 0, 0),
-(4, 'QUO-2017-863104', 3, 4, 2, '0000-00-00', 400, 'she bought 1 bonnet/hood and 1 dashcam and 2 battery.', '2017-01-26', 2, '2017-01-26', 2, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -717,22 +635,6 @@ CREATE TABLE `quotation_detail` (
   `task` int(5) NOT NULL,
   `invoice` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `quotation_detail`
---
-
-INSERT INTO `quotation_detail` (`id`, `quotation_id`, `service_part_id`, `quantity`, `selling_price`, `subTotal`, `created_at`, `created_by`, `type`, `task`, `invoice`) VALUES
-(1, 1, 17, 1, 10, 10, '2017-01-26', 2, 0, 1, 0),
-(2, 1, 2, 2, 99, 198, '2017-01-26', 2, 0, 1, 0),
-(3, 1, 14, 2, 100, 200, '2017-01-26', 2, 0, 0, 0),
-(4, 2, 21, 1, 100, 100, '2017-01-26', 1, 0, 0, 0),
-(7, 3, 1, 1, 100, 100, '2017-01-26', 2, 0, 0, 0),
-(8, 3, 46, 2, 250, 500, '2017-01-26', 2, 1, 0, 0),
-(9, 3, 4, 4, 100, 400, '2017-01-26', 2, 0, 0, 0),
-(12, 4, 1, 1, 100, 100, '2017-01-26', 2, 1, 0, 0),
-(13, 4, 9, 1, 100, 100, '2017-01-26', 2, 1, 0, 0),
-(14, 4, 12, 2, 100, 200, '2017-01-26', 2, 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -792,16 +694,7 @@ INSERT INTO `service` (`id`, `service_category_id`, `service_name`, `description
 (11, 3, 'Tire Installation', 'Proper installation enables tires to function fully and correctly.', 110, 1, '2017-01-16', 1, '2017-01-16', 1),
 (12, 3, 'Tire Rotation', 'Avoid uneven treadwear and extend a tire''s life by rotating your tires.', 120, 1, '2017-01-16', 1, '2017-01-16', 1),
 (13, 3, 'Tire Pressure Monitoring System (TPMS)', 'Maintain fuel efficiency and prolong tire life by getting your tire pressure monitoring system checked regularly.', 200, 1, '2017-01-16', 1, '2017-01-16', 1),
-(14, 3, 'Wheel Balance', 'Routinely balance your tires to avoid uneven wear, vibration, and potentially unsafe driving conditions.', 100, 1, '2017-01-16', 1, '2017-01-16', 1),
-(15, 1, 'abc', '1', 1, 1, '2017-01-26', 2, '2017-01-26', 2),
-(16, 2, 'def', 'test', 2, 1, '2017-01-26', 2, '2017-01-26', 2),
-(17, 2, 'abc', 'test', 10, 1, '2017-01-26', 2, '2017-01-26', 2),
-(18, 2, 'clutch relining', 'Other Services.', 250, 1, '2017-01-26', 1, '2017-01-26', 1),
-(19, 2, 'ClUTCH relining', 'Other Services.', 100, 1, '2017-01-26', 1, '2017-01-26', 1),
-(20, 3, 'change of rim', 'Other Services.', 400, 1, '2017-01-26', 1, '2017-01-26', 1),
-(21, 3, 'testing', 'Other Services.', 100, 1, '2017-01-26', 1, '2017-01-26', 1),
-(22, 2, 'asd', 'Other Services.', 200, 1, '2017-01-27', 2, '2017-01-27', 2),
-(23, 3, 'mnb', 'Other Services.', 199, 1, '2017-01-27', 2, '2017-01-27', 2);
+(14, 3, 'Wheel Balance', 'Routinely balance your tires to avoid uneven wear, vibration, and potentially unsafe driving conditions.', 100, 1, '2017-01-16', 1, '2017-01-16', 1);
 
 -- --------------------------------------------------------
 
@@ -1808,7 +1701,7 @@ ALTER TABLE `user_permission`
 -- AUTO_INCREMENT for table `branch`
 --
 ALTER TABLE `branch`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `category`
 --
@@ -1818,7 +1711,7 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gst`
 --
@@ -1828,17 +1721,17 @@ ALTER TABLE `gst`
 -- AUTO_INCREMENT for table `inventory`
 --
 ALTER TABLE `inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 --
 -- AUTO_INCREMENT for table `invoice`
 --
 ALTER TABLE `invoice`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `invoice_detail`
 --
 ALTER TABLE `invoice_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `modules`
 --
@@ -1853,22 +1746,22 @@ ALTER TABLE `module_access`
 -- AUTO_INCREMENT for table `payment`
 --
 ALTER TABLE `payment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `payment_type`
 --
 ALTER TABLE `payment_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `payroll`
 --
 ALTER TABLE `payroll`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 --
 -- AUTO_INCREMENT for table `product_level`
 --
@@ -1878,12 +1771,12 @@ ALTER TABLE `product_level`
 -- AUTO_INCREMENT for table `quotation`
 --
 ALTER TABLE `quotation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `quotation_detail`
 --
 ALTER TABLE `quotation_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `role`
 --
@@ -1893,7 +1786,7 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT for table `service`
 --
 ALTER TABLE `service`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 --
 -- AUTO_INCREMENT for table `service_category`
 --

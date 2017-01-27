@@ -71,7 +71,7 @@ $this->title = 'Payroll';
     </thead>
 
     <tbody>
-        <?php if(count($getPayroll) > 0 ): ?>
+        <?php if( !empty($getPayroll) ): ?>
             <?php foreach( $getPayroll as $row){ ?>
                 <tr class="even_odd pointer">
                     <td class="tblalign_center" ><?php echo $row['id'];  ?></td>
@@ -89,6 +89,7 @@ $this->title = 'Payroll';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

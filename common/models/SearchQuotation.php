@@ -101,7 +101,7 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.paid', 'quotation.date_issue', 'quotation.task', 'quotation.invoice'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.date_issue', 'quotation.task', 'quotation.invoice'])
             ->from('quotation')
             ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
@@ -109,6 +109,23 @@ class SearchQuotation extends Quotation
             ->where("quotation.date_issue >= '$date_start'")
             ->andWhere("quotation.date_issue <= '$date_end'")
             ->andWhere('quotation.delete = 0')
+            ->all();
+
+        return $result;
+    }
+
+    // get getQuotationByCustomerInformation
+    public function getQuotationByCustomerInformation($customerName,$vehicleNumber) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.date_issue', 'quotation.task', 'quotation.invoice'])
+            ->from('quotation')
+            ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
+            ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
+            ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
+            ->where(['customer.fullname' => $customerName])
+            ->orWhere(['customer.carplate' => $vehicleNumber])
             ->all();
 
         return $result;
@@ -235,7 +252,7 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'customer.make', 'customer.model', 'customer.points', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.task', 'quotation.invoice', 'quotation.created_at'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'customer.make', 'customer.model', 'customer.points', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.task', 'quotation.invoice', 'quotation.created_at', 'quotation.time_created'])
             ->from('quotation')
             ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
@@ -282,7 +299,7 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.branch_id', 'quotation.customer_id', 'quotation.user_id', 'quotation.created_at', 'quotation.created_by', 'quotation.updated_at', 'quotation.updated_by', 'quotation.delete', 'quotation.task'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.branch_id', 'quotation.customer_id', 'quotation.user_id', 'quotation.created_at', 'quotation.created_by', 'quotation.updated_at', 'quotation.updated_by', 'quotation.delete', 'quotation.task', 'quotation.time_created'])
             ->from('quotation')
             ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
             ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')

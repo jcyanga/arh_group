@@ -88,7 +88,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
                 <div class="col-md-8">
 
-                    <span class="quotationLabel" ><i class="fa fa-calendar"></i> Date Issue </span>
+                    <span class="quotationLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-calendar"></i> Date Issue </span>
 
                     <input type="text" name="Quotation[dateIssue]" id="expiry_date" class="form_qRInput form-control" readonly="readonly" value="<?= $model['date_issue'] ?>" placeholder="CHOOSE DATE HERE" /> 
                 </div>
@@ -106,10 +106,10 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
                 <div class="col-md-8">
                     
-                    <span class="quotationLabel" ><i class="fa fa-globe"></i> Branch </span>
+                    <span class="quotationLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-globe"></i> Branch </span>
 
                     <select name="Quotation[selectedBranch]" class="qSelect select3_single" >
-                        <option value="<?= $model['branch_id'] ?>">[ <?= $model['code'] ?> ] <?= $model['name'] ?></option>
+                        <option value="<?= $model['BranchId'] ?>">[ <?= $model['code'] ?> ] <?= $model['name'] ?></option>
                         <option value="0">SEARCH BRANCH HERE.</option>
                         <?php if( !empty($getBranchList) ): ?>
                             <?php foreach( $getBranchList as $row ): ?>
@@ -134,7 +134,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
                 <div class="col-md-8">
                     
-                    <span class="quotationLabel" ><i class="fa fa-users"></i> Customer Name</span>
+                    <span class="quotationLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-users"></i> Customer Name</span>
                     
                     <select name="Quotation[selectedCustomer]" class="qSelect select3_single" >
                         <option value="<?= $model['customer_id'] ?>">[ <?= $model['carplate'] ?> ] <?= $model['fullname'] ?></option>
@@ -162,7 +162,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
                 <div class="col-md-8">
                     
-                    <span class="quotationLabel" ><i class="fa fa-user"></i> Sales Person </span>
+                    <span class="quotationLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-user"></i> Sales Person </span>
 
                     <select name="Quotation[selectedUser]" class="qSelect select3_single" >
                         <option value="<?= $model['user_id'] ?>"><?= $model['salesPerson'] ?></option>
@@ -223,7 +223,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
         <div class="col-md-5">
 
-            <div class="quoSPLabel"> <b><span><i class="fa fa-list"></i> Services & Parts </span></b> 
+            <div class="quoSPLabel"> <?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <b><span><i class="fa fa-list"></i> Services & Parts </span></b> 
             </div>
 
             <select class="select2_group form-control" id="services_parts" onchange="quoGetSellingPrice()" >
@@ -262,7 +262,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
             
             <div class="col-md-3">
         
-                <div class="quoSPLabel"> <b><span><i class="fa fa-database"></i> Quantity </span></b> </div>
+                <div class="quoSPLabel"> <?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <b><span><i class="fa fa-database"></i> Quantity </span></b> </div>
     
                 <input type="text"  id="itemQty" onchange="quoUpdateSubTotal()" class="quantity form_quoSP form-control" placeholder="Qty" />
 

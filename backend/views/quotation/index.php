@@ -36,7 +36,7 @@ $this->title = 'Quotation';
 
     <p>
         <a href="?r=quotation/create" id="option-list-link" class="btn btn-app">
-            <i class="fa fa-desktop"></i> <b> New Job-Sheet </b>
+            <i class="fa fa-plus-circle"></i> <b> New Job-Sheet </b>
         </a>
 
         <a href="?r=quotation/create-customer" id="option-list-link" class="btn btn-app">
@@ -114,6 +114,7 @@ $this->title = 'Quotation';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

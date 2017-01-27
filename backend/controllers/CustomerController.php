@@ -157,17 +157,17 @@ class CustomerController extends Controller
             
             if( $model->save() ) {
 
-                // $emailFrom = 'no-reply@firstcom.com.sg';
-                // $emailTo = 'jcyanga28@yahoo.com';
+                $emailFrom = 'no-reply@firstcom.com.sg';
+                $emailTo = 'jcyanga28@yahoo.com';
 
-                // Yii::$app->mailer->compose("layouts/invoice-mail",[
-                //             'model' => $model,
-                //             'fullname' => Yii::$app->request->post('Customer')['fullname'],
-                //         ])
-                //    ->setFrom($emailFrom)
-                //    ->setTo($emailTo)
-                //    ->setSubject('Arh Group - Customer Membership Confirmation.')
-                //    ->send();
+                Yii::$app->mailer->compose("layouts/customer_password",[
+                            'model' => $model,
+                            'fullname' => Yii::$app->request->post('Customer')['fullname'],
+                        ])
+                   ->setFrom($emailFrom)
+                   ->setTo($emailTo)
+                   ->setSubject('Arh Group - Customer Membership Confirmation.')
+                   ->send();
 
                 return $this->render('index', [
                             'searchModel' => $searchModel, 

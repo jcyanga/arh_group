@@ -90,7 +90,7 @@ $dataCategory = Category::find()->all();
 
                 <div class="col-md-8">
 
-                    <span class="invoiceLabel" ><i class="fa fa-calendar"></i> Date Issue </span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-calendar"></i> Date Issue </span>
 
                     <input type="text" name="Invoice[dateIssue]" id="expiry_date" class="form_qRInput form-control" readonly="readonly" value="<?= $model['date_issue'] ?>" placeholder="CHOOSE DATE HERE" />    
                 </div>
@@ -109,7 +109,7 @@ $dataCategory = Category::find()->all();
 
                 <div class="col-md-8">
                     
-                    <span class="invoiceLabel" ><i class="fa fa-globe"></i> Branch </span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-globe"></i> Branch </span>
 
                     <select name="Invoice[selectedBranch]" class="qSelect select3_single" >
                         <option value="<?= $model['branch_id'] ?>">[ <?= $model['code'] ?> ] <?= $model['name'] ?></option>
@@ -137,7 +137,7 @@ $dataCategory = Category::find()->all();
 
                 <div class="col-md-8">
                     
-                    <span class="invoiceLabel" ><i class="fa fa-users"></i> Customer Name</span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-users"></i> Customer Name</span>
                     
                     <select name="Invoice[selectedCustomer]" class="qSelect select3_single" >
                         <option value="<?= $model['customer_id'] ?>">[ <?= $model['carplate'] ?> ] <?= $model['fullname'] ?></option>
@@ -165,7 +165,7 @@ $dataCategory = Category::find()->all();
 
                 <div class="col-md-8">
                     
-                    <span class="invoiceLabel" ><i class="fa fa-user"></i> Sales Person </span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-user"></i> Sales Person </span>
 
                     <select name="Invoice[selectedUser]" class="qSelect select3_single" >
                         <option value="<?= $model['user_id'] ?>"><?= $model['salesPerson'] ?></option>
@@ -227,7 +227,7 @@ $dataCategory = Category::find()->all();
 
         <div class="col-md-4">
 
-            <div class="invSPLabel"> <b><span><i class="fa fa-list"></i> Services & Parts </span></b> 
+            <div class="invSPLabel"> <?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <b><span><i class="fa fa-list"></i> Services & Parts </span></b> 
             </div>
 
             <select class="select2_group form-control" id="services_parts" onchange="invGetSellingPrice()" >
@@ -266,7 +266,7 @@ $dataCategory = Category::find()->all();
             
             <div class="col-md-3">
         
-                <div class="invSPLabel"> <b><span><i class="fa fa-database"></i> Quantity </span></b> </div>
+                <div class="invSPLabel"> <?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <b><span><i class="fa fa-database"></i> Quantity </span></b> </div>
     
                 <input type="text"  id="itemQty" onchange="invUpdateSubTotal()" class="quantity form_invSP form-control" placeholder="Qty" />
 
@@ -290,7 +290,7 @@ $dataCategory = Category::find()->all();
 
             <div class="col-md-3">
         
-                <div class="invSPLabel"> <b><span><i class="fa fa-bars"></i> Action </span></b> </div>
+                <div class="invSPLabel"> <?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <b><span><i class="fa fa-bars"></i> Action </span></b> </div>
                
                 <div class="quoSPAction">
                     <a href="javascript:invAddItemList()" id="invAddItemList" class="form-btn btn btn-link" ><i class='fa fa-plus-circle'></i> Add Item in List </a>

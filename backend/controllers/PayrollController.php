@@ -149,6 +149,8 @@ class PayrollController extends Controller
                                 'msg' => 'You already enter an existing name, Please! Change the staff name or pay-date.']);
             }
 
+            $model->pay_date = date('Y-m-d', strtotime(Yii::$app->request->post('Payroll')['pay_date']));
+
             if( $model->save() ) {
                 $getPayroll = $searchModel->getPayrolls();
 
@@ -192,17 +194,22 @@ class PayrollController extends Controller
         $searchModel = new SearchPayroll();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
-            $getPayroll = $searchModel->getPayrolls();
+        if ( $model->load(Yii::$app->request->post()) ) {
+            $model->pay_date = date('Y-m-d', strtotime(Yii::$app->request->post('Payroll')['pay_date']));
+            
+            if($model->save()) {
+               
+                $getPayroll = $searchModel->getPayrolls();
 
-            return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getPayroll' => $getPayroll,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully updated in the database.'
-                    ]);
+                return $this->render('index', [
+                            'searchModel' => $searchModel, 
+                            'getPayroll' => $getPayroll,
+                            'dataProvider' => $dataProvider, 
+                            'errTypeHeader' => 'Success!', 
+                            'errType' => 'alert alert-success', 
+                            'msg' => 'Your record was successfully updated in the database.'
+                        ]);
+            }
 
         } else {
             return $this->render('update', [

@@ -40,7 +40,7 @@ $i = 1;
                                 <img src="assets/bootstrap/images/arh_receipt_logo.png" style="height: 55%; width: 100%; max-width:500px;">
                                 <br/>
 
-                                <div class="row" style="text-align: left; font-size: 12px; text-transform: uppercase;">
+                                <div class="row" style="text-align: left; font-size: 11px; text-transform: uppercase;">
                                     
                                     <div class="col-md-12">
                                         <b>Name : </b> <?= Html::encode($customerInfo['name']) ?>
@@ -55,7 +55,7 @@ $i = 1;
                             </td>
                             
                             <td style="width: 45%">
-                                    <div class="row" style="text-align: left; font-size: 12px;">
+                                    <div class="row" style="text-align: left; font-size: 11px;">
                                      
                                      <div class="col-md-12"><b>JOB SHEET</b></div>
                                      <br/>
@@ -128,11 +128,12 @@ $i = 1;
 
                                          <div class="col-md-12">
                                             : <?= Html::encode(date('d M Y', strtotime($customerInfo['created_at']))) ?>
+                                              <?= Html::encode(date('H:i:s', strtotime($customerInfo['time_created']))) ?>
                                          </div>
                                          <br/>
 
                                          <div class="col-md-12">
-                                            : <?= Html::encode(date('d M Y', strtotime($customerInfo['created_at']))) ?>
+                                            : <?= Html::encode(date('d M Y H:i:s')) ?>
                                          </div>
                                          <br/>
 
@@ -174,34 +175,34 @@ $i = 1;
             <tr  class="heading">
                 <table class="headers">
                 <tr>
-                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center;" > S/No </td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center; font-size: 11px;" > S/No </td>
                 
-                <td class="servicespartsContainerHeader" style="width: 50%; text-align: center" > Description </td>
-                <td class="servicespartsContainerHeader" style="width: 20%; text-align: center" > Qty</td>
-                <td class="servicespartsContainerHeader" style="width: 20%; text-align: center" > Line Total w/o GST</td>
+                <td class="servicespartsContainerHeader" style="width: 50%; text-align: center; font-size: 11px;" > Description </td>
+                <td class="servicespartsContainerHeader" style="width: 20%; text-align: center; font-size: 11px;" > Qty</td>
+                <td class="servicespartsContainerHeader" style="width: 20%; text-align: center; font-size: 11px;" > Line Total w/o GST</td>
                 </tr></table>
             </tr>
 
             <tr class="details">
               
-                <table border="1" style="border: solid 1px #eee; " cellspacing ="0" cellpadding ="0" >
+                <table border="1" style="border: solid 1px #666; " cellspacing ="0" cellpadding ="0" >
                     <tbody>
                         <?php foreach($services as $sRow): ?>
                             <?php $n++; ?>
                             <tr>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center;" ><?php echo $n; ?></td>
-                                <td class="servicespartsLists" style="width: 50%; text-align: center" ><?php echo $sRow['service_name']; ?></td>
-                                <td class="servicespartsLists" style="width: 20%; text-align: center" ><?php echo $sRow['quantity']; ?></td>
-                                <td class="servicespartsLists" style="width: 20%; text-align: center" ><?php echo '$ '.$sRow['subTotal'].'.00'; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><?php echo $n; ?></td>
+                                <td class="servicespartsLists" style="width: 50%; text-align: center; font-size: 11px;" ><?php echo $sRow['service_name']; ?></td>
+                                <td class="servicespartsLists" style="width: 20%; text-align: center; font-size: 11px;" ><?php echo $sRow['quantity']; ?></td>
+                                <td class="servicespartsLists" style="width: 20%; text-align: center; font-size: 11px;" ><?php echo '$ '.$sRow['subTotal'].'.00'; ?></td>
                             </tr>
                         <?php endforeach; ?>  
                         <?php foreach($parts as $pRow): ?>
                             <?php $i += $n; ?>
                             <tr>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center;" ><?php echo $i; ?></td>
-                                <td class="servicespartsLists" style="width: 50%; text-align: center" ><?php echo $pRow['product_name']; ?></td>
-                                <td class="servicespartsLists" style="width: 20%; text-align: center" ><?php echo $pRow['quantity']; ?></td>
-                                <td class="servicespartsLists" style="width: 20%; text-align: center" ><?php echo '$ '.$pRow['subTotal'].'.00'; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><?php echo $i; ?></td>
+                                <td class="servicespartsLists" style="width: 50%; text-align: center; font-size: 11px;" ><?php echo $pRow['product_name']; ?></td>
+                                <td class="servicespartsLists" style="width: 20%; text-align: center; font-size: 11px;" ><?php echo $pRow['quantity']; ?></td>
+                                <td class="servicespartsLists" style="width: 20%; text-align: center; font-size: 11px;" ><?php echo '$ '.$pRow['subTotal'].'.00'; ?></td>
                             </tr>
 
                         <?php endforeach; ?> 
@@ -240,19 +241,19 @@ $i = 1;
                 <table >
                     <tbody>
                         <tr>
-                            <td style="width: 25%;">
+                            <td style="width: 30%;">
                             <hr/>
-                            <h5 style="text-align: center; font-size: 12px;">Attended by</h5>
+                            <h5 style="text-align: center; font-size: 11px;">Attended by</h5>
                             </td>
 
-                            <td style="width: 25%;">
+                            <td style="width: 30%;">
                             <hr/>
-                            <h5 style="text-align: center; font-size: 12px;">Date</h5>
+                            <h5 style="text-align: center; font-size: 11px;">Date</h5>
                             </td>
 
-                            <td style="width: 50%;">
+                            <td style="width: 40%;">
                             <hr/>
-                            <h5 style="text-align: center; font-size: 12px;">Name, NRIC & Signature or Authorised Signature & Company Shop</h5>
+                            <h5 style="text-align: center; font-size: 11px;">Name, NRIC & Signature or Authorised Signature & Company Shop</h5>
                             </td>
 
                             
@@ -265,6 +266,7 @@ $i = 1;
 
         </table>
 </div>
+<br/>
 
 <!-- Print Buttons -->   
 <div class="row">
@@ -278,6 +280,6 @@ $i = 1;
     </div>
 </div>
 
-
+<br/><br/>
 
     

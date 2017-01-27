@@ -38,7 +38,7 @@ $i = 1;
                                 <img src="assets/bootstrap/images/arh_receipt_logo.png" style="height: 55%; width: 100%; max-width:500px;">
                                 <br/>
 
-                                <div class="row" style="text-align: left; font-size: 12px; text-transform: uppercase;">
+                                <div class="row" style="text-align: left; font-size: 11px; text-transform: uppercase;">
                                     
                                     <div class="col-md-12">
                                         <b>Name : </b> <?= Html::encode($customerInfo['name']) ?>
@@ -53,7 +53,7 @@ $i = 1;
                             </td>
                             
                             <td style="width: 45%">
-                                    <div class="row" style="text-align: left; font-size: 12px;">
+                                    <div class="row" style="text-align: left; font-size: 11px;">
                                      
                                      <div class="col-md-12"><b>INVOICE / CASH BILL</b></div>
                                      <br/>
@@ -111,11 +111,12 @@ $i = 1;
 
                                          <div class="col-md-12">
                                             : <?= Html::encode(date('d M Y', strtotime($customerInfo['created_at']))) ?>
+                                              <?= Html::encode(date('H:i:s', strtotime($customerInfo['time_created']))) ?>
                                          </div>
                                          <br/>
 
                                          <div class="col-md-12">
-                                            : <?= Html::encode(date('d M Y', strtotime($customerInfo['created_at']))) ?>
+                                            : <?= Html::encode(date('d M Y H:i:s')) ?>
                                          </div>
                                          <br/>
 
@@ -172,43 +173,43 @@ $i = 1;
             <tr  class="heading">
                 <table class="headers">
                 <tr>
-                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center;" > S/No </td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center; font-size: 11px;" > S/No </td>
                 
-                <td class="servicespartsContainerHeader" style="width: 40%; text-align: center" > Description </td>
-                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center" > Unit Price</td>
-                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center" > Qty</td>
-                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center" > Member Discount</td>
-                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center" > Additional Discount</td>
-                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center" > Line Total w/o GST</td>
+                <td class="servicespartsContainerHeader" style="width: 40%; text-align: center; font-size: 11px;" > Description </td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center; font-size: 11px;" > Unit Price</td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center; font-size: 11px;" > Qty</td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center; font-size: 11px;" > Member Discount</td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center; font-size: 11px;" > Additional Discount</td>
+                <td class="servicespartsContainerHeader" style="width: 10%; text-align: center; font-size: 11px;" > Line Total w/o GST</td>
                 </tr></table>
             </tr>
 
             <tr class="details">
               
-                <table border="1" style="border: solid 1px #eee; " cellspacing ="0" cellpadding ="0" >
+                <table border="1" style="border: solid 1px #666; " cellspacing ="0" cellpadding ="0" >
                     <tbody>
                         <?php foreach($services as $sRow): ?>
                             <?php $n++; ?>
                             <tr>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center;" ><?php echo $n; ?></td>
-                                <td class="servicespartsLists" style="width: 40%; text-align: center" ><?php echo $sRow['service_name']; ?></td>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo '$ '.$sRow['selling_price'].'.00'; ?></td>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo $sRow['quantity']; ?></td>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center" >-</td>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center" >-</td>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo '$ '.$sRow['subTotal'].'.00'; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><?php echo $n; ?></td>
+                                <td class="servicespartsLists" style="width: 40%; text-align: center; font-size: 11px;" ><?php echo $sRow['service_name']; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><?php echo '$ '.$sRow['selling_price'].'.00'; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><?php echo $sRow['quantity']; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" >-</td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" >-</td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><?php echo '$ '.$sRow['subTotal'].'.00'; ?></td>
                             </tr>
                         <?php endforeach; ?>  
                         <?php foreach($parts as $pRow): ?>
                             <?php $i += $n; ?>
                             <tr>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center;" ><?php echo $i; ?></td>
-                                <td class="servicespartsLists" style="width: 40%; text-align: center" ><?php echo $pRow['product_name']; ?></td>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo '$ '.$pRow['selling_price'].'.00'; ?></td>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo $pRow['quantity']; ?></td>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center" >-</td>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center" >-</td>
-                                <td class="servicespartsLists" style="width: 10%; text-align: center" ><?php echo '$ '.$pRow['subTotal'].'.00'; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><?php echo $i; ?></td>
+                                <td class="servicespartsLists" style="width: 40%; text-align: center; font-size: 11px;" ><?php echo $pRow['product_name']; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><?php echo '$ '.$pRow['selling_price'].'.00'; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><?php echo $pRow['quantity']; ?></td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" >-</td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" >-</td>
+                                <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><?php echo '$ '.$pRow['subTotal'].'.00'; ?></td>
                             </tr>
 
                         <?php endforeach; ?> 
@@ -217,22 +218,22 @@ $i = 1;
                     </tbody>
                 </table>
                 
-                <table border="1" style="border: solid 1px #eee; " cellspacing ="0" cellpadding ="0" >
+                <table border="1" style="border: solid 1px #666; " cellspacing ="0" cellpadding ="0" >
                     <tr>
-                        <td class="servicespartsLists" style="width: 90%; text-align: right"><b>Gross Total</b></td>
-                        <td class="servicespartsLists" style="width: 10%; text-align: center" ><b><?php echo '$ '.$getSubTotal.'.00' ?></b></td>
+                        <td class="servicespartsLists" style="width: 90%; text-align: right; font-size: 11px;"><b>Gross Total</b></td>
+                        <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><b><?php echo '$ '.$getSubTotal.'.00' ?></b></td>
                     </tr>
                     <tr>
-                        <td class="servicespartsLists" style="width: 90%; text-align: right;" ><b>Membership : Reward Member Discount : 0.00%</b></td>
-                        <td class="servicespartsLists" style="width: 10%; text-align: center" ><b>0.00</b></td>
+                        <td class="servicespartsLists" style="width: 90%; text-align: right; font-size: 11px;" ><b>Membership : Reward Member Discount : 0.00%</b></td>
+                        <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><b>0.00</b></td>
                     </tr>
                     <tr>
-                        <td class="servicespartsLists" style="width: 90%; text-align: right;" ><b>GST(7.00%)</b></td>
-                        <td class="servicespartsLists" style="width: 10%; text-align: center" ><b><?php echo $gst; ?></b></td>
+                        <td class="servicespartsLists" style="width: 90%; text-align: right; font-size: 11px;" ><b>GST(7.00%)</b></td>
+                        <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><b><?php echo $gst; ?></b></td>
                     </tr>
                     <tr>
-                        <td class="servicespartsLists" style="width: 90%; text-align: right;" ><b>Nett Total:</b></td>
-                        <td class="servicespartsLists" style="width: 10%; text-align: center" ><b><?php echo '$ '.$customerInfo['grand_total'].'.00'; ?></b></td>
+                        <td class="servicespartsLists" style="width: 90%; text-align: right; font-size: 11px;" ><b>Nett Total:</b></td>
+                        <td class="servicespartsLists" style="width: 10%; text-align: center; font-size: 11px;" ><b><?php echo '$ '.$customerInfo['grand_total'].'.00'; ?></b></td>
                     </tr>
                 </table>
             </tr>
@@ -253,19 +254,19 @@ $i = 1;
                 <table >
                     <tbody>
                         <tr>
-                            <td style="width: 25%;">
+                            <td style="width: 30%;">
                             <hr/>
-                            <h5 style="text-align: center; font-size: 12px;">Attended by</h5>
+                            <h5 style="text-align: center; font-size: 11px;">Attended by</h5>
                             </td>
 
-                            <td style="width: 25%;">
+                            <td style="width: 30%;">
                             <hr/>
-                            <h5 style="text-align: center; font-size: 12px;">Date</h5>
+                            <h5 style="text-align: center; font-size: 11px;">Date</h5>
                             </td>
 
-                            <td style="width: 50%;">
+                            <td style="width: 40%;">
                             <hr/>
-                            <h5 style="text-align: center; font-size: 12px;">Name, NRIC & Signature or Authorised Signature & Company Shop</h5>
+                            <h5 style="text-align: center; font-size: 11px;">Name, NRIC & Signature or Authorised Signature & Company Shop</h5>
                             </td>
 
                             
@@ -284,7 +285,7 @@ $i = 1;
 <div class="row">
     <div class="col-xs-12">
         <div style="text-align: center">
-            <button class="form-btn btn btn-info btn-xs print-buttons" id="print_invoice" onclick="quotationPrint()"><i class="fa fa-print"></i> Print </button>
+            <button class="form-btn btn btn-info btn-xs print-buttons" id="print_invoice" onclick="invoicePrint()"><i class="fa fa-print"></i> Print </button>
        
             <button class="form-btn btn btn-danger btn-xs print-buttons close_invoice_print" id="close_print"><i class="fa fa-close"></i> Close </button>
       

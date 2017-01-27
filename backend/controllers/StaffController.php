@@ -145,7 +145,7 @@ class StaffController extends Controller
                                 'errType' => 'alert alert-warning', 
                                 'msg' => 'You already enter an existing name, Please! Change the staff name.']);
             }
-
+            
             if( $model->save() ) {
                 $getStaff = Staff::find()->all();
 
@@ -189,7 +189,7 @@ class StaffController extends Controller
         $searchModel = new SearchStaff();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $getStaff = Staff::find()->all();
 
             return $this->render('index', [
@@ -200,14 +200,14 @@ class StaffController extends Controller
                         'errType' => 'alert alert-success', 
                         'msg' => 'Your record was successfully updated in the database.'
                     ]);
-
         } else {
-            return $this->render('update', [
-                        'model' => $model, 
-                        'errTypeHeader' => '', 
-                        'errType' => '', 
-                        'msg' => ''
-                    ]);
+
+        return $this->render('update', [
+                    'model' => $model, 
+                    'errTypeHeader' => '', 
+                    'errType' => '', 
+                    'msg' => ''
+                ]);
         }
     }
 

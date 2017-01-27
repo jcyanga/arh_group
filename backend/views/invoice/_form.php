@@ -80,7 +80,7 @@ $invoiceCodeValue = $invoiceCode;
 
                 <div class="col-md-8">
 
-                    <span class="invoiceLabel" ><i class="fa fa-calendar"></i> Date Issue </span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-calendar"></i> Date Issue </span>
 
                     <input type="text" name="Invoice[dateIssue]" id="expiry_date" class="form_iRInput form-control" readonly="readonly" placeholder="CHOOSE DATE HERE" />    
                 </div>
@@ -98,7 +98,7 @@ $invoiceCodeValue = $invoiceCode;
 
                 <div class="col-md-8">
                     
-                    <span class="invoiceLabel" ><i class="fa fa-globe"></i> Branch </span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-globe"></i> Branch </span>
 
                     <select name="Invoice[selectedBranch]" class="qSelect select3_single">
                         <option value="0">SEARCH BRANCH HERE.</option>
@@ -125,7 +125,7 @@ $invoiceCodeValue = $invoiceCode;
 
                 <div class="col-md-8">
                     
-                    <span class="invoiceLabel" ><i class="fa fa-users"></i> Customer Name</span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-users"></i> Customer Name</span>
                     
                     <select name="Invoice[selectedCustomer]" class="qSelect select3_single" >
                         <option value="0">SEARCH CUSTOMER HERE.</option>
@@ -152,7 +152,7 @@ $invoiceCodeValue = $invoiceCode;
 
                 <div class="col-md-8">
                     
-                    <span class="invoiceLabel" ><i class="fa fa-user"></i> Sales Person </span>
+                    <span class="invoiceLabel" ><?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <i class="fa fa-user"></i> Sales Person </span>
 
                     <select name="Invoice[selectedUser]" class="qSelect select3_single" >
                         <option value="0">SEARCH SALES PERSON HERE.</option>
@@ -211,7 +211,7 @@ $invoiceCodeValue = $invoiceCode;
 
         <div class="col-md-4">
 
-            <div class="invSPLabel"> <b><span><i class="fa fa-list"></i> Services & Parts </span></b> 
+            <div class="invSPLabel"> <?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <b><span><i class="fa fa-list"></i> Services & Parts </span></b> 
             </div>
 
             <select class="select2_group form-control" id="services_parts" onchange="invGetSellingPrice()" >
@@ -250,7 +250,7 @@ $invoiceCodeValue = $invoiceCode;
             
             <div class="col-md-3">
         
-                <div class="invSPLabel"> <b><span><i class="fa fa-database"></i> Quantity </span></b> </div>
+                <div class="invSPLabel"> <?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <b><span><i class="fa fa-database"></i> Quantity </span></b> </div>
     
                 <input type="text"  id="itemQty" onchange="invUpdateSubTotal()" class="quantity form_invSP form-control" placeholder="Qty" />
 
@@ -258,7 +258,7 @@ $invoiceCodeValue = $invoiceCode;
 
             <div class="col-md-3">
         
-                <div class="invSPLabel"> <b><span><i class="fa fa-usd"></i> Selling Price </span></b> </div>
+                <div class="invSPLabel"> <?php if($msg): ?><span style="color: red;">*</span><?php endif; ?> <b><span><i class="fa fa-usd"></i> Selling Price </span></b> </div>
            
                 <input type="text" id="itemPriceValue" onchange="invUpdateSubTotal()" class="unit_price form_invSP form-control" placeholder="0.00" />
 
@@ -316,11 +316,11 @@ $invoiceCodeValue = $invoiceCode;
         <br/>
 
     </div>   
-    <br/>
     
  </div>
 
 </div>
+<br/>
 
 <div class="row">
 

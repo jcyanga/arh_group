@@ -12,9 +12,9 @@ class SettingsController extends \yii\web\Controller
     {
     	$id = Yii::$app->user->identity->id;
 
-        return $this->render('index', [
-        					'model' => User::findOne($id),
-        				]);
+        // return $this->render('index', [
+        // 					'model' => User::findOne($id),
+        // 				]);
     }
 
     /**

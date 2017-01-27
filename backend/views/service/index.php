@@ -84,11 +84,11 @@ $this->title = 'Service Categories';
             <?php foreach( $getService as $row){ ?>
                 <tr class="even_odd pointer">
                     <td class=" "><?php echo $row['id'];  ?></td>
-                    <td class="tblalign_center" ><?php echo $row['name'];  ?></td>
-                    <td class="tblalign_center" ><?php echo $row['service_name'];  ?></td>
-                    <td class="tblalign_center" ><?php echo $row['description'];  ?></td>
-                    <td class="tblalign_center" ><?php echo $row['default_price'];  ?></td>
-                    <td class="last tblalign_center">
+                    <td class="tblalign_center" style="width: 15%;"><?php echo $row['name'];  ?></td>
+                    <td class="tblalign_center" style="width: 15%;"><?php echo $row['service_name'];  ?></td>
+                    <td class="tblalign_center" style="width: 50%;"><?php echo $row['description'];  ?></td>
+                    <td class="tblalign_center" style="width: 10%;"><?php echo $row['default_price'];  ?></td>
+                    <td class="last tblalign_center" style="width: 10%;">
                         <a href="?r=service/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a> |
                         <a href="?r=service/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-pencil-square"></li> </a> | 
                         <a href="?r=service/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a>

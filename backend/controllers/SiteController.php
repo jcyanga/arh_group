@@ -12,6 +12,7 @@ use common\models\SearchInventory;
 use common\models\ProductLevel;
 use common\models\SearchService;
 use common\models\SearchCustomer;
+use common\models\SearchPayment;
 
 /**
  * Site controller
@@ -70,7 +71,8 @@ class SiteController extends Controller
         $inventoryModel = new SearchInventory();
         $serviceModel = new SearchService();
         $customerModel = new SearchCustomer();
-        
+        $dailysalesModel = new SearchPayment();
+
         // customer list
         if( Yii::$app->request->post()) {
             $getCustomerInvoiceBySearch = $customerModel->getCustomerInvoiceBySearch(Yii::$app->request->post('customerSearchkeyword'));
@@ -98,6 +100,12 @@ class SiteController extends Controller
         $getWarningStock = $inventoryModel->getWarningStock($minimumLevel);
         $getTotalWarningStock = count($inventoryModel->getTotalWarningStock($minimumLevel));
 
+        // daily sales
+        $getTotalDailySales = $dailysalesModel->getTotalDailySales();
+        $getTotalDailyCashSales = $dailysalesModel->getTotalDailyCashSales();
+        $getTotalDailyCreditCardSales = $dailysalesModel->getTotalDailyCreditCardSales();
+        $getTotalDailyNetsSales = $dailysalesModel->getTotalDailyNetsSales();
+
         return $this->render('index', [
                         'getZeroStock' => $getZeroStock, 
                         'getTotalZeroStock' => $getTotalZeroStock,
@@ -108,6 +116,10 @@ class SiteController extends Controller
                         'pendingInvoiceServices' => $pendingInvoiceServices,
                         'getCustomerInvoiceBySearch' => $getCustomerInvoiceBySearch,
                         'keywordValue' => $keywordValue,
+                        'getTotalDailySales' => $getTotalDailySales['total'],
+                        'getTotalDailyCashSales' => $getTotalDailyCashSales['totalCashPayment'],
+                        'getTotalDailyCreditCardSales' => $getTotalDailyCreditCardSales['totalCrediCardPayment'],
+                        'getTotalDailyNetsSales' => $getTotalDailyNetsSales['totalNetsPayment'],
                     ]);
     }
 

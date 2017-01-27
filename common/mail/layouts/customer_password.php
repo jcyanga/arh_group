@@ -3,11 +3,11 @@
 <?php 
 use yii\helpers\ArrayHelper;
     
-use common\models\Part;
+use common\models\Product;
 use common\models\Service;
 
-$dataPart = ArrayHelper::map(Part::find()->all(), 'id', 'part_no');
-$dataService = ArrayHelper::map(Service::find()->all(), 'id', 'service_no');
+$dataPart = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
+$dataService = ArrayHelper::map(Service::find()->all(), 'id', 'service_name');
 
 ?>
 
