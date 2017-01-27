@@ -112,7 +112,7 @@ class StocksController extends Controller
 
     public function actionCreate() 
     {
-        if( !empty( Yii::$app->request->post('updateQty'))) {
+        if( Yii::$app->request->post('updateQty') <> "" ) {
             foreach( Yii::$app->request->post('updateQty') as $key => $value) {
                  $result = explode('|', $value);
 

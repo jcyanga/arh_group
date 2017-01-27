@@ -245,7 +245,7 @@ class UserPermissionController extends Controller
         $userRoleId = 0;
         $controllerNameChosen = '';
         $controllerNameLong = '';
-        $userRole = Role::find()->where('id > 1')->all();
+        $userRole = Role::find()->all();
         $permission = [];
 
         if ( isset( $_GET['c'] ) && !empty( $_GET['c'] ) && isset( $_GET['u'] ) && !empty( $_GET['u'] ) ) {

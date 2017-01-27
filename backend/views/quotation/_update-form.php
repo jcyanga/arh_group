@@ -48,7 +48,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
  <div class="col-md-12 col-sm-12 col-xs-12">
  
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-pencil"></i> Update Quotation</h4></span>
+        <span class="form-header"><h4><i class="fa fa-pencil"></i> Update Job-Sheet</h4></span>
     </div>
     <hr/>
 
@@ -75,7 +75,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
                     <div class="col-md-8">
 
-                        <span class="quotationLabel" ><i class="fa fa-barcode"></i> Quotation Code </span>
+                        <span class="quotationLabel" ><i class="fa fa-barcode"></i> Job-sheet Code </span>
 
                         <input type="text" name="Quotation[quotationCode]" value="<?= $model['quotation_code'] ?>" class="form_qRInput form-control" id="quotationCode" readonly="readonly" />
                     </div>
@@ -426,7 +426,7 @@ $quotationCode = 'QUO' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
     <div class="col-md-12">
         <div style="text-align: right;">        
-        <?= Html::submitButton('<li class=\'fa fa-save\'></li> Update Quotation' , ['class' =>'form-btn btn btn-dark btn-lg']) ?>
+        <?= Html::submitButton('<li class=\'fa fa-save\'></li> Update Job-Sheet' , ['class' =>'form-btn btn btn-dark btn-lg']) ?>
          </div>
     </div>
 

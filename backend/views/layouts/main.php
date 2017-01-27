@@ -28,9 +28,13 @@ $isCategory = false;
 $isProduct = false;
 $isSupplier = false;
 $isInventory = false;
-$isStocks = false;
+$isStaff = false;
+$isPayroll = false;
 $isQuotation = false;
 $isInvoice = false;
+$isBestSelling = false;
+$isMonthlySales = false;
+$isMonthlyStock = false;
 $isGst = false;
 $isProductLevel = false;
 
@@ -92,8 +96,12 @@ foreach ($getUserPermission as $key => $value) {
             $isInventory = true;
         break;
 
-        case 'Stocks':
-            $isStocks = true;
+        case 'Staff':
+            $isStaff = true;
+        break;
+
+        case 'Payroll':
+            $isPayroll = true;
         break;
 
         case 'Quotation':
@@ -104,7 +112,12 @@ foreach ($getUserPermission as $key => $value) {
             $isInvoice = true;
         break;
 
-        case 'Gst':
+        case 'Reports':
+            $isBestSelling = true;
+            $isMonthlySales = true;
+            $isMonthlyStock = true;
+
+        case 'Gst': 
             $isGst = true;
         break;
 
@@ -118,7 +131,6 @@ foreach ($getUserPermission as $key => $value) {
     }
 
 }
-
 
 $userFullname = Yii::$app->user->identity->fullname;
 
@@ -214,6 +226,12 @@ $userFullname = Yii::$app->user->identity->fullname;
                                     </ul>
                                 </li>
                                 <?php endif; ?>
+                                <?php if($isStaff): ?>
+                                <li><a href="?r=staff" id="nav-staff"  ><i class="fa fa-windows"></i> Staff </a></li>
+                                <?php endif; ?>
+                                <?php if($isPayroll): ?>
+                                <li><a href="?r=payroll" id="nav-payroll"  ><i class="fa fa-clipboard"></i> Payroll </a></li>
+                                <?php endif; ?>
                                 <?php if($isCustomer): ?>
                                 <li><a href="?r=customer" id="nav-customer"  ><i class="fa fa-users"></i> Customer </a></li>
                                 <?php endif; ?>
@@ -247,14 +265,11 @@ $userFullname = Yii::$app->user->identity->fullname;
                                     </ul>
                                 </li>
                                 <?php endif; ?>
-                                <?php if($isStocks): ?>
-                                <li><a href="?r=stocks" id="nav-services" ><i class="fa fa-database"></i> Stocks </a></li>
-                                <?php endif; ?>
                                 <?php if($isQuotation || $isInvoice): ?>
                                 <li><a><i class="fa fa-desktop"></i>Transactions <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
                                         <?php if($isQuotation): ?>
-                                        <li><a href="?r=quotation" id="nav-quotation" > Quotation</a></li>
+                                        <li><a href="?r=quotation" id="nav-quotation" > Job Sheet</a></li>
                                         <?php endif; ?>
                                         <?php if($isInvoice): ?>
                                         <li><a href="?r=invoice" id="nav-invoice" > Invoice</a></li>
@@ -262,13 +277,21 @@ $userFullname = Yii::$app->user->identity->fullname;
                                     </ul>
                                 </li>
                                 <?php endif; ?>
+                                <?php if($isBestSelling || $isMonthlySales || $isMonthlyStock): ?>
                                 <li><a id="nav-reports" ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
+                                        <?php if($isBestSelling): ?>
                                         <li><a href="?r=reports/best-selling-product-report">Best Selling Product</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isMonthlySales): ?>
                                         <li><a href="?r=reports/monthly-sales-report">Monthly Sales Report</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isMonthlyStock): ?>
                                         <li><a href="?r=reports/monthly-stock-report">Monthly Stocks Report</a></li>
+                                        <?php endif; ?>
                                     </ul>
                                 </li>
+                                <?php endif; ?>
                                 <?php if($isGst || $isProductLevel): ?>
                                 <li><a id="nav-reports" ><i class="fa fa-legal"></i> Utilities <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
@@ -287,22 +310,6 @@ $userFullname = Yii::$app->user->identity->fullname;
                     </div>
                     <!-- /sidebar menu -->
 
-                    <!-- /menu footer buttons -->
-                    <div class="sidebar-footer hidden-small">
-                        <a data-toggle="tooltip" data-placement="top" title="Settings">
-                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-                        </a>
-                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-                        </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Lock">
-                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-                        </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Logout">
-                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                        </a>
-                    </div>
-                    <!-- /menu footer buttons -->
                 </div>
             </div>
 
@@ -351,17 +358,6 @@ $userFullname = Yii::$app->user->identity->fullname;
 
                 </div>
                 <br/>
-
-                <!-- footer content -->
-                <footer>
-                    <div class="">
-                        <p class="pull-right">&copy; <?= date('Y') ?> Powered by <a>FirstCom Solutions</a>. |
-                            <span class="lead"> <i class="fa fa-car"></i> Arh Group Pte Ltd. </span>
-                        </p>
-                    </div>
-                    <div class="clearfix"></div>
-                </footer>
-                <!-- /footer content -->
 
             </div>
             <!-- /page content -->

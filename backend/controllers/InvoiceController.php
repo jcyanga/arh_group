@@ -8,6 +8,7 @@ use common\models\SearchInvoice;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use Dompdf\Dompdf;
 
 use common\models\Service;
 use common\models\Inventory;
@@ -102,7 +103,7 @@ class InvoiceController extends Controller
         $searchModel = new SearchInvoice();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         
-        if( !empty(Yii::$app->request->get('date_start')) && !empty(Yii::$app->request->get('date_end')) ) {
+        if( Yii::$app->request->get('date_start') <> "" && Yii::$app->request->get('date_end') <> "" ) {
             $getInvoice = $searchModel->getInvoiceByDateRange(Yii::$app->request->get('date_start'), Yii::$app->request->get('date_end'));
 
         } else {
@@ -391,15 +392,6 @@ class InvoiceController extends Controller
                         $getType = $getServicePart[0];
                         $getServicePartId = $getServicePart[1];
 
-                        if( $getType == 1 ) {
-                            $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
-                            $totalQty = $getPart->quantity - $value;
-
-                            Yii::$app->db->createCommand()
-                                ->update('inventory', ['quantity' => $totalQty ], "id = $getServicePartId" )
-                                ->execute();
-                        }
-
                         $invD->invoice_id = $id;
                         $invD->service_part_id = $getServicePartId;
                         $invD->quantity = $value;
@@ -412,6 +404,15 @@ class InvoiceController extends Controller
                         $invD->status = 0;
 
                         $invD->save();
+
+                        if( $getType == 1 ) {
+                            $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
+                            $totalQty = $getPart->quantity - $value;
+
+                            Yii::$app->db->createCommand()
+                                ->update('inventory', ['quantity' => $totalQty], "id = $getServicePartId" )
+                                ->execute();
+                        }
 
                     }
                  
@@ -682,8 +683,10 @@ class InvoiceController extends Controller
                     $invoice->paid_type = 1;
                     $invoice->save();
 
+                    $invoiceId = Yii::$app->request->post('Payment')['invoice_id'];
+
                     Yii::$app->db->createCommand()
-                        ->update('invoice_detail', ['status' => 1], "invoice_id = Yii::$app->request->post('Payment')['invoice_id']")
+                        ->update('invoice_detail', ['status' => 1], "invoice_id = $invoiceId")
                         ->execute();
 
                     $getPoints = Customer::find()->where(['id' => Yii::$app->request->post('Payment')['customer_id'] ])->one();
@@ -771,9 +774,11 @@ class InvoiceController extends Controller
                         $invoice->paid_type = 2;
                         $invoice->save();
 
+                        $mInvoiceId = Yii::$app->request->post('Payment')['mInvoice_id'];
+                    
                         Yii::$app->db->createCommand()
-                        ->update('invoice_detail', ['status' => 1], "invoice_id = Yii::$app->request->post('Payment')['mInvoice_id']")
-                        ->execute();
+                            ->update('invoice_detail', ['status' => 1], "invoice_id = $mInvoiceId")
+                            ->execute();
 
                      $getMultipleInvoice = $searchModel->getPaidMultipleInvoice($getId, Yii::$app->request->post('Payment')['mInvoice_id'], Yii::$app->request->post('Payment')['mInvoice_no'], Yii::$app->request->post('Payment')['mCustomer_id']);
 
@@ -826,7 +831,6 @@ class InvoiceController extends Controller
             'services' => $getServices,
             'parts' => $getParts
         ]);
-
     }
 
     public function actionPrintMultipleInvoice($id,$invoice_no) 
@@ -909,5 +913,162 @@ class InvoiceController extends Controller
         $objWriter->save('php://output');                
     }
 
+    public function actionCreateFromQuotation($id) 
+    {
+        $model = new Invoice();
+        $details = new InvoiceDetail();
+        $searchModel = new SearchInvoice();
 
+        $getInvoice = $searchModel->getProcessedInvoicebyId($id);
+        $getService = $searchModel->getProcessedServicesbyId($id);
+        $getPart = $searchModel->getProcessedPartsbyId($id);
+        $getLastId = $searchModel->getLastId($id);
+
+        $invoiceId = $this->_getInvoiceId();
+        $getBranchList = $searchModel->getBranch();
+        $getUserList = $searchModel->getUser();
+        $getCustomerList = $searchModel->getCustomer();
+        $getServicesList = $searchModel->getServicesList();
+        $getPartsList = $searchModel->getPartsList();
+
+        if ( $model->load(Yii::$app->request->post()) ) {
+            $getGst = Gst::find()->where(['branch_id' => Yii::$app->request->post('Invoice')['selectedBranch'] ])->one();
+
+            if( isset($getGst) ) {
+                $totalWithGst = ( Yii::$app->request->post('Invoice')['grand_total'] * $getGst->gst );
+            }else {
+                $totalWithGst = Yii::$app->request->post('Invoice')['grand_total'];
+            }
+
+            if( empty(Yii::$app->request->post('Quotation')['quotationCode']) ) {
+                $quotationCode = 0;
+            } else {
+                $quotationCode = Yii::$app->request->post('Quotation')['quotationCode'];
+            }
+
+            if( Yii::$app->request->post('Invoice')['dateIssue'] == "" || Yii::$app->request->post('Invoice')['selectedBranch'] == 0 || Yii::$app->request->post('Invoice')['selectedCustomer'] == 0 || Yii::$app->request->post('Invoice')['selectedUser'] == 0 || Yii::$app->request->post('Invoice')['remarks'] == "" ) {
+                    
+                    return $this->render('_update-form', [
+                                                'model' => $model,
+                                                'invoiceId' => $invoiceId,
+                                                'getBranchList' => $getBranchList,
+                                                'getUserList' => $getUserList,
+                                                'getCustomerList' => $getCustomerList,
+                                                'getServicesList' => $getServicesList,
+                                                'getPartsList' => $getPartsList, 
+                                                'errTypeHeader' => 'Error!', 
+                                                'errType' => 'alert alert-error', 
+                                                'msg' => 'Fill-up all the fields in the form.'
+                                            ]);
+            }
+
+            $findModel = Invoice::findOne($id);
+
+            $findModel->invoice_no = Yii::$app->request->post('Invoice')['invoice_no'];
+            $findModel->quotation_code = $quotationCode;
+            $findModel->user_id = Yii::$app->request->post('Invoice')['selectedUser'];
+            $findModel->customer_id = Yii::$app->request->post('Invoice')['selectedCustomer'];
+            $findModel->branch_id = Yii::$app->request->post('Invoice')['selectedBranch'];
+            $findModel->date_issue = Yii::$app->request->post('Invoice')['dateIssue'];
+            $findModel->grand_total = $totalWithGst;
+            $findModel->remarks = Yii::$app->request->post('Invoice')['remarks'];
+            $findModel->updated_at = date("Y-m-d");
+            $findModel->updated_by = Yii::$app->user->identity->id;
+            $findModel->delete = 0;
+            $findModel->task = 0;
+            $findModel->paid = 0;
+            $findModel->paid_type = 0;
+            $findModel->status = 0;
+
+            if ( $findModel->save() ) {
+
+                if( $details->load(Yii::$app->request->post()) ) {   
+                    $getQty = InvoiceDetail::find()->where(['invoice_id' => $id])->andWhere('type = 1')->all();
+                    
+                    foreach( $getQty as $idInfo ) {
+                        $getPartInventoryQty = Inventory::find()->where(['id' => $idInfo['service_part_id'] ])->all();
+                        
+                        foreach( $getPartInventoryQty as $pInfo ) {
+                            $totalPartQty = $pInfo['quantity'] + $idInfo['quantity'];
+                            
+                            $findPartModel = Inventory::findOne($idInfo['service_part_id']);
+                            $findPartModel->quantity = $totalPartQty;
+                            $findPartModel->save();
+                        }
+                    }
+
+                    Yii::$app->db->createCommand()
+                    ->delete('invoice_detail', "invoice_id = $id" )
+                    ->execute();
+                    
+                    if( empty(Yii::$app->request->post('InvoiceDetail')['task']) ) {
+                        $task = 0;
+                    } else {
+                        $task = Yii::$app->request->post('InvoiceDetail')['task'];
+                    }
+
+                    foreach ( Yii::$app->request->post('InvoiceDetail')['quantity'] as $key => $value) {
+                        $invD = new InvoiceDetail();
+
+                        $getServicePart = explode('-', Yii::$app->request->post('InvoiceDetail')['service_part_id'][$key]);
+                        $getType = $getServicePart[0];
+                        $getServicePartId = $getServicePart[1];
+                        
+                        $invD->invoice_id = $id;
+                        $invD->service_part_id = $getServicePartId;
+                        $invD->quantity = $value;
+                        $invD->selling_price = Yii::$app->request->post('InvoiceDetail')['selling_price'][$key];
+                        $invD->subTotal = Yii::$app->request->post('InvoiceDetail')['subTotal'][$key];
+                        $invD->created_at = date("Y-m-d");
+                        $invD->created_by = Yii::$app->user->identity->id;
+                        $invD->type = $getType;
+                        $invD->task = 0;
+                        $invD->status = 0;
+
+                        $invD->save();
+
+                        if( $getType == 1 ) {
+                            $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
+                            $totalQty = $getPart->quantity - $value;
+                            
+                            Yii::$app->db->createCommand()
+                                ->update('inventory', ['quantity' => $totalQty ], "id = $getServicePartId" )
+                                ->execute();
+                        }
+                    }
+                 
+                 if( !empty(Yii::$app->request->post('InvoiceDetail')['task']) ) {
+                     foreach( Yii::$app->request->post('InvoiceDetail')['task'] as $key => $tValue ) {
+                        $qdTask = InvoiceDetail::find()->where(['invoice_id' => $id])->andWhere(['service_part_id' => $tValue])->andWhere('type = 0')->one();
+                        $qdTask->task = 1;
+                        $qdTask->save();
+
+                     }
+                 }
+
+                 return $this->redirect(['view', 'id' => $id]);
+                }
+            }
+
+        } else {
+
+            return $this->render('_create-from-quotation', [
+                                    'model' => $getInvoice, 
+                                    'getService' => $getService,
+                                    'getPart' => $getPart,
+                                    'getLastId' => $getLastId,
+                                    'invoiceId' => $invoiceId,
+                                    'getBranchList' => $getBranchList,
+                                    'getUserList' => $getUserList,
+                                    'getCustomerList' => $getCustomerList,
+                                    'getServicesList' => $getServicesList,
+                                    'getPartsList' => $getPartsList, 
+                                    'errTypeHeader' => '', 
+                                    'errType' => '', 
+                                    'msg' => ''
+                                ]);
+
+        }
+
+    }
 }

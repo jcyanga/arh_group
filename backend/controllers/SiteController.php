@@ -18,6 +18,7 @@ use common\models\SearchCustomer;
  */
 class SiteController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -64,25 +65,26 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex($customerSearchkeyword = '')
+    public function actionIndex()
     {
         $inventoryModel = new SearchInventory();
         $serviceModel = new SearchService();
         $customerModel = new SearchCustomer();
         
         // customer list
-        if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
-            $getCustomerQuotationBySearch = $customerModel->getCustomerQuotationBySearch(Yii::$app->request->get('customerSearchkeyword'));
-            $getCustomerInvoiceBySearch = $customerModel->getCustomerInvoiceBySearch(Yii::$app->request->get('customerSearchkeyword'));
+        if( Yii::$app->request->post()) {
+            $getCustomerQuotationBySearch = $customerModel->getCustomerQuotationBySearch(Yii::$app->request->post('customerSearchkeyword'));
+            $getCustomerInvoiceBySearch = $customerModel->getCustomerInvoiceBySearch(Yii::$app->request->post('customerSearchkeyword'));
+            $keywordValue = Yii::$app->request->post('customerSearchkeyword');
 
         }else{
             $getCustomerQuotationBySearch = '';
             $getCustomerInvoiceBySearch = '';
+            $keywordValue = '';
 
         }
 
         // pending services dashboard
-        $pendingQuotationServices = $serviceModel->getPendingServices();
         $pendingInvoiceServices = $serviceModel->getPendingInvoiceServices();
 
         // products dashboard
@@ -105,10 +107,10 @@ class SiteController extends Controller
                         'getTotalCriticalStock' => $getTotalCriticalStock,
                         'getWarningStock' => $getWarningStock, 
                         'getTotalWarningStock' => $getTotalWarningStock,
-                        'pendingQuotationServices' => $pendingQuotationServices, 
                         'pendingInvoiceServices' => $pendingInvoiceServices,
                         'getCustomerQuotationBySearch' => $getCustomerQuotationBySearch,
                         'getCustomerInvoiceBySearch' => $getCustomerInvoiceBySearch,
+                        'keywordValue' => $keywordValue,
                     ]);
     }
 
@@ -145,4 +147,15 @@ class SiteController extends Controller
 
         return $this->goHome();
     }
+
+    public function actionAutoComplete()
+    {
+        $serviceModel = new SearchService();
+
+        // pending services dashboard
+        $pendingInvoiceServices = $serviceModel->getPendingInvoiceServices();
+
+        return json_encode($pendingInvoiceServices);
+    }
+
 }

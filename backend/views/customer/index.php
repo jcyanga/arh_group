@@ -52,11 +52,11 @@ $this->title = 'Customers';
         </a>
 
         <a href="?r=customer/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-excel-o"></i> <b> Export to Excel </b>
+            <i class="fa fa-file-excel-o"></i> <b> Print to Excel </b>
         </a>
 
         <a href="?r=customer/export-pdf" id="option-list-link" onclick="return pdfPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-pdf-o"></i> <b> Export to PDF </b>
+            <i class="fa fa-file-pdf-o"></i> <b> Print to PDF </b>
         </a>
     </p>
 </div>
@@ -70,13 +70,13 @@ $this->title = 'Customers';
     <thead>
         <tr class="headings">
             <th class="tblalign_center" >
-                <i class="fa fa-envelope-o"></i>
+                <!-- <i class="fa fa-envelope-o"></i> -->
             </th>
             <th class="tblalign_center" > FULLNAME </th>
             <th class="tblalign_center" > PHONE NUMBER </th>
             <th class="tblalign_center" > CAR-PLATE </th>
+            <th class="tblalign_center" > MEMBER ? </th>
             <th class="tblalign_center" > MEMBER EXPIRY </th>
-            <th class="tblalign_center" > REWARD POINTS </th>
             <th class="no-link last tblalign_center"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
@@ -87,19 +87,18 @@ $this->title = 'Customers';
             <?php foreach( $getCustomer as $row){ ?>
                 <tr class="even_odd pointer">
                     <td class="a-center tblalign_center">
-                        <input type="checkbox" class="chkUser form-control" value="<?php echo $row['id']; ?>">
+                        <!-- <input type="checkbox" class="chkUser form-control" value="<?php echo $row['id']; ?>"> -->
                     </td>
                     <td class="tblalign_center" ><?php echo $row['fullname'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['hanphone_no'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['carplate'];  ?></td>
+                    <td class="tblalign_center" ><?php echo ( $row['is_member'] == 1 )? 'Yes' : 'No'; ?></td>
                     <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($row['member_expiry']));  ?></td>
-                    <td class="tblalign_center" ><?php echo $row['points']; ?></td>
                     <td class="last tblalign_center">
                         <a href="?r=customer/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a> |
                         <a href="?r=customer/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-pencil-square"></li> </a> | 
                         <a href="?r=customer/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a> |
-                         <a href="?r=customer/service-history&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Service History" ><li class="fa fa-history"></li> </a> |
-                         <a href="?r=customer/points-redemption&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Points Redemption" ><li class="fa fa-laptop"></li> </a> 
+                         <a href="?r=customer/points-redemption-history&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Points Redemption History" ><li class="fa fa-laptop"></li> </a> 
                     </td>
                 </tr>
             <?php } ?> 

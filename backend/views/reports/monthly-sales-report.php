@@ -9,16 +9,6 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel common\models\SearchCustomer */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-if( !empty(Yii::$app->request->get('date_start')) || !empty(Yii::$app->request->get('date_end')) ) {
-    $date_start = Yii::$app->request->get('date_start');
-    $date_end = Yii::$app->request->get('date_end');
-
-}else{
-    $date_start = '';
-    $date_end = '';
-
-}
-
 $this->title = 'Monthly Sales Report';
 
 ?>
@@ -37,7 +27,7 @@ $this->title = 'Monthly Sales Report';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-search-container">    
-      <?php echo $this->render('_search-monthly-sales'); ?>
+      <?php echo $this->render('_search-monthly-sales',['date_start' => $date_start, 'date_end' => $date_end]); ?>
     </div> 
     
 </div>

@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -20,6 +20,7 @@ $dataRole = ArrayHelper::map(Role::find()->where('id > 1')->all(), 'id', 'role')
             <span class="search-label"><li class="fa fa-edit"></li> Enter Keyword here</span>
         </div> 
     </div>
+
     <br/><br/>
     
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
@@ -37,10 +38,11 @@ $dataRole = ArrayHelper::map(Role::find()->where('id > 1')->all(), 'id', 'role')
     </div>
 
     <div class="col-md-3">
-        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
-        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
-    </div>
-    
+        <div style="margin-left: -10px;">
+            <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
+        </div>
+    </div>  
+
     <?php ActiveForm::end(); ?>
     <br/><br/>
 

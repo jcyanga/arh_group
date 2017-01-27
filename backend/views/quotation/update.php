@@ -26,7 +26,7 @@ $this->title = 'Create Quotation';
  <div class="col-md-12 col-sm-12 col-xs-12">
  
     <div class="form-title-container">
-        <span style="color: #666;" class="form-header"><h4><i class="fa fa-pencil"></i> Create Quotation</h4></span>
+        <span class="form-header"><h4><i class="fa fa-pencil"></i> Update Job-Sheet</h4></span>
     </div>
     <hr/>
 

@@ -25,7 +25,7 @@ $dataServiceCategory = ArrayHelper::map(ServiceCategory::find()->all(), 'id', 'n
     
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         <?= $form->field($model, 'service_category_id')->dropDownList($dataServiceCategory,['class' => 'form_input form-control'])->label(false) ?>
     </div>
 
@@ -33,9 +33,10 @@ $dataServiceCategory = ArrayHelper::map(ServiceCategory::find()->all(), 'id', 'n
         <?= $form->field($model, 'service_name')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Write Service Name here.'])->label(false) ?>
     </div>
 
-    <div class="col-md-3">
-        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
-        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
+    <div class="col-md-4">
+        <div style="margin-left: -10px;">
+            <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
+        </div>
     </div>
     
     <?php ActiveForm::end(); ?>

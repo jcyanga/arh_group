@@ -33,10 +33,8 @@ $this->title = 'View Quotation';
     <div class="x_panel quotationViewContainer">
 
         <div class="x_title">
-            <h2> Quotation Details.</h2>
-            <ul class="nav navbar-right panel_toolbox">
-                <li><a class="collapse-link pull-right"><i class="fa fa-chevron-up"></i></a></li>
-            </ul>
+            <h2> Job-Sheet Details.</h2>
+            <ul class="nav navbar-right panel_toolbox"></ul>
             <div class="clearfix"></div>
         </div>
 
@@ -176,18 +174,14 @@ $this->title = 'View Quotation';
         <hr/>
         <div class="row no-print">
             <div class="col-xs-12">
-                
+
                 <?php if( $customerInfo['invoice'] <> 1 ): ?>
-                <a href="?r=quotation/update&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-info"><i class="fa fa-edit"></i> Update Quotation</button></a>
+                    <a href="?r=quotation/update&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-default pull-right"><i class="fa fa-edit"></i> Update Quotation</button></a>
                 <?php endif; ?>
-                
-                <a href="?r=quotation/delete-column&id=<?= $customerInfo['id'] ?>" onclick="return deleteConfirmation()"><button class="form-btn btn btn-danger"><i class="fa fa-trash"></i> Delete Quotation</button></a>
-                
-                <a href="?r=quotation/preview&id=<?php echo $customerInfo['id']; ?>"><button class="form-btn btn btn-default pull-right" ><i class="fa fa-print"></i> Generate Quotation</button></a>
-                
-                <?php if( $customerInfo['invoice'] <> 1 ): ?>
-                <a href="?r=quotation/insert-invoice&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-success pull-right"><i class="fa fa-credit-card"></i> Generate Invoice</button></a>
-                <?php endif; ?>
+
+                <a href="?r=quotation/insert-invoice&id=<?= $customerInfo['id'] ?>"><button class="form-btn btn btn-default pull-right"><i class="fa fa-credit-card"></i> Generate Invoice</button></a>
+
+                <a href="?r=quotation/preview&id=<?php echo $customerInfo['id']; ?>"><button class="form-btn btn btn-default pull-right" ><i class="fa fa-print"></i> Print Job-Sheet</button></a>
 
             </div>
         </div>

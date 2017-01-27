@@ -8,16 +8,6 @@ use yii\helpers\Url;
 /* @var $model common\models\SearchCustomer */
 /* @var $form yii\widgets\ActiveForm */
 
-if( !empty(Yii::$app->request->get('date_start')) || !empty(Yii::$app->request->get('date_end')) ) {
-    $date_start = Yii::$app->request->get('date_start');
-    $date_end = Yii::$app->request->get('date_end');
-
-}else{
-    $date_start = '';
-    $date_end = '';
-
-}
-
 ?>
 
  <div class="row">
@@ -40,8 +30,9 @@ if( !empty(Yii::$app->request->get('date_start')) || !empty(Yii::$app->request->
     </div>
 
     <div class="col-md-3">
-        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
-        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
+        <div style="margin-left: -10px;">
+            <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
+        </div>
     </div>
 
     <div class="col-md-3"></div>

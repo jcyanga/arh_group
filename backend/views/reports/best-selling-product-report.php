@@ -9,16 +9,6 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel common\models\SearchCustomer */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-if( !empty(Yii::$app->request->get('date_start')) || !empty(Yii::$app->request->get('date_end')) ) {
-    $date_start = Yii::$app->request->get('date_start');
-    $date_end = Yii::$app->request->get('date_end');
-
-}else{
-    $date_start = '';
-    $date_end = '';
-
-}
-
 $this->title = 'Monthly Stock Report';
 
 ?>
@@ -28,7 +18,7 @@ $this->title = 'Monthly Stock Report';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-bar-chart"></i> MONTHLY STOCK REPORT</h4></span>
+        <span class="form-header"><h4><i class="fa fa-bar-chart"></i> BEST SELLING PRODUCT REPORT</h4></span>
     </div>
     <hr/>
 
@@ -37,7 +27,7 @@ $this->title = 'Monthly Stock Report';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-search-container">    
-      <?php echo $this->render('_search-monthly-stock'); ?>
+      <?php echo $this->render('_search-best-selling-product',['date_start' => $date_start, 'date_end' => $date_end]); ?>
     </div> 
     
 </div>
@@ -50,12 +40,12 @@ $this->title = 'Monthly Stock Report';
         
         <thead>
             <tr class="headings">
-                <th class="tblalign_center" ><b>SUPPLIER NAME</b></th>
-                <th class="tblalign_center" ><b>PRODUCT NAME</b></th>
+                <th class="tblalign_center" ><b>INVOICE NUMBER</b></th>
+                <th class="tblalign_center" ><b>CATEGORY</b></th>
+                <th class="tblalign_center" ><b>SERVICE NAME / PRODUCT NAME</b></th>
                 <th class="tblalign_center" ><b>QUANTITY</b></th>
-                <th class="tblalign_center" ><b>COST PRICE</b></th>
                 <th class="tblalign_center" ><b>SELLING PRICE</b></th>
-                <th class="tblalign_center" ><b>DATE IMPORTED</b></th>
+                <th class="tblalign_center" ><b>TOTAL SOLD AMOUNT</b></th>
             </tr>
         </thead>
         <tbody>
@@ -67,7 +57,7 @@ $this->title = 'Monthly Stock Report';
                         <td class="tblalign_center" ><b><?php echo $srow['service_name'];  ?></b></td>
                         <td class="tblalign_center" ><b><?php echo $srow['quantity'];  ?></b></td>
                         <td  class="tblalign_center" ><?php echo '$'.$srow['selling_price'].'.00';  ?></td>
-                        <td  class="tblalign_center" ><?php echo '$'.$srow['subTotal'].'.00';  ?></td>
+                        <td  class="tblalign_center" ><b><?php echo '$'.$srow['subTotal'].'.00';  ?></b></td>
                     </tr>
                 <?php } ?> 
 
@@ -78,7 +68,7 @@ $this->title = 'Monthly Stock Report';
                         <td class="tblalign_center" ><b><?php echo $row['product_name'];  ?></b></td>
                         <td class="tblalign_center" ><b><?php echo $row['quantity'];  ?></b></td>
                         <td  class="tblalign_center" ><?php echo '$'.$row['selling_price'].'.00';  ?></td>
-                        <td  class="tblalign_center" ><?php echo '$'.$row['subTotal'].'.00';  ?></td>
+                        <td  class="tblalign_center" ><b><?php echo '$'.$row['subTotal'].'.00';  ?></b></td>
                     </tr>
                 <?php } ?> 
 
@@ -103,7 +93,7 @@ $this->title = 'Monthly Stock Report';
 
 <div class="btnreportsAlign" >
     <p>
-        <?php $form = ActiveForm::begin(['action' => '?r=reports/print-monthly-stock-report-excel', 'method' => 'post']); ?>
+        <?php $form = ActiveForm::begin(['action' => '?r=reports/print-best-selling-product-report-excel', 'method' => 'post']); ?>
             <input type="hidden" id="date_start" value="<?= $date_start ?>" name="dateStart" />
             <input type="hidden" id="date_end" value="<?= $date_end ?>" name="dateEnd" />
          <button type="submit" class="form-btn btn btn-dark btn-lg" onclick="return excelPrintConfirmation()" >

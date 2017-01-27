@@ -37,6 +37,17 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'request' => [
+            'baseUrl' => 'site',
+        ],
+        // 'urlManager' => [
+        //     'enablePrettyUrl' => true,
+        //     'showScriptName' => false,
+        //     'rules' => [
+        //         '' => 'site/index',                                
+        //         '<controller:\w+>/<action:\w+>/' => '<controller>/<action>',
+        //     ],
+        // ],
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

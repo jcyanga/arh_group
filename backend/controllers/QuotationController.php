@@ -19,6 +19,8 @@ use common\models\Invoice;
 use common\models\InvoiceDetail;
 use common\models\ProductLevel;
 use common\models\SearchInvoice;
+use common\models\Customer;
+use common\models\SearchCustomer;
 
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
@@ -104,7 +106,7 @@ class QuotationController extends Controller
         $searchModel = new SearchQuotation();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( !empty(Yii::$app->request->get('date_start')) && !empty(Yii::$app->request->get('date_end')) ) {
+        if( Yii::$app->request->get('date_start') <> "" && Yii::$app->request->get('date_end') <> "" ) {
             $getQuotation = $searchModel->getQuotationByDateRange(Yii::$app->request->get('date_start'), Yii::$app->request->get('date_end'));
 
         } else {
@@ -140,7 +142,10 @@ class QuotationController extends Controller
                         'model' => $this->findModel($id),
                         'customerInfo' => $getQuotation,
                         'services' => $getProcessedServices,
-                        'parts' => $getProcessedParts
+                        'parts' => $getProcessedParts, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
                     ]);
     }
 
@@ -220,14 +225,14 @@ class QuotationController extends Controller
                         $getType = $getServicePart[0];
                         $getServicePartId = $getServicePart[1];
 
-                        if( $getType == 1 ) {
-                            $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
-                            $totalQty = $getPart->quantity - $value;
+                        // if( $getType == 1 ) {
+                        //     $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
+                        //     $totalQty = $getPart->quantity - $value;
                             
-                            $invQty = Inventory::findOne($getServicePartId);
-                            $invQty->quantity = $totalQty;
-                            $invQty->save();        
-                        }
+                        //     $invQty = Inventory::findOne($getServicePartId);
+                        //     $invQty->quantity = $totalQty;
+                        //     $invQty->save();        
+                        // }
 
                         $quoD->quotation_id = $quotationId;
                         $quoD->service_part_id = $getServicePartId;
@@ -251,7 +256,9 @@ class QuotationController extends Controller
                         }
                     }
                  
-                 return $this->redirect(['view', 'id' => $model->id]);
+                 return $this->redirect(['view', 
+                                    'id' => $model->id, 
+                                 ]);
                 }
             }
             
@@ -403,14 +410,14 @@ class QuotationController extends Controller
                         $getType = $getServicePart[0];
                         $getServicePartId = $getServicePart[1];
 
-                        if( $getType == 1 ) {
-                            $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
-                            $totalQty = $getPart->quantity - $value;
+                        // if( $getType == 1 ) {
+                        //     $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
+                        //     $totalQty = $getPart->quantity - $value;
 
-                            $invQty = Inventory::findOne($getServicePartId);
-                            $invQty->quantity = $totalQty;
-                            $invQty->save();
-                        }
+                        //     $invQty = Inventory::findOne($getServicePartId);
+                        //     $invQty->quantity = $totalQty;
+                        //     $invQty->save();
+                        // }
 
                         $quoD->quotation_id = $id;
                         $quoD->service_part_id = $getServicePartId;
@@ -434,7 +441,9 @@ class QuotationController extends Controller
                         }
                     }
                  
-                 return $this->redirect(['view', 'id' => $id]);
+                 return $this->redirect(['view', 
+                                        'id' => $id,
+                                    ]);
                 }
             }
 
@@ -695,29 +704,187 @@ class QuotationController extends Controller
 
             $getQuotation = $searchModel->getQuotation();
 
-            return $this->render('index', [
-                                'searchModel' => $searchModel, 
-                                'getQuotation' => $getQuotation,
-                                'dataProvider' => $dataProvider, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Invoice for the Quotation was successfully generated.'
-                            ]);
+            return $this->redirect(['invoice/create-from-quotation', 'id' => $invoiceId ]);
 
         }else{
 
-            $getQuotation = $searchModel->getQuotation();
-
-            return $this->render('index', [
-                            'searchModel' => $searchModel, 
-                            'getQuotation' => $getQuotation,
-                            'dataProvider' => $dataProvider, 
-                            'errTypeHeader' => 'Error!', 
-                            'errType' => 'alert alert-error', 
-                            'msg' => 'Invoice for the Quotation was already generated.'
-                        ]);
+            return $this->redirect(['invoice/create-from-quotation', 'id' => $getInvoice->id ]);
         }  
 
+    }
+
+    public function actionCreateCustomer() 
+    {
+        $model = new Customer();
+        $searchModel = new SearchCustomer();
+
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $getCustomer = Customer::find()->all();
+
+        if ($model->load(Yii::$app->request->post())) {
+            $result = $searchModel->getNameAndEmail(Yii::$app->request->post('Customer') ['fullname'], Yii::$app->request->post('Customer') ['email']);
+
+            if( $result == 1 ) {        
+                return $this->render('_create-customer', [
+                                'model' => $model, 
+                                'getCustomer' => $getCustomer, 
+                                'errTypeHeader' => 'Warning!', 
+                                'errType' => 'alert alert-warning', 
+                                'msg' => 'You already enter an existing customer account, Please! Change customer fullname or e-mail.'
+                            ]);
+            }
+        
+            if( $model->save() ) {
+
+                return $this->redirect(['create-quotation', 'id' => $model->id ]);
+
+            }else {
+
+                return $this->render('_create-customer', [
+                                'model' => $model, 
+                                'getCustomer' => $getCustomer, 
+                                'errTypeHeader' => 'Error!', 
+                                'errType' => 'alert alert-error', 
+                                'msg' => 'You have an error Check All the required fields.'
+                            ]);
+            }
+
+        } else {
+
+            return $this->render('_create-customer', [
+                            'model' => $model, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
+        }
+    }
+
+    public function actionCreateQuotation($id) 
+    {
+        $model = new Quotation();
+        $details = new QuotationDetail();
+        $searchModel = new SearchQuotation();
+
+        $quotationId = $this->_getQuotationId();
+        $getBranchList = $searchModel->getBranch();
+        $getUserList = $searchModel->getUser();
+        $getCustomerList = $searchModel->getCustomer();
+        $getServicesList = $searchModel->getServicesList();
+        $getPartsList = $searchModel->getPartsList();
+
+        if ( $model->load(Yii::$app->request->post()) ) {
+            $getGst = Gst::find()->where(['branch_id' => Yii::$app->request->post('Quotation')['selectedBranch'] ])->one();
+
+            if( isset($getGst) ) {
+                $totalWithGst = ( Yii::$app->request->post('Quotation')['grand_total'] * $getGst->gst);
+            } else {
+                $totalWithGst = Yii::$app->request->post('Quotation')['grand_total'];
+            }
+
+                if( Yii::$app->request->post('Quotation')['dateIssue'] == "" || Yii::$app->request->post('Quotation')['selectedBranch'] == 0 ||  Yii::$app->request->post('Quotation')['selectedUser'] == 0 || Yii::$app->request->post('Quotation')['remarks'] == "" ) {
+                        
+                        return $this->render('_quotation-form', [
+                                            'model' => $model,
+                                            'customer_id' => $id,
+                                            'quotationId' => $quotationId,
+                                            'getBranchList' => $getBranchList,
+                                            'getUserList' => $getUserList,
+                                            'getCustomerList' => $getCustomerList,
+                                            'getServicesList' => $getServicesList,
+                                            'getPartsList' => $getPartsList, 
+                                            'errTypeHeader' => 'Error!', 
+                                            'errType' => 'alert alert-error', 
+                                            'msg' => 'Fill-up all the fields in the form.'
+                                        ]);
+                }
+
+                $model->quotation_code = Yii::$app->request->post('Quotation')['quotationCode'];
+                $model->user_id = Yii::$app->request->post('Quotation')['selectedUser'];
+                $model->customer_id = $id;
+                $model->branch_id = Yii::$app->request->post('Quotation')['selectedBranch'];
+                $model->date_issue = Yii::$app->request->post('Quotation')['dateIssue'];
+                $model->grand_total = $totalWithGst;
+                $model->remarks = Yii::$app->request->post('Quotation')['remarks'];
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->created_at = date("Y-m-d");
+                $model->updated_by = Yii::$app->user->identity->id;
+                $model->updated_at = date("Y-m-d");
+                $model->delete = 0;
+                $model->task = 0;
+                $model->invoice = 0;
+
+            if ( $model->save() ) {  
+                $quotationId = $model->id;
+
+                if( $details->load(Yii::$app->request->post()) ) {
+                    
+                    if( empty(Yii::$app->request->post('QuotationDetail')['task']) ) {
+                        $task = 0;
+                    } else {
+                        $task = Yii::$app->request->post('QuotationDetail')['task'];
+                    }
+
+                    foreach ( Yii::$app->request->post('QuotationDetail')['quantity'] as $key => $value ) {
+                        $quoD = new QuotationDetail();
+
+                        $getServicePart = explode('-', Yii::$app->request->post('QuotationDetail')['service_part_id'][$key]);
+                        $getType = $getServicePart[0];
+                        $getServicePartId = $getServicePart[1];
+
+                        // if( $getType == 1 ) {
+                        //     $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
+                        //     $totalQty = $getPart->quantity - $value;
+                            
+                        //     $invQty = Inventory::findOne($getServicePartId);
+                        //     $invQty->quantity = $totalQty;
+                        //     $invQty->save();        
+                        // }
+
+                        $quoD->quotation_id = $quotationId;
+                        $quoD->service_part_id = $getServicePartId;
+                        $quoD->quantity = $value;
+                        $quoD->selling_price = Yii::$app->request->post('QuotationDetail')['selling_price'][$key];
+                        $quoD->subTotal = Yii::$app->request->post('QuotationDetail')['subTotal'][$key];
+                        $quoD->created_at = date("Y-m-d");
+                        $quoD->created_by = Yii::$app->user->identity->id;
+                        $quoD->type = $getType; 
+                        $quoD->task = 0;
+                        $quoD->invoice = 0;
+
+                        $quoD->save();
+                    }
+
+                    if( !empty(Yii::$app->request->post('QuotationDetail')['task']) ) {
+                        foreach( Yii::$app->request->post('QuotationDetail')['task'] as $key => $tValue ) {
+                            $qdTask = QuotationDetail::find()->where(['quotation_id' => $quotationId])->andWhere(['service_part_id' => $tValue])->andWhere('type = 0')->one();
+                            $qdTask->task = 1;
+                            $qdTask->save();
+                        }
+                    }
+                 
+                 return $this->redirect(['view', 
+                                    'id' => $model->id, 
+                                 ]);
+                }
+            }
+            
+        } else {
+
+            return $this->render('_quotation-form', [
+                                'model' => $model,
+                                'customer_id' => $id,
+                                'quotationId' => $quotationId,
+                                'getBranchList' => $getBranchList,
+                                'getUserList' => $getUserList,
+                                'getCustomerList' => $getCustomerList,
+                                'getServicesList' => $getServicesList,
+                                'getPartsList' => $getPartsList, 
+                                'errTypeHeader' => 'Success!', 
+                                'errType' => 'alert alert-success', 
+                                'msg' => 'Customer successfully created, Create Quotation now.'
+                            ]);
+        }
     }
 
     public function actionExportExcel() 
@@ -775,36 +942,12 @@ class QuotationController extends Controller
                 }
                         
         header('Content-Type: application/vnd.ms-excel');
-        $filename = "QuotationList-".date("m-d-Y").".xls";
+        $filename = "JobSheetList-".date("m-d-Y").".xls";
         header('Content-Disposition: attachment;filename='.$filename);
         header('Cache-Control: max-age=0');
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
         $objWriter->save('php://output');                
 
-    }
-
-    public function actionExportPdf($id) 
-    {
-        $model = new Quotation();
-
-        $getProcessedQuotation = $model->getProcessedQuotation($id); 
-        $getProcessedServices = $model->getProcessedServices($id); 
-        $getProcessedParts = $model->getProcessedParts($id);
-
-        $content = $this->renderPartial('_print-pdf', [
-                'model' => $this->findModel($id),
-                'customerInfo' => $getProcessedQuotation,
-                'services' => $getProcessedServices,
-                'parts' => $getProcessedParts
-        ]);
-
-        $dompdf = new Dompdf();
-
-        $dompdf->loadHtml($content);  
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
-
-        $dompdf->stream('Quotation-' . date('m-d-Y'));
     }
 
 }

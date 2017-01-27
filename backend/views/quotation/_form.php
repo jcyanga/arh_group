@@ -37,7 +37,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
  <div class="col-md-12 col-sm-12 col-xs-12">
  
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-pencil"></i> Create Quotation</h4></span>
+        <span class="form-header"><h4><i class="fa fa-pencil"></i> Create Job-Sheet</h4></span>
     </div>
     <hr/>
 
@@ -64,7 +64,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
 
                     <div class="col-md-8">
 
-                        <span class="quotationLabel" ><i class="fa fa-barcode"></i> Quotation Code </span>
+                        <span class="quotationLabel" ><i class="fa fa-barcode"></i> Job-sheet Code </span>
 
                         <input type="text" name="Quotation[quotationCode]" value="<?php echo $quotationCodeValue; ?>" class="form_qRInput form-control" id="quotationCode" readonly="readonly" />
                     </div>
@@ -320,7 +320,7 @@ $quotationCodeValue = $quotationCode . $quotationId;
 
     <div class="col-md-12">
         <div style="text-align: right;">        
-        <?= Html::submitButton('<li class=\'fa fa-save\'></li> Submit Quotation' , ['class' =>'form-btn btn btn-dark btn-lg']) ?>
+        <?= Html::submitButton('<li class=\'fa fa-save\'></li> Submit Job-Sheet' , ['class' =>'form-btn btn btn-dark btn-lg']) ?>
          </div>
     </div>
 

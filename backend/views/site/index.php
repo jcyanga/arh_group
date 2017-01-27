@@ -7,19 +7,15 @@ use yii\widgets\ActiveForm;
 
 $this->title = 'My Yii Application';
 
-if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
-    $keywordValue = Yii::$app->request->get('customerSearchkeyword');
-
-}else{
-    $keywordValue = '';
-
-}
+$roleId = Yii::$app->user->identity->role_id;
 
 ?>
 
 
 <div style="margin-top: 50px;">
-    
+
+<?php if( $roleId == 1 || $roleId == 2 ): ?>
+<!-- Search Customer -->
 <div class="row">
 
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -37,7 +33,7 @@ if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
 
             <div class="x_content">
                 
-                <?php $form = ActiveForm::begin(['action' => '?', 'method' => 'get']); ?>
+                <?php $form = ActiveForm::begin(['action' => '?', 'method' => 'post']); ?>
                     <div style="width: 50%;" class="input-group">
                         <input type="text" name="customerSearchkeyword" id="customerSearchBox" class="form-control" value="<?= $keywordValue ?>" placeholder="Enter keyword here." />
                         <span class="input-group-btn">
@@ -91,7 +87,7 @@ if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
                     <div>
                         <span class="pendingNoRecordDashboard"> - No Search Found. <span>
                     </div>
-                
+                    <br/>
                 <?php endif; ?>
 
             </div>
@@ -102,66 +98,9 @@ if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
 
 </div>
 <br/>
+<?php endif; ?>
 
-<!-- Pending Quotation -->
-<div class="row">
-
-    <div class="col-md-12 col-sm-12 col-xs-12">
-        
-        <div class="dashboard_graph x_panel">
-            
-            <div class="row x_title">
-                <div class="col-md-6">
-                    <h4>
-                        <i class="fa fa-map-marker"></i> Pending Quotation Services 
-                        <small class="searchCustomerLabel">(Non-Invoice with Pending Services)</small>
-                    </h4>
-                </div>
-            </div>
-
-            <?php if( !empty($pendingQuotationServices) ): ?>
-                
-                <table class="table table-boardered table-striped pendingTable">
-                    <thead>
-                        <tr class="headings">
-                            <td class="tblalign_center" ><b> DATE ISSUE </b></td>
-                            <td class="tblalign_center" ><b> QUOTATION CODE </b></td>
-                            <td class="tblalign_center" ><b> CUSTOMER NAME </b></td>
-                            <td class="tblalign_center" ><b> SERVICE NAME </b></td>
-                            <td class="tblalign_center" ><b> QUANTITY </b></td>
-                            <td class="tblalign_center" ><b> SELLING PRICE </b></td>
-                            <td class="tblalign_center" ><b> CHECK QUOTATION </b></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach( $pendingQuotationServices as $qRow): ?>
-                            <tr>
-                                <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($qRow['date_issue']) ); ?></td>
-                                <td class="tblalign_center" ><b><?php echo $qRow['quotation_code']; ?></b></td>
-                                <td class="tblalign_center" ><?php echo $qRow['fullname']; ?></td>
-                                <td class="tblalign_center" ><b><?php echo $qRow['service_name']; ?></b></td>
-                                <td class="tblalign_center" ><?php echo $qRow['quantity']; ?></td>
-                                <td class="tblalign_center" ><?php echo '$'.$qRow['selling_price'].'.00'; ?></td>
-                                <td class="tblalign_center" ><a href="?r=quotation/view&id=<?php echo $qRow['quotationId']; ?>" > <i class="fa fa-search"></i> </a></td>
-                            </tr>
-                        <?php endforeach; ?>     
-                    </tbody>
-                </table>
-            
-            <?php else: ?>
-                <div>
-                    <span class="pendingNoRecordDashboard"> - No Record Found. <span>
-                </div>
-            
-            <?php endif; ?>
-
-        </div>
-
-    </div>
-
-</div>
-<br/>
-
+<?php if( $roleId == 1 || $roleId == 2 ): ?>
 <!-- Pending Invoice -->
 <div class="row">
 
@@ -172,7 +111,7 @@ if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
             <div class="row x_title">
                 <div class="col-md-6">
                     <h4>
-                        <i class="fa fa-map-marker"></i> Pending Invoice Services 
+                        <i class="fa fa-map-marker"></i> Pending Services in Customer
                         <small class="searchCustomerLabel">(Pending Services with Invoice)</small>
                     </h4>
                 </div>
@@ -211,7 +150,7 @@ if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
                 <div>
                     <span class="pendingNoRecordDashboard"> - No Record Found. <span>
                 </div>
-            
+                <br/>
             <?php endif; ?>
 
         </div>
@@ -220,7 +159,9 @@ if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
 
 </div>
 <br/>
+<?php endif; ?>
 
+<?php if( $roleId == 1 || $roleId == 2 || $roleId == 3 ): ?>
 <div class="row">
 
     <!-- Warning Stock -->
@@ -263,7 +204,7 @@ if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
                                     <div class="block_content">
                                         <h2 class="title">
                                             <a class="partsNoRecordDashboard">
-                                                No Record Found.
+                                                - No Record Found.
                                             </a>
                                         </h2>
                                     </div>
@@ -319,7 +260,7 @@ if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
                                     <div class="block_content">
                                         <h2 class="title">
                                             <a class="partsNoRecordDashboard">
-                                                No Record Found.
+                                                - No Record Found.
                                             </a>
                                         </h2>
                                     </div>
@@ -375,7 +316,7 @@ if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
                                     <div class="block_content">
                                         <h2 class="title">
                                             <a class="partsNoRecordDashboard">
-                                                No Record Found.
+                                                - No Record Found.
                                             </a>
                                         </h2>
                                     </div>
@@ -393,6 +334,9 @@ if( !empty(Yii::$app->request->get('customerSearchkeyword'))) {
     <br/>
 
 </div>
+<?php endif; ?>
+
+<input id="coding_language" />
 
 </div>
 

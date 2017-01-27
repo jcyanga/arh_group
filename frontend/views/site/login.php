@@ -10,30 +10,72 @@ use yii\bootstrap\ActiveForm;
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to login:</p>
+<?php $this->beginPage() ?>
 
-    <div class="row">
-        <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+<!DOCTYPE html>
 
-                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ARH Group Pte Ltd.</title>
 
-                <?= $form->field($model, 'password')->passwordInput() ?>
+        <!-- CSS -->
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="assets/bootstrap/fonts/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="assets/bootstrap/css/animate.min.css" />
+        <link rel="stylesheet" href="assets/bootstrap/css/custom.css" />
+        <link rel="stylesheet" href="assets/bootstrap/css/icheck/flat/green.css" />
+        <link rel="stylesheet" href="assets/bootstrap/css/styles.css" />
 
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
+</head>
 
-                <div style="color:#999;margin:1em 0">
-                    If you forgot your password you can <?= Html::a('reset it', ['site/request-password-reset']) ?>.
-                </div>
+    <body class="body">
+         <div class="">
+        <a class="hiddenanchor" id="toregister"></a>
+        <a class="hiddenanchor" id="tologin"></a>
 
-                <div class="form-group">
-                    <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                </div>
+        <div id="wrapper">
+            <div id="login" class="login-container animate form">
+                <section class="login_content">
+                    <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+                        <h1>Customer Login</h1>
+                        <div>
+                            <?= $form->field($model, 'username')->textInput(['autofocus' => true, 'class' => 'form-username form-control', 'id' => 'form-username', 'placeholder' => 'Username...'])->label(false) ?>
+                        </div>
+                        <div>
+                            <?= $form->field($model, 'password')->passwordInput(['autofocus' => true, 'class' => 'form-password form-control', 'id' => 'form-password', 'placeholder' => 'Password...'])->label(false) ?>
+                        </div>
+                        <div>
+                            <?= Html::submitButton('<i class=\'fa fa-sign-in\'></i> Sign-in', ['class' => 'btn btn-info', 'name' => 'login-button']) ?>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="separator">
 
-            <?php ActiveForm::end(); ?>
+                             <div class="clearfix"></div>
+                            <br />
+                            <div>
+                                <h1><i class="fa fa-car" style="font-size: 26px;"></i> ARH Group Pte Ltd. </h1>
+
+                                <p> © <?php echo date('Y'); ?> All Rights Reserved. </p>
+                            </div>
+                        </div>
+                    <?php ActiveForm::end() ?>
+                    <!-- form -->
+                </section>
+                <!-- content -->
+            </div>
         </div>
     </div>
-</div>
+
+
+            <!-- Javascript -->
+            <script src="assets/bootstrap/js/jquery.min.js"></script>
+            
+    </body>
+   
+</html>
+
+<?php $this->endPage() ?>

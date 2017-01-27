@@ -36,11 +36,15 @@ $this->title = 'Quotation';
 
     <p>
         <a href="?r=quotation/create" id="option-list-link" class="btn btn-app">
-            <i class="fa fa-desktop"></i> <b> New Quotation </b>
+            <i class="fa fa-desktop"></i> <b> New Job-Sheet </b>
+        </a>
+
+        <a href="?r=quotation/create-customer" id="option-list-link" class="btn btn-app">
+            <i class="fa fa-users"></i> <b> New Customer </b>
         </a>
 
         <a href="?r=quotation/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-excel-o"></i> <b> Export to Excel </b>
+            <i class="fa fa-file-excel-o"></i> <b> Print to Excel </b>
         </a>
     </p>
 </div>
@@ -59,7 +63,7 @@ $this->title = 'Quotation';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-desktop"></i> QUOTATION</h4></span>
+        <span class="form-header"><h4><i class="fa fa-desktop"></i> JOB SHEET</h4></span>
     </div>
     <hr/>
 
@@ -94,9 +98,6 @@ $this->title = 'Quotation';
                     <td class="tblalign_center" ><?php echo $row['fullname'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['salesPerson'];  ?></td>
                     <td class="last tblalign_center">
-                       <?php if( $row['invoice'] == 1 ): ?>
-                        <a href="?r=quotation/preview&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Print Quotation" ><li class="fa fa-print"></li> </a> |
-                       <?php endif; ?>
                        <a href="?r=quotation/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a>
                        <?php if( $row['invoice'] <> 1 ): ?>
                         | <a href="?r=quotation/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-edit"></li> </a> 

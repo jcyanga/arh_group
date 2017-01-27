@@ -114,7 +114,7 @@ $userId = Yii::$app->user->identity->id;
     
     <div class="col-md-3">
         <label  class="form_label">MEMBER EXPIRY</label>
-        <?= $form->field($model, 'member_expiry')->textInput(['class' => 'form_input form-control', 'readonly' => 'readonly', 'id' => 'expiry_date', 'placeholder' => 'YYYY-MM-DD'])->label(false) ?>
+        <?= $form->field($model, 'member_expiry')->textInput(['class' => 'form_input form-control', 'readonly' => 'readonly', 'id' => 'expiry_date', 'placeholder' => 'MM-DD-YYYY'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
