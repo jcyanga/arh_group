@@ -20,10 +20,9 @@ $this->title = 'Update Customer ';
     <?php } ?>
 </div>
     
- <div class="col-md-12 col-sm-12 col-xs-12">
-
+<div class="col-md-12 col-sm-12 col-xs-12">
     <div class="form-title-container">
-        <span class="form-header"><h4>Update Customer</h4></span>
+        <span class="form-header"><h4><i class="fa fa-users"></i> Edit Customer</h4></span>
     </div>      
     <hr/>
 
@@ -31,10 +30,8 @@ $this->title = 'Update Customer ';
     <br/><br/>
 
     <div class="form-crud-container">
-        <?= $this->render('_form', ['model' => $model,]) ?>
+        <?= $this->render('_update-form', ['model' => $model, 'carModel' => $carModel, 'result' => $result, 'carResult' => $carResult, 'lastId' => $lastId ]) ?>
     </div>   
- 
- </div>
+</div>
 
 </div>
-<br/>

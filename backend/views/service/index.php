@@ -87,7 +87,7 @@ $this->title = 'Service Categories';
                     <td class="tblalign_center" style="width: 15%;"><?php echo $row['name'];  ?></td>
                     <td class="tblalign_center" style="width: 15%;"><?php echo $row['service_name'];  ?></td>
                     <td class="tblalign_center" style="width: 50%;"><?php echo $row['description'];  ?></td>
-                    <td class="tblalign_center" style="width: 10%;"><?php echo $row['default_price'];  ?></td>
+                    <td class="tblalign_center" style="width: 10%;">$ <?php echo number_format($row['default_price'],2);  ?></td>
                     <td class="last tblalign_center" style="width: 10%;">
                         <a href="?r=service/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a> |
                         <a href="?r=service/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-pencil-square"></li> </a> | 
@@ -114,9 +114,6 @@ $this->title = 'Service Categories';
 <div style="color:#fff">|<br/>|<br/>|<br/></div>
 
 </div>
-
-<br/>
-
 
 
 

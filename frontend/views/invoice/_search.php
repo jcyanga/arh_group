@@ -10,13 +10,13 @@ use yii\helpers\Url;
 ?>
 
  <div class="row">
-
+ <br/>
     <div class="col-md-12">
         <div class="search-label-container">
             <span class="search-label"><li class="fa fa-calendar-o"></li> Enter Date-range here</span>
         </div> 
     </div>
-    <br/><br/>
+    <br/>
     
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 

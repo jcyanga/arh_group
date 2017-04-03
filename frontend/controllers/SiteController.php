@@ -80,14 +80,16 @@ class SiteController extends Controller
 
         $session = Yii::$app->session;
 
-        $getPendInvoiceServices = $searchModel->getPendingInvoiceServicesByCustomer($session->get('id'));
-        $getPendQuotationServices = $searchModel->getPendingQuotationServicesByCustomer($session->get('id'));
-        
-        $this->view->params['getInvoiceNotification'] = $invoiceModel->getInvoiceForNotification($session->get('id'));
+        $getPendingInvoiceServices = $searchModel->getPendingInvoiceServicesByCustomer($session->get('id'));
+        $getPendingQuotationServices = $searchModel->getPendingQuotationServicesByCustomer($session->get('id'));
+
+        $getInvoiceNotification = $invoiceModel->getInvoiceForNotification($session->get('id'));
+
+        $session->set('getInvoiceNotification', $getInvoiceNotification); 
 
         return $this->render('index', [
-                        'getPendInvoiceServices' => $getPendInvoiceServices,
-                        'getPendQuotationServices' => $getPendQuotationServices,
+                        'getPendingInvoiceServices' => $getPendingInvoiceServices,
+                        'getPendingQuotationServices' => $getPendingQuotationServices,
                     ]);
     }
 
@@ -110,7 +112,7 @@ class SiteController extends Controller
 
                     $session->set('id', $getCustomerInfo['id']);
                     $session->set('fullname', $getCustomerInfo['fullname']);
-                    $session->set('carplate', $getCustomerInfo['carplate']);
+                    // $session->set('carplate', $getCustomerInfo['carplate']);
 
                 $session->close();
             }
@@ -130,9 +132,15 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
+        $session = Yii::$app->session;
+        if($session->isActive){
+            $session->destroy();
+            Yii::$app->cache->flush();
+            
+            Yii::$app->user->logout();
 
-        return $this->goHome();
+            return $this->goHome();
+        }
     }
 
     /**

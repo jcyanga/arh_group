@@ -47,23 +47,63 @@ $carPlate = $session->get('carplate');
     <link rel="stylesheet" href="assets/bootstrap/css/switchery/switchery.min.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/datatables/tools/css/dataTables.tableTools.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/dashboard-styles.css" />
+
+    <!-- favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="images/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="images/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    
+    <style>
+        .bodyHeaderBackground {
+            background: url('images/dashboard/background.png') no-repeat center center fixed; 
+              -webkit-background-size: cover;
+              -moz-background-size: cover;
+              -o-background-size: cover;
+              background-size: cover;
+        }
+
+        #bodyContentBackground {
+            background: url('images/dashboard/background.png') no-repeat center center fixed; 
+              -webkit-background-size: cover;
+              -moz-background-size: cover;
+              -o-background-size: cover;
+              background-size: cover;
+        }
+    </style>
+
 </head>
 
 <body class="nav-md">
 
     <div class="container body">
 
-
         <div class="main_container">
 
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
 
-                    <div class="navbar nav_title" style="border: 0;">
-                        <a href="?" class="site_title"><i class="fa fa-car"></i> <span> Arh Group Pte Ltd. </span></a>
+                    <div class="navbar nav_title" >
+                        <a href="?" class="site_title" >
+                            <div style="text-align: center;">
+                                <span class="fa fa-car" id="logoContainer"></span>
+                            </div>
+                        </a>
                     </div>
                     <div class="clearfix"></div>
-
 
                     <!-- menu prile quick info -->
                     <div class="profile">
@@ -76,7 +116,6 @@ $carPlate = $session->get('carplate');
                         </div>
                     </div>
                     <!-- /menu prile quick info -->
-
                     <br />
 
                     <!-- sidebar menu -->
@@ -102,7 +141,7 @@ $carPlate = $session->get('carplate');
             <!-- top navigation -->
             <div class="top_nav">
 
-                <div class="nav_menu">
+                <div class="nav_menu bodyHeaderBackground">
                     <nav class="" role="navigation">
                         <div class="nav toggle">
                             <a id="menu_toggle"><i class="fa fa-bars"></i></a>
@@ -115,51 +154,15 @@ $carPlate = $session->get('carplate');
                                     <span class=" fa fa-angle-down"></span> </b>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
-                                    <li><a href="#">
+                                    <!-- <li><a href="?r=settings">
                                             <span><center id="top-nav"><b><i class="fa fa-wrench"></i> Settings</center></b></span>
                                         </a>
-                                    </li>
-                                    <li><?php
-                                        echo Html::beginForm(['/site/logout'], 'post',['id' => 'logout-form']) . '<a href="#" onclick="document.getElementById(\'logout-form\').submit(); return false;" class="form-btn btn btn-link btn-flat" style="color: #5A738E; "><i class="fa fa-power-off"></i> Sign out</a>'. Html::endForm();
+                                    </li> -->
+                                    <li>
+                                      <?php
+                                        echo Html::beginForm(['/site/logout'], 'post',['id' => 'logout-form']) . '<a href="#" onclick="document.getElementById(\'logout-form\').submit(); return false;" class="form-btn btn btn-link btn-flat" style="color: #5A738E; border-top: solid 1px #5A738E;"><i class="fa fa-power-off"></i> Sign out</a>'. Html::endForm();
                                       ?>
                                     </li>
-                                </ul>
-                            </li>
-
-                            <li role="presentation" class="dropdown">
-                                <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-bell"></i><span class="badge bg-red"><?= count($this->params['getInvoiceNotification']) ?></span>
-                                </a>
-
-                                <ul id="menu1" class="dropdown-menu list-unstyled msg_list animated fadeInDown" role="menu">
-                                    
-                                    <?php if( !empty($this->params['getInvoiceNotification']) ): ?>
-                                        
-                                        <?php foreach($this->params['getInvoiceNotification'] as $nRow): ?>  
-                                        <li>
-                                            <a>
-                                                <span class="image">
-                                            <img src="assets/bootstrap/images/user.png" alt="Profile Image" />
-                                            </span>
-                                                <span>
-                                                    <span><?php echo $nRow['salesPerson']; ?></span><span class="time"><?php echo date('m-d-Y', strtotime($nRow['date_issue'])); ?></span>
-                                                </span>
-                                                <span class="message"> The services and parts quotation was created. The Invoice no. is "<?php echo $nRow['invoice_no']; ?>". </span>
-                                            </a>
-                                        </li>
-                                        <?php endforeach; ?>
-
-                                        <li>
-                                            <div class="text-center">
-                                                <a href=""><strong>See All Alerts</strong> <i class="fa fa-chevron-circle-right"></i></a>
-                                            </div>
-                                        </li>
-
-                                    <?php else: ?>
-                                        <li><a>0 Record found.</a></li>
-
-                                    <?php endif; ?>
-
                                 </ul>
                             </li>
 
@@ -171,16 +174,27 @@ $carPlate = $session->get('carplate');
             <!-- /top navigation -->
 
             <!-- page content -->
-            <div class="right_col" role="main">
+            <div id="bodyContentBackground" class="right_col" role="main">
                 <div class="">     
                 <br/ >
 
-                    <div>
+                    <div >
                         <?= $content ?>
                     </div>
 
                 </div>
-                <br/>
+                <br/><br/>
+
+                <!-- footer content -->
+                <footer>
+                    <div class="">
+                        <p class="pull-right">Powered by <a>FirsCom Solutions.</a>. |
+                            <span class="lead"> <i class="fa fa-car"></i> ARH GROUP</span>
+                        </p>
+                    </div>
+                    <div class="clearfix"></div>
+                </footer>
+                <!-- /footer content -->
 
             </div>
             <!-- /page content -->

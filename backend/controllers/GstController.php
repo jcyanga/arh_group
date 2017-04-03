@@ -19,6 +19,7 @@ use common\models\UserPermission;
  */
 class GstController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -134,49 +135,35 @@ class GstController extends Controller
     public function actionCreate()
     {
         $model = new Gst();
-        $searchModel = new SearchGst();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->searchExistGst(Yii::$app->request->post('Gst') ['branch_id']);
+        return $this->render('create', [
+                        'model' => $model, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
+                    ]);
+    }
 
-            if( $result == 1 ) {
-                return $this->render('create', [
-                                        'model' => $model, 
-                                        'errTypeHeader' => 'Warning!', 
-                                        'errType' => 'alert alert-warning', 
-                                        'msg' => 'You already enter an existing branch name, Please! Choose other branch name.'
-                                    ]);
+    public function actionNew()
+    {
+        $model = new Gst();  
+
+        if ( Yii::$app->request->post() ) {   
+
+            $model->gst = Yii::$app->request->post('gst');
+            $model->branch_id = Yii::$app->request->post('branchId');
+            $model->created_at = date('Y-m-d H:i:s');
+                $model->created_by = Yii::$app->user->identity->id;
+                $model->status = 1;
+
+            if($model->validate()) {
+                $model->save();
+                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
             }
-
-            if( $model->save() ) {
-                $getGst = $searchModel->getGsts();
-
-                return $this->render('index', [
-                                        'searchModel' => $searchModel, 
-                                        'getGst' => $getGst,
-                                        'dataProvider' => $dataProvider, 
-                                        'errTypeHeader' => 'Success!', 
-                                        'errType' => 'alert alert-success', 
-                                        'msg' => 'Your record was successfully added in the database.'
-                                    ]);
-
-            }else {
-                return $this->render('create', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => 'Error!', 
-                                    'errType' => 'alert alert-error', 
-                                    'msg' => 'You have an error Check All the required fields.'
-                                ]);
-            }
-        
-        } else {
-            return $this->render('create', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => '', 
-                                    'errType' => '', 
-                                    'msg' => ''
-                                ]);
         }
     }
 
@@ -218,17 +205,12 @@ class GstController extends Controller
         $searchModel = new SearchGst();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->findModel($id)->delete();
-        $getGst = $searchModel->getGsts();
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save();
 
-        return $this->render('index', [
-                            'searchModel' => $searchModel, 
-                            'getGst' => $getGst,
-                            'dataProvider' => $dataProvider, 
-                            'errTypeHeader' => 'Success!', 
-                            'errType' => 'alert alert-success', 
-                            'msg' => 'Your record was successfully deleted in the database.'
-                        ]);
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
 
     /**

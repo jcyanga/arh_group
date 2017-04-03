@@ -31,8 +31,6 @@ $this->title = 'Update Item in Stocks';
  </div>
 
 </div>
-<br/>
-
 
 
 

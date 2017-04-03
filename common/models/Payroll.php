@@ -8,26 +8,26 @@ use Yii;
  * This is the model class for table "payroll".
  *
  * @property integer $id
+ * @property string $payslip_no
+ * @property string $payslip_cutoff
+ * @property string $date_issue
  * @property integer $staff_id
- * @property string $ic_no
- * @property string $pay_date
- * @property double $basic
- * @property integer $overtime_hours
- * @property double $rate_per_hour
- * @property double $commission
- * @property double $allowance
- * @property double $employees_cpf
- * @property double $employers_cpf
- * @property double $sinda
- * @property double $advance_loan
- * @property double $income_tax
- * @property double $reimbursement
+ * @property string $overtime_hour
+ * @property double $overtime_rate_per_hour
+ * @property double $overtime_pay
+ * @property double $employee_cpf
+ * @property double $employer_cpf
+ * @property double $cash_advance
+ * @property double $other_deductions
+ * @property double $monthly_levy_charge
+ * @property string $remarks
  * @property string $prepared_by
  * @property string $approved_by
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
+ * @property integer $status
  */
 class Payroll extends \yii\db\ActiveRecord
 {
@@ -45,11 +45,13 @@ class Payroll extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['staff_id', 'ic_no', 'pay_date', 'basic', 'overtime_hours', 'rate_per_hour', 'commission', 'allowance', 'employees_cpf', 'employers_cpf', 'sinda', 'advance_loan', 'income_tax', 'reimbursement', 'prepared_by', 'approved_by', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'required'],
-            [['staff_id', 'overtime_hours', 'created_by', 'updated_by'], 'integer'],
-            [['pay_date', 'created_at', 'updated_at'], 'safe'],
-            [['basic', 'rate_per_hour', 'commission', 'allowance', 'employees_cpf', 'employers_cpf', 'sinda', 'advance_loan', 'income_tax', 'reimbursement'], 'number'],
-            [['ic_no', 'prepared_by', 'approved_by'], 'string', 'max' => 50],
+            [['payslip_cutoff', 'date_issue', 'staff_id', 'overtime_hour', 'overtime_rate_per_hour', 'overtime_pay', 'cash_advance', 'other_deductions'], 'required', 'message' => 'Fill-up required fields.'],
+            [['payslip_no', 'payslip_cutoff', 'date_issue', 'prepared_by', 'approved_by', 'created_at', 'created_by', 'updated_at', 'updated_by', 'status', 'remarks', 'monthly_levy_charge', 'employee_cpf', 'employer_cpf'], 'safe'],
+            [['staff_id', 'created_by', 'updated_by', 'status'], 'integer'],
+            [['overtime_rate_per_hour', 'overtime_pay', 'cash_advance' ], 'number'],
+            [['remarks'], 'string'],
+            [['payslip_no', 'prepared_by', 'approved_by'], 'string', 'max' => 50],
+            [['overtime_hour'], 'string', 'max' => 25],
         ];
     }
 
@@ -60,26 +62,26 @@ class Payroll extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'staff_id' => 'Staff',
-            'ic_no' => 'Ic No',
-            'pay_date' => 'Pay Date',
-            'basic' => 'Basic',
-            'overtime_hours' => 'Overtime Hours',
-            'rate_per_hour' => 'Rate Per Hour',
-            'commission' => 'Commission',
-            'allowance' => 'Allowance',
-            'employees_cpf' => 'Employees Cpf',
-            'employers_cpf' => 'Employers Cpf',
-            'sinda' => 'Sinda',
-            'advance_loan' => 'Advance Loan',
-            'income_tax' => 'Income Tax',
-            'reimbursement' => 'Reimbursement',
+            'payslip_no' => 'Payslip No',
+            'payslip_cutoff' => 'Payslip Cutoff',
+            'date_issue' => 'Date Issue',
+            'staff_id' => 'Staff ID',
+            'overtime_hour' => 'Overtime Hour',
+            'overtime_rate_per_hour' => 'Overtime Rate Per Hour',
+            'overtime_pay' => 'Overtime Pay',
+            'employee_cpf' => 'Employee Cpf',
+            'employer_cpf' => 'Employer Cpf',
+            'cash_advance' => 'Cash Advance',
+            'other_deductions' => 'Other Deductions',
+            'monthly_levy_charge' => 'Monthly Levy Charge',
+            'remarks' => 'Remarks',
             'prepared_by' => 'Prepared By',
             'approved_by' => 'Approved By',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',
+            'status' => 'Status',
         ];
     }
 }

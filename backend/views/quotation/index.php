@@ -52,18 +52,17 @@ $this->title = 'Quotation';
 <div class="row table-container">
 
 <div>
-    <?php if($msg <> ''){ ?>
-        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-            <?php echo $msg; ?>
+    <?php if(Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert alert-success alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+            <h5 class="alert-heading"><i class="fa fa-info-circle"></i> <?= Yii::$app->session->getFlash('success'); ?></h5>
         </div>
-    <?php } ?>
+    <?php endif; ?>
 </div>
 
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-desktop"></i> Job Sheet</h4></span>
+        <span class="form-header"><h4><i class="fa fa-qrcode"></i> Job Sheet</h4></span>
     </div>
     <hr/>
 
@@ -71,7 +70,9 @@ $this->title = 'Quotation';
       <?php echo $this->render('_search', [
                             'model' => $searchModel, 
                             'date_start' => $date_start, 
-                            'date_end' => $date_end
+                            'date_end' => $date_end,
+                            'customerName' => $customerName,
+                            'vehicleNumber' => $vehicleNumber,
                         ]); ?>
     </div> 
     
@@ -84,9 +85,8 @@ $this->title = 'Quotation';
         <tr sclass="headings">
             <th class="tblalign_center" ><b>DATE ISSUE</b></th>
             <th class="tblalign_center" ><b>BRANCH</b></th>
+            <th class="tblalign_center" ><b>JOBSHEET NO.</b></th>
             <th class="tblalign_center" ><b>CUSTOMER NAME</b></th>
-            <th class="tblalign_center" ><b>VEHICLE NUMBER</b></th>
-            <th class="tblalign_center" ><b>SALES PERSON</b></th>
             <th class="no-link last tblalign_center"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
@@ -99,13 +99,12 @@ $this->title = 'Quotation';
                 <tr class="even_odd pointer">
                     <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($row['date_issue']) );  ?></td>
                     <td class="tblalign_center" ><?php echo $row['name'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['quotation_code'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['fullname'];  ?></td>
-                    <td class="tblalign_center" ><?php echo $row['carplate'];  ?></td>
-                    <td class="tblalign_center" ><?php echo $row['salesPerson'];  ?></td>
                     <td class="last tblalign_center">
                        <a href="?r=quotation/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a>
-                       <?php if( $row['invoice'] <> 1 ): ?>
-                        | <a href="?r=quotation/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-edit"></li> </a> 
+                       <?php if( $row['invoice'] == 0 ): ?>
+                        | <a href="?r=quotation/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Edit Record" ><li class="fa fa-edit"></li> </a> 
                        <?php endif; ?>
                         | <a href="?r=quotation/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a>
                     </td>
@@ -114,7 +113,6 @@ $this->title = 'Quotation';
         <?php else: ?>
             <tr>
                 <td><span>No Record Found.</span></td>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

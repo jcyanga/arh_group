@@ -76,6 +76,7 @@ class SearchCategory extends Category
         $result = $rows->select(['*'])
                     ->from('category')
                     ->where(['like', 'category', $category])
+                    ->andWhere(['status' => 1])
                     ->all();
 
         return $result;  
@@ -89,6 +90,7 @@ class SearchCategory extends Category
        $result = $rows->select(['category'])
         ->from('category')
         ->where(['category' => $category])
+        ->andWhere(['status' => 1])
         ->all();
         
         if( count($result) > 0 ) {

@@ -19,6 +19,7 @@ use common\models\UserPermission;
  */
 class StaffController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -98,7 +99,7 @@ class StaffController extends Controller
             $getStaff = $searchModel->searchFullName(Yii::$app->request->get('SearchBranch')['fullname']);
         
         }else {
-            $getStaff = Staff::find()->all();
+            $getStaff = Staff::find()->where(['status' => 1])->all();
 
         }
 
@@ -119,8 +120,11 @@ class StaffController extends Controller
      */
     public function actionView($id)
     {
+        $model = new SearchStaff();
+        $result = $model->getStaffListById($id);
+        
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $result,
         ]);
     }
 
@@ -133,47 +137,56 @@ class StaffController extends Controller
     {
         $model = new Staff();
         $searchModel = new SearchStaff();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->getStaff(Yii::$app->request->post('Staff') ['fullname']);
+        $getStaffId = $searchModel->getStaffId();
 
-            if( $result == 1 ) {
-                return $this->render('create', [
-                                'model' => $model, 
-                                'errTypeHeader' => 'Warning!', 
-                                'errType' => 'alert alert-warning', 
-                                'msg' => 'You already enter an existing name, Please! Change the staff name.']);
-            }
-            
-            if( $model->save() ) {
-                $getStaff = Staff::find()->all();
-
-                return $this->render('index', [
-                                'searchModel' => $searchModel, 
-                                'getStaff' => $getStaff,
-                                'dataProvider' => $dataProvider, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Your record was successfully added in the database.'
-                            ]);
-
-            } else {
-                return $this->render('create', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => 'Error!', 
-                                    'errType' => 'alert alert-error', 
-                                    'msg' => 'You have an error, Check All the required fields.'
-                                ]);
-            }
-
-        } else {
-            return $this->render('create', [
+        return $this->render('create', [
                         'model' => $model, 
+                        'getStaffId' => $getStaffId,
                         'errTypeHeader' => '', 
                         'errType' => '', 
-                        'msg' => '']
-                        );
+                        'msg' => ''
+                     ]);
+    }
+
+    public function actionNew()
+    {
+        $model = new Staff();  
+
+        if ( Yii::$app->request->post() ) {   
+
+            $levy_supplement = (Yii::$app->request->post('levy_supplement') <> '')? Yii::$app->request->post('levy_supplement') : 0;
+
+            $model->staff_group_id = Yii::$app->request->post('staff_group');
+            $model->designated_position_id = Yii::$app->request->post('position');
+            $model->staff_code = Yii::$app->request->post('code');
+            $model->fullname = Yii::$app->request->post('fullname');
+            $model->address = Yii::$app->request->post('address');
+            $model->race_id = Yii::$app->request->post('race');
+            $model->citizenship = Yii::$app->request->post('citizenship');
+            $model->gender = Yii::$app->request->post('gender');
+            $model->email = Yii::$app->request->post('email');
+            $model->contact_number = Yii::$app->request->post('contact_no');
+            $model->ic_no = Yii::$app->request->post('nric');
+            $model->rate_per_hour = Yii::$app->request->post('rate');
+            $model->allowance = Yii::$app->request->post('allowance');
+            $model->basic = Yii::$app->request->post('basic');
+            $model->non_tax_allowance = Yii::$app->request->post('nontax_allowance');
+            $model->levy_supplement = $levy_supplement;
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->status = 1;
+
+            if($model->validate()) {
+                $model->save();
+                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
+            }
         }
     }
 
@@ -187,27 +200,53 @@ class StaffController extends Controller
     {
         $model = $this->findModel($id);
         $searchModel = new SearchStaff();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $getStaff = Staff::find()->all();
-
-            return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getStaff' => $getStaff,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully updated in the database.'
-                    ]);
-        } else {
+        
+        $getStaffId = $searchModel->getStaffId();
 
         return $this->render('update', [
                     'model' => $model, 
+                    'getStaffId' => $getStaffId,
                     'errTypeHeader' => '', 
                     'errType' => '', 
                     'msg' => ''
                 ]);
+    }
+
+    public function actionEdit()
+    {
+        $model = $this->findModel(Yii::$app->request->post('id'));
+
+        $levy_supplement = (Yii::$app->request->post('levy_supplement') <> '')? Yii::$app->request->post('levy_supplement') : 0;
+
+        $model->staff_group_id = Yii::$app->request->post('staff_group');
+        $model->designated_position_id = Yii::$app->request->post('position');
+        $model->staff_code = Yii::$app->request->post('code');
+        $model->fullname = Yii::$app->request->post('fullname');
+        $model->address = Yii::$app->request->post('address');
+        $model->race_id = Yii::$app->request->post('race');
+        $model->citizenship = Yii::$app->request->post('citizenship');
+        $model->gender = Yii::$app->request->post('gender');
+        $model->email = Yii::$app->request->post('email');
+        $model->contact_number = Yii::$app->request->post('contact_no');
+        $model->ic_no = Yii::$app->request->post('nric');
+        $model->rate_per_hour = Yii::$app->request->post('rate');
+        $model->allowance = Yii::$app->request->post('allowance');
+        $model->basic = Yii::$app->request->post('basic');
+        $model->non_tax_allowance = Yii::$app->request->post('nontax_allowance');
+        $model->levy_supplement = $levy_supplement;
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->created_by = Yii::$app->user->identity->id;
+        $model->updated_at = date('Y-m-d H:i:s');
+        $model->updated_by = Yii::$app->user->identity->id;
+        $model->status = 1;
+
+        if($model->validate()) {
+           $model->save();
+           return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
+
+        } else {
+           return json_encode(['message' => $model->errors, 'status' => 'Error']);
+        
         }
     }
 
@@ -229,16 +268,12 @@ class StaffController extends Controller
         $searchModel = new SearchStaff();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->findModel($id)->delete();
-        $getStaff = Staff::find()->all();
-
-        return $this->render('index', [
-                    'searchModel' => $searchModel, 
-                    'getStaff' => $getStaff,
-                    'dataProvider' => $dataProvider, 
-                    'errTypeHeader' => 'Success!', 'errType' => 'alert alert-success', 
-                    'msg' => 'Your record was successfully deleted in the database.'
-                ]);
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save(); 
+        
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
 
     /**
@@ -259,7 +294,7 @@ class StaffController extends Controller
 
     public function actionExportExcel() 
     {
-        $result = Staff::find()->all();
+        $result = Staff::find()->where(['status' => 1])->all();
 
         $objPHPExcel = new \PHPExcel();
         $styleHeadingArray = array(
@@ -318,7 +353,7 @@ class StaffController extends Controller
 
     public function actionExportPdf() 
     {
-        $result = Staff::find()->all();
+        $result = Staff::find()->where(['status' => 1])->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
 
         $dompdf = new Dompdf();

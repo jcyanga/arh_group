@@ -25,7 +25,6 @@ $this->title = 'Services List';
 </div>
 
 <div class="col-md-12 col-sm-12 col-xs-12">
-<br/>
 
     <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
 	    <div class="tile-stats">
@@ -79,7 +78,6 @@ $this->title = 'Services List';
 <div style="color:#fff">|<br/>|<br/></div>
 
 </div>
-<br/>
 
 
 

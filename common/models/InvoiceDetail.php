@@ -34,8 +34,8 @@ class InvoiceDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['invoice_id', 'service_part_id', 'quantity', 'selling_price', 'subTotal', 'created_at', 'created_by', 'type', 'task'], 'required'],
-            [['invoice_id', 'service_part_id', 'quantity', 'created_by', 'type', 'task'], 'integer'],
+            [['invoice_id', 'service_part_id', 'quantity', 'selling_price', 'subTotal', 'created_at', 'created_by', 'type'], 'required'],
+            [['invoice_id', 'quantity', 'created_by', 'type'], 'integer'],
             [['selling_price', 'subTotal'], 'number'],
             [['created_at'], 'safe'],
         ];

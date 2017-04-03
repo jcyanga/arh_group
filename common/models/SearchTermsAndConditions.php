@@ -80,6 +80,7 @@ class SearchTermsAndConditions extends TermsAndConditions
         $result = $rows->select(['*'])
                     ->from('terms_and_conditions')
                     ->where(['like', 'descriptions', $desc])
+                    ->andWhere(['status' => 1])
                     ->all();
 
         return $result;  
@@ -93,6 +94,7 @@ class SearchTermsAndConditions extends TermsAndConditions
        $result = $rows->select(['descriptions'])
         ->from('terms_and_conditions')
         ->where(['descriptions' => $desc])
+        ->andWhere(['status' => 1])
         ->all();
         
         if( count($result) > 0 ) {

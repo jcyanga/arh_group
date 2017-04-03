@@ -30,10 +30,11 @@ class TermsAndConditions extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['descriptions', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'required'],
+            [['descriptions'], 'required', 'message' => 'Fill-up required fields.'],
+            [['descriptions'], 'unique', 'message' => 'Terms and Condition already exist.'],
             [['descriptions'], 'string'],
             [['created_by', 'updated_by'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'created_by', 'updated_at', 'updated_by', 'status'], 'safe'],
         ];
     }
 

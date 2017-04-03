@@ -20,18 +20,17 @@ $this->title = 'Branches';
 <div class="row form-container">
 
 <div>
-    <?php if($msg <> ''){ ?>
-        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-            <?php echo $msg; ?>
+    <?php if(Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert alert-success alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+            <h5 class="alert-heading"><i class="fa fa-info-circle"></i> <?= Yii::$app->session->getFlash('success'); ?></h5>
         </div>
-    <?php } ?>
+    <?php endif; ?>
 </div>
 
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-legal"></i> Set Parts-Warning Level </h4></span>
+        <span class="form-header"><h4><i class="fa fa-paint-brush"></i> Set Parts-Warning Level </h4></span>
     </div>
     <hr/>
   
@@ -57,7 +56,7 @@ $this->title = 'Branches';
                     <td class="tblalign_center" ><?php echo $row['critical_level'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['minimum_level'];  ?></td>
                     <td class="last tblalign_center">
-                        <a href="?r=product-level/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-pencil-square"></li> </a>
+                        <a href="?r=product-level/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Edit Record" ><li class="fa fa-pencil-square"></li> </a>
                     </td>
                 </tr>
             <?php } ?> 
@@ -76,7 +75,5 @@ $this->title = 'Branches';
 <div style="color:#fff">|<br/>|<br/>|<br/></div>
 
 </div>
-
-<br/>
 
 

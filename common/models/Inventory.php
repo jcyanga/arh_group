@@ -3,21 +3,21 @@
 namespace common\models;
 
 use Yii;
-use yii\db\Query;
 
 /**
  * This is the model class for table "inventory".
  *
  * @property integer $id
  * @property integer $product_id
- * @property integer $supplier_id
- * @property integer $quantity
- * @property double $cost_price
- * @property double $selling_price
- * @property string $date_imported
- * @property integer $status
+ * @property integer $old_quantity
+ * @property integer $new_quantity
+ * @property integer $type
+ * @property string $datetime_imported
+ * @property string $datetime_purchased
  * @property string $created_at
  * @property integer $created_by
+ * @property integer $status
+* @property string $invoice_no
  */
 class Inventory extends \yii\db\ActiveRecord
 {
@@ -35,11 +35,9 @@ class Inventory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            // date_imported', 'status', 'created_at', 'created_by'
-            [['product_id', 'supplier_id', 'quantity', 'cost_price', 'selling_price'], 'required'],
-            [['product_id', 'supplier_id', 'quantity'], 'integer'],
-            // [['cost_price', 'selling_price'], 'number'],
-            // [['date_imported', 'created_at'], 'safe'],
+            [['product_id', 'old_quantity', 'new_quantity'], 'required'],
+            [['product_id', 'old_quantity', 'new_quantity', 'type', 'created_by', 'status'], 'integer'],
+            [['datetime_imported', 'datetime_purchased', 'type', 'created_at', 'created_by', 'status', 'invoice_no'], 'safe'],
         ];
     }
 
@@ -51,15 +49,15 @@ class Inventory extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'product_id' => 'Product ID',
-            'supplier_id' => 'Supplier ID',
-            'quantity' => 'Quantity',
-            'cost_price' => 'Cost Price',
-            'selling_price' => 'Selling Price',
-            'date_imported' => 'Date Imported',
-            'status' => 'Status',
+            'old_quantity' => 'Old Quantity',
+            'new_quantity' => 'New Quantity',
+            'type' => 'Type',
+            'datetime_imported' => 'Datetime Imported',
+            'datetime_purchased' => 'Datetime Purchased',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
+            'status' => 'Status',
+            'invoice_no' => 'Invoice No',
         ];
     }
-
 }

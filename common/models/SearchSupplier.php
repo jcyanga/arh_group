@@ -77,6 +77,7 @@ class SearchSupplier extends Supplier
         $result = $rows->select(['*'])
                     ->from('supplier')
                     ->Where(['like', 'supplier_name', $supplier_name])
+                    ->andWhere(['status' => 1])
                     ->all();
 
         return $result;  
@@ -90,6 +91,7 @@ class SearchSupplier extends Supplier
        $result = $rows->select(['supplier_name'])
         ->from('supplier')
         ->where(['supplier_name' => $supplier_name])
+        ->andWhere(['status' => 1])
         ->all();
         
         if( count($result) > 0 ) {

@@ -1,4 +1,3 @@
-
 <?php
 
 use yii\helpers\Html;
@@ -22,9 +21,8 @@ $this->title = 'Update Payment-Type ';
 </div>
 
 <div class="col-md-12 col-sm-12 col-xs-12">
-
     <div class="form-title-container">
-        <span class="form-header"><h4>Update Payment-Type</h4></span>
+        <span class="form-header"><h4><i class="fa fa-paint-brush"></i> Edit Payment-Type</h4></span>
     </div>      
     <hr/>
 
@@ -34,11 +32,9 @@ $this->title = 'Update Payment-Type ';
     <div class="form-crud-container">
         <?= $this->render('_form', ['model' => $model,]) ?>
     </div>   
- 
- </div>
+</div>
 
 </div>
-<br/>
 
 
 

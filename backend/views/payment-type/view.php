@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model common\models\Customer */
 
-$this->title = 'View Supplier';
+$this->title = 'View Payment-Type';
 
 ?>
 
@@ -16,7 +16,7 @@ $this->title = 'View Supplier';
  <div class="col-md-12 col-sm-12 col-xs-12">
     
  <div class="form-title-container">
-    <span class="form-header"><h4>View Payment-Type Information</h4></span>
+    <span class="form-header"><h4><i class="fa fa-paint-brush"></i> View Payment-Type Information</h4></span>
  </div>      
  <hr/>
 
@@ -50,7 +50,6 @@ $this->title = 'View Supplier';
  </div>
 
 </div>
-<br/>
 
 
 

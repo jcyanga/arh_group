@@ -1,14 +1,12 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\helpers\ArrayHelper;
+
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\SearchCustomer */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $model common\models\Payroll */
 
-$this->title = 'Create Payroll';
+$this->title = 'Create PAyroll';
 
 ?>
 
@@ -22,11 +20,10 @@ $this->title = 'Create Payroll';
         </div>
     <?php } ?>
 </div>
-    
- <div class="col-md-12 col-sm-12 col-xs-12">
-
+ 
+<div class="col-md-12 col-sm-12 col-xs-12">
     <div class="form-title-container">
-        <span class="form-header"><h4>Create Payroll</h4></span>
+        <span class="form-header"><h4><i class="fa fa-globe"></i> Create Payroll Information</h4></span>
     </div>
     <hr/>
 
@@ -34,12 +31,8 @@ $this->title = 'Create Payroll';
     <br/><br/>
 
     <div class="form-crud-container">
-        <?= $this->render('_form', ['model' => $model,]) ?>
+        <?= $this->render('_form', ['model' => $model, 'editStatus' => $editStatus]) ?>
     </div>   
- 
- </div>
+</div>
 
 </div>
-<br/>
-
-

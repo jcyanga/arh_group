@@ -1,8 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SearchCustomer */
@@ -24,8 +22,7 @@ $this->title = 'Create Invoice';
     <?php } ?>
 </div>
 
- <div class="col-md-12 col-sm-12 col-xs-12">
- 
+<div class="col-md-12 col-sm-12 col-xs-12">
     <div class="form-title-container">
         <span style="color: #666;" class="form-header"><h4><i class="fa fa-pencil"></i> Create Invoice</h4></span>
     </div>
@@ -37,8 +34,7 @@ $this->title = 'Create Invoice';
     <div class="form-crud-container">
         <?= $this->render('_form', ['model' => $model, 'invoiceId' => $invoiceId, 'getBranchList' => $getBranchList, 'getUserList' => $getUserList, 'getCustomerList' => $getCustomerList, 'getServicesList' => $getServicesList, 'getPartsList' => $getPartsList, 'errTypeHeader' => $errTypeHeader, 'errType' => $errType, 'msg' => $msg]) ?>
     </div>   
- 
- </div>
+</div>
 
 </div>
 <br/>

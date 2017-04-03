@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Quotation;
+use common\models\QuotationDetail;
 
 use yii\db\Query;
 /**
@@ -85,11 +86,12 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.date_issue', 'quotation.task', 'quotation.invoice'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'branch.code', 'branch.name', 'quotation.date_issue', 'quotation.task', 'quotation.invoice', 'car_information.carplate'])
             ->from('quotation')
-            ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
-            ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
-            ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
+            ->join('LEFT JOIN', 'user', 'quotation.user_id = user.id')
+            ->join('LEFT JOIN', 'car_information', 'quotation.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+            ->join('LEFT JOIN', 'branch', 'quotation.branch_id = branch.id')
             ->where('quotation.delete = 0')
             ->all();
 
@@ -101,11 +103,12 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.date_issue', 'quotation.task', 'quotation.invoice'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'branch.code', 'branch.name', 'quotation.date_issue', 'quotation.task', 'quotation.invoice', 'car_information.carplate'])
             ->from('quotation')
-            ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
-            ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
-            ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
+            ->join('LEFT JOIN', 'user', 'quotation.user_id = user.id')
+            ->join('LEFT JOIN', 'branch', 'quotation.branch_id = branch.id')
+            ->join('LEFT JOIN', 'car_information', 'quotation.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
             ->where("quotation.date_issue >= '$date_start'")
             ->andWhere("quotation.date_issue <= '$date_end'")
             ->andWhere('quotation.delete = 0')
@@ -119,13 +122,14 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'quotation.date_issue', 'quotation.task', 'quotation.invoice'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'car_information.carplate', 'branch.code', 'branch.name', 'quotation.date_issue', 'quotation.task', 'quotation.invoice', 'car_information.carplate'])
             ->from('quotation')
-            ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
-            ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
-            ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
-            ->where(['customer.fullname' => $customerName])
-            ->orWhere(['customer.carplate' => $vehicleNumber])
+            ->join('LEFT JOIN', 'user', 'quotation.user_id = user.id')
+            ->join('LEFT JOIN', 'branch', 'quotation.branch_id = branch.id')
+            ->join('LEFT JOIN', 'car_information', 'quotation.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+            ->where(['LIKE', 'customer.fullname', $customerName])
+            ->andWhere(['LIKE', 'car_information.carplate', $vehicleNumber])
             ->all();
 
         return $result;
@@ -194,8 +198,9 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $result = $rows->select(['id', 'carplate', 'fullname as customerList'])
-        ->from('customer')
+        $result = $rows->select(['id', 'carplate as customerList'])
+        ->from('car_information')
+        ->groupBy('car_information.carplate')
         ->all();
 
         if( count($result) > 0 ) {
@@ -231,10 +236,9 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $result = $rows->select(['inventory.id', 'inventory.product_id as productId', 'product.product_name', 'category.category', 'supplier.supplier_name'])
-        ->from('inventory')
-        ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
-        ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+        $result = $rows->select(['product.id', 'product.product_name', 'product.quantity', 'product.selling_price', 'category.category', 'supplier.supplier_name'])
+        ->from('product')
+        ->join('INNER JOIN', 'supplier', 'product.supplier_id = supplier.id')
         ->join('INNER JOIN', 'category', 'product.category_id = category.id')
         ->all();
 
@@ -252,13 +256,15 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'customer.make', 'customer.model', 'customer.points', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.task', 'quotation.invoice', 'quotation.created_at', 'quotation.time_created'])
-            ->from('quotation')
-            ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
-            ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
-            ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
-            ->where(['quotation.id' => $quotationId])
-            ->one();
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'car_information.carplate', 'customer.race_id', 'race.name as raceName', 'customer.email', 'car_information.make', 'car_information.model', 'car_information.points', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.customer_id', 'quotation.user_id', 'quotation.branch_id', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.gst', 'quotation.net', 'quotation.mileage', 'quotation.task', 'quotation.invoice', 'quotation.created_at', 'quotation.created_by', 'quotation.updated_at', 'quotation.updated_by', 'quotation.delete', 'quotation.time_created', 'quotation.come_in', 'quotation.come_out', 'customer.type', 'customer.company_name', 'customer.uen_no', 'customer.nric', 'car_information.engine_no', 'car_information.chasis', 'car_information.year_mfg', 'quotation.discount_amount', 'quotation.discount_remarks'])
+                ->from('quotation')
+                ->join('LEFT JOIN', 'user', 'quotation.user_id = user.id')
+                ->join('LEFT JOIN', 'branch', 'quotation.branch_id = branch.id')
+                ->join('LEFT JOIN', 'car_information', 'quotation.customer_id = car_information.id')
+                ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+                ->join('LEFT JOIN', 'race', 'customer.race_id = race.id')
+                ->where(['quotation.id' => $quotationId])
+                ->one();
 
         return $result;
     }
@@ -266,14 +272,7 @@ class SearchQuotation extends Quotation
     // getProcesssedServices
     public function getProcessedServices($id) 
     {
-        $rows = new Query();
-
-        $service = $rows->select(['quotation_detail.id', 'quotation_detail.quotation_id', 'service.service_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal', 'quotation_detail.task'])
-            ->from('quotation_detail')
-            ->join('INNER JOIN', 'service', 'quotation_detail.service_part_id = service.id')
-            ->where(['quotation_detail.quotation_id' => $id])
-            ->andWhere('quotation_detail.type = 0')
-            ->all();
+        $service = QuotationDetail::find()->where(['quotation_id' => $id, 'type' => 0])->all();
 
         return $service;
     }
@@ -285,10 +284,8 @@ class SearchQuotation extends Quotation
 
         $part = $rows->select(['quotation_detail.id', 'product.product_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal'])
             ->from('quotation_detail')
-            ->join('LEFT JOIN', 'inventory', 'quotation_detail.service_part_id = inventory.id')
-            ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
-            ->where(['quotation_detail.quotation_id' => $id])
-            ->andWhere('quotation_detail.type = 1')
+            ->join('INNER JOIN', 'product', 'quotation_detail.service_part_id = product.id')
+            ->where(['quotation_detail.quotation_id' => $id, 'quotation_detail.type' => 1])
             ->all();
 
         return $part;
@@ -299,11 +296,13 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.branch_id', 'quotation.customer_id', 'quotation.user_id', 'quotation.created_at', 'quotation.created_by', 'quotation.updated_at', 'quotation.updated_by', 'quotation.delete', 'quotation.task', 'quotation.time_created'])
+        $result = $rows->select(['quotation.id', 'quotation.quotation_code', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'car_information.carplate', 'customer.race_id', 'race.name as raceName', 'customer.email', 'car_information.make', 'car_information.model', 'car_information.points', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'quotation.customer_id', 'quotation.user_id', 'quotation.branch_id', 'quotation.date_issue', 'quotation.remarks', 'quotation.grand_total', 'quotation.gst', 'quotation.net', 'quotation.mileage', 'quotation.task', 'quotation.invoice', 'quotation.created_at', 'quotation.created_by', 'quotation.updated_at', 'quotation.updated_by', 'quotation.delete', 'quotation.task', 'quotation.time_created', 'quotation.come_in', 'quotation.come_out', 'customer.type', 'customer.company_name', 'customer.uen_no', 'customer.nric', 'car_information.engine_no', 'car_information.chasis', 'car_information.year_mfg', 'quotation.discount_amount', 'quotation.discount_remarks'])
             ->from('quotation')
-            ->join('INNER JOIN', 'user', 'quotation.user_id = user.id')
-            ->join('INNER JOIN', 'customer', 'quotation.customer_id = customer.id')
-            ->join('INNER JOIN', 'branch', 'quotation.branch_id = branch.id')
+            ->join('LEFT JOIN', 'user', 'quotation.user_id = user.id')
+            ->join('LEFT JOIN', 'branch', 'quotation.branch_id = branch.id')
+            ->join('LEFT JOIN', 'car_information', 'quotation.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+            ->join('LEFT JOIN', 'race', 'customer.race_id = race.id')
             ->where(['quotation.id' => $id])
             ->one();
 
@@ -315,12 +314,7 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $service = $rows->select(['quotation_detail.id', 'quotation_detail.quotation_id', 'service.id as serviceId', 'service.service_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal', 'quotation_detail.task', 'quotation_detail.created_at', 'quotation_detail.created_by', 'quotation_detail.type'])
-            ->from('quotation_detail')
-            ->join('INNER JOIN', 'service', 'quotation_detail.service_part_id = service.id')
-            ->where(['quotation_detail.quotation_id' => $id])
-            ->andWhere('quotation_detail.type = 0')
-            ->all();
+        $service = QuotationDetail::find()->where(['quotation_id' => $id, 'type' => 0])->all();
 
         return $service;
     }
@@ -330,12 +324,10 @@ class SearchQuotation extends Quotation
     {
         $rows = new Query();
 
-        $part = $rows->select(['quotation_detail.id', 'quotation_detail.quotation_id', 'inventory.id as productId', 'product.product_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal', 'quotation_detail.task', 'quotation_detail.created_at', 'quotation_detail.created_by', 'quotation_detail.type'])
+        $part = $rows->select(['quotation_detail.id', 'quotation_detail.quotation_id', 'product.id as productId', 'product.product_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal', 'quotation_detail.task', 'quotation_detail.created_at', 'quotation_detail.created_by', 'quotation_detail.type'])
             ->from('quotation_detail')
-            ->join('LEFT JOIN', 'inventory', 'quotation_detail.service_part_id = inventory.id')
-            ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
-            ->where(['quotation_detail.quotation_id' => $id])
-            ->andWhere('quotation_detail.type = 1')
+            ->join('INNER JOIN', 'product', 'quotation_detail.service_part_id = product.id')
+            ->where(['quotation_detail.quotation_id' => $id, 'quotation_detail.type' => 1])
             ->all();
 
         return $part;
@@ -352,6 +344,35 @@ class SearchQuotation extends Quotation
                     ->one();
 
         return $lastId['id'];
+    }
+
+    // get product by category
+    public function getPartsByCategory($id)
+    {
+        $rows= new Query();
+
+        $result = $rows->select(['product.id', 'supplier.supplier_name', 'product.product_name', 'product.quantity', 'product.selling_price'])
+            ->from('product')
+            ->join('INNER JOIN', 'category', 'product.category_id = category.id')
+            ->join('INNER JOIN', 'supplier', 'product.supplier_id = supplier.id')
+            ->where(['product.category_id' => $id])
+            ->all();
+
+        return $result;
+    }
+
+    // get service by category
+    public function getServicesByCategory($id)
+    {
+        $rows= new Query();
+
+        $result = $rows->select(['service.id', 'service_category.name', 'service.service_name', 'service.default_price'])
+            ->from('service')
+            ->join('LEFT JOIN', 'service_category', 'service.service_category_id = service_category.id')
+            ->where(['service.service_category_id' => $id])
+            ->all();
+
+        return $result;
     }
 
 }

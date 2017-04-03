@@ -1,10 +1,9 @@
-
 <?php
 
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Customer */
+/* @var $model common\models\Payroll */
 
 $this->title = 'Update Payroll ';
  
@@ -21,10 +20,9 @@ $this->title = 'Update Payroll ';
     <?php } ?>
 </div>
     
- <div class="col-md-12 col-sm-12 col-xs-12">
-
+<div class="col-md-12 col-sm-12 col-xs-12">
     <div class="form-title-container">
-        <span class="form-header"><h4>Update Payroll</h4></span>
+        <span class="form-header"><h4><i class="fa fa-globe"></i> Edit Payroll Information</h4></span>
     </div>      
     <hr/>
 
@@ -32,14 +30,8 @@ $this->title = 'Update Payroll ';
     <br/><br/>
 
     <div class="form-crud-container">
-        <?= $this->render('_form', ['model' => $model,]) ?>
+        <?= $this->render('_form', ['model' => $model, 'editStatus' => $editStatus]) ?>
     </div>   
- 
- </div>
+</div>
 
 </div>
-<br/>
-
-
-
-

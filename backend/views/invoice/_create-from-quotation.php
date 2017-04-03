@@ -442,7 +442,7 @@ $dataCategory = Category::find()->all();
 
 <?php ActiveForm::end(); ?>  
     
-<div class="modal fade" id="modal-launcher-service" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div class="modal fade" id="modal-launcher-service" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">
@@ -481,7 +481,7 @@ $dataCategory = Category::find()->all();
     </div>
 </div>
 ​
-<div class="modal fade" id="modal-launcher-part" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div class="modal fade" id="modal-launcher-part" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">

@@ -10,6 +10,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Dompdf\Dompdf;
 
+use common\models\Staff;
+
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use common\models\Role;
@@ -19,6 +21,7 @@ use common\models\UserPermission;
  */
 class PayrollController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -120,11 +123,10 @@ class PayrollController extends Controller
     public function actionView($id)
     {
         $searchModel = new SearchPayroll();
-        $getPayroll = $searchModel->getPayrollById($id);
 
         return $this->render('view', [
-                            'model' => $getPayroll,
-                        ]);
+            'model' => $searchModel->getPayrollById($id),
+        ]);
     }
 
     /**
@@ -135,50 +137,63 @@ class PayrollController extends Controller
     public function actionCreate()
     {
         $model = new Payroll();
+        $editStatus = '';
+
+        return $this->render('create', [
+                            'model' => $model, 
+                            'editStatus' => $editStatus,
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
+    }
+
+    public function actionNew()
+    {
+        $model = new Payroll();  
         $searchModel = new SearchPayroll();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->getPayrollSameName(Yii::$app->request->post('Payroll') ['staff_id'], Yii::$app->request->post('Payroll') ['pay_date']);
+        if ( Yii::$app->request->post() ) {   
 
-            if( $result == 1 ) {
-                return $this->render('create', [
-                                'model' => $model, 
-                                'errTypeHeader' => 'Warning!', 
-                                'errType' => 'alert alert-warning', 
-                                'msg' => 'You already enter an existing name, Please! Change the staff name or pay-date.']);
-            }
+            $cutoffYr = date('y', strtotime(Yii::$app->request->post('cutoff')) );
+            $getLastId = $searchModel->getPayrollId();
+            $getStaffInfo = Staff::findOne(Yii::$app->request->post('staff_name'));
 
-            $model->pay_date = date('Y-m-d', strtotime(Yii::$app->request->post('Payroll')['pay_date']));
+            $payslipNo = 'PS' . '/' . $cutoffYr . '/' . $getStaffInfo['staff_code'] . '/' . $getLastId;
 
-            if( $model->save() ) {
-                $getPayroll = $searchModel->getPayrolls();
+            $employer_cpf = (Yii::$app->request->post('employer_cpf') <> '')? Yii::$app->request->post('employer_cpf') : 0;
+            $employee_cpf = (Yii::$app->request->post('employee_cpf') <> '')? Yii::$app->request->post('employee_cpf') : 0;
+            $monthly_levy_charge = (Yii::$app->request->post('monthly_levycharge') <> '')? Yii::$app->request->post('monthly_levycharge') : 0;
 
-                return $this->render('index', [
-                                'searchModel' => $searchModel, 
-                                'getPayroll' => $getPayroll,
-                                'dataProvider' => $dataProvider, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Your record was successfully added in the database.'
-                            ]);
+            $model->payslip_no = $payslipNo;
+            $model->payslip_cutoff = date('M-Y', strtotime(Yii::$app->request->post('cutoff')) );
+            $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('date_issue')) );
+            $model->staff_id = Yii::$app->request->post('staff_name');
+            $model->overtime_hour = Yii::$app->request->post('ot_hour');
+            $model->overtime_rate_per_hour = Yii::$app->request->post('ot_ratehour');
+            $model->overtime_pay = Yii::$app->request->post('ot_pay');
+            $model->employer_cpf = $employer_cpf;
+            $model->employee_cpf = $employee_cpf;
+            $model->cash_advance = Yii::$app->request->post('cash_advance');
+            $model->other_deductions = Yii::$app->request->post('other_deduction');
+            $model->monthly_levy_charge = $monthly_levy_charge;
+            $model->remarks = Yii::$app->request->post('notes');
+            $model->prepared_by = Yii::$app->request->post('prepared_by');
+            $model->approved_by = Yii::$app->request->post('approved_by');
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->status = 1;
+
+            if($model->validate()) {
+                $model->save();
+                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
 
             } else {
-                return $this->render('create', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => 'Error!', 
-                                    'errType' => 'alert alert-error', 
-                                    'msg' => 'You have an error, Check All the required fields.'
-                                ]);
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
             }
-
-        } else {
-            return $this->render('create', [
-                        'model' => $model, 
-                        'errTypeHeader' => '', 
-                        'errType' => '', 
-                        'msg' => '']
-                        );
         }
     }
 
@@ -191,33 +206,60 @@ class PayrollController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $searchModel = new SearchPayroll();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        if ( $model->load(Yii::$app->request->post()) ) {
-            $model->pay_date = date('Y-m-d', strtotime(Yii::$app->request->post('Payroll')['pay_date']));
-            
-            if($model->save()) {
-               
-                $getPayroll = $searchModel->getPayrolls();
-
-                return $this->render('index', [
-                            'searchModel' => $searchModel, 
-                            'getPayroll' => $getPayroll,
-                            'dataProvider' => $dataProvider, 
-                            'errTypeHeader' => 'Success!', 
-                            'errType' => 'alert alert-success', 
-                            'msg' => 'Your record was successfully updated in the database.'
-                        ]);
-            }
-
-        } else {
-            return $this->render('update', [
+        $editStatus = 'disabled';
+        
+        return $this->render('update', [
                         'model' => $model, 
+                        'editStatus' => $editStatus,
                         'errTypeHeader' => '', 
                         'errType' => '', 
                         'msg' => ''
                     ]);
+    }
+
+    public function actionEdit()
+    {
+        $model = $this->findModel(Yii::$app->request->post('id'));
+        $searchModel = new SearchPayroll();
+
+        $cutoffYr = date('y', strtotime(Yii::$app->request->post('cutoff')) );
+        $getLastId = $searchModel->getPayrollId();
+        $getStaffInfo = Staff::findOne(Yii::$app->request->post('staff_name'));
+
+        $payslipNo = 'PS' . '/' . $cutoffYr . '/' . $getStaffInfo['staff_code'] . '/' . $getLastId;
+
+        $employer_cpf = (Yii::$app->request->post('employer_cpf') <> '')? Yii::$app->request->post('employer_cpf') : 0;
+        $employee_cpf = (Yii::$app->request->post('employee_cpf') <> '')? Yii::$app->request->post('employee_cpf') : 0;
+        $monthly_levy_charge = (Yii::$app->request->post('monthly_levycharge') <> '')? Yii::$app->request->post('monthly_levycharge') : 0;
+
+        $model->payslip_no = $payslipNo;
+        $model->payslip_cutoff = date('M-Y', strtotime(Yii::$app->request->post('cutoff')) );
+        $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('date_issue')) );
+        $model->staff_id = Yii::$app->request->post('staff_name');
+        $model->overtime_hour = Yii::$app->request->post('ot_hour');
+        $model->overtime_rate_per_hour = Yii::$app->request->post('ot_ratehour');
+        $model->overtime_pay = Yii::$app->request->post('ot_pay');
+        $model->employer_cpf = $employer_cpf;
+        $model->employee_cpf = $employee_cpf;
+        $model->cash_advance = Yii::$app->request->post('cash_advance');
+        $model->other_deductions = Yii::$app->request->post('other_deduction');
+        $model->monthly_levy_charge = $monthly_levy_charge;
+        $model->remarks = Yii::$app->request->post('notes');
+        $model->prepared_by = Yii::$app->request->post('prepared_by');
+        $model->approved_by = Yii::$app->request->post('approved_by');
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->created_by = Yii::$app->user->identity->id;
+        $model->updated_at = date('Y-m-d H:i:s');
+        $model->updated_by = Yii::$app->user->identity->id;
+        $model->status = 1;
+
+        if($model->validate()) {
+           $model->save();
+           return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
+
+        } else {
+           return json_encode(['message' => $model->errors, 'status' => 'Error']);
+        
         }
     }
 
@@ -239,16 +281,12 @@ class PayrollController extends Controller
         $searchModel = new SearchPayroll();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->findModel($id)->delete();
-        $getPayroll = $searchModel->getPayrolls();
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save();
 
-        return $this->render('index', [
-                    'searchModel' => $searchModel, 
-                    'getPayroll' => $getPayroll,
-                    'dataProvider' => $dataProvider, 
-                    'errTypeHeader' => 'Success!', 'errType' => 'alert alert-success', 
-                    'msg' => 'Your record was successfully deleted in the database.'
-                ]);
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
 
     /**
@@ -266,4 +304,38 @@ class PayrollController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    public function actionPrintLocalPayslip($id)
+    {
+        $this->layout = 'print';
+        $searchModel = new SearchPayroll();
+
+        $getPayrollInformation = $searchModel->getPayrolInformationById($id); 
+
+        return $this->render('_print-local-payslip',[
+                            'model' => $this->findModel($id),
+                            'payrollInformation' => $getPayrollInformation,
+                        ]);
+    }
+
+    public function actionPrintForeignPayslip($id)
+    {
+        $this->layout = 'print';
+        $searchModel = new SearchPayroll();
+
+        $getPayrollInformation = $searchModel->getPayrolInformationById($id); 
+
+        return $this->render('_print-foreign-payslip',[
+                            'model' => $this->findModel($id),
+                            'payrollInformation' => $getPayrollInformation,
+                        ]);
+    }
+
+    public function actionGetStaffCitizenship()
+    {
+        $getStaffInfo = Staff::findOne(Yii::$app->request->get('staffId'));
+
+        return $getStaffInfo->citizenship;
+    }
+
 }

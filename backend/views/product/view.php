@@ -16,7 +16,7 @@ $this->title = 'View Product';
  <div class="col-md-12 col-sm-12 col-xs-12">
     
  <div class="form-title-container">
-    <span class="form-header"><h4>View Product Information</h4></span>
+    <span class="form-header"><h4><i class="fa fa-cogs"></i> View Product Information</h4></span>
  </div>      
  <hr/>
 
@@ -40,7 +40,6 @@ $this->title = 'View Product';
             'category',
             'product_code',
             'product_name',
-            'product_image',
             'unit_of_measure',
             [
                 'label' => 'Status',
@@ -58,7 +57,6 @@ $this->title = 'View Product';
  </div>
 
 </div>
-<br/>
 
 
 

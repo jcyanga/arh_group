@@ -27,7 +27,9 @@ class Modules extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['modules'], 'required'],
+            [['modules'], 'required', 'message' => 'Fill-up required fields.'],
+            [['modules'], 'unique', 'message' => 'Module name already exist.'],
+            [['created_at','created_by','status'], 'safe'],
             [['modules'], 'string', 'max' => 50],
         ];
     }

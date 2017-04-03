@@ -4,9 +4,9 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Customer */
+/* @var $model common\models\Payroll */
 
-$this->title = 'View Payroll';
+$this->title = 'View Category';
  
 ?>
 
@@ -16,7 +16,7 @@ $this->title = 'View Payroll';
  <div class="col-md-12 col-sm-12 col-xs-12">
     
  <div class="form-title-container">
-    <span class="form-header"><h4>View Payroll Information</h4></span>
+    <span class="form-header"><h4><i class="fa fa-globe"></i> View Payroll Information</h4></span>
  </div>      
  <hr/>
 
@@ -36,65 +36,27 @@ $this->title = 'View Payroll';
         'model' => $model,
         'attributes' => [
             'id',
-            [
-                'label' => 'Staff',
-                'value' => $model['fullname'],
-            ], 
+            'staff_code',
             'ic_no',
-            [
-                'label' => 'Pay Date',
-                'value' => date('m-d-Y', strtotime($model['pay_date'])),
-            ], 
-            [
-                'label' => 'Basic',
-                'value' => $model['basic'].'.00',
-            ], 
-            [
-                'label' => 'Overtime Hours',
-                'value' => $model['overtime_hours'].' hrs.',
-            ], 
-            [
-                'label' => 'Rate Per Hour',
-                'value' => $model['rate_per_hour'].'.00',
-            ], 
-            [
-                'label' => 'Commission',
-                'value' => $model['commission'].'.00',
-            ], 
-            [
-                'label' => 'Allowance',
-                'value' => $model['allowance'].'.00',
-            ], 
-            [
-                'label' => 'Employees CPF',
-                'value' => $model['employees_cpf'].'.00',
-            ], 
-            [
-                'label' => 'Employers CPF',
-                'value' => $model['employers_cpf'].'.00',
-            ], 
-            [
-                'label' => 'Sinda',
-                'value' => $model['sinda'].'.00',
-            ], 
-            [
-                'label' => 'Advance Loan',
-                'value' => $model['advance_loan'].'.00',
-            ], 
-            [
-                'label' => 'Income Tax',
-                'value' => $model['income_tax'].'.00',
-            ], 
-            [
-                'label' => 'Reimbursement',
-                'value' => $model['reimbursement'].'.00',
-            ], 
-            'prepared_by',
-            'approved_by',
-            [
-                'label' => 'Created At',
-                'value' => date('m-d-Y', strtotime($model['created_at'])),
-            ], 
+            'fullname',
+            'address',
+            'contact_no',
+            'gender',
+            'email',
+            'rate_per_hour',
+            'basic',
+            'allowance',
+            'non_tax_allowance',
+            'levy_supplement',
+            'overtime_hour',
+            'overtime_rate_per_hour',
+            'overtime_pay',
+            'employee_cpf',
+            'employer_cpf',
+            'cash_advance',
+            'other_deductions',
+            'month_levy_charge',
+            'remarks',
         ],
         ]) ?>
         <br/>
@@ -103,7 +65,3 @@ $this->title = 'View Payroll';
  </div>
 
 </div>
-<br/>
-
-
-

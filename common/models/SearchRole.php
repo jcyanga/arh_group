@@ -76,6 +76,7 @@ class SearchRole extends Role
                     ->from('role')
                     ->where(['like', 'role', $role])
                     ->andWhere('id > 1')
+                    ->andWhere('status > 1')
                     ->all();
 
         return $result;            
@@ -89,6 +90,7 @@ class SearchRole extends Role
        $result = $rows->select(['role'])
         ->from('role')
         ->where(['role' => $role])
+        ->andWhere(['status' => 1])
         ->all();
         
         if( count($result) > 0 ) {

@@ -1,10 +1,9 @@
-
 <?php
 
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Customer */
+/* @var $model common\models\Branch */
 
 $this->title = 'Update Branch ';
  
@@ -21,10 +20,9 @@ $this->title = 'Update Branch ';
     <?php } ?>
 </div>
     
- <div class="col-md-12 col-sm-12 col-xs-12">
-
+<div class="col-md-12 col-sm-12 col-xs-12">
     <div class="form-title-container">
-        <span class="form-header"><h4>Update Branch</h4></span>
+        <span class="form-header"><h4><i class="fa fa-globe"></i> Edit Branch Information</h4></span>
     </div>      
     <hr/>
 
@@ -32,13 +30,11 @@ $this->title = 'Update Branch ';
     <br/><br/>
 
     <div class="form-crud-container">
-        <?= $this->render('_form', ['model' => $model,]) ?>
+        <?= $this->render('_form', ['model' => $model]) ?>
     </div>   
- 
- </div>
+</div>
 
 </div>
-<br/>
 
 
 

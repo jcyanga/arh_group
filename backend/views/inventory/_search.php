@@ -2,45 +2,38 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-use yii\helpers\Url;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\SearchCustomer */
+/* @var $model common\models\SearchInventory */
 /* @var $form yii\widgets\ActiveForm */
+
+$dataInventoryType = array('0' => '- PLEASE SELECT TYPE HERE -', '1' => 'STOCK-IN', '2' => 'STOCK-OUT', '3' => 'STOCK-ADJUSTMENT');
+
 ?>
 
+ <div class="row">
+ <br/>
 
-<div  class="inventory-search">
-    <div class="search-label-container">
-        <span class="search-label"><li class="icon-edit"></li> Enter Keyword here</span>
-    </div>  
-
-    <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
+    <div class="col-md-12">
+        <div class="search-label-container">
+            <span class="search-label"><li class="fa fa-edit"></li> Enter Keyword here</span>
+        </div> 
+    </div>
+    <br/>
     
-     <div class="floating-box">
-        <?= $form->field($model, 'id')->textInput(['autocomplete' => 'off', 'class' => 'form-input', 'placeholder' => 'Enter ID here...'])->label(false) ?>
-     </div>
+    <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
-     <div class="floating-box">
-        <?= $form->field($model, 'supplier_id')->textInput(['autocomplete' => 'off', 'placeholder' => 'Enter Supplier here...'])->label(false) ?>
-     </div>
+    <div class="col-md-4">
+        <?= $form->field($model, 'type')->dropDownList($dataInventoryType,['style' => 'width:100%;', 'class' => 'form_input select2_single', 'data-placeholder' => 'CHOOSE TYPE HERE'])->label(false) ?>
+    </div>
 
-     <div class="floating-box">
-        <?= $form->field($model, 'product_id')->textInput(['autocomplete' => 'off', 'placeholder' => 'Enter Product Code here...'])->label(false) ?>
-     </div>
-
-     <div class="floating-box">
-        <?= $form->field($model, 'product_id')->textInput(['autocomplete' => 'off', 'placeholder' => 'Enter Product Name here...'])->label(false) ?>
-     </div>
-     <br/>
-
-     <div class="floating-box">
-        <?= Html::submitButton('<li class=\'icon-search\'></li> Search', ['class' => 'form-btn btn btn-primary']) ?>
-        <?= Html::resetButton('<li class=\'icon-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
-
-     </div>
-
+    <div class="col-md-4">
+        <div style="margin-left: -10px;">
+            <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
+        </div>
+    </div>
+    
     <?php ActiveForm::end(); ?>
+    <br/>
 
-</div>
-
+ </div>

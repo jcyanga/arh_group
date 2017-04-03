@@ -41,7 +41,8 @@ class Quotation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['quotation_code', 'user_id', 'customer_id', 'branch_id', 'date_issue', 'grand_total', 'remarks', 'created_at', 'created_by', 'updated_at', 'updated_by', 'delete', 'invoice'], 'required'],
+            [['quotation_code', 'date_issue', 'grand_total', 'gst', 'net', 'mileage'], 'required', 'message' => 'Fill up the required fields.'],
+            [['branch_id', 'customer_id', 'user_id'], 'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number', 'message' => 'Invalid option selected'],
             [['user_id', 'customer_id', 'branch_id', 'created_by', 'updated_by', 'delete', 'invoice'], 'integer'],
             [['date_issue', 'created_at', 'updated_at'], 'safe'],
             [['grand_total'], 'number'],

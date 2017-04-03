@@ -20,7 +20,7 @@ class SearchPaymentType extends PaymentType
     {
         return [
             [['id', 'created_by', 'updated_by'], 'integer'],
-            [['name', 'description', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'description', 'interest', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -81,6 +81,7 @@ class SearchPaymentType extends PaymentType
         $result = $rows->select(['*'])
                     ->from('payment_type')
                     ->where(['like', 'name', $name])
+                    ->andWhere(['status' => 1])
                     ->all();
 
         return $result;  
@@ -94,6 +95,7 @@ class SearchPaymentType extends PaymentType
        $result = $rows->select(['name'])
         ->from('payment_type')
         ->where(['name' => $name])
+        ->andWhere(['status' => 1])
         ->all();
         
         if( count($result) > 0 ) {

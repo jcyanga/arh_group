@@ -78,7 +78,7 @@ class LoginForm extends Model
 
     public function getCustomerInfo($ic,$password)
     {
-        $result = Customer::find()->where(['ic' => $ic])->andWhere(['password' => $password])->one();
+        $result = Customer::find()->where(['nric' => $ic])->orWhere(['uen_no' => $ic])->andWhere(['password' => $password])->one();
 
         return $result;
     }

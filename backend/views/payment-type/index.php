@@ -19,18 +19,17 @@ $this->title = 'Payment-Type';
 <div class="row form-container">
  
 <div>
-    <?php if($msg <> ''){ ?>
-        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-            <?php echo $msg; ?>
+    <?php if(Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert alert-success alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+            <h5 class="alert-heading"><i class="fa fa-info-circle"></i> <?= Yii::$app->session->getFlash('success'); ?></h5>
         </div>
-    <?php } ?>
+    <?php endif; ?>
 </div>
 
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-legal"></i> Set Payment-Type</h4></span>
+        <span class="form-header"><h4><i class="fa fa-paint-brush"></i> Set Payment-Type</h4></span>
     </div>
     <hr/>
 
@@ -72,6 +71,7 @@ $this->title = 'Payment-Type';
             <th class="tblalign_center" > # </th>
             <th class="tblalign_center" > NAME </th>
             <th class="tblalign_center" > DESCRIPTION </th>
+            <th class="tblalign_center" > AMOUNT-INTEREST(%) </th>
             <th class="no-link last tblalign_center" ><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
@@ -84,9 +84,10 @@ $this->title = 'Payment-Type';
                     <td class="tblalign_center" ><?php echo $row['id'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['name'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['description'];  ?></td>
+                    <td class="tblalign_center" ><?php echo (!empty($row['interest']) ? '0.'.$row['interest'] : 0 );  ?></td>
                     <td class="last tblalign_center">
                         <a href="?r=payment-type/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a> |
-                        <a href="?r=payment-type/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-pencil-square"></li> </a> | 
+                        <a href="?r=payment-type/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Edit Record" ><li class="fa fa-pencil-square"></li> </a> | 
                         <a href="?r=payment-type/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a>
                     </td>
                 </tr>
@@ -107,8 +108,6 @@ $this->title = 'Payment-Type';
 <div style="color:#fff">|<br/>|<br/>|<br/></div>
 
 </div>
-
-<br/>
 
 
 

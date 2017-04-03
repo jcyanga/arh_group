@@ -10,22 +10,31 @@ use yii\helpers\Url;
 ?>
 
  <div class="row">
-
+ <br/>
+ 
     <div class="col-md-12">
         <div class="search-label-container">
             <span class="search-label"><li class="fa fa-calendar-o"></li> Enter Date-range here</span>
         </div> 
     </div>
-    <br/><br/>
+    <br/>
     
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
         <input type="text" name="date_start" id="datestart" class="form_input form-control" placeholder="Date Start" value="<?= $date_start ?>" readonly />
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-2">
         <input type="text" name="date_end" id="dateend" class="form_input form-control" placeholder="Date End" value="<?= $date_end ?>" readonly />
+    </div>
+
+    <div class="col-md-2">
+        <input type="text" name="customer_name" id="customer_name" class="form_input form-control" value="<?= $customerName ?>" placeholder="Enter Customer Name here." />
+    </div>
+
+    <div class="col-md-2">
+        <input type="text" name="carplate" id="carplate" class="form_input form-control" value="<?= $vehicleNumber ?>" placeholder="Enter Vehicle Number here." />
     </div>
 
     <div class="col-md-3">
@@ -33,8 +42,6 @@ use yii\helpers\Url;
             <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
         </div>
     </div>
-
-    <div class="col-md-3"></div>
 
     <?php ActiveForm::end(); ?>
     <br/>

@@ -85,8 +85,6 @@ $this->title = 'Invoice';
 <div style="color:#fff">|<br/>|<br/></div>
 
 </div>
-<br/>
-
 
 
 

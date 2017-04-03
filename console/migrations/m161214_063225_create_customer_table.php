@@ -20,7 +20,7 @@ class m161214_063225_create_customer_table extends Migration
             'password' => $this->string(50)->notNull(),
             'password_hash' => $this->string(100)->notNull(),
             'auth_key' => $this->string(100)->notNull(),
-            'race' => $this->string(50)->notNull(),
+            'race_id' => $this->integer(5)->notNull(),
             'carplate' => $this->string(50)->notNull(),
             'address' => $this->text()->notNull(),
             'hanphone_no' => $this->string(50)->notNull(),

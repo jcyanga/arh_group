@@ -1,19 +1,11 @@
+<?php
+use yii\helpers\Html;
 
-
-<?php 
-use yii\helpers\ArrayHelper;
-    
-use common\models\Product;
-use common\models\Service;
-
-$dataPart = ArrayHelper::map(Product::find()->all(), 'id', 'product_name');
-$dataService = ArrayHelper::map(Service::find()->all(), 'id', 'service_name');
-
+/* @var $this \yii\web\View view component instance */
+/* @var $message \yii\mail\MessageInterface the message being composed */
+/* @var $content string main view render result */
 ?>
-
-
-
-
+<?php $this->beginPage() ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
    <head>
@@ -83,9 +75,10 @@ $dataService = ArrayHelper::map(Service::find()->all(), 'id', 'service_name');
         
          }
       </style>
+      <?php $this->head() ?>
    </head>
    <body>
-       
+       <?php $this->beginBody() ?>
 
 <br><br>
     <table width="100%" bgcolor="#fcfcfc" cellpadding="0" cellspacing="0" border="0" id="backgroundTable">
@@ -112,7 +105,7 @@ $dataService = ArrayHelper::map(Service::find()->all(), 'id', 'service_name');
                             </tr>
                             <tr>
                                 <td width="100%" align="left" valign="middle" style="font-size: 18px; color: #19417f">
-                                Dear <?php echo $fullname; ?>,</td>
+                                Dear, Sample</td>
                             </tr>
                             <tr>
                                 <td width="100%" height="10"></td>
@@ -219,6 +212,8 @@ $dataService = ArrayHelper::map(Service::find()->all(), 'id', 'service_name');
         </tbody>
     </table>
        
-          
+    <?php $this->endBody() ?>      
    </body>
    </html>
+
+<?php $this->endPage() ?>

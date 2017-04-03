@@ -23,7 +23,7 @@ class SearchCustomer extends Customer
         // , 'is_blacklist', 'is_member', created_by', 'updated_by'
         return [
             [['id'], 'integer'],
-            [['fullname', 'role', 'ic', 'password', 'password_hash', 'auth_key', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'remarks', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at', 'deleted'], 'safe'],
+            [['fullname', 'role', 'nric', 'company_name', 'uen_no', 'password', 'password_hash', 'auth_key', 'race_id', 'address', 'hanphone_no', 'office_no', 'email', 'remarks', 'join_date', 'member_expiry', 'status', 'type', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at', 'deleted'], 'safe'],
         ];
     }
 
@@ -66,9 +66,10 @@ class SearchCustomer extends Customer
             'id' => $this->id,
             'is_blacklist' => $this->is_blacklist,
             'is_member' => $this->is_member,
-            'points' => $this->points,
+            'join_date' => $this->join_date,
             'member_expiry' => $this->member_expiry,
             'status' => $this->status,
+            'type' => $this->type,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
             'updated_at' => $this->updated_at,
@@ -76,15 +77,15 @@ class SearchCustomer extends Customer
         ]);
 
         $query->andFilterWhere(['like', 'fullname', $this->fullname])
-            ->andFilterWhere(['like', 'race', $this->race])
-            ->andFilterWhere(['like', 'carplate', $this->carplate])
+            ->andFilterWhere(['like', 'race_id', $this->race_id])
+            ->andFilterWhere(['like', 'company_name', $this->company_name])
             ->andFilterWhere(['like', 'address', $this->address])
             ->andFilterWhere(['like', 'hanphone_no', $this->hanphone_no])
             ->andFilterWhere(['like', 'office_no', $this->office_no])
             ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'make', $this->make])
-            ->andFilterWhere(['like', 'model', $this->model])
-            ->andFilterWhere(['like', 'remarks', $this->model]);
+            ->andFilterWhere(['like', 'uen_no', $this->uen_no])
+            ->andFilterWhere(['like', 'nric', $this->nric])
+            ->andFilterWhere(['like', 'remarks', $this->remarks]);
 
         return $dataProvider;
     }
@@ -94,30 +95,14 @@ class SearchCustomer extends Customer
     {
         $rows = new Query();
 
-        $result = $rows->select(['*'])
+        $result = $rows->select(['customer.*', 'race.name' ])
                     ->from('customer')
-                    ->where(['like', 'fullname', $fullname])
+                    ->join('LEFT JOIN', 'race', 'customer.race_id = race.id')
+                    ->where(['LIKE', 'customer.fullname', $fullname])
+                    ->orWhere(['LIKE', 'customer.company_name', $fullname])
                     ->all();
 
         return $result;            
-    }
-
-    // Search if with same name.
-    public function getNameAndEmail($fullname, $email) 
-    {
-       $rows = new Query();
-    
-       $result = $rows->select(['fullname', 'email'])
-        ->from('customer')
-        ->where(['fullname' => $fullname])
-        ->andWhere(['email' => $email])
-        ->all();
-        
-        if( count($result) > 0 ) {
-            return TRUE;
-        }else {
-            return 0;
-        }
     }
 
     // get customer quotation by search
@@ -125,17 +110,18 @@ class SearchCustomer extends Customer
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'quotation.id as quotationId', 'quotation.quotation_code as quotationCode', 'quotation.user_id', 'user.fullname as salesPerson', 'quotation.customer_id', 'customer.fullname as customerName', 'customer.carplate', 'quotation.branch_id', 'branch.name', 'quotation.date_issue', 'quotation.grand_total', 'quotation.remarks as quotationRemarks', 'quotation_detail.id as quotationDetailId', 'quotation_detail.service_part_id', 'category.category', 'product.product_name', 'inventory.selling_price', 'quotation_detail.quantity', 'quotation_detail.selling_price as quotationPartsPrice', 'quotation_detail.subTotal' ])
+        $result = $rows->select([ 'quotation.id as quotationId', 'quotation.quotation_code as quotationCode', 'quotation.user_id', 'user.fullname as salesPerson', 'quotation.customer_id', 'customer.fullname as customerName', 'car_information.carplate', 'quotation.branch_id', 'branch.name', 'quotation.date_issue', 'quotation.grand_total', 'quotation.remarks as quotationRemarks', 'quotation_detail.id as quotationDetailId', 'quotation_detail.service_part_id', 'category.category', 'product.product_name', 'inventory.selling_price', 'quotation_detail.quantity', 'quotation_detail.selling_price as quotationPartsPrice', 'quotation_detail.subTotal' ])
                 ->from('quotation')
                 ->join('LEFT JOIN', 'user', 'quotation.user_id = user.id')
-                ->join('LEFT JOIN', 'customer', 'quotation.customer_id = customer.id')
+                ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+                ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
                 ->join('LEFT JOIN', 'branch', 'quotation.branch_id = branch.id')
                 ->join('LEFT JOIN', 'quotation_detail', 'quotation.id = quotation_detail.quotation_id')
                 ->join('LEFT JOIN', 'inventory', 'quotation_detail.service_part_id = inventory.id')
                 ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
                 ->join('LEFT JOIN', 'category', 'product.category_id = category.id')
                 ->where(['LIKE', 'customer.fullname', $keyword ])
-                ->orWhere(['LIKE', 'customer.carplate', $keyword ])
+                ->orWhere(['LIKE', 'car_information.carplate', $keyword ])
                 ->orWhere(['LIKE', 'product.product_name',  $keyword ])
                 ->orderBy('date_issue','desc')
                 ->all();
@@ -148,14 +134,20 @@ class SearchCustomer extends Customer
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'invoice.id as invoiceId', 'invoice.invoice_no as invoiceNo', 'invoice.user_id', 'invoice.customer_id', 'customer.fullname as customerName', 'customer.carplate', 'invoice.date_issue', 'invoice.grand_total as grandTotal', 'invoice.remarks as invoiceRemarks', 'invoice.paid', 'user.fullname as salesPerson', 'invoice.paid_type' ])
-                ->from('invoice')
+        $result = $rows->select([ 'invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'car_information.carplate', 'car_information.make', 'car_information.model', 'product.product_name', 'invoice_detail.selling_price', 'invoice_detail.quantity', 'invoice_detail.subTotal', 'invoice.date_issue', 'invoice.paid', 'invoice.paid_type', 'customer.type', 'customer.company_name' ])
+                ->from('invoice_detail')
+                ->join('LEFT JOIN', 'invoice', 'invoice_detail.invoice_id = invoice.id')
+                ->join('LEFT JOIN', 'inventory', 'invoice_detail.service_part_id = inventory.id')
+                ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
                 ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
-                ->join('LEFT JOIN', 'customer', 'invoice.customer_id = customer.id')
-                ->where(['LIKE', 'customer.fullname', $keyword ])
-                ->orWhere(['LIKE', 'customer.carplate', $keyword ])
-                ->groupBy('invoice_no')
-                ->orderBy('date_issue','desc')
+                ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+                ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+                ->where('invoice_detail.type = 1')
+                ->andWhere(['LIKE', 'customer.fullname', $keyword ])
+                ->orWhere(['LIKE', 'customer.company_name', $keyword ])
+                ->orWhere(['LIKE', 'car_information.carplate', $keyword ])
+                ->orWhere(['LIKE', 'product.product_name', $keyword ])
+                ->orderBy(['date_issue' => SORT_DESC])
                 ->all();
 
         return $result;
@@ -172,6 +164,74 @@ class SearchCustomer extends Customer
                     ->all();
 
         return $result;
+    }
+
+    // get customer by id
+    public function getCustomerById($id) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['customer.*', 'race.name' ])
+                    ->from('customer')
+                    ->join('LEFT JOIN', 'race', 'customer.race_id = race.id')
+                    ->where(['customer.id' => $id])
+                    ->one();
+
+        return $result;            
+    }
+
+    public function getCarLastId($id)
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['MAX(car_information.id) as lastId'])
+                    ->from('car_information')
+                    ->where(['car_information.customer_id' => $id])
+                    ->one();
+
+        return $result;  
+    }
+
+    // get customer list
+    public function getCustomerList() 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['customer.*', 'race.name' ])
+                    ->from('customer')
+                    ->join('LEFT JOIN', 'race', 'customer.race_id = race.id')
+                    ->where(['customer.is_blacklist' => 0, 'customer.status' => 1])
+                    ->all();
+
+        return $result;            
+    }
+
+    // get blacklisted customer list
+    public function getBlacklistCustomerList() 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['customer.*', 'race.name' ])
+                    ->from('customer')
+                    ->join('LEFT JOIN', 'race', 'customer.race_id = race.id')
+                    ->where(['customer.is_blacklist' => 1, 'customer.status' => 1])
+                    ->all();
+
+        return $result;            
+    }
+
+    // get customer list by id
+    public function getCustomerListById($id) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['customer.*', 'race.name' ])
+                    ->from('customer')
+                    ->join('LEFT JOIN', 'race', 'customer.race_id = race.id')
+                    ->where(['customer.id' => $id, 'customer.is_blacklist' => 0, 'customer.status' => 1])
+                    ->one();
+
+        return $result;            
     }
 
 }

@@ -9,24 +9,31 @@ use yii\db\Query;
  * This is the model class for table "customer".
  *
  * @property integer $id
+ * @property string $role
+ * @property string $password
+ * @property string $password_hash
+ * @property string $auth_key
  * @property string $fullname
- * @property string $race
- * @property string $carplate
+ * @property string $address
+ * @property string $race_id
  * @property string $address
  * @property string $hanphone_no
  * @property string $office_no
  * @property string $email
- * @property string $make
- * @property string $model
+ * @property string $company_name
+ * @property string $uen_no
+ * @property string $remarks
+ * @property string $type
+ * @property integer $status
+ * @property string $join_date
+ * @property string $member_expiry
  * @property integer $is_blacklist
  * @property integer $is_member
- * @property integer $points
- * @property string $member_expiry
- * @property integer $status
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
+ * @property integer $deleted
  */
 class Customer extends \yii\db\ActiveRecord
 {
@@ -43,16 +50,17 @@ class Customer extends \yii\db\ActiveRecord
      */
     public function rules()
     {
-        //    'is_blacklist',  'is_member', 'status',  'created_by',  'updated_by'
-        
-        // 'is_blacklist', 'is_member', 'status', 'created_by', 'updated_by'
         return [
-            [['fullname', 'ic', 'password', 'race', 'carplate', 'address', 'hanphone_no', 'office_no', 'email', 'make', 'model', 'remarks', 'points', 'member_expiry', 'status', 'is_blacklist', 'is_member', 'created_by', 'created_at', 'updated_at'], 'required'],
-            [['fullname', 'ic', 'address', 'is_member'], 'string'],
-            [['hanphone_no', 'office_no', 'points', 'is_blacklist', 'created_by'], 'integer'],
-            [['email'], 'email'],
-            [['member_expiry', 'status', 'created_at', 'updated_at'], 'safe'],
-            [['fullname', 'ic', 'race', 'carplate', 'hanphone_no', 'office_no', 'email', 'make', 'model'], 'string', 'max' => 50],
+            [['type'], 'required', 'message' => 'Fill up the required fields.'],
+            [['fullname', 'nric', 'company_name', 'uen_no', 'address'], 'string' ],
+            [['hanphone_no', 'office_no', 'is_blacklist', 'is_member', 'updated_by', 'created_by'], 'integer'],
+            [['email'], 'email', 'message' => 'Invalid email address format.'],
+            [['is_member', 'join_date', 'member_expiry', 'type', 'deleted', 'status', 'nric', 'uen_no', 'created_at', 'updated_at', 'password', 'password_hash', 'auth_key', 'race_id', 'role' ], 'safe'],
+            [['fullname', 'nric', 'company_name', 'uen_no', 'hanphone_no', 'office_no', 'email' ], 'string', 'max' => 50],
+            [['type'], 'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number', 'message' => 'Choose customer type first.'],
+            [['is_member'], 'compare', 'compareValue' => 3, 'operator' => '<', 'type' => 'number', 'message' => 'Choose member type first.'],
+            [['fullname'], 'unique', 'message' => 'Fullname already exist.'],
+            [['company_name'], 'unique', 'message' => 'Company Name already exist.'],
         ];
     }
 
@@ -64,25 +72,25 @@ class Customer extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'fullname' => 'Fullname',
-            'race' => 'Race',
-            'carplate' => 'Carplate',
+            'nric' => 'NRIC',
+            'company_name' => 'Company Name',
+            'uen_no' => 'UEN No',
+            'race_id' => 'Race',
             'address' => 'Address',
             'hanphone_no' => 'Hanphone No',
             'office_no' => 'Office No',
             'email' => 'Email',
-            'make' => 'Make',
-            'model' => 'Model',
             'remarks' => 'Remarks',
+            'join_date' => 'Join Date',
+            'member_expiry' => 'Member Expiry',
             'is_blacklist' => 'Is Blacklist',
             'is_member' => 'Is Member',
-            'points' => 'Points',
-            'member_expiry' => 'Member Expiry',
+            'type' => 'Type',
             'status' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
-            'ic' => 'IC',
-            // 'updated_by' => 'Updated By',
+            'deleted' => 'Deleted',
         ];
     }
 

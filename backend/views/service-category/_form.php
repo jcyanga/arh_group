@@ -8,7 +8,7 @@ use yii\helpers\Url;
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
-$dataStatus = array('' => 'Choose Status', '0' => 'Inactive', '1' => 'Active');
+$dataStatus = array('0' => 'Inactive', '1' => 'Active');
 $dateNow = date('Y-m-d');
 $userId = Yii::$app->user->identity->id;
 
@@ -24,7 +24,7 @@ $userId = Yii::$app->user->identity->id;
     </div>
     <br/>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label class="form_label">Name</label>
         <?= $form->field($model, 'name')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Write Service Category Name here.'])->label(false) ?>
     </div>
@@ -34,12 +34,8 @@ $userId = Yii::$app->user->identity->id;
         <?= $form->field($model, 'description')->textInput(['class' => 'form_input form-control',  'required' => 'required', 'placeholder' => 'Write Service Category Description here.'])->label(false) ?>
     </div>
 
-    <div class="col-md-4">
-        <label class="form_label">Status</label>
-        <?= $form->field($model, 'status')->dropDownList($dataStatus,['class' => 'form_input form-control', 'required' => 'required'])->label(false) ?>
-    </div>
-
     <div>
+        <?= $form->field($model, 'status')->hiddenInput(['value' => 1])->label(false) ?>
         <?= $form->field($model, 'created_at')->hiddenInput(['value' => $dateNow])->label(false) ?>
         <?= $form->field($model, 'updated_at')->hiddenInput(['value' => $dateNow])->label(false) ?>
         <?= $form->field($model, 'created_by')->hiddenInput(['value' => $userId])->label(false) ?>

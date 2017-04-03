@@ -1,8 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SearchCustomer */
@@ -24,9 +22,8 @@ $this->title = 'Create Category';
 </div>
 
 <div class="col-md-12 col-sm-12 col-xs-12">
-
     <div class="form-title-container">
-        <span class="form-header"><h4>Create Module</h4></span>
+        <span class="form-header"><h4><i class="fa fa-cogs"></i> Create Module</h4></span>
     </div>
     <hr/>
 
@@ -36,11 +33,9 @@ $this->title = 'Create Category';
     <div class="form-crud-container">
         <?= $this->render('_form', ['model' => $model,]) ?>
     </div>   
- 
- </div>
+</div>
 
 </div>
-<br/>
 
 
 

@@ -132,16 +132,18 @@ class SearchService extends Service
     public function getPendingInvoiceServices() {
         $rows = new Query();
 
-        $result = $rows->select([ 'invoice_detail.id', 'invoice.id as invoiceId', 'invoice.invoice_no', 'invoice.user_id', 'user.fullname as salesPerson', 'invoice.customer_id', 'customer.fullname', 'invoice.branch_id', 'branch.name', 'invoice.grand_total', 'invoice.date_issue', 'invoice_detail.id', 'invoice_detail.service_part_id', 'service.service_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal' ])
+        $result = $rows->select([ 'invoice_detail.id', 'invoice.id as invoiceId', 'invoice.invoice_no', 'invoice.user_id', 'user.fullname as salesPerson', 'invoice.customer_id', 'customer.fullname', 'invoice.branch_id', 'branch.name', 'invoice.grand_total', 'invoice.date_issue', 'invoice_detail.id', 'invoice_detail.service_part_id', 'service.service_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal', 'customer.type', 'customer.company_name' ])
                 ->from('invoice_detail')
                 ->join('LEFT JOIN', 'invoice', 'invoice_detail.invoice_id = invoice.id')
                 ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
-                ->join('LEFT JOIN', 'customer', 'invoice.customer_id = customer.id')
+                ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+                ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
                 ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
                 ->join('LEFT JOIN', 'service', 'invoice_detail.service_part_id = service.id')
                 ->where('invoice_detail.type = 0')
                 ->andWhere('invoice_detail.task = 1')
                 ->andWhere('invoice_detail.status = 0')
+                ->orderBy(['invoice_detail.id' => SORT_DESC])
                 ->all();
 
         return $result;
@@ -187,4 +189,23 @@ class SearchService extends Service
         return $result;
     }
     
+    // get Services By ID
+    public function getServiceListById($id) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['service.id', 'service.service_category_id', 'service_category.name', 'service.service_name', 'service.default_price', 'service.created_at'])
+            ->from('service')
+            ->join('INNER JOIN', 'service_category', 'service.service_category_id = service_category.id')
+            ->where(['service.id' => $id])
+            ->orderBy('service.id')
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        }   
+    }
+
 }

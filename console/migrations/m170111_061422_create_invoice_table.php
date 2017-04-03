@@ -30,7 +30,8 @@ class m170111_061422_create_invoice_table extends Migration
             'task' => $this->integer(5)->notNull(),
             'paid' => $this->integer(5)->notNull(),
             'paid_type' => $this->integer(5)->notNull(),
-            'status' => $this->integer(5)->notNull()
+            'status' => $this->integer(5)->notNull(),
+            'payment_status' => $this->integer(5)->notNull(),
         ]);
     }
 

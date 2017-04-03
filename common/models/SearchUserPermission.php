@@ -78,6 +78,7 @@ class SearchUserPermission extends UserPermission
             ->from('user_permission')
             ->join('INNER JOIN', 'role', 'user_permission.role_id = role.id')
             ->where('user_permission.role_id > 1')
+            ->andWhere(['user_permission.status' => 1])
             ->andWhere(['like', 'user_permission.role_id', $role_id])
             ->andWhere(['like', 'user_permission.controller', $controller])
             ->andWhere(['like', 'user_permission.action', $action])
@@ -93,6 +94,7 @@ class SearchUserPermission extends UserPermission
             ->from('user_permission')
             ->join('INNER JOIN', 'role', 'user_permission.role_id = role.id')
             ->where('user_permission.role_id > 1')
+            ->andWhere(['user_permission.status' => 1])
             ->all();
 
         if( count($result) > 0 ) {

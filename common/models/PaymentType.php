@@ -31,9 +31,10 @@ class PaymentType extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'description', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'required'],
+            [['name', 'description'], 'required', 'message' => 'Fill-up required fields.'],
+            [['name'], 'unique', 'message' => 'Payment type name already exist.'],
             [['description'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['interest', 'created_at', 'created_by', 'updated_at', 'updated_by', 'status'], 'safe'],
             [['created_by', 'updated_by'], 'integer'],
             [['name'], 'string', 'max' => 50],
         ];

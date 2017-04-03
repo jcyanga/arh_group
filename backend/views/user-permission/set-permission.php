@@ -19,11 +19,11 @@ $this->title = 'Create User Permission';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
 	<div class="form-title-container">
-	    <span style="color: #666;" class="form-header"><h4>Create User Permission</h4></span>
+	    <span style="color: #666;" class="form-header"><h4><i class="fa fa-user"></i> Create User Permission Information</h4></span>
 	</div>
 	<hr/>
 </div>
- <br/>
+<br/>
 
 <div class="col-md-12 col-sm-12 col-xs-12">
   <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
@@ -47,24 +47,24 @@ $this->title = 'Create User Permission';
 
 <div class="col-md-3">
     <label style="font-size: 12px;">Controller List</label>
-    <select id="controllerName" name="controllerName" class="form_input form-control">
-    	<option vale="0">CHOOSE CONTROLLER HERE</option>
+    <select id="controllerName" name="controllerName" class="form_input select2_single" style="width:100%;" data-placeholder="CHOOSE CONTROLLER HERE" >
+    	<option value=""></option>
     	<?php foreach ( $controllerList as $cName => $cL ) {  ?>
     		<?php  $selected = $controllerNameChosen == $cName ?  'selected' : ''?>
     		<option <?= $selected ?>><?= $cName ?></option>
 		<?php } ?>
-		</select>
+	</select>
 </div>
 
 <div class="col-md-3">
 	<label style="font-size: 12px;">Role List</label>
-    <select id="userRole" name="userRole" class="form_input form-control">
-			<option vale="0">CHOOSE ROLE HERE</option>
-			<?php foreach ( $userRole as $uR ) { ?>
-				<?php  $selected = $userRoleId == $uR->id ?  'selected' : ''?>
-				<option value="<?= $uR->id ?>" <?= $selected ?>><?= $uR->role ?></option>
-			<?php } /* foreach */ ?>
-		</select>
+    <select id="userRole" name="userRole" class="form_input select2_single" style="width:100%;" data-placeholder="CHOOSE ROLE HERE" >
+    	<option value=""></option>
+		<?php foreach ( $userRole as $uR ) { ?>
+			<?php  $selected = $userRoleId == $uR->id ?  'selected' : ''?>
+			<option value="<?= $uR->id ?>" <?= $selected ?>><?= $uR->role ?></option>
+		<?php } /* foreach */ ?>
+	</select>
 </div>
 
 <div class="col-md-3"></div>
@@ -108,6 +108,7 @@ $this->title = 'Create User Permission';
 	<?php } /* if */ ?>
 
 <?php ActiveForm::end(); ?>
+<br/>
 
 </div>
  <br/>

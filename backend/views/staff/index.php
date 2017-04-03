@@ -19,18 +19,17 @@ $this->title = 'Staff';
 <div class="row form-container">
 
 <div>
-    <?php if($msg <> ''){ ?>
-        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-            <?php echo $msg; ?>
+    <?php if(Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert alert-success alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+            <h5 class="alert-heading"><i class="fa fa-info-circle"></i> <?= Yii::$app->session->getFlash('success'); ?></h5>
         </div>
-    <?php } ?>
+    <?php endif; ?>
 </div>
 
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-windows"></i> Staff Maintenance</h4></span>
+        <span class="form-header"><h4><i class="fa fa-user-plus"></i> Staff Maintenance</h4></span>
     </div>
     <hr/>
 
@@ -86,7 +85,7 @@ $this->title = 'Staff';
                     <td class="tblalign_center" ><?php echo ( $row['status'] == 1 )? 'Active' : 'Inactive';  ?></td>
                     <td class="last tblalign_center">
                         <a href="?r=staff/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a> |
-                        <a href="?r=staff/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-pencil-square"></li> </a> | 
+                        <a href="?r=staff/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Edit Record" ><li class="fa fa-pencil-square"></li> </a> | 
                         <a href="?r=staff/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record"  ><li class="fa fa-trash"></li> </a>
 
                     </td>
@@ -108,5 +107,3 @@ $this->title = 'Staff';
 <div style="color:#fff">|<br/>|<br/>|<br/></div>
 
 </div>
-
-<br/>

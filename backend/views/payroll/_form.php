@@ -3,20 +3,28 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
+use yii\helpers\ArrayHelper;
 
 use common\models\Staff;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Customer */
+/* @var $model common\models\Payroll */
 /* @var $form yii\widgets\ActiveForm */
 
-$dateNow = date('Y-m-d');
-$userId = Yii::$app->user->identity->id;
-$getStaff = Staff::find()->all();
+$dateNow = date('d-m-Y');
+$getStaff = ArrayHelper::map(Staff::find()->where(['status' => 1])->all(), 'id', 'fullname');
+
+$userLogName = Yii::$app->user->identity->fullname;
+
+if(!is_null(Yii::$app->request->get('id')) || Yii::$app->request->get('id') <> ''){
+    $id = Yii::$app->request->get('id'); 
+}else{
+    $id = 0;
+}
 
 ?>
 
-<?php $form = ActiveForm::begin(['id' => 'demo-form2', 'class' => 'form-inline']); ?>
+<?php $form = ActiveForm::begin(['id' => 'arh-form']); ?>
 
 <div class="row">
 
@@ -26,9 +34,10 @@ $getStaff = Staff::find()->all();
     </div>
     <br/>
 
-    <div class="col-md-4">
-        <label class="form_label">Pay Date</label>
-        <?= $form->field($model, 'pay_date')->textInput(['class' => 'form_input form-control', 'readonly' => 'readonly', 'id' => 'expiry_date', 'placeholder' => 'YYYY-MM-DD'])->label(false) ?>
+    <div class="col-md-3">
+        <label class="form_label">Pay-Date Issue</label>
+        <input type="hidden" name="id" id="id" value="<?= $id ?>" />
+        <?= $form->field($model, 'date_issue')->textInput(['class' => 'form_input form-control', 'style' => 'text-align:center;', 'readonly' => 'readonly', 'id' => 'payslipDate', 'value' => $dateNow, 'placeholder' => 'YYYY-MM-DD'])->label(false) ?>
     </div>
 
 </div>
@@ -36,18 +45,19 @@ $getStaff = Staff::find()->all();
 
 <div class="row">
 
-    <div class="col-md-4">
+    <div class="col-md-3">
+        <label class="form_label">Pay Cut-Off Date</label>
+        <?= $form->field($model, 'payslip_cutoff')->textInput(['class' => 'form_input form-control', 'style' => 'text-align:center;', 'readonly' => 'readonly', 'id' => 'payslipCutoffDate', 'placeholder' => 'YYYY-MM-DD'])->label(false) ?>
+    </div>
+
+</div>
+<br/>
+
+<div class="row">
+
+    <div class="col-md-3">
         <label class="form_label">Staff Fullname</label>
-        <select name="Payroll[staff_id]" class="qSelect select3_single">
-            <option value="0">SEARCH STAFF HERE.</option>
-            <?php if( !empty($getStaff) ): ?>
-                <?php foreach( $getStaff as $row ): ?>
-                    <option value="<?php echo $row['id']; ?>">[ <?php echo $row['staff_code']; ?> ] <?php echo $row['fullname']; ?></option>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <option value="0">NO RECORD FOUND.</option>
-            <?php endif; ?>
-        </select>
+        <?= $form->field($model, 'staff_id')->dropdownList(['0' => '- PLEASE SELECT STAFF NAME HERE -'] + $getStaff, ['class' => 'qSelect select3_single', 'style' => 'width:100%;', 'id' => 'staffId', 'onchange' => 'getStaffCitizenship()', 'data-placeholder' => 'CHOOSE STAFF HERE', $editStatus => 'disabled' ])->label(false) ?>
     </div>
 
 </div>
@@ -56,59 +66,43 @@ $getStaff = Staff::find()->all();
 <div class="row">
 
     <div class="col-md-6">
-        
-         <div class="row">
-            <div class="col-md-8">
-                <label class="form_label">IC No.</label>
-                <?= $form->field($model, 'ic_no')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0.00'])->label(false) ?>
-            </div>
-         </div>
-         <br/>
 
          <div class="row">
-            <div class="col-md-8">
-                <label class="form_label">Basic</label>
-                <?= $form->field($model, 'basic')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0.00'])->label(false) ?>
-            </div>
-         </div>
-         <br/>
-
-         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <label class="form_label">Over-Time Hours</label>
-                <?= $form->field($model, 'overtime_hours')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0'])->label(false) ?>
+                <?= $form->field($model, 'overtime_hour')->textInput(['class' => 'form_input form-control', 'placeholder' => '0.0', 'id' => 'psOtHour', 'onchange' => 'getOtPay()' ])->label(false) ?>
             </div>
          </div>
          <br/>
 
          <div class="row">
-            <div class="col-md-8">
-                <label class="form_label">Rate per Hour</label>
-                <?= $form->field($model, 'rate_per_hour')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0.00'])->label(false) ?>
+            <div class="col-md-7">
+                <label class="form_label">Over-Time Rate per Hour</label>
+                <?= $form->field($model, 'overtime_rate_per_hour')->textInput(['class' => 'form_input form-control', 'placeholder' => '0.0', 'id' => 'psOtRateHour', 'onchange' => 'getOtPay()' ])->label(false) ?>
             </div>
          </div>
          <br/>
 
          <div class="row">
-            <div class="col-md-8">
-                <label class="form_label">Commission</label>
-                <?= $form->field($model, 'commission')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0.00'])->label(false) ?>
+            <div class="col-md-7">
+                <label class="form_label">Over-Time Pay</label>
+                <?= $form->field($model, 'overtime_pay')->textInput(['class' => 'form_input form-control', 'placeholder' => '0.0', 'id' => 'psOtPay', 'readonly' => 'readonly' ])->label(false) ?>
+            </div>
+         </div>
+         <br/>
+         
+         <div class="row">
+            <div class="col-md-7">
+                <label class="form_label">Employer CPF.</label>
+                <?= $form->field($model, 'employer_cpf')->textInput(['class' => 'form_input form-control', 'id' => 'employerCpf', 'placeholder' => '0.00', 'readonly' => 'readonly'])->label(false) ?>
             </div>
          </div>
          <br/>
 
          <div class="row">
-            <div class="col-md-8">
-                <label class="form_label">Allowance</label>
-                <?= $form->field($model, 'allowance')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0.00'])->label(false) ?>
-            </div>
-         </div>
-         <br/>
-
-         <div class="row">
-            <div class="col-md-8">
-                <label class="form_label">Employees CPF.</label>
-                <?= $form->field($model, 'employees_cpf')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0.00'])->label(false) ?>
+            <div class="col-md-7">
+                <label class="form_label">Employee CPF.</label>
+                <?= $form->field($model, 'employee_cpf')->textInput(['class' => 'form_input form-control', 'id' => 'employeeCpf', 'placeholder' => '0.00', 'readonly' => 'readonly'])->label(false) ?>
             </div>
          </div>
 
@@ -117,84 +111,71 @@ $getStaff = Staff::find()->all();
     <div class="col-md-6">
         
          <div class="row">
-            <div class="col-md-8">
-                <label class="form_label">Employers CPF.</label>
-                <?= $form->field($model, 'employers_cpf')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0.00'])->label(false) ?>
+            <div class="col-md-7">
+                <label class="form_label">Cash Advance</label>
+                <?= $form->field($model, 'cash_advance')->textInput(['class' => 'form_input form-control', 'placeholder' => '0.00', 'id' => 'psCashAdvance' ])->label(false) ?>
             </div>
          </div>
          <br/>
 
          <div class="row">
-            <div class="col-md-8">
-                <label class="form_label">Sinda</label>
-                <?= $form->field($model, 'sinda')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0.00'])->label(false) ?>
+            <div class="col-md-7">
+                <label class="form_label">Other Deductions</label>
+                <?= $form->field($model, 'other_deductions')->textInput(['class' => 'form_input form-control', 'placeholder' => '0.00', 'id' => 'psOtherDeduction' ])->label(false) ?>
             </div>
          </div>
          <br/>
 
          <div class="row">
-            <div class="col-md-8">
-                <label class="form_label">Advance Loan</label>
-                <?= $form->field($model, 'advance_loan')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0.00'])->label(false) ?>
+            <div class="col-md-7">
+                <label class="form_label">Monthly Levy Charge</label>
+                <?= $form->field($model, 'monthly_levy_charge')->textInput(['class' => 'form_input form-control', 'id' => 'monthlyLevyCharge', 'placeholder' => '0.00', 'readonly' => 'readonly'])->label(false) ?>
             </div>
          </div>
          <br/>
 
          <div class="row">
-            <div class="col-md-8">
-                <label class="form_label">Income Tax</label>
-                <?= $form->field($model, 'income_tax')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0.00'])->label(false) ?>
-            </div>
-         </div>
-         <br/>
-
-         <div class="row">
-            <div class="col-md-8">
-                <label class="form_label">Reimbursement</label>
-                <?= $form->field($model, 'reimbursement')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => '0.00'])->label(false) ?>
-            </div>
-         </div>
-         <br/>
-
-         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <label class="form_label">Prepared By</label>
-                <?= $form->field($model, 'prepared_by')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Who Prepare ?'])->label(false) ?>
+                <?= $form->field($model, 'prepared_by')->textInput(['class' => 'form_input form-control', 'value' => $userLogName, 'placeholder' => 'Who Prepare ?', 'id' => 'psPreparedBy' ])->label(false) ?>
             </div>
          </div>
          <br/>
 
          <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <label class="form_label">Approved By</label>
-                <?= $form->field($model, 'approved_by')->textInput(['class' => 'form_input form-control', 'required' => 'required', 'placeholder' => 'Who Approve ?'])->label(false) ?>
+                <?= $form->field($model, 'approved_by')->textInput(['class' => 'form_input form-control', 'value' => $userLogName, 'placeholder' => 'Who Approve ?', 'id' => 'psApprovedBy' ])->label(false) ?>
             </div>
          </div>
          <br/>
 
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col-md-6">
+        <label class="form_label">Notes</label>
+        <?= $form->field($model, 'remarks')->textarea(['class' => 'form_input form-control', 'placeholder' => 'Write Notes here.', 'id' => 'psNotes' ])->label(false) ?>
     </div>
 
 </div>
 <hr/>
 
-    <div>
-        <?= $form->field($model, 'created_at')->textInput(['type' => 'hidden', 'value' => $dateNow])->label(false) ?>
-        <?= $form->field($model, 'created_by')->textInput(['type' => 'hidden', 'value' => $userId])->label(false) ?>
-        <?= $form->field($model, 'updated_at')->textInput(['type' => 'hidden', 'value' => $dateNow])->label(false) ?>
-        <?= $form->field($model, 'updated_by')->textInput(['type' => 'hidden', 'value' => $userId])->label(false) ?>
-    </div>
+<?php ActiveForm::end(); ?>
 
 <div class="row">
 
     <div class="col-md-4">
-        <?= Html::submitButton($model->isNewRecord ? '<li class=\'fa fa-save\'></li> Save New Record' : '<li class=\'fa fa-save\'></li> Update Record', ['class' => $model->isNewRecord ? 'form-btn btn btn-primary' : 'form-btn btn btn-primary']) ?>
+        <?= Html::Button($model->isNewRecord ? '<li class=\'fa fa-save\'></li> Save New Record' : '<li class=\'fa fa-save\'></li> Edit Record', ['class' => $model->isNewRecord ? 'form-btn btn btn-primary' : 'form-btn btn btn-primary', 'id' => $model->isNewRecord ? 'submitPayrollForm' : 'savePayrollForm']) ?>
         <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-danger']) ?>
     </div>
-    
+
 </div>
 <br/><br/>
 
-<?php ActiveForm::end(); ?>
 
 
 

@@ -15,13 +15,9 @@ class m170124_065002_create_payroll_table extends Migration
         $this->createTable('payroll', [
             'id' => $this->primaryKey(),
             'staff_id' => $this->integer(5)->notNull(),
-            'ic_no' => $this->string(50)->notNull(),
             'pay_date' => $this->date()->notNull(),
-            'basic' => $this->double(10,2)->notNull(),
             'overtime_hours' => $this->integer(25)->notNull(),
-            'rate_per_hour' => $this->double(10,2)->notNull(),
             'commission' => $this->double(10,2)->notNull(),
-            'allowance' => $this->double(10,2)->notNull(),
             'employees_cpf' => $this->double(10,2)->notNull(),
             'employers_cpf' => $this->double(10,2)->notNull(),
             'sinda' =>$this->double(10,2)->notNull(),

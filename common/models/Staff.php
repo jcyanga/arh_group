@@ -32,10 +32,12 @@ class Staff extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['staff_code', 'fullname', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'required'],
-            [['status', 'created_by', 'updated_by'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['staff_group_id', 'designated_position_id', 'staff_code', 'fullname', 'address', 'email', 'contact_number', 'basic', 'allowance', 'ic_no', 'rate_per_hour', 'non_tax_allowance', 'gender'], 'required', 'message' => 'Fill-up required fields.'],
+            [['status', 'created_by', 'updated_by', 'contact_number'], 'integer'],
+            [['status', 'created_at', 'created_by', 'updated_at', 'updated_by', 'levy_supplement', 'basic', 'allowance', 'rate_per_hour', 'non_tax_allowance'], 'safe'],
             [['staff_code', 'fullname'], 'string', 'max' => 50],
+            [['fullname'], 'unique', 'message' => 'Staff name already exist.'],
+            [['staff_group_id', 'designated_position_id', 'race_id', 'citizenship'], 'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number', 'message' => 'Invalid option selected'],
         ];
     }
 
@@ -46,8 +48,16 @@ class Staff extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'staff_group_id' => 'Staff Group',
             'staff_code' => 'Staff Code',
             'fullname' => 'Fullname',
+            'address' => 'Address',
+            'email' => 'Email',
+            'contact_number' => 'Contact Number',
+            'basic' => 'Basic',
+            'ic_no' => 'IC No',
+            'rate_per_hour' => 'Rate per Hour',
+            'allowance' => 'Allowance',
             'status' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',

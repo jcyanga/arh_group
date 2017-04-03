@@ -18,7 +18,7 @@ $this->title = 'Monthly Stock Report';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-bar-chart"></i> Monthly Stock Report </h4></span>
+        <span class="form-header"><h4><i class="fa fa-pie-chart"></i> Monthly Stock Report </h4></span>
     </div>
     <hr/>
 
@@ -55,9 +55,9 @@ $this->title = 'Monthly Stock Report';
                         <td class="tblalign_center" ><?php echo $row['supplier_name'];  ?></td>
                         <td class="tblalign_center" ><?php echo $row['product_name'];  ?></td>
                         <td class="tblalign_center" ><b><?php echo $row['quantity'];  ?></b></td>
-                        <td  class="tblalign_center" ><?php echo '$'.$row['cost_price'].'.00';  ?></td>
-                        <td  class="tblalign_center" ><?php echo '$'.$row['selling_price'].'.00';  ?></td>
-                        <td  class="tblalign_center" ><b><?php echo date('m-d-Y', strtotime($row['date_imported']) );  ?></b></td>
+                        <td  class="tblalign_center" >$ <?php echo number_format($row['cost_price'],2);  ?></td>
+                        <td  class="tblalign_center" >$ <?php echo number_format($row['selling_price'],2);  ?></td>
+                        <td  class="tblalign_center" ><b><?php echo date('M-d-Y', strtotime($row['datetime_imported']) );  ?></b></td>
                     </tr>
                 <?php } ?> 
             <?php else: ?>
@@ -93,7 +93,6 @@ $this->title = 'Monthly Stock Report';
 </div>
 
 </div>
-<br/>
 
 
 

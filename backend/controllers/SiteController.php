@@ -13,6 +13,7 @@ use common\models\ProductLevel;
 use common\models\SearchService;
 use common\models\SearchCustomer;
 use common\models\SearchPayment;
+use common\models\SearchInvoice;
 
 /**
  * Site controller
@@ -72,16 +73,23 @@ class SiteController extends Controller
         $serviceModel = new SearchService();
         $customerModel = new SearchCustomer();
         $dailysalesModel = new SearchPayment();
+        $invoiceModel = new SearchInvoice();
 
         // customer list
         if( Yii::$app->request->post()) {
-            $getCustomerInvoiceBySearch = $customerModel->getCustomerInvoiceBySearch(Yii::$app->request->post('customerSearchkeyword'));
-            $keywordValue = Yii::$app->request->post('customerSearchkeyword');
+            if( Yii::$app->request->post('customerSearchkeyword') <> '' ){
+                $getCustomerInvoiceBySearch = $customerModel->getCustomerInvoiceBySearch(Yii::$app->request->post('customerSearchkeyword'));
+                $keywordValue = Yii::$app->request->post('customerSearchkeyword');
+            
+            } else {
+                $getCustomerInvoiceBySearch = '';
+                $keywordValue = '';
+            }
 
         }else{
-            $getCustomerInvoiceBySearch = '';
-            $keywordValue = '';
-
+                $getCustomerInvoiceBySearch = '';
+                $keywordValue = '';
+                
         }
 
         // pending services dashboard
@@ -95,8 +103,8 @@ class SiteController extends Controller
         $criticalLevel = $getPartLevel->critical_level;
         $minimumLevel = $getPartLevel->minimum_level;
 
-        $getCriticalStock = $inventoryModel->getCriticalStock($criticalLevel);
-        $getTotalCriticalStock = count($inventoryModel->getTotalCriticalStock($criticalLevel));
+        $getCriticalStock = $inventoryModel->getCriticalStock();
+        $getTotalCriticalStock = count($inventoryModel->getTotalCriticalStock());
         $getWarningStock = $inventoryModel->getWarningStock($minimumLevel);
         $getTotalWarningStock = count($inventoryModel->getTotalWarningStock($minimumLevel));
 
@@ -105,6 +113,17 @@ class SiteController extends Controller
         $getTotalDailyCashSales = $dailysalesModel->getTotalDailyCashSales();
         $getTotalDailyCreditCardSales = $dailysalesModel->getTotalDailyCreditCardSales();
         $getTotalDailyNetsSales = $dailysalesModel->getTotalDailyNetsSales();
+        
+        $session = Yii::$app->session;
+
+        $session->open();
+        $session->set('getTotalDailyCashSales', $getTotalDailyCashSales);
+        $session->set('getTotalDailyCreditCardSales', $getTotalDailyCreditCardSales);
+        $session->set('getTotalDailyNetsSales', $getTotalDailyNetsSales);
+        $session->close();
+
+        // oustanding payments in invoices dashboard
+        $oustandingpaymentsInvoice = $invoiceModel->getInvoiceWithOutstandingPayments();
 
         return $this->render('index', [
                         'getZeroStock' => $getZeroStock, 
@@ -116,10 +135,11 @@ class SiteController extends Controller
                         'pendingInvoiceServices' => $pendingInvoiceServices,
                         'getCustomerInvoiceBySearch' => $getCustomerInvoiceBySearch,
                         'keywordValue' => $keywordValue,
-                        'getTotalDailySales' => $getTotalDailySales['total'],
-                        'getTotalDailyCashSales' => $getTotalDailyCashSales['totalCashPayment'],
-                        'getTotalDailyCreditCardSales' => $getTotalDailyCreditCardSales['totalCrediCardPayment'],
-                        'getTotalDailyNetsSales' => $getTotalDailyNetsSales['totalNetsPayment'],
+                        'getTotalDailySales' => $getTotalDailySales,
+                        'getTotalDailyCashSales' => $getTotalDailyCashSales,
+                        'getTotalDailyCreditCardSales' => $getTotalDailyCreditCardSales,
+                        'getTotalDailyNetsSales' => $getTotalDailyNetsSales,
+                        'oustandingpaymentsInvoice' => $oustandingpaymentsInvoice,
                     ]);
     }
 
@@ -156,9 +176,15 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
+        $session = Yii::$app->session;
+        if($session->isActive){
+            $session->destroy();
+            Yii::$app->cache->flush();
+            
+            Yii::$app->user->logout();
 
-        return $this->goHome();
+            return $this->goHome();
+        }
     }
 
     public function actionAutoComplete()

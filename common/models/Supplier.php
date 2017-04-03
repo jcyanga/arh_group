@@ -28,7 +28,9 @@ class Supplier extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['supplier_code', 'supplier_name', 'address', 'contact_number'], 'required'],
+            [['supplier_code', 'supplier_name', 'address', 'contact_number'], 'required', 'message' => 'Fill-up required fields.'],
+            [['status', 'created_at', 'created_by'], 'safe'],
+            [['supplier_name'], 'unique', 'message' => 'Supplier name already exist.'],
             [['supplier_code', 'supplier_name'], 'string', 'max' => 50],
         ];
     }

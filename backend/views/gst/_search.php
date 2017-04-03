@@ -10,23 +10,24 @@ use common\models\Branch;
 /* @var $model common\models\Customer */
 /* @var $form yii\widgets\ActiveForm */
 
-$dataBranch = ArrayHelper::map(Branch::find()->where('id > 1')->all(), 'id', 'name');
+$dataBranch = ArrayHelper::map(Branch::find()->where('id > 2')->all(), 'id', 'name');
 
 ?>
 
  <div class="row">
+ <br/>
 
     <div class="col-md-12">
         <div class="search-label-container">
             <span class="search-label"><li class="fa fa-edit"></li> Enter Keyword here</span>
         </div> 
     </div>
-    <br/><br/>
+    <br/>
     
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
     <div class="col-md-4">
-        <?= $form->field($model, 'branch_id')->dropDownList($dataBranch, ['class' => 'form_input form-control', 'required' => 'required'])->label(false) ?>
+        <?= $form->field($model, 'branch_id')->dropDownList($dataBranch, ['style' => 'width:100%;', 'class' => 'form_input select2_single', 'data-placeholder' => 'CHOOSE BRANCH HERE'])->label(false) ?>
     </div>
 
     <div class="col-md-4">
@@ -38,7 +39,7 @@ $dataBranch = ArrayHelper::map(Branch::find()->where('id > 1')->all(), 'id', 'na
     <div class="col-md-4"></div>
 
     <?php ActiveForm::end(); ?>
-    <br/><br/>
+    <br/>
 
  </div>
 

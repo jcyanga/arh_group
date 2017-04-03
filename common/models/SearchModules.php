@@ -77,6 +77,7 @@ class SearchModules extends Modules
         $result = $rows->select(['*'])
                     ->from('modules')
                     ->where(['like', 'modules', $module])
+                    ->andWhere(['status' => 1])
                     ->all();
 
         return $result;  
@@ -90,6 +91,7 @@ class SearchModules extends Modules
        $result = $rows->select(['modules'])
         ->from('modules')
         ->where(['modules' => $modules])
+        ->andWhere(['status' => 1])
         ->all();
         
         if( count($result) > 0 ) {

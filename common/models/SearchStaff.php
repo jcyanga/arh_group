@@ -19,8 +19,8 @@ class SearchStaff extends Staff
     public function rules()
     {
         return [
-            [['id', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['staff_code', 'fullname', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'staff_group_id', 'designated_position_id', 'contact_number', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['staff_code', 'fullname', 'address', 'email', 'basic', 'ic_no', 'rate_per_hour', 'allowance', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -62,6 +62,13 @@ class SearchStaff extends Staff
         $query->andFilterWhere([
             'id' => $this->id,
             'status' => $this->status,
+            'address' => $this->address,
+            'email' => $this->email,
+            'contact_number' => $this->contact_number,
+            'basic' => $this->basic,
+            'ic_no' => $this->ic_no,
+            'rate_per_hour' => $this->rate_per_hour,
+            'allowance' => $this->allowance,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
             'updated_at' => $this->updated_at,
@@ -74,7 +81,7 @@ class SearchStaff extends Staff
         return $dataProvider;
     }
 
-     // Search box result.
+    // Search box result.
     public function searchStaffName($name) 
     {
         $rows = new Query();
@@ -82,6 +89,7 @@ class SearchStaff extends Staff
         $result = $rows->select(['*'])
                     ->from('staff')
                     ->where(['like', 'fullname', $name])
+                    ->andWhere(['status' => 1])
                     ->all();
 
         return $result;  
@@ -95,6 +103,7 @@ class SearchStaff extends Staff
        $result = $rows->select(['fullname'])
         ->from('staff')
         ->where(['fullname' => $name])
+        ->andWhere(['status' => 1])
         ->all();
         
         if( count($result) > 0 ) {
@@ -102,5 +111,42 @@ class SearchStaff extends Staff
         }else {
             return 0;
         }
+    }
+
+    // get Staff Lists.
+    public function getStaffListById($id) 
+    {
+       $rows = new Query();
+    
+       $result = $rows->select(['staff.*', 'staff_group.name'])
+        ->from('staff')
+        ->join('LEFT JOIN', 'staff_group', 'staff.staff_group_id = staff_group.id')
+        ->where(['staff.id' => $id])
+        ->andWhere(['staff.status' => 1])
+        ->one();
+        
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        }
+    }
+
+    // get id
+    public function getStaffId() 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['Max(id) as staff_id'])
+                        ->from('staff')
+                        ->one();
+               
+        if( count($result) > 0 ) {
+            return $result['staff_id'] + 1;
+        
+        }else {
+            return 0;
+        
+        }                
     }
 }

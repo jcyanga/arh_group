@@ -19,12 +19,11 @@ $this->title = 'Modules';
 <div class="row form-container">
 
 <div>
-    <?php if($msg <> ''){ ?>
-        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-            <?php echo $msg; ?>
+    <?php if(Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert alert-success alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+            <h5 class="alert-heading"><i class="fa fa-info-circle"></i> <?= Yii::$app->session->getFlash('success'); ?></h5>
         </div>
-    <?php } ?>
+    <?php endif; ?>
 </div>
 
  <div class="col-md-12 col-sm-12 col-xs-12">
@@ -84,7 +83,7 @@ $this->title = 'Modules';
                     <td class="tblalign_center" ><?php echo $row['modules'];  ?></td>
                     <td class="last tblalign_center">
                         <a href="?r=modules/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a> |
-                        <a href="?r=modules/update&id=<?php echo $row['id']; ?>"><li class="fa fa-pencil-square" data-toggle="tooltip" data-placement="top" title="Update Record" ></li> </a> | 
+                        <a href="?r=modules/update&id=<?php echo $row['id']; ?>"><li class="fa fa-pencil-square" data-toggle="tooltip" data-placement="top" title="Edit Record" ></li> </a> | 
                         <a href="?r=modules/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a>
                     </td>
                 </tr>
@@ -104,8 +103,6 @@ $this->title = 'Modules';
 <div style="color:#fff">|<br/>|<br/>|<br/></div>
 
 </div>
-
-<br/>
 
 
 

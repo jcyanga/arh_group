@@ -1,8 +1,6 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SearchCustomer */
@@ -23,10 +21,9 @@ $this->title = 'Create User';
     <?php } ?>
 </div>
     
- <div class="col-md-12 col-sm-12 col-xs-12">
-
+<div class="col-md-12 col-sm-12 col-xs-12">
     <div class="form-title-container">
-        <span class="form-header"><h4>Create User</h4></span>
+        <span class="form-header"><h4><li class="fa fa-user"></li> Create User Information</h4></span>
     </div>
     <hr/>
 
@@ -35,12 +32,10 @@ $this->title = 'Create User';
 
     <div class="form-crud-container">
         <?= $this->render('_form', ['model' => $model,]) ?>
-    </div>   
- 
- </div>
+    </div>    
+</div>
 
 </div>
-<br/>
 
 
 

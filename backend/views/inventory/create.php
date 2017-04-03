@@ -1,47 +1,21 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\helpers\ArrayHelper;
+
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\SearchCustomer */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $model common\models\Inventory */
 
-$this->title = 'Create Item in Inventory';
-
+$this->title = 'Create Inventory';
+$this->params['breadcrumbs'][] = ['label' => 'Inventories', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
+<div class="inventory-create">
 
-<div class="row form-container">
+    <h1><?= Html::encode($this->title) ?></h1>
 
-<div>
-    <?php if($msg <> ''){ ?>
-        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-            <?php echo $msg; ?>
-        </div>
-    <?php } ?>
-</div>
-
-<div class="col-md-12 col-sm-12 col-xs-12">
-
-    <div class="form-title-container">
-        <span class="form-header"><h4>Create Parts in Inventory</h4></span>
-    </div>
-    <hr/>
-
-    <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
-    <br/><br/>
-
-    <div class="form-crud-container">
-        <?= $this->render('_form', ['model' => $model, 'getProductList' => $getProductList ]) ?>
-    </div>   
- 
- </div>
+    <?= $this->render('_form', [
+        'model' => $model,
+    ]) ?>
 
 </div>
-<br/>
-
-
-
-

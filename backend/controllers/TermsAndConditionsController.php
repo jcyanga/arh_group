@@ -19,6 +19,7 @@ use common\models\UserPermission;
  */
 class TermsAndConditionsController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -94,11 +95,11 @@ class TermsAndConditionsController extends Controller
         $searchModel = new SearchTermsAndConditions();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if( !empty(Yii::$app->request->get('searchTermsConditions')['descriptions'])) {
+        if( !empty(Yii::$app->request->get('SearchTermsAndConditions')['descriptions'])) {
             $getTermsConditions = $searchModel->searchTermsConditions(Yii::$app->request->get('SearchTermsAndConditions')['descriptions']);
         
         }else {
-            $getTermsConditions = TermsAndConditions::find()->all();
+            $getTermsConditions = TermsAndConditions::find()->where(['status' => 1])->all();
 
         }
 
@@ -132,48 +133,36 @@ class TermsAndConditionsController extends Controller
     public function actionCreate()
     {
         $model = new TermsAndConditions();
-        $searchModel = new SearchTermsAndConditions();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->getTermsAndConditions(Yii::$app->request->post('TermsAndConditions') ['descriptions']);
-
-            if( $result == 1 ) {
-                return $this->render('create', [
-                                'model' => $model, 
-                                'errTypeHeader' => 'Warning!', 
-                                'errType' => 'alert alert-warning', 
-                                'msg' => 'You already enter an existing name, Please! Change the description.']);
-            }
-
-            if( $model->save() ) {
-                $getTermsConditions = TermsAndConditions::find()->all();
-
-                return $this->render('index', [
-                                'searchModel' => $searchModel, 
-                                'getTermsConditions' => $getTermsConditions,
-                                'dataProvider' => $dataProvider, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Your record was successfully added in the database.'
-                            ]);
-
-            } else {
-                return $this->render('create', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => 'Error!', 
-                                    'errType' => 'alert alert-error', 
-                                    'msg' => 'You have an error, Check All the required fields.'
-                                ]);
-            }
-
-        } else {
-            return $this->render('create', [
+        return $this->render('create', [
                         'model' => $model, 
                         'errTypeHeader' => '', 
                         'errType' => '', 
-                        'msg' => '']
-                        );
+                        'msg' => ''
+                    ]);
+    }
+
+    public function actionNew()
+    {
+        $model = new TermsAndConditions();  
+
+        if ( Yii::$app->request->post() ) {   
+
+            $model->descriptions = Yii::$app->request->post('descriptions');
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->status = 1;
+
+            if($model->validate()) {
+                $model->save();
+                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
+            }
         }
     }
 
@@ -186,28 +175,33 @@ class TermsAndConditionsController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $searchModel = new SearchTermsAndConditions();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
-            $getTermsConditions = TermsAndConditions::find()->all();
-
-            return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getTermsConditions' => $getTermsConditions,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully updated in the database.'
-                    ]);
-
-        } else {
-            return $this->render('update', [
+        
+        return $this->render('update', [
                         'model' => $model, 
                         'errTypeHeader' => '', 
                         'errType' => '', 
                         'msg' => ''
                     ]);
+    }
+
+    public function actionEdit()
+    {
+        $model = $this->findModel(Yii::$app->request->post('id'));
+
+        $model->descriptions = Yii::$app->request->post('descriptions');
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->created_by = Yii::$app->user->identity->id;
+        $model->updated_at = date('Y-m-d H:i:s');
+        $model->updated_by = Yii::$app->user->identity->id;
+        $model->status = 1;
+
+        if($model->validate()) {
+           $model->save();
+           return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
+
+        } else {
+           return json_encode(['message' => $model->errors, 'status' => 'Error']);
+        
         }
     }
 
@@ -229,16 +223,12 @@ class TermsAndConditionsController extends Controller
         $searchModel = new SearchTermsAndConditions();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->findModel($id)->delete();
-        $getTermsConditions = TermsAndConditions::find()->all();
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save();
 
-        return $this->render('index', [
-                    'searchModel' => $searchModel, 
-                    'getTermsConditions' => $getTermsConditions,
-                    'dataProvider' => $dataProvider, 
-                    'errTypeHeader' => 'Success!', 'errType' => 'alert alert-success', 
-                    'msg' => 'Your record was successfully deleted in the database.'
-                ]);
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
 
     /**
@@ -259,7 +249,7 @@ class TermsAndConditionsController extends Controller
 
     public function actionExportExcel() 
     {
-        $result = TermsAndConditions::find()->all();
+        $result = TermsAndConditions::find()->where(['status' => 1])->all();
 
         $objPHPExcel = new \PHPExcel();
         $styleHeadingArray = array(
@@ -311,7 +301,7 @@ class TermsAndConditionsController extends Controller
 
     public function actionExportPdf() 
     {
-        $result = TermsAndConditions::find()->all();
+        $result = TermsAndConditions::find()->where(['status' => 1])->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
 
         $dompdf = new Dompdf();

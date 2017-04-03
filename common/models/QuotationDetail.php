@@ -33,8 +33,8 @@ class QuotationDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['quotation_id', 'service_part_id', 'quantity', 'selling_price', 'subTotal', 'created_at', 'created_by', 'type', 'task'], 'required'],
-            [['quotation_id', 'service_part_id', 'quantity', 'created_by', 'type', 'task'], 'integer'],
+            [['quotation_id', 'service_part_id', 'quantity', 'selling_price', 'subTotal', 'created_at', 'created_by', 'type'], 'required'],
+            [['quotation_id', 'quantity', 'created_by', 'type'], 'integer'],
             [['selling_price', 'subTotal'], 'number'],
             [['created_at'], 'safe'],
         ];

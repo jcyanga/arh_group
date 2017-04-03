@@ -18,7 +18,7 @@ $this->title = 'Monthly Stock Report';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-bar-chart"></i> Best Selling Product Report</h4></span>
+        <span class="form-header"><h4><i class="fa fa-pie-chart"></i> Best Selling Product Report</h4></span>
     </div>
     <hr/>
 
@@ -44,31 +44,20 @@ $this->title = 'Monthly Stock Report';
                 <th class="tblalign_center" ><b>CATEGORY</b></th>
                 <th class="tblalign_center" ><b>SERVICE NAME / PRODUCT NAME</b></th>
                 <th class="tblalign_center" ><b>QUANTITY</b></th>
-                <th class="tblalign_center" ><b>SELLING PRICE</b></th>
-                <th class="tblalign_center" ><b>TOTAL SOLD AMOUNT</b></th>
+                <th class="tblalign_center" ><b>UNIT PRICE</b></th>
+                <th class="tblalign_center" ><b>LINE TOTAL</b></th>
             </tr>
         </thead>
         <tbody>
         	<?php if( !empty($getBestSellingParts) ): ?>
-                <?php foreach( $getBestSellingService as $srow){ ?>
-                    <tr >
-                        <td class="tblalign_center" ><?php echo $srow['invoice_no'];  ?></td>
-                        <td class="tblalign_center" ><?php echo $srow['name'];  ?></td>
-                        <td class="tblalign_center" ><b><?php echo $srow['service_name'];  ?></b></td>
-                        <td class="tblalign_center" ><b><?php echo $srow['quantity'];  ?></b></td>
-                        <td  class="tblalign_center" ><?php echo '$'.$srow['selling_price'].'.00';  ?></td>
-                        <td  class="tblalign_center" ><b><?php echo '$'.$srow['subTotal'].'.00';  ?></b></td>
-                    </tr>
-                <?php } ?> 
-
                 <?php foreach( $getBestSellingParts as $row){ ?>
                     <tr >
                         <td class="tblalign_center" ><?php echo $row['invoice_no'];  ?></td>
                         <td class="tblalign_center" ><?php echo $row['category'];  ?></td>
                         <td class="tblalign_center" ><b><?php echo $row['product_name'];  ?></b></td>
                         <td class="tblalign_center" ><b><?php echo $row['quantity'];  ?></b></td>
-                        <td  class="tblalign_center" ><?php echo '$'.$row['selling_price'].'.00';  ?></td>
-                        <td  class="tblalign_center" ><b><?php echo '$'.$row['subTotal'].'.00';  ?></b></td>
+                        <td  class="tblalign_center" >$ <?php echo number_format($row['selling_price'],2);  ?></td>
+                        <td  class="tblalign_center" ><b>$ <?php echo number_format($row['subTotal'],2);  ?></b></td>
                     </tr>
                 <?php } ?> 
 
@@ -105,9 +94,6 @@ $this->title = 'Monthly Stock Report';
 </div>
 
 </div>
-<br/>
-
-
 
 
 

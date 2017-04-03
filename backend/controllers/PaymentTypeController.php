@@ -19,6 +19,7 @@ use common\models\UserPermission;
  */
 class PaymentTypeController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -98,7 +99,7 @@ class PaymentTypeController extends Controller
             $getPaymentType = $searchModel->searchPaymentTypeName(Yii::$app->request->get('SearchPaymentType')['name']);
         
         }else {
-            $getPaymentType = PaymentType::find()->all();
+            $getPaymentType = PaymentType::find()->where(['status' => 1])->all();
 
         }
 
@@ -132,48 +133,38 @@ class PaymentTypeController extends Controller
     public function actionCreate()
     {
         $model = new PaymentType();
-        $searchModel = new SearchPaymentType();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->getPaymentType(Yii::$app->request->post('PaymentType') ['name']);
-
-            if( $result == 1 ) {
-                return $this->render('create', [
-                                'model' => $model, 
-                                'errTypeHeader' => 'Warning!', 
-                                'errType' => 'alert alert-warning', 
-                                'msg' => 'You already enter an existing name, Please! Change the payment type name.']);
-            }
-
-            if( $model->save() ) {
-                $getPaymentType = PaymentType::find()->all();
-
-                return $this->render('index', [
-                                'searchModel' => $searchModel, 
-                                'getPaymentType' => $getPaymentType,
-                                'dataProvider' => $dataProvider, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Your record was successfully added in the database.'
-                            ]);
-
-            } else {
-                return $this->render('create', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => 'Error!', 
-                                    'errType' => 'alert alert-error', 
-                                    'msg' => 'You have an error, Check All the required fields.'
-                                ]);
-            }
-
-        } else {
-            return $this->render('create', [
+    
+        return $this->render('create', [
                         'model' => $model, 
                         'errTypeHeader' => '', 
                         'errType' => '', 
-                        'msg' => '']
-                        );
+                        'msg' => ''
+                        ]);
+    }
+
+    public function actionNew()
+    {
+        $model = new PaymentType();  
+
+        if ( Yii::$app->request->post() ) {   
+
+            $model->name = Yii::$app->request->post('name');
+            $model->description = Yii::$app->request->post('description');
+            $model->interest = Yii::$app->request->post('interest');
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->status = 1;
+
+            if($model->validate()) {
+                $model->save();
+                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
+            }
         }
     }
 
@@ -186,28 +177,35 @@ class PaymentTypeController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $searchModel = new SearchPaymentType();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        
+        return $this->render('update', [
+                    'model' => $model, 
+                    'errTypeHeader' => '', 
+                    'errType' => '', 
+                    'msg' => ''
+                ]);
+    }
 
-        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
-            $getPaymentType = PaymentType::find()->all();
+    public function actionEdit()
+    {
+        $model = $this->findModel(Yii::$app->request->post('id'));
 
-            return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getPaymentType' => $getPaymentType,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully updated in the database.'
-                    ]);
+        $model->name = Yii::$app->request->post('name');
+        $model->description = Yii::$app->request->post('description');
+        $model->interest = Yii::$app->request->post('interest');
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->created_by = Yii::$app->user->identity->id;
+        $model->updated_at = date('Y-m-d H:i:s');
+        $model->updated_by = Yii::$app->user->identity->id;
+        $model->status = 1;
+
+        if($model->validate()) {
+           $model->save();
+           return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
 
         } else {
-            return $this->render('update', [
-                        'model' => $model, 
-                        'errTypeHeader' => '', 
-                        'errType' => '', 
-                        'msg' => ''
-                    ]);
+           return json_encode(['message' => $model->errors, 'status' => 'Error']);
+        
         }
     }
 
@@ -229,16 +227,12 @@ class PaymentTypeController extends Controller
         $searchModel = new SearchPaymentType();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->findModel($id)->delete();
-        $getPaymentType = PaymentType::find()->all();
-
-        return $this->render('index', [
-                    'searchModel' => $searchModel, 
-                    'getPaymentType' => $getPaymentType,
-                    'dataProvider' => $dataProvider, 
-                    'errTypeHeader' => 'Success!', 'errType' => 'alert alert-success', 
-                    'msg' => 'Your record was successfully deleted in the database.'
-                ]);
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save();
+        
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
 
     /**
@@ -259,7 +253,7 @@ class PaymentTypeController extends Controller
 
     public function actionExportExcel() 
     {
-        $result = PaymentType::find()->all();
+        $result = PaymentType::find()->where(['status' => 1])->all();
 
         $objPHPExcel = new \PHPExcel();
         $styleHeadingArray = array(
@@ -314,7 +308,7 @@ class PaymentTypeController extends Controller
 
     public function actionExportPdf() 
     {
-        $result = PaymentType::find()->all();
+        $result = PaymentType::find()->where(['status' => 1])->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
 
         $dompdf = new Dompdf();

@@ -26,7 +26,7 @@ use yii\helpers\Url;
 				<td><?php echo $row['name']; ?></td>
 				<td><?php echo $row['service_name']; ?></td>
 				<td><?php echo $row['description']; ?></td>
-				<td><?php echo $row['default_price']; ?></td>
+				<td>$ <?php echo number_format($row['default_price'],2); ?></td>
 				<td><?php echo date('m-d-Y', strtotime($row['created_at']) ); ?></td>
 				<td><?php echo ( $row['status'] == 1 ) ? 'Active' : 'Inactive'; ?></td>
 			</tr>

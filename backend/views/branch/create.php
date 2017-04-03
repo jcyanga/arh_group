@@ -1,11 +1,9 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
-/* @var $searchModel common\models\SearchCustomer */
+/* @var $searchModel common\models\SearchBranch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Create Branch';
@@ -22,11 +20,10 @@ $this->title = 'Create Branch';
         </div>
     <?php } ?>
 </div>
-    
- <div class="col-md-12 col-sm-12 col-xs-12">
-
+ 
+<div class="col-md-12 col-sm-12 col-xs-12">
     <div class="form-title-container">
-        <span class="form-header"><h4>Create Branch</h4></span>
+        <span class="form-header"><h4><i class="fa fa-globe"></i> Create Branch Information</h4></span>
     </div>
     <hr/>
 
@@ -34,12 +31,9 @@ $this->title = 'Create Branch';
     <br/><br/>
 
     <div class="form-crud-container">
-        <?= $this->render('_form', ['model' => $model,]) ?>
+        <?= $this->render('_form', ['model' => $model]) ?>
     </div>   
- 
- </div>
+</div>
 
 </div>
-<br/>
-
 

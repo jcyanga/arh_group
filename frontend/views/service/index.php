@@ -18,7 +18,7 @@ $this->title = 'Services List';
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-battery-quarter"></i> SERVICES LIST</h4></span>
+        <span class="form-header"><h4><i class="fa fa-battery-quarter"></i> AVAILABLE SERVICES LIST</h4></span>
     </div>
     <hr/>
 
@@ -63,8 +63,6 @@ $this->title = 'Services List';
 <div style="color:#fff">|<br/>|<br/></div>
 
 </div>
-<br/>
-
 
 
 

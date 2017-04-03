@@ -13,21 +13,22 @@ $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
 ?>
 
  <div class="row">
+ <br/>
 
     <div class="col-md-12">
         <div class="search-label-container">
             <span class="search-label"><li class="fa fa-edit"></li> Enter Keyword here</span>
         </div> 
     </div>
-    <br/><br/>
+    <br/>
     
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
-    <div class="col-md-4">
-        <?= $form->field($model, 'category_id')->dropDownList($dataCategory,['class' => 'form_input form-control'])->label(false) ?>
+    <div class="col-md-3">
+        <?= $form->field($model, 'category_id')->dropDownList($dataCategory,['style' => 'width:100%;', 'class' => 'form_input select2_single', 'data-placeholder' => 'CHOOSE PARTS CATEGORY HERE'])->label(false) ?>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-3">
         <?= $form->field($model, 'product_name')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Write Part Name here.'])->label(false) ?>
     </div>
 
@@ -38,7 +39,7 @@ $dataCategory = ArrayHelper::map(Category::find()->all(), 'id', 'category');
     </div>
     
     <?php ActiveForm::end(); ?>
-    <br/><br/>
+    <br/>
 
  </div>
 

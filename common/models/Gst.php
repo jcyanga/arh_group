@@ -26,7 +26,9 @@ class Gst extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['gst','branch_id'], 'required'],
+            [['gst','branch_id'], 'required', 'message' => 'Fill-up required fields.'],
+            [['branch_id'], 'unique', 'message' => 'Branch name already exist.'],
+            ['gst', 'integer', 'message' => 'Invalid format.'],
             [['gst'], 'string', 'max' => 10],
         ];
     }
