@@ -147,22 +147,22 @@ $this->title = 'Products';
                 <h5 class="modal-title" id="myModalLabel"><i class="fa fa-database"></i> <b>Change Quantity</b> </h5>
             </div>
 
-        <div class="modal-body">
+            <div class="modal-body">
 
-            <form id="i-modal-form" class="i-modal-form" method="POST">
-                
-                <div style="font-size:11px;" id="product_information" class="product_information"></div>
-                <input type="hidden" id="productId" class="productId" />
-                <input type="hidden" id="oldQty" class="oldQty" />
-                <input type="hidden" id="newQty" class="newQty" />
+                <form id="i-modal-form" class="i-modal-form" method="POST">
+                    
+                    <div style="font-size:11px;" id="product_information" class="product_information"></div>
+                    <input type="hidden" id="productId" class="productId" />
+                    <input type="hidden" id="oldQty" class="oldQty" />
+                    <input type="hidden" id="newQty" class="newQty" />
 
-            </form>
+                </form>
 
-        </div>
+            </div>
 
-        <div class="modal-footer">
-            <button type="button" id="modal-submit-i" class="form-btn btn btn-primary"><i class="fa fa-save"></i> Submit</button>
-        </div>
+            <div class="modal-footer">
+                <button type="button" id="modal-submit-i" class="form-btn btn btn-primary"><i class="fa fa-save"></i> Submit</button>
+            </div>
 
         </div>
     </div>
