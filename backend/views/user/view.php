@@ -16,7 +16,7 @@ $this->title = 'View User';
  <div class="col-md-12 col-sm-12 col-xs-12">
     
  <div class="form-title-container">
-    <span class="form-header"><h4>View User Information</h4></span>
+    <span class="form-header"><h4><li class="fa fa-user"></li> View User Information</h4></span>
  </div>      
  <hr/>
 
@@ -57,7 +57,6 @@ $this->title = 'View User';
  </div>
 
 </div>
-<br/>
 
 
 

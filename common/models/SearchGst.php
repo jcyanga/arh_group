@@ -78,6 +78,7 @@ class SearchGst extends Gst
                     ->from('gst')
                     ->join('INNER JOIN', 'branch', 'gst.branch_id = branch.id')
                     ->where(['like', 'gst.branch_id', $branch_id])
+                    ->andWhere(['gst.status' => 1])
                     ->all();
 
         if( count($result) > 0 ) {
@@ -98,6 +99,7 @@ class SearchGst extends Gst
         $result = $rows->select(['gst.id', 'gst.branch_id', 'branch.name', 'gst.gst'])
                     ->from('gst')
                     ->join('INNER JOIN', 'branch', 'gst.branch_id = branch.id')
+                    ->where(['gst.status' => 1])
                     ->all();
 
         if( count($result) > 0 ) {
@@ -117,6 +119,7 @@ class SearchGst extends Gst
         $result = $rows->select(['*'])
                     ->from('gst')
                     ->where(['gst.branch_id' => $branch_id])
+                    ->andWhere(['gst.status' => 1])
                     ->all();
 
         if( count($result) > 0 ) {
@@ -126,6 +129,21 @@ class SearchGst extends Gst
             return 0;
 
         }   
+
+    }
+
+    // get Branch Gst by Branch Id
+    public function getBranchGst($id)
+    {
+        $result = Gst::find()->where(['branch_id' => $id])->andWhere(['status' => 1])->one();
+
+        if( count($result) > 0 ) {
+            return $result->gst;
+        
+        }else{
+            return 0;
+        
+        }
 
     }
 

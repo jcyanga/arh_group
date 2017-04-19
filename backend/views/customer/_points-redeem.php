@@ -16,7 +16,7 @@ $this->title = 'View Redeem Points';
  <div class="col-md-12 col-sm-12 col-xs-12">
     
  <div class="form-title-container">
-    <span class="form-header"><h4>View Redeem Points</h4></span>
+    <span class="form-header"><h4><i class="fa fa-users"></i> View Redeem Points</h4></span>
  </div>      
  <hr/>
 
@@ -27,61 +27,56 @@ $this->title = 'View Redeem Points';
  </div>    
  <br/>
 
+<?php if(!empty($getCarPoints)): ?>
+<?php foreach($getCarPoints as $pointsRow): ?>
 <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    
     <div class="tile-stats">
-    <br/>
-        
-        <div class="icon">
-        <br/>
+        <br/><div class="icon"><br/>
             <i class="fa fa-bell-o"></i>
         </div>
 
         <div class="count">
-            <?= $customerPoints ?>
+            <?= $pointsRow['points'] ?>
         </div>
 
-        <h3>TOTAL POINTS</h3>
-
-    <br/>
+        <h3><?= $pointsRow['carplate'] ?></h3><br/>
     </div>
-
 </div>
-<br/>
 
- <div class="col-md-12 col-sm-12 col-xs-12">
 
-    <div class="tbl-container viewDesign">
+<div class="col-md-12 col-sm-12 col-xs-12">
+<hr/>
+
+    <div class="tbl-container viewDesign">  
+        <h4><i class="fa fa-minus-circle"></i> Redeemed Points List </h4>
         
-        <?php if( !empty($getRedeemPoints) ): ?>
         
             <table style="border: solid 1px #eee;" class="table table-hover table-striped">
-                <?php foreach($getRedeemPoints as $rpRow): ?>
+                
                     <tr>
                         <td><b>TRANSACTION #</b></td>
-                        <td><?php echo $rpRow['id']; ?></td>
+                        <td>123456</td>
                         <td><b>INVOICE NUMBER</b></td>
-                        <td><?php echo $rpRow['invoice_no']; ?></td>
+                        <td>INV123456</td>
                         <td><b>REDEEM POINTS</b></td>
-                        <td><?php echo $rpRow['points_redeem']; ?></td>
+                        <td>123</td>
                         <td><b>TRANSACTION DATE</b></td>
-                        <td><?php echo date('M-d-Y', strtotime($rpRow['payment_date'])); ?></td>
+                        <td>03-08-2017</td>
                         <td><b>TRANSACTION TIME</b></td>
-                        <td><?php echo $rpRow['payment_time']; ?></td>
+                        <td>18:00:00</td>
                     </tr>
-                <?php endforeach; ?>
+                
             </table>
 
-        <?php else: ?>
             <div>
                 &nbsp; <h5> <b>-No Record Found.</b> </h5>
             </div>
 
-        <?php endif; ?>
     </div>   
-    <br/>
 
- </div>
+<hr/>
+</div>
+<?php endforeach; ?>
+<?php endif;?>
 
 </div>
-<br/>

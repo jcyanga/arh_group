@@ -18,6 +18,7 @@ use common\models\UserPermission;
  */
 class RoleController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -95,7 +96,7 @@ class RoleController extends Controller
                 $getRole = $searchModel->searchRoleName(Yii::$app->request->get('SearchRole')['role']);
 
         }else {
-                $getRole = Role::find()->where('id > 1')->all();
+                $getRole = Role::find()->where('id > 1')->andWhere(['status' => 1])->all();
         
         }
 
@@ -129,49 +130,34 @@ class RoleController extends Controller
     public function actionCreate()
     {
         $model = new Role();
-        $searchModel = new SearchRole();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->getRole(Yii::$app->request->post('Role') ['role']);
-
-            if( $result == 1 ) {
-                return $this->render('create', [
-                                'model' => $model, 
-                                'errTypeHeader' => 'Warning!', 
-                                'errType' => 'alert alert-warning', 
-                                'msg' => 'You already enter an existing name, Please! Change the role name.'
-                            ]);
-            }
-
-            if( $model->save() ) {
-                $getRole = Role::find()->where('id > 1')->all();;
-
-                return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getRole' => $getRole,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully added in the database.'
-                    ]);
-
-            }else {
-                return $this->render('create', [
-                            'model' => $model, 
-                            'errTypeHeader' => 'Error!', 
-                            'errType' => 'alert alert-error', 
-                            'msg' => 'You have an error Check All the required fields.'
-                        ]);
-            }
-
-        } else {
-             return $this->render('create', [
+        return $this->render('create', [
                             'model' => $model, 
                             'errTypeHeader' => '', 
                             'errType' => '', 
                             'msg' => ''
                         ]);
+    }
+
+    public function actionNew()
+    {
+        $model = new Role();  
+
+        if ( Yii::$app->request->post() ) {   
+
+            $model->role = Yii::$app->request->post('name');
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->status = 1;
+
+            if($model->validate()) {
+                $model->save();
+                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
+            }
         }
     }
 
@@ -184,28 +170,30 @@ class RoleController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $searchModel = new SearchRole();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        
+        return $this->render('update', [
+                            'model' => $model, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);  
+    }
 
-        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {    
-            $getRole = Role::find()->where('id > 1')->all();;
+    public function actionEdit()
+    {
+        $model = $this->findModel(Yii::$app->request->post('id'));
 
-            return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getRole' => $getRole,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully updated in the database.'
-                    ]);
+        $model->role = Yii::$app->request->post('name');
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->created_by = Yii::$app->user->identity->id;
+        $model->status = 1;
+
+        if($model->validate()) {
+           $model->save();
+           return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
 
         } else {
-            return $this->render('update', [
-                        'model' => $model, 
-                        'errTypeHeader' => '', 
-                        'errType' => '', 
-                        'msg' => ''
-                    ]);
+           return json_encode(['message' => $model->errors, 'status' => 'Error']);
         
         }
     }
@@ -228,17 +216,12 @@ class RoleController extends Controller
         $searchModel = new SearchRole();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->findModel($id)->delete();
-        $getRole = Role::find()->where('id > 1')->all();;
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save();
 
-        return $this->render('index', [
-                    'searchModel' => $searchModel, 
-                    'getRole' => $getRole,
-                    'dataProvider' => $dataProvider, 
-                    'errTypeHeader' => 'Success!', 
-                    'errType' => 'alert alert-success', 
-                    'msg' => 'Your record was successfully deleted in the database.'
-                ]);
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
 
     /**
@@ -259,7 +242,7 @@ class RoleController extends Controller
 
     public function actionExportExcel() 
     {
-        $result = Role::find()->where('id > 1')->all();;
+        $result = Role::find()->where('id > 1')->andWhere(['status' => 1])->all();;
 
         $objPHPExcel = new \PHPExcel();
         $styleHeadingArray = array(
@@ -306,7 +289,7 @@ class RoleController extends Controller
 
     public function actionExportPdf() 
     {
-        $result = Role::find()->where('id > 1')->all();;
+        $result = Role::find()->where('id > 1')->andWhere(['status' => 1])->all();;
         $content = $this->renderPartial('_pdf', ['result' => $result]);
         
         $dompdf = new Dompdf();

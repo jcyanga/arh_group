@@ -27,8 +27,8 @@ class ProductLevel extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['minimum_level', 'critical_level'], 'required'],
-            [['minimum_level', 'critical_level'], 'integer'],
+            [['minimum_level', 'critical_level'], 'required', 'message' => 'Fill-up required fields.'],
+            [['minimum_level', 'critical_level'], 'integer', 'message' => 'This fields must be integer value.'],
         ];
     }
 

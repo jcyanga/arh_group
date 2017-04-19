@@ -20,10 +20,9 @@ $this->title = 'Update Role ';
     <?php } ?>
 </div>
      
- <div class="col-md-12 col-sm-12 col-xs-12">
-
+<div class="col-md-12 col-sm-12 col-xs-12">
     <div class="form-title-container">
-        <span class="form-header"><h4>Update Role</h4></span>
+        <span class="form-header"><h4><i class="fa fa-user"></i> Edit Role Information</h4></span>
     </div>      
     <hr/>
 
@@ -32,12 +31,10 @@ $this->title = 'Update Role ';
 
     <div class="form-crud-container">
         <?= $this->render('_form', ['model' => $model,]) ?>
-    </div>   
- 
- </div>
+    </div>    
+</div>
 
 </div>
-<br/>
 
 
 

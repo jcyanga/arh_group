@@ -183,13 +183,12 @@ class UserPermissionController extends Controller
         $searchModel = new SearchUserPermission();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->findModel($id)->delete();    
-
-        $model = new UserPermission();
-        $getUserPermission = $model->getUserPermission();
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save();   
        
-        return $this->render('index', ['searchModel' => $searchModel, 'getUserPermission' => $getUserPermission,
-                    'dataProvider' => $dataProvider, 'errTypeHeader' => 'Success!', 'errType' => 'alert-success', 'msg' => 'Your record was successfully deleted in the database.']);
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
 
     /**
@@ -245,7 +244,7 @@ class UserPermissionController extends Controller
         $userRoleId = 0;
         $controllerNameChosen = '';
         $controllerNameLong = '';
-        $userRole = Role::find()->all();
+        $userRole = Role::find()->where(['status' => 1])->all();
         $permission = [];
 
         if ( isset( $_GET['c'] ) && !empty( $_GET['c'] ) && isset( $_GET['u'] ) && !empty( $_GET['u'] ) ) {
@@ -263,6 +262,7 @@ class UserPermissionController extends Controller
         }
 
         if ( Yii::$app->request->post() ) {
+
             $controllerNameLong = Yii::$app->request->post()['controllerName'];
             $getModelName = explode('Controller', $controllerNameLong);
             $controllerName = $getModelName[0];
@@ -284,19 +284,14 @@ class UserPermissionController extends Controller
                     $newPermission->controller = $controllerName;
                     $newPermission->action = $actions;
                     $newPermission->role_id = $userRoleId;
+                    $newPermission->status = 1;
                     $newPermission->save();
                 }
 
                 $getUserPermission = $searchModel->getUserPermission();
                 
-                return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getUserPermission' => $getUserPermission, 
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully added in the database.'
-                    ]);
+                Yii::$app->getSession()->setFlash('success', 'Your record was successfully added in the database.');
+                return $this->redirect(['index']);
             }
         }
 

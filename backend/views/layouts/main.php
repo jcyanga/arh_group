@@ -28,7 +28,9 @@ $isCategory = false;
 $isProduct = false;
 $isSupplier = false;
 $isInventory = false;
-$isStocks = false;
+$isStaff = false;
+$isStaffGroup = false;
+$isPayroll = false;
 $isQuotation = false;
 $isInvoice = false;
 $isBestSelling = false;
@@ -36,6 +38,12 @@ $isMonthlySales = false;
 $isMonthlyStock = false;
 $isGst = false;
 $isProductLevel = false;
+$isPaymentType = false;
+$isTermsConditions = false;
+$isRace = false;
+$isPaymentStatus = false;
+$isDesignatedPosition = false;
+$isProductNotificationRecipient = false;
 
 $roleId = Yii::$app->user->identity->role_id;
 $getUserPermission = UserPermission::find()->where(['role_id' => $roleId])->groupBy('controller')->all();
@@ -95,8 +103,16 @@ foreach ($getUserPermission as $key => $value) {
             $isInventory = true;
         break;
 
-        case 'Stocks':
-            $isStocks = true;
+        case 'Staff':
+            $isStaff = true;
+        break;
+
+        case 'StaffGroup':
+            $isStaffGroup = true;
+        break;
+
+        case 'Payroll':
+            $isPayroll = true;
         break;
 
         case 'Quotation':
@@ -111,6 +127,7 @@ foreach ($getUserPermission as $key => $value) {
             $isBestSelling = true;
             $isMonthlySales = true;
             $isMonthlyStock = true;
+        break;
 
         case 'Gst': 
             $isGst = true;
@@ -118,6 +135,31 @@ foreach ($getUserPermission as $key => $value) {
 
         case 'ProductLevel':
             $isProductLevel = true;
+        break;
+
+        case 'PaymentType':
+            $isPaymentType = true;
+        break;
+
+        case 'TermsAndConditions':
+            $isTermsConditions = true;
+
+        case 'Race':
+            $isRace = true;
+                
+        break;
+
+        case 'PaymentStatus':
+            $isPaymentStatus = true;
+
+        case 'DesignatedPosition':
+            $isDesignatedPosition = true;
+                
+        break;
+
+        case 'ProductNotificationRecipient':
+            $isProductNotificationRecipient = true;
+                
         break;
 
         default:
@@ -128,6 +170,7 @@ foreach ($getUserPermission as $key => $value) {
 }
 
 $userFullname = Yii::$app->user->identity->fullname;
+$photo = Yii::$app->user->identity->photo;
 
 ?>
 
@@ -137,11 +180,13 @@ $userFullname = Yii::$app->user->identity->fullname;
 
 <html lang="<?= Yii::$app->language ?>">
 <head>
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE-edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
     <title>ARH Group Pte Ltd.</title>
+    <?php $this->head() ?>
 
     <!-- CSS -->
     
@@ -158,119 +203,464 @@ $userFullname = Yii::$app->user->identity->fullname;
     <link rel="stylesheet" href="assets/bootstrap/css/switchery/switchery.min.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/datatables/tools/css/dataTables.tableTools.css" />
     <link rel="stylesheet" href="assets/bootstrap/css/dashboard-styles.css" />
+    
+    <link rel="stylesheet" href="js/datepicker/css/datepicker.css" />
+    <link rel="stylesheet" href="js/datetimepicker/css/jquery.datetimepicker.css" />
+    
+    <!-- favicon -->
+    <link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="images/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="images/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <?php
+
+        if ( isset ( $_GET['r'] ) ) {
+            $getClass = $_GET['r'];
+            $url = explode('/', $_GET['r']);
+            if ( $url ) {
+              $getClass = $url[0];
+            }
+
+            if(isset($getClass) || !is_null($getClass)){
+    ?>
+        <style>
+            @media only screen and (max-width: 2000px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1500px;
+                }
+                
+            }
+
+            @media only screen and (max-width: 1600px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1500px;
+                }
+                
+            }
+
+            @media only screen and (max-width: 1024px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1800px;
+                }
+                
+            }
+
+            @media only screen and (max-width: 800px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1800px;
+                }
+                
+            }
+
+            @media only screen and (max-width: 600px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1800px;
+                }
+                
+            }
+
+            @media only screen and (max-width: 360px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1800px;
+                }
+                
+            }
+
+            @media only screen and (max-width: 320px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1800px;
+                }
+                
+            }
+        </style>
+    <?php }
+        }else{
+    ?>
+        <style>
+            @media (max-width: 2000px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1900px;
+                }
+                
+            }
+
+            @media (max-width: 1600px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1900px;
+                }
+                
+            }
+
+            @media (max-width: 1024px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1900px;
+                }
+                
+            }
+
+            @media (max-width: 800px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1900px;
+                }
+                
+            }
+
+            @media (max-width: 600px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1900px;
+                }
+                
+            }
+
+            @media (max-width: 360px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1900px;
+                }
+                
+            }
+
+            @media (max-width: 320px) {
+                .nav_menu {
+                    float: left;
+                    /*background: #F4F6F9;
+                    border-bottom: 1px solid #E6E9ED;*/
+                    
+                    background: #EDEDED;
+                    border-bottom: 2px solid #2A3F54;
+                    margin-bottom: 10px;
+                    min-width: 1000px;
+                }
+
+                body .container.body .right_col {
+                    background: #F7F7F7;
+                    min-width: 1000px;
+                    min-height: 1900px;
+                }
+                
+            }
+        </style>
+    <?php } ?>
+     
+
+    <style>
+        .bodyHeaderBackground {
+            background: url('images/dashboard/background.png') no-repeat center center fixed; 
+              -webkit-background-size: cover;
+              -moz-background-size: cover;
+              -o-background-size: cover;
+              background-size: cover;
+        }
+
+        #bodyContentBackground {
+            background: url('images/dashboard/background.png') no-repeat center center fixed; 
+              -webkit-background-size: cover;
+              -moz-background-size: cover;
+              -o-background-size: cover;
+              background-size: cover;
+        }
+    </style>
+
+    <style>canvas{}</style>
+
 </head>
 
 <body class="nav-md">
+<?php //$this->beginBody() ?>
 
     <div class="container body">
-
 
         <div class="main_container">
 
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
 
-                    <div class="navbar nav_title" style="border: 0;">
-                        <a href="?" class="site_title"><i class="fa fa-car"></i> <span> Arh Group Pte Ltd. </span></a>
+                    <div class="navbar nav_title" >
+                        <a href="?" class="site_title" >
+                            <div style="text-align: center;">
+                                <span class="fa fa-car" id="logoContainer"></span>
+                            </div>
+                        </a>
                     </div>
                     <div class="clearfix"></div>
-
 
                     <!-- menu prile quick info -->
                     <div class="profile">
                         <div class="profile_pic">
-                            <img src="assets/bootstrap/images/user.png" alt="..." class="img-circle profile_img">
+                            <img src="assets/bootstrap/photos/<?php echo $photo; ?>" alt="..." class="img-circle profile_img">
                         </div>
                         <div class="profile_info">
                             <span>Welcome,</span>
-                            <h2><?= $userFullname ?></h2>
                         </div>
                     </div>
                     <!-- /menu prile quick info -->
-
                     <br />
 
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
                         <div class="menu_section">
-                            <h3>General</h3>
+                            <h3><?= $userFullname ?></h3>
                             <ul class="nav side-menu">
-                                <li id="menu_header_bg"><a> <span id="nav-menu-header"> <i class="fa fa-list"></i> Menu Navigation </span> </a></li>
                                 <?php if($isDashboard): ?>
                                 <li><a href="?"><i class="fa fa-home"></i> Dashboard </a></li>
                                 <?php endif; ?>
                                 <?php if($isBranch): ?>
-                                <li><a href="?r=branch" id="nav-branch" ><i class="fa fa-globe"></i> Branch </a></li>
+                                <li><a href="?r=branch" ><i class="fa fa-globe"></i> Branch </a></li>
                                 <?php endif; ?>
                                 <?php if($isRole || $isModules || $isUserPermission || $isUser): ?>
-                                <li><a id="nav-user" ><i class="fa fa-user"></i>  User <span class="fa fa-chevron-down"></span></a>
+                                <li><a ><i class="fa fa-user"></i>  User <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
                                         <?php if($isRole): ?>
-                                        <li><a href="?r=role" id="nav-role" > User Role</a></li>
+                                        <li><a href="?r=role" > User Role</a></li>
                                         <?php endif; ?>
                                         <?php if($isModules): ?>
-                                        <li><a href="?r=modules" id="nav-modules"> Module List</a></li>
+                                        <li><a href="?r=modules" > Module List</a></li>
                                         <?php endif; ?>
                                         <?php if($isUserPermission): ?>
-                                        <li><a href="?r=user-permission" id="nav-userPermission"> User Permission</a></li>
+                                        <li><a href="?r=user-permission" > User Permission</a></li>
                                         <?php endif; ?>
                                         <?php if($isUser): ?>
-                                        <li ><a href="?r=user" id="nav-userList"> User </a></li>
+                                        <li ><a href="?r=user" > User </a></li>
                                         <?php endif; ?>
                                     </ul>
                                 </li>
+                                <?php endif; ?>
+                                <?php if($isStaff || $isDesignatedPosition || $isStaffGroup): ?>
+                                <li><a ><i class="fa fa-user-plus"></i>  Employee <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu" style="display: none">
+                                        <?php if($isStaffGroup): ?>
+                                        <li><a href="?r=staff-group" > Departments </a></li>
+                                        <?php endif; ?>
+                                        <?php if($isDesignatedPosition): ?>
+                                        <li><a href="?r=designated-position"> Designated Position </a></li>
+                                        <?php endif; ?>
+                                        <?php if($isStaff): ?>
+                                        <li><a href="?r=staff" > Staff </a></li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </li>
+                                <?php endif; ?>
+                                <?php if($isPayroll): ?>
+                                <li><a href="?r=payroll"  ><i class="fa fa-money"></i> Payroll </a></li>
                                 <?php endif; ?>
                                 <?php if($isCustomer): ?>
-                                <li><a href="?r=customer" id="nav-customer"  ><i class="fa fa-users"></i> Customer </a></li>
-                                <?php endif; ?>
-                                <?php if($isServiceCategory || $isService): ?>
-                                <li><a id="nav-services" ><i class="fa fa-battery-quarter"></i> Services <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu" style="display: none">
-                                        <?php if($isServiceCategory): ?>
-                                        <li><a href="?r=service-category"  id="nav-serviceCategory" >Category</a></li>
-                                        <?php endif; ?>
-                                        <?php if($isService): ?>
-                                        <li><a href="?r=service"  id="nav-serviceList" >Service List</a></li>
-                                        <?php endif; ?>
-                                    </ul>
-                                </li>
+                                <li><a href="?r=customer"  ><i class="fa fa-users"></i> Customer </a></li>
                                 <?php endif; ?>
                                 <?php if($isCategory || $isProduct || $isSupplier || $isInventory): ?>
-                                <li><a id="nav-parts" ><i class="fa fa-cogs"></i> Parts <span class="fa fa-chevron-down"></span></a>
+                                <li><a ><i class="fa fa-cogs"></i> Parts <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
                                         <?php if($isCategory): ?>
-                                        <li><a href="?r=category"  id="nav-category" >Category</a></li>
-                                        <?php endif; ?>
-                                        <?php if($isProduct): ?>
-                                        <li><a href="?r=product"  id="nav-product" >Parts</a></li>
+                                        <li><a href="?r=category" >Category</a></li>
                                         <?php endif; ?>
                                         <?php if($isSupplier): ?>
-                                        <li><a href="?r=supplier" id="nav-supplier" >Parts-Supplier</a></li>
+                                        <li><a href="?r=supplier" >Parts-Supplier</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isProduct): ?>
+                                        <li><a href="?r=product" >Parts List</a></li>
                                         <?php endif; ?>
                                         <?php if($isInventory): ?>
-                                        <li><a href="?r=inventory" id="nav-inventory" > Parts-Inventory</a></li>
+                                        <li><a href="?r=inventory" > Parts-Inventory</a></li>
                                         <?php endif; ?>
                                     </ul>
                                 </li>
                                 <?php endif; ?>
-                                <?php if($isStocks): ?>
-                                <li><a href="?r=stocks" id="nav-services" ><i class="fa fa-database"></i> Stocks </a></li>
-                                <?php endif; ?>
                                 <?php if($isQuotation || $isInvoice): ?>
-                                <li><a><i class="fa fa-desktop"></i>Transactions <span class="fa fa-chevron-down"></span></a>
+                                <li><a><i class="fa fa-qrcode"></i>Transactions <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
                                         <?php if($isQuotation): ?>
-                                        <li><a href="?r=quotation" id="nav-quotation" > Quotation</a></li>
+                                        <li><a href="?r=quotation" > Job Sheet</a></li>
                                         <?php endif; ?>
                                         <?php if($isInvoice): ?>
-                                        <li><a href="?r=invoice" id="nav-invoice" > Invoice</a></li>
+                                        <li><a href="?r=invoice" > Invoice</a></li>
                                         <?php endif; ?>
                                     </ul>
                                 </li>
                                 <?php endif; ?>
                                 <?php if($isBestSelling || $isMonthlySales || $isMonthlyStock): ?>
-                                <li><a id="nav-reports" ><i class="fa fa-bar-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
+                                <li><a ><i class="fa fa-pie-chart"></i> Reports <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
                                         <?php if($isBestSelling): ?>
                                         <li><a href="?r=reports/best-selling-product-report">Best Selling Product</a></li>
@@ -284,14 +674,29 @@ $userFullname = Yii::$app->user->identity->fullname;
                                     </ul>
                                 </li>
                                 <?php endif; ?>
-                                <?php if($isGst || $isProductLevel): ?>
-                                <li><a id="nav-reports" ><i class="fa fa-legal"></i> Utilities <span class="fa fa-chevron-down"></span></a>
+                                <?php if($isGst || $isProductLevel || $isPaymentType || $isTermsConditions || $isRace || $isPaymentStatus || $isProductEmailRecipient): ?>
+                                <li><a ><i class="fa fa-paint-brush"></i> Utilities <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu" style="display: none">
                                         <?php if($isGst): ?>
                                         <li><a href="?r=gst">Set GST</a></li>
                                         <?php endif; ?>
                                         <?php if($isProductLevel): ?>
                                         <li><a href="?r=product-level">Set Parts Warning Level</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isPaymentType): ?>
+                                        <li><a href="?r=payment-type">Set Payment Type</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isTermsConditions): ?>
+                                        <li><a href="?r=terms-and-conditions">Set Terms & Conditions</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isRace): ?>
+                                        <li><a href="?r=race">Set Race</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isPaymentStatus): ?>
+                                        <li><a href="?r=payment-status">Set Payment Status</a></li>
+                                        <?php endif; ?>
+                                        <?php if($isProductNotificationRecipient): ?>
+                                        <li><a href="?r=product-notification-recipient">Set Product Email Recipient</a></li>
                                         <?php endif; ?>
                                     </ul>
                                 </li>
@@ -302,52 +707,58 @@ $userFullname = Yii::$app->user->identity->fullname;
                     </div>
                     <!-- /sidebar menu -->
 
-                    <!-- /menu footer buttons -->
-                    <div class="sidebar-footer hidden-small">
-                        <a data-toggle="tooltip" data-placement="top" title="Settings">
-                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-                        </a>
-                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-                        </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Lock">
-                            <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-                        </a>
-                        <a data-toggle="tooltip" data-placement="top" title="Logout">
-                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                        </a>
-                    </div>
-                    <!-- /menu footer buttons -->
                 </div>
             </div>
 
             <!-- top navigation -->
-            <div class="top_nav">
+            <div  class="top_nav">
 
-                <div class="nav_menu">
+                <div class="nav_menu bodyHeaderBackground">
                     <nav class="" role="navigation">
                         <div class="nav toggle">
                             <a id="menu_toggle"><i class="fa fa-bars"></i></a>
                         </div>
 
-                        <ul class="nav navbar-nav navbar-right">
+                        
+                        <ul class="nav navbar-nav navbar-right">                     
                             <li class="">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="assets/bootstrap/images/user.png" alt=""><b> <?= $userFullname ?>
+                                    <img src="assets/bootstrap/photos/<?php echo $photo; ?>" alt=""><b> <?= $userFullname ?>
                                     <span class=" fa fa-angle-down"></span> </b>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
-                                    <li><a href="#">
+                                    <li><a href="?r=settings">
                                             <span><center id="top-nav"><b><i class="fa fa-wrench"></i> Settings</center></b></span>
                                         </a>
                                     </li>
-                                    <li><?php
-                                        echo Html::beginForm(['/site/logout'], 'post',['id' => 'logout-form']) . '<a href="#" onclick="document.getElementById(\'logout-form\').submit(); return false;" class="form-btn btn btn-link btn-flat" style="color: #5A738E; "><i class="fa fa-power-off"></i> Sign out</a>'. Html::endForm();
+                                    <li>
+                                      <?php
+                                        echo Html::beginForm(['/site/logout'], 'post',['id' => 'logout-form']) . '<a href="#" onclick="document.getElementById(\'logout-form\').submit(); return false;" class="form-btn btn btn-link btn-flat" style="color: #5A738E; border-top: solid 1px #5A738E;"><i class="fa fa-power-off"></i> Sign out</a>'. Html::endForm();
                                       ?>
                                     </li>
                                 </ul>
                             </li>
-
+                            <li>
+                                <a href="?r=invoice/create">
+                                <button class="buttonInHeader btn btn-round">
+                                        <span class="buttonInHeaderLabel"> - <i class="fa fa-barcode"></i> New Invoice - </span>
+                                </button>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="?r=quotation/create">
+                                <button class="buttonInHeader btn btn-round">
+                                        <span class="buttonInHeaderLabel"> - <i class="fa fa-qrcode"></i> New Job-Sheet - </span>
+                                </button>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="?r=customer/create">
+                                <button class="buttonInHeader btn btn-round">
+                                        <span class="buttonInHeaderLabel"> - <i class="fa fa-users"></i> New Customer - </span>
+                                </button>
+                                </a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
@@ -356,22 +767,22 @@ $userFullname = Yii::$app->user->identity->fullname;
             <!-- /top navigation -->
 
             <!-- page content -->
-            <div class="right_col" role="main">
+            <div id="bodyContentBackground" class="right_col" role="main">
                 <div class="">     
                 <br/ >
 
-                    <div>
+                    <div >
                         <?= $content ?>
                     </div>
 
                 </div>
-                <br/>
+                <br/><br/>
 
                 <!-- footer content -->
                 <footer>
                     <div class="">
-                        <p class="pull-right">&copy; <?= date('Y') ?> Powered by <a>FirstCom Solutions</a>. |
-                            <span class="lead"> <i class="fa fa-car"></i> Arh Group Pte Ltd. </span>
+                        <p class="pull-right">Powered by <a>FirstCom Solutions Pte Ltd.</a>. |
+                            <span class="lead"> <i class="fa fa-car"></i> ARH GROUP</span>
                         </p>
                     </div>
                     <div class="clearfix"></div>
@@ -509,7 +920,68 @@ $userFullname = Yii::$app->user->identity->fullname;
     <!-- main -->
     <script type="text/javascript" src="assets/bootstrap/js/main.js"></script>
 
-    </body>   
+    <!-- inventory -->
+    <script type="text/javascript" src="assets/bootstrap/js/inventory.js"></script>
+
+    <!-- datepicker -->
+    <script type="text/javascript" src="js/datepicker/js/bootstrap-datepicker.js"></script>
+
+    <!-- datetimepicker -->
+    <script type="text/javascript" src="js/datetimepicker/js/jquery.datetimepicker.js"></script>
+    <script type="text/javascript" src="js/datetimepicker/build/jquery.datetimepicker.full.js"></script>
+
+    <script type="text/javascript" src="assets/bootstrap/js/datetimepicker.js"></script>
+
+    <!-- staff/payroll -->
+    <script type="text/javascript" src="assets/bootstrap/js/staff_payroll.js"></script>
+
+    <!-- form -->
+    <script type="text/javascript" src="assets/bootstrap/js/form.js"></script>
+
+    <script type="text/javascript">
+        var lab=[];
+        var data=[];
+    <?php 
+        $session = Yii::$app->session;
+        $array = array (
+            '0' => array (
+                    'product' => 'Cash Payment',
+                    'total' => $session->get('getTotalDailyCashSales'),
+                ),
+            '1' => array (
+                    'product' => 'Credit Card Payment',
+                    'total' => $session->get('getTotalDailyCreditCardSales'),
+                ),
+            '2' => array (
+                    'product' => 'Nets Payment',
+                    'total' => $session->get('getTotalDailyNetsSales'),
+                ),
+        );
+
+        foreach($array as $tem) {
+    ?>
+        
+        lab.push('<?php echo $tem['product']; ?>');
+        data.push('<?php echo $tem['total']; ?>');
+
+    <?php } ?>
+        
+        var barChartData = {
+            labels : lab,
+            datasets : [
+                {
+                    fillColor : "rgba(220,220,220,0.5)",
+                    strokeColor : "rgba(220,220,220,1)",
+                    data : data
+                },
+            ]
+        }
+    var myLine = new Chart(document.getElementById("canvas").getContext("2d")).Bar(barChartData);
+
+    </script>
+
+<?php //$this->endBody() ?>
+</body>   
 
 </html>
 

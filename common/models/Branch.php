@@ -35,9 +35,10 @@ class Branch extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['code', 'name', 'address', 'contact_no', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by'], 'required'],
-            [['status', 'created_by', 'updated_by'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['code', 'name', 'address', 'contact_no'], 'required', 'message' => 'Fill-up required fields.'],
+            [['contact_no'], 'integer'],
+            [['name'], 'unique', 'message' => 'Branch name already exist.'],
+            [['created_at','updated_at','created_by','updated_by','status'], 'safe'],
             [['code', 'name', 'contact_no'], 'string', 'max' => 50],
             [['address'], 'string', 'max' => 200],
         ];

@@ -8,6 +8,7 @@ use yii\data\ActiveDataProvider;
 use common\models\Inventory;
 
 use yii\db\Query;
+
 /**
  * SearchInventory represents the model behind the search form about `common\models\Inventory`.
  */
@@ -19,9 +20,8 @@ class SearchInventory extends Inventory
     public function rules()
     {
         return [
-            [['id', 'product_id', 'supplier_id', 'quantity', 'status', 'created_by'], 'integer'],
-            [['cost_price', 'selling_price'], 'number'],
-            [['date_imported', 'created_at'], 'safe'],
+            [['id', 'product_id', 'old_quantity', 'new_quantity', 'type', 'created_by', 'status'], 'integer'],
+            [['datetime_imported', 'datetime_purchased', 'created_at', 'invoice_no'], 'safe'],
         ];
     }
 
@@ -63,36 +63,17 @@ class SearchInventory extends Inventory
         $query->andFilterWhere([
             'id' => $this->id,
             'product_id' => $this->product_id,
-            'supplier_id' => $this->supplier_id,
-            'quantity' => $this->quantity,
-            'cost_price' => $this->cost_price,
-            'selling_price' => $this->selling_price,
-            'date_imported' => $this->date_imported,
-            'status' => $this->status,
+            'old_quantity' => $this->old_quantity,
+            'new_quantity' => $this->new_quantity,
+            'type' => $this->type,
+            'datetime_imported' => $this->datetime_imported,
+            'datetime_purchased' => $this->datetime_purchased,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
+            'status' => $this->status,
         ]);
 
         return $dataProvider;
-    }
-
-    // get Product List
-    public function getProductInInventory() 
-    {
-        $rows = new Query();
-
-        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price', 'inventory.date_imported'])
-            ->from('inventory')
-            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
-            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
-            ->orderBy('inventory.id')
-            ->all();
-
-        if( count($result) > 0 ) {
-            return $result;
-        }else {
-            return 0;
-        }   
     }
 
     // get Supplier Name and Product Name
@@ -120,8 +101,8 @@ class SearchInventory extends Inventory
 
         $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at','inventory.status'])
             ->from('inventory')
-            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
-            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+            ->join('LEFT JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+            ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
             ->where(['inventory.id' => $id])
             ->orderBy('inventory.id')
             ->one();
@@ -138,11 +119,10 @@ class SearchInventory extends Inventory
     {
         $rows = new Query();
 
-        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
-            ->from('inventory')
-            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
-            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
-            ->where('inventory.quantity = 0')
+        $result = $rows->select(['product.id', 'product.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'product.product_code', 'product.product_name', 'product.quantity', 'product.cost_price', 'product.selling_price', 'product.created_at'])
+            ->from('product')
+            ->join('LEFT JOIN', 'supplier', 'product.supplier_id = supplier.id')
+            ->where('product.quantity = 0')
             ->orderBy('product.product_name')
             ->limit(10)
             ->all();
@@ -159,12 +139,12 @@ class SearchInventory extends Inventory
     {
         $rows = new Query();
 
-        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
-            ->from('inventory')
-            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
-            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
-            ->where('inventory.quantity = 0')
+        $result = $rows->select(['product.id', 'product.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'product.product_code', 'product.product_name', 'product.quantity', 'product.cost_price', 'product.selling_price', 'product.created_at'])
+            ->from('product')
+            ->join('LEFT JOIN', 'supplier', 'product.supplier_id = supplier.id')
+            ->where('product.quantity = 0')
             ->orderBy('product.product_name')
+            ->limit(10)
             ->all();
 
         if( count($result) > 0 ) {
@@ -175,15 +155,14 @@ class SearchInventory extends Inventory
     }
 
     // get critical product stock
-    public function getCriticalStock($criticalLevel) 
+    public function getCriticalStock() 
     {
         $rows = new Query();
 
-        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
-            ->from('inventory')
-            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
-            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
-            ->where("inventory.quantity <= $criticalLevel")
+        $result = $rows->select(['product.id', 'product.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'product.product_code', 'product.product_name', 'product.quantity', 'product.cost_price', 'product.selling_price', 'product.created_at'])
+            ->from('product')
+            ->join('LEFT JOIN', 'supplier', 'product.supplier_id = supplier.id')
+            ->where("product.quantity <= product.reorder_level")
             ->orderBy('product.product_name')
             ->limit(10)
             ->all();
@@ -196,15 +175,14 @@ class SearchInventory extends Inventory
     }
 
     // get total critical product stock
-    public function getTotalCriticalStock($criticalLevel) 
+    public function getTotalCriticalStock() 
     {
         $rows = new Query();
 
-        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
-            ->from('inventory')
-            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
-            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
-            ->where("inventory.quantity <= $criticalLevel")
+        $result = $rows->select(['product.id', 'product.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'product.product_code', 'product.product_name', 'product.quantity', 'product.cost_price', 'product.selling_price', 'product.created_at'])
+            ->from('product')
+            ->join('LEFT JOIN', 'supplier', 'product.supplier_id = supplier.id')
+            ->where("product.quantity <= product.reorder_level")
             ->orderBy('product.product_name')
             ->all();
 
@@ -220,11 +198,10 @@ class SearchInventory extends Inventory
     {
         $rows = new Query();
 
-        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
-            ->from('inventory')
-            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
-            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
-            ->where("inventory.quantity <= $minimumLevel")
+        $result = $rows->select(['product.id', 'product.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'product.product_code', 'product.product_name', 'product.quantity', 'product.cost_price', 'product.selling_price', 'product.created_at'])
+            ->from('product')
+            ->join('LEFT JOIN', 'supplier', 'product.supplier_id = supplier.id')
+            ->where("product.quantity <= $minimumLevel")
             ->orderBy('product.product_name')
             ->limit(10)
             ->all();
@@ -241,11 +218,10 @@ class SearchInventory extends Inventory
     {
         $rows = new Query();
 
-        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price','inventory.date_imported','inventory.created_at'])
-            ->from('inventory')
-            ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
-            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
-            ->where("inventory.quantity <= $minimumLevel")
+        $result = $rows->select(['product.id', 'product.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'product.product_code', 'product.product_name', 'product.quantity', 'product.cost_price', 'product.selling_price', 'product.created_at'])
+            ->from('product')
+            ->join('LEFT JOIN', 'supplier', 'product.supplier_id = supplier.id')
+            ->where("product.quantity <= $minimumLevel")
             ->orderBy('product.product_name')
             ->all();
 
@@ -254,6 +230,72 @@ class SearchInventory extends Inventory
         }else {
             return 0;
         } 
+    }
+
+    // get Product List in Inventory By ID
+    public function getProductListInInventoryById($id) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['product.id', 'product.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'product.product_code', 'product.product_name', 'product.quantity', 'product.cost_price', 'product.selling_price' ])
+            ->from('product')
+            ->join('INNER JOIN', 'supplier', 'product.supplier_id = supplier.id')
+            ->where(['product.id' => $id])
+            ->orderBy('product.id')
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        }   
+    }
+
+    // get Product Information in Inventory By ID
+    public function getProductInformation($id) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'inventory.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'inventory.product_id', 'product.product_code', 'product.product_name', 'inventory.quantity', 'inventory.cost_price', 'inventory.selling_price', 'inventory.date_imported'])
+            ->from('inventory')
+            ->join('LEFT JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+            ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
+            ->where(['inventory.id' => $id])
+            ->one();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        }   
+    }
+
+    // get Product List By Type
+    public function getPartsInInventoryByType($partsType) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'product.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'product.product_code', 'product.product_name', 'product.quantity', 'product.cost_price', 'product.gst_price', 'product.selling_price', 'product.unit_of_measure', 'inventory.datetime_imported', 'inventory.old_quantity', 'inventory.new_quantity', 'inventory.datetime_purchased', 'inventory.type', 'inventory.invoice_no', 'inventory.qty_purchased', 'inventory.created_at' ])
+            ->from('inventory')
+            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+            ->join('INNER JOIN', 'supplier', 'product.supplier_id = supplier.id')
+            ->where(['inventory.type' => $partsType ]);
+
+        return $result;   
+    }
+
+    // get Product List
+    public function getPartsInInventory() 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'product.supplier_id', 'supplier.supplier_code', 'supplier.supplier_name', 'product.product_code', 'product.product_name', 'product.quantity', 'product.cost_price', 'product.gst_price', 'product.selling_price', 'product.unit_of_measure', 'inventory.datetime_imported', 'inventory.old_quantity', 'inventory.new_quantity', 'inventory.datetime_purchased', 'inventory.type', 'inventory.invoice_no', 'inventory.qty_purchased', 'inventory.created_at' ])
+            ->from('inventory')
+            ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
+            ->join('INNER JOIN', 'supplier', 'product.supplier_id = supplier.id');
+
+        return $result;
+       
     }
 
 }

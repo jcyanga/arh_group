@@ -20,6 +20,7 @@ use common\models\UserPermission;
  */
 class BranchController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -99,7 +100,7 @@ class BranchController extends Controller
             $getBranch = $searchModel->searchBranchName(Yii::$app->request->get('SearchBranch')['name']);
         
         }else {
-            $getBranch = Branch::find()->where('id <> 1')->all();
+            $getBranch = Branch::find()->where('id > 1')->andWhere(['status' => 1])->all();
 
         }
 
@@ -133,48 +134,39 @@ class BranchController extends Controller
     public function actionCreate()
     {
         $model = new Branch();
-        $searchModel = new SearchBranch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        
+        return $this->render('create', [
+                            'model' => $model, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
+    }
 
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->getBranch(Yii::$app->request->post('Branch') ['name']);
+    public function actionNew()
+    {
+        $model = new Branch();  
 
-            if( $result == 1 ) {
-                return $this->render('create', [
-                                'model' => $model, 
-                                'errTypeHeader' => 'Warning!', 
-                                'errType' => 'alert alert-warning', 
-                                'msg' => 'You already enter an existing name, Please! Change the branch name.']);
-            }
+        if ( Yii::$app->request->post() ) {   
 
-            if( $model->save() ) {
-                $getBranch = Branch::find()->where('id > 1')->all();
+            $model->code = Yii::$app->request->post('code');
+            $model->name = Yii::$app->request->post('name');
+            $model->address = Yii::$app->request->post('address');
+            $model->contact_no = Yii::$app->request->post('contactNo');
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->status = 1;
 
-                return $this->render('index', [
-                                'searchModel' => $searchModel, 
-                                'getBranch' => $getBranch,
-                                'dataProvider' => $dataProvider, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Your record was successfully added in the database.'
-                            ]);
+            if($model->validate()) {
+                $model->save();
+                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
 
             } else {
-                return $this->render('create', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => 'Error!', 
-                                    'errType' => 'alert alert-error', 
-                                    'msg' => 'You have an error, Check All the required fields.'
-                                ]);
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
             }
-
-        } else {
-            return $this->render('create', [
-                        'model' => $model, 
-                        'errTypeHeader' => '', 
-                        'errType' => '', 
-                        'msg' => '']
-                        );
         }
     }
 
@@ -187,28 +179,36 @@ class BranchController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $searchModel = new SearchBranch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
-            $getBranch = Branch::find()->where('id > 1')->all();
-
-            return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getBranch' => $getBranch,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully updated in the database.'
-                    ]);
-
-        } else {
-            return $this->render('update', [
+        
+        return $this->render('update', [
                         'model' => $model, 
                         'errTypeHeader' => '', 
                         'errType' => '', 
                         'msg' => ''
                     ]);
+    }
+
+    public function actionEdit()
+    {
+        $model = $this->findModel(Yii::$app->request->post('id'));
+
+        $model->code = Yii::$app->request->post('code');
+        $model->name = Yii::$app->request->post('name');
+        $model->address = Yii::$app->request->post('address');
+        $model->contact_no = Yii::$app->request->post('contactNo');
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->created_by = Yii::$app->user->identity->id;
+        $model->updated_at = date('Y-m-d H:i:s');
+        $model->updated_by = Yii::$app->user->identity->id;
+        $model->status = 1;
+
+        if($model->validate()) {
+           $model->save();
+           return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
+
+        } else {
+           return json_encode(['message' => $model->errors, 'status' => 'Error']);
+        
         }
     }
 
@@ -230,16 +230,12 @@ class BranchController extends Controller
         $searchModel = new SearchBranch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->findModel($id)->delete();
-        $getBranch = Branch::find()->where('id > 1')->all();
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save();
 
-        return $this->render('index', [
-                    'searchModel' => $searchModel, 
-                    'getBranch' => $getBranch,
-                    'dataProvider' => $dataProvider, 
-                    'errTypeHeader' => 'Success!', 'errType' => 'alert alert-success', 
-                    'msg' => 'Your record was successfully deleted in the database.'
-                ]);
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
 
     /**
@@ -260,7 +256,7 @@ class BranchController extends Controller
 
     public function actionExportExcel() 
     {
-        $result = Branch::find()->where('id > 1')->all();
+        $result = Branch::find()->where('id > 1')->andWhere(['status' => 1])->all();
 
         $objPHPExcel = new \PHPExcel();
         $styleHeadingArray = array(
@@ -325,7 +321,7 @@ class BranchController extends Controller
 
     public function actionExportPdf() 
     {
-        $result = Branch::find()->where('id > 1')->all();
+        $result = Branch::find()->where('id > 1')->andWhere(['status' => 1])->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
 
         $dompdf = new Dompdf();

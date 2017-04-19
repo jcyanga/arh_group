@@ -16,7 +16,7 @@ $this->title = 'View Category';
  <div class="col-md-12 col-sm-12 col-xs-12">
     
  <div class="form-title-container">
-    <span class="form-header"><h4>View Category Information</h4></span>
+    <span class="form-header"><h4><i class="fa fa-globe"></i> View Branch Information</h4></span>
  </div>      
  <hr/>
 
@@ -56,7 +56,6 @@ $this->title = 'View Category';
  </div>
 
 </div>
-<br/>
 
 
 

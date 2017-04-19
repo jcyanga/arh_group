@@ -3,7 +3,7 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\SearchStockIn;
+use common\models\SearchProduct;
 
 class ReportsController extends \yii\web\Controller
 {
@@ -16,14 +16,23 @@ class ReportsController extends \yii\web\Controller
 
     public function actionMonthlyStockReport() 
     {
-        $model = new SearchStockIn();
+        $model = new SearchProduct();
 
-        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
-            $getMonthlyStock = $model->getMonthlyStockByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
-            $date_start = Yii::$app->request->post('date_start');
-            $date_end = Yii::$app->request->post('date_end');
+        if( Yii::$app->request->post() ) {
 
-        } else {
+            if( Yii::$app->request->post('date_start') <> "" && Yii::$app->request->post('date_end') <> "" ) {
+                $getMonthlyStock = $model->getMonthlyStockByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+                $date_start = Yii::$app->request->post('date_start');
+                $date_end = Yii::$app->request->post('date_end');
+
+            } else {
+                $getMonthlyStock = $model->getMonthlyStock();
+                $date_start = '';
+                $date_end = '';
+            }
+        
+        }else{
+
             $getMonthlyStock = $model->getMonthlyStock();
             $date_start = '';
             $date_end = '';
@@ -40,12 +49,12 @@ class ReportsController extends \yii\web\Controller
     // print monthly stock report
     public function actionPrintMonthlyStockReportExcel() 
     {
-        $model = new SearchStockIn();
+        $model = new SearchProduct();
         
-        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
-            $result = $model->getMonthlyStockByDateRange(Yii::$app->request->post('dateStart'), Yii::$app->request->post('dateEnd'));
-            $dateStart = date('M-d-Y',strtotime(Yii::$app->request->post('dateStart')));
-            $dateEnd = date('M-d-Y',strtotime(Yii::$app->request->post('dateEnd')));
+        if( Yii::$app->request->post('date_start') <> "" && Yii::$app->request->post('date_end') <> "" ) {
+            $result = $model->getMonthlyStockByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+            $dateStart = date('M-d-Y',strtotime(Yii::$app->request->post('date_start')));
+            $dateEnd = date('M-d-Y',strtotime(Yii::$app->request->post('date_end')));
 
         }else{
             $result = $model->getMonthlyStock();
@@ -91,7 +100,7 @@ class ReportsController extends \yii\web\Controller
                                 
                 foreach ($result as $result_row) {  
                     
-                    $dateImported = date('m-d-Y', strtotime($result_row['date_imported']) );    
+                    $dateImported = date('m-d-Y', strtotime($result_row['datetime_imported']) );    
 
                     $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['id']); 
                     $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['supplier_name']);
@@ -106,7 +115,7 @@ class ReportsController extends \yii\web\Controller
                 }
 
         header('Content-Type: application/vnd.ms-excel');
-        $filename = "Monthly-Stock-Report(".$dateStart."-TO-".$dateEnd.").xls";
+        $filename = "Monthly-Stock-Report.xls";
         header('Content-Disposition: attachment;filename='.$filename);
         header('Cache-Control: max-age=0');
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
@@ -116,22 +125,48 @@ class ReportsController extends \yii\web\Controller
 
     public function actionMonthlySalesReport() 
     {
-    	$model = new SearchStockIn();
+    	$model = new SearchProduct();
 
-        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
-            $getMonthlySales = $model->getMonthlySalesReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
-            $date_start = Yii::$app->request->post('date_start');
-            $date_end = Yii::$app->request->post('date_end');
+        if( Yii::$app->request->post() ) {
 
-        } else {
-            $getMonthlySales = $model->getMonthlySales();
+            if( Yii::$app->request->post('date_start') <> "" && Yii::$app->request->post('date_end') <> "" ) {
+                
+                $getMonthlySalesCash = $model->getMonthlySalesCashReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+                $getMonthlySalesCreditCard = $model->getMonthlySalesCreditCardReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+                $getMonthlySalesNets = $model->getMonthlySalesNetsReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+                $getMonthlySalesDaysCredit = $model->getMonthlySalesDaysCreditReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+                
+                $date_start = Yii::$app->request->post('date_start');
+                $date_end = Yii::$app->request->post('date_end');
+
+            } else {
+                
+                $getMonthlySalesCash = $model->getMonthlySalesCash();
+                $getMonthlySalesCreditCard = $model->getMonthlySalesCreditCard();
+                $getMonthlySalesNets = $model->getMonthlySalesNets();
+                $getMonthlySalesDaysCredit = $model->getMonthlySalesDaysCredit();
+                
+                $date_start = '';
+                $date_end = '';
+            }
+
+        }else{
+
+            $getMonthlySalesCash = $model->getMonthlySalesCash();
+            $getMonthlySalesCreditCard = $model->getMonthlySalesCreditCard();
+            $getMonthlySalesNets = $model->getMonthlySalesNets();
+            $getMonthlySalesDaysCredit = $model->getMonthlySalesDaysCredit();
+            
             $date_start = '';
             $date_end = '';
 
         }
 
         return $this->render('monthly-sales-report',[
-                            'getMonthlySales' => $getMonthlySales,
+                            'getMonthlySalesCash' => $getMonthlySalesCash,
+                            'getMonthlySalesCreditCard' => $getMonthlySalesCreditCard,
+                            'getMonthlySalesNets' => $getMonthlySalesNets,
+                            'getMonthlySalesDaysCredit' => $getMonthlySalesDaysCredit,
                             'date_start' => $date_start,
                             'date_end' => $date_end,
                         ]);
@@ -140,17 +175,27 @@ class ReportsController extends \yii\web\Controller
     // print monthly sales report
     public function actionPrintMonthlySalesReportExcel() 
     {
-        $model = new SearchStockIn();
+        $model = new SearchProduct();
         
-        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
-            $result = $model->getMonthlySalesReportByDateRange(Yii::$app->request->post('dateStart'), Yii::$app->request->post('dateEnd'));
-            $dateStart = date('M-d-Y',strtotime(Yii::$app->request->post('dateStart')));
-            $dateEnd = date('M-d-Y',strtotime(Yii::$app->request->post('dateEnd')));
+        if( Yii::$app->request->post('date_start') <> "" && Yii::$app->request->post('date_end') <> "" ) {
+            
+            $getMonthlySalesCash = $model->getMonthlySalesCashReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+            $getMonthlySalesCreditCard = $model->getMonthlySalesCreditCardReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+            $getMonthlySalesNets = $model->getMonthlySalesNetsReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+            $getMonthlySalesDaysCredit = $model->getMonthlySalesDaysCreditReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+            
+            $dateStart = Yii::$app->request->post('date_start');
+            $dateEnd = Yii::$app->request->post('date_end');
 
         }else{
-            $result = $model->getMonthlySales();
-            $dateStart = date('M-d-Y');
-            $dateEnd = date('M-d-Y');
+            
+            $getMonthlySalesCash = $model->getMonthlySalesCash();
+            $getMonthlySalesCreditCard = $model->getMonthlySalesCreditCard();
+            $getMonthlySalesNets = $model->getMonthlySalesNets();
+            $getMonthlySalesDaysCredit = $model->getMonthlySalesDaysCredit();
+            
+            $dateStart = '';
+            $dateEnd = '';
 
         }
 
@@ -172,28 +217,94 @@ class ReportsController extends \yii\web\Controller
                 
             $objPHPExcel->getActiveSheet()->setTitle('xxx')                     
              ->setCellValue('A1', 'Invoice Number')
-             ->setCellValue('B1', 'Total Selling Price')
-             ->setCellValue('C1', 'Customer Name')
-             ->setCellValue('D1', 'Customer Amount Paid')
-             ->setCellValue('E1', 'Date Issue');
+             ->setCellValue('B1', 'Customer Name')
+             ->setCellValue('C1', 'Vehicle Number')
+             ->setCellValue('D1', 'Net Total')
+             ->setCellValue('E1', 'Interest')
+             ->setCellValue('F1', 'Points Redeem')
+             ->setCellValue('G1', 'Discount')
+             ->setCellValue('H1', 'Cash Amount Paid')
+             ->setCellValue('I1', 'Date Issue');
 
              $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeadingArray);
              $objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeadingArray);
              $objPHPExcel->getActiveSheet()->getStyle('C1')->applyFromArray($styleHeadingArray);
              $objPHPExcel->getActiveSheet()->getStyle('D1')->applyFromArray($styleHeadingArray);
              $objPHPExcel->getActiveSheet()->getStyle('E1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('F1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('G1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('H1')->applyFromArray($styleHeadingArray);
+             $objPHPExcel->getActiveSheet()->getStyle('I1')->applyFromArray($styleHeadingArray);
                  
          $row=2;
                                 
-                foreach ($result as $result_row) {  
+                foreach ($getMonthlySalesCash as $cashRow) {  
                     
-                    $dateIssue = date('m-d-Y', strtotime($result_row['date_issue']) );    
+                    $dateIssue = date('m-d-Y', strtotime($cashRow['date_issue']) );    
 
-                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['invoice_no']); 
-                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,'$'.$result_row['grand_total'].'.00');
-                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row['customerName']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$row,'$'.$result_row['amount'].'.00');
-                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,$dateIssue);
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$row, $cashRow['invoice_no']); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row, $cashRow['customerName']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$row, $cashRow['carplate']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$row, $cashRow['net_with_interest']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row, $cashRow['interest']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$row, $cashRow['points_redeem']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$row, $cashRow['discount_amount']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$row, $cashRow['amount']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$row,$dateIssue);
+
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
+                    $row++ ;
+                }
+
+                foreach ($getMonthlySalesCreditCard as $ccRow) {  
+                    
+                    $dateIssue = date('m-d-Y', strtotime($ccRow['date_issue']) );    
+
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$row, $ccRow['invoice_no']); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row, $ccRow['customerName']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$row, $ccRow['carplate']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$row, $ccRow['net_with_interest']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row, $ccRow['interest']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$row, $ccRow['points_redeem']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$row, $ccRow['discount_amount']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$row, $ccRow['amount']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$row,$dateIssue);
+
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
+                    $row++ ;
+                }
+
+                foreach ($getMonthlySalesNets as $netsRow) {  
+                    
+                    $dateIssue = date('m-d-Y', strtotime($netsRow['date_issue']) );    
+
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$row, $netsRow['invoice_no']); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row, $netsRow['customerName']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$row, $netsRow['carplate']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$row, $netsRow['net_with_interest']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row, $netsRow['interest']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$row, $netsRow['points_redeem']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$row, $netsRow['discount_amount']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$row, $netsRow['amount']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$row,$dateIssue);
+
+                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
+                    $row++ ;
+                }
+
+                foreach ($getMonthlySalesDaysCredit as $dcRow) {  
+                    
+                    $dateIssue = date('m-d-Y', strtotime($dcRow['date_issue']) );    
+
+                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$row, $dcRow['invoice_no']); 
+                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row, $dcRow['customerName']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$row, $dcRow['carplate']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$row, $dcRow['net_with_interest']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row, $dcRow['interest']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$row, $dcRow['points_redeem']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$row, $dcRow['discount_amount']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$row, $dcRow['amount']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$row,$dateIssue);
 
                     $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
                     $row++ ;
@@ -210,17 +321,32 @@ class ReportsController extends \yii\web\Controller
 
     public function actionBestSellingProductReport() 
     {
-        $model = new SearchStockIn();
+        $model = new SearchProduct();
 
-        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
-            $getBestSellingService = $model->getBestSellingServicesReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
-            $getBestSellingParts = $model->getBestSellingPartsReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+        if( Yii::$app->request->post() ) {
 
-            $date_start = Yii::$app->request->post('date_start');
-            $date_end = Yii::$app->request->post('date_end');
+            if( Yii::$app->request->post('date_start') <> "" && Yii::$app->request->post('date_end') <> "" ) {
+            
+                // $getBestSellingService = $model->getBestSellingServicesReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
 
-        } else {
-            $getBestSellingService = $model->getBestSellingService();
+                $getBestSellingParts = $model->getBestSellingPartsReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+
+                $date_start = Yii::$app->request->post('date_start');
+                $date_end = Yii::$app->request->post('date_end');
+
+            } else {
+                
+                // $getBestSellingService = $model->getBestSellingService();
+                
+                $getBestSellingParts = $model->getBestSellingParts();
+
+                $date_start = '';
+                $date_end = '';
+
+            }
+        
+        }else{
+
             $getBestSellingParts = $model->getBestSellingParts();
 
             $date_start = '';
@@ -229,7 +355,6 @@ class ReportsController extends \yii\web\Controller
         }
 
         return $this->render('best-selling-product-report',[
-                            'getBestSellingService' => $getBestSellingService, 
                             'getBestSellingParts' => $getBestSellingParts,
                             'date_start' => $date_start,
                             'date_end' => $date_end,
@@ -239,17 +364,20 @@ class ReportsController extends \yii\web\Controller
     // print best selling product report
     public function actionPrintBestSellingProductReportExcel() 
     {
-        $model = new SearchStockIn();
+        $model = new SearchProduct();
         
-        if( Yii::$app->request->post('dateStart') <> "" && Yii::$app->request->post('dateEnd') <> "" ) {
-            $result = $model->getBestSellingServicesReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+        if( Yii::$app->request->post('date_start') <> "" && Yii::$app->request->post('date_end') <> "" ) {
+            
+            // $result = $model->getBestSellingServicesReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
+
             $result1 = $model->getBestSellingPartsReportByDateRange(Yii::$app->request->post('date_start'), Yii::$app->request->post('date_end'));
 
-            $dateStart = date('M-d-Y',strtotime(Yii::$app->request->post('dateStart')));
-            $dateEnd = date('M-d-Y',strtotime(Yii::$app->request->post('dateEnd')));
+            $dateStart = date('M-d-Y',strtotime(Yii::$app->request->post('date_start')));
+            $dateEnd = date('M-d-Y',strtotime(Yii::$app->request->post('date_end')));
 
         }else{
-            $result = $model->getBestSellingService();
+            // $result = $model->getBestSellingService();
+
             $result1 = $model->getBestSellingParts();
 
             $dateStart = date('M-d-Y');
@@ -276,9 +404,10 @@ class ReportsController extends \yii\web\Controller
             $objPHPExcel->getActiveSheet()->setTitle('xxx')                     
              ->setCellValue('A1', 'Invoice Number')
              ->setCellValue('B1', 'Category')
-             ->setCellValue('C1', 'Service Name / Product Name')
+             ->setCellValue('C1', 'Product Name')
              ->setCellValue('D1', 'Quantity')
-             ->setCellValue('E1', 'Total Sold Amount');
+             ->setCellValue('E1', 'Unit Price')
+             ->setCellValue('F1', 'Line Total');
 
              $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeadingArray);
              $objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeadingArray);
@@ -287,18 +416,6 @@ class ReportsController extends \yii\web\Controller
              $objPHPExcel->getActiveSheet()->getStyle('E1')->applyFromArray($styleHeadingArray);
                  
          $row=2;
-                                
-                foreach ($result as $result_row) {  
-                    
-                    $objPHPExcel->getActiveSheet()->setCellValue('A'.$row,$result_row['invoice_no']); 
-                    $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row['name']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row['service_name']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('D'.$row,$result_row['quantity']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,'$'.$result_row['subTotal'].'.00');
-
-                    $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
-                    $row++ ;
-                }
 
                 foreach ($result1 as $result_row1) {  
                     
@@ -306,7 +423,8 @@ class ReportsController extends \yii\web\Controller
                     $objPHPExcel->getActiveSheet()->setCellValue('B'.$row,$result_row1['category']);
                     $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row1['product_name']);
                     $objPHPExcel->getActiveSheet()->setCellValue('D'.$row,$result_row1['quantity']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,'$'.$result_row1['subTotal'].'.00');
+                    $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,'$'.$result_row1['selling_price'].'.00');
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$row,'$'.$result_row1['subTotal'].'.00');
 
                     $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
                     $row++ ;

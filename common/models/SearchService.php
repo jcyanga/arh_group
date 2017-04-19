@@ -128,8 +128,29 @@ class SearchService extends Service
         }
     }
 
-    // get pending quotation services for dashboard
-    public function getPendingServices() {
+    // get pending invoice services for dashboard
+    public function getPendingInvoiceServices() {
+        $rows = new Query();
+
+        $result = $rows->select([ 'invoice_detail.id', 'invoice.id as invoiceId', 'invoice.invoice_no', 'invoice.user_id', 'user.fullname as salesPerson', 'invoice.customer_id', 'customer.fullname', 'invoice.branch_id', 'branch.name', 'invoice.grand_total', 'invoice.date_issue', 'invoice_detail.id', 'invoice_detail.service_part_id', 'service.service_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal', 'customer.type', 'customer.company_name' ])
+                ->from('invoice_detail')
+                ->join('LEFT JOIN', 'invoice', 'invoice_detail.invoice_id = invoice.id')
+                ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+                ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+                ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+                ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+                ->join('LEFT JOIN', 'service', 'invoice_detail.service_part_id = service.id')
+                ->where('invoice_detail.type = 0')
+                ->andWhere('invoice_detail.task = 1')
+                ->andWhere('invoice_detail.status = 0')
+                ->orderBy(['invoice_detail.id' => SORT_DESC])
+                ->all();
+
+        return $result;
+    }
+
+    // get pending quotation services for customer-dashboard
+    public function getPendingQuotationServicesByCustomer($id) {
         $rows = new Query();
 
         $result = $rows->select([ 'quotation_detail.id', 'quotation.id as quotationId', 'quotation.quotation_code', 'quotation.user_id', 'user.fullname as salesPerson', 'quotation.customer_id', 'customer.fullname', 'quotation.branch_id', 'branch.name', 'quotation.grand_total', 'quotation.date_issue', 'quotation_detail.id', 'quotation_detail.service_part_id', 'service.service_name', 'quotation_detail.quantity', 'quotation_detail.selling_price', 'quotation_detail.subTotal' ])
@@ -139,16 +160,17 @@ class SearchService extends Service
                 ->join('LEFT JOIN', 'customer', 'quotation.customer_id = customer.id')
                 ->join('LEFT JOIN', 'branch', 'quotation.branch_id = branch.id')
                 ->join('LEFT JOIN', 'service', 'quotation_detail.service_part_id = service.id')
-                ->where('quotation.invoice = 0')
+                ->where(['quotation.customer_id' => $id])
                 ->andWhere('quotation_detail.type = 0')
                 ->andWhere('quotation_detail.task = 1')
+                ->andWhere('quotation_detail.invoice = 0')
                 ->all();
 
         return $result;
     }
 
-    // get pending invoice services for dashboard
-    public function getPendingInvoiceServices() {
+    // get pending invoice services for customer-dashboard
+    public function getPendingInvoiceServicesByCustomer($id) {
         $rows = new Query();
 
         $result = $rows->select([ 'invoice_detail.id', 'invoice.id as invoiceId', 'invoice.invoice_no', 'invoice.user_id', 'user.fullname as salesPerson', 'invoice.customer_id', 'customer.fullname', 'invoice.branch_id', 'branch.name', 'invoice.grand_total', 'invoice.date_issue', 'invoice_detail.id', 'invoice_detail.service_part_id', 'service.service_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal' ])
@@ -158,11 +180,32 @@ class SearchService extends Service
                 ->join('LEFT JOIN', 'customer', 'invoice.customer_id = customer.id')
                 ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
                 ->join('LEFT JOIN', 'service', 'invoice_detail.service_part_id = service.id')
-                ->where('invoice_detail.type = 0')
+                ->where(['invoice.customer_id' => $id])
+                ->andWhere('invoice_detail.type = 0')
                 ->andWhere('invoice_detail.task = 1')
                 ->andWhere('invoice_detail.status = 0')
                 ->all();
 
         return $result;
     }
+    
+    // get Services By ID
+    public function getServiceListById($id) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['service.id', 'service.service_category_id', 'service_category.name', 'service.service_name', 'service.default_price', 'service.created_at'])
+            ->from('service')
+            ->join('INNER JOIN', 'service_category', 'service.service_category_id = service_category.id')
+            ->where(['service.id' => $id])
+            ->orderBy('service.id')
+            ->all();
+
+        if( count($result) > 0 ) {
+            return $result;
+        }else {
+            return 0;
+        }   
+    }
+
 }

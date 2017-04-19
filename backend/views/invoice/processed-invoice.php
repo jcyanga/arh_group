@@ -11,8 +11,16 @@ use common\models\Gst;
 $getGst = Gst::find()->where(['branch_id' => $customerInfo['BranchId'] ])->one();
 
 if( isset($getGst->gst) ) {
-    $gst = $getGst->gst;
-    $getSubTotal = $customerInfo['grand_total'] / $gst;
+    $grandTotal = $customerInfo['grand_total'];
+    $gstTotal = 100 + $getGst->gst;
+    $gstTotal1 = 100 / $gstTotal;
+    $gstTotal2 = $grandTotal * $gstTotal1;
+    $gstFinalTotal = $grandTotal - $gstTotal2;
+
+    $getSubTotal = $grandTotal - $gstFinalTotal;
+    $gst = $getSubTotal * $getGst->gst;
+    $gst = $gst / 100;
+
 }else{
     $gst = 0.00;
     $getSubTotal = $customerInfo['grand_total'];
@@ -100,15 +108,15 @@ $this->title = 'View Quotation';
                 <table id="selecteditems" class="table table-hover">
                     <thead>
                         <tr class="qpreviewth">
-                            <th class="servicespartsContainerHeader" ><i class="fa fa-cogs"></i> Parts & Services</th>
-                            <th class="servicespartsContainerHeader" ><i class="fa fa-database"></i> Qty</th>
-                            <th class="servicespartsContainerHeader" ><i class="fa fa-dollar"></i> Selling Price</th>
-                            <th class="servicespartsContainerHeader" ><i class="fa fa-money"></i> Subtotal</th>
+                            <th class="servicespartsContainerHeader" > Description </th>
+                            <th class="servicespartsContainerHeader" > Qty </th>
+                            <th class="servicespartsContainerHeader" > Unit Price </th>
+                            <th class="servicespartsContainerHeader" > Line Total w/o GST </th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach($services as $sRow): ?>
-                            <tr>
+                            <tr >
                                 <td class="servicespartsLists" >
                                     <?php if( $sRow['task'] == 1 ): ?> 
                                          <a href="#" style="color: red;" data-toggle="tooltip" data-placement="top" title="Pending Service" >
@@ -119,16 +127,16 @@ $this->title = 'View Quotation';
                                     <?php endif; ?>
                                 </td>
                                 <td class="servicespartsLists" ><?php echo $sRow['quantity']; ?></td>
-                                <td class="servicespartsLists" ><?php echo $sRow['selling_price']; ?></td>
-                                <td class="servicespartsLists" ><?php echo $sRow['subTotal']; ?></td>
+                                <td class="servicespartsLists" >$ <?php echo number_format($sRow['selling_price'],2); ?></td>
+                                <td class="servicespartsLists" >$ <?php echo number_format($sRow['subTotal'],2); ?></td>
                             </tr>
                         <?php endforeach; ?>  
                         <?php foreach($parts as $pRow): ?>
                             <tr>
                                 <td class="servicespartsLists" ><?php echo $pRow['product_name']; ?></td>
                                 <td class="servicespartsLists" ><?php echo $pRow['quantity']; ?></td>
-                                <td class="servicespartsLists" ><?php echo $pRow['selling_price']; ?></td>
-                                <td class="servicespartsLists" ><?php echo $pRow['subTotal']; ?></td>
+                                <td class="servicespartsLists" >$ <?php echo number_format($pRow['selling_price'],2); ?></td>
+                                <td class="servicespartsLists" >$ <?php echo number_format($pRow['subTotal'],2); ?></td>
                             </tr>
                         <?php endforeach; ?> 
                     </tbody>
@@ -155,16 +163,16 @@ $this->title = 'View Quotation';
                     <table class="table amountdueTbl">
                         <tbody>
                             <tr>
-                                <th style="width:50%;" class="amountdueTh" >Subtotal:</th>
-                                <td class="amountdueTd" >$<?= $getSubTotal ?></td>
+                                <th style="width:50%;" class="amountdueTh" >Sub-Total </th>
+                                <td class="amountdueTd" >$ <?= number_format($getSubTotal,2) ?></td>
                             </tr>
                             <tr>
-                                <th class="amountdueTh" >Gst(7%):</th>
-                                <td class="amountdueTd" >$<?= $gst ?></td>
+                                <th class="amountdueTh" >GST(7.00%) </th>
+                                <td class="amountdueTd" > <?= number_format($gst,2) ?></td>
                             </tr>
                             <tr>
-                                <th class="amountdueTh" >Total:</th>
-                                <td class="amountdueTd" >$<?= $customerInfo['grand_total'] ?></td>
+                                <th class="amountdueTh" >Nett Total </th>
+                                <td class="amountdueTd" >$ <?= number_format($customerInfo['grand_total'],2) ?></td>
                             </tr>
                         </tbody>
                     </table>

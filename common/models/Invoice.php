@@ -40,7 +40,8 @@ class Invoice extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['invoice_no', 'user_id', 'customer_id', 'branch_id', 'date_issue', 'grand_total', 'remarks', 'created_at', 'created_by', 'updated_at', 'updated_by', 'delete', 'task', 'paid'], 'required'],
+            [['invoice_no', 'date_issue', 'grand_total', 'gst', 'net', 'mileage'], 'required', 'message' => 'Fill up the required fields.'],
+            [['branch_id', 'customer_id', 'user_id'], 'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number', 'message' => 'Invalid option selected'],
             [['user_id', 'customer_id', 'branch_id', 'created_by', 'updated_by', 'delete', 'task', 'paid'], 'integer'],
             [['date_issue', 'created_at', 'updated_at'], 'safe'],
             [['grand_total'], 'number'],

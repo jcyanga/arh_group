@@ -19,6 +19,7 @@ use common\models\UserPermission;
  */
 class ProductLevelController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -94,28 +95,29 @@ class ProductLevelController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $searchModel = new SearchProductLevel();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
-            $getProductLevel = ProductLevel::find()->all();
-
-            return $this->render('index', [
-                                'searchModel' => $searchModel, 
-                                'getProductLevel' => $getProductLevel,
-                                'dataProvider' => $dataProvider, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Your record was successfully updated in the database.'
+        
+        return $this->render('update', [
+                                'model' => $model, 
+                                'errTypeHeader' => '', 
+                                'errType' => '', 
+                                'msg' => ''
                             ]);
+    }
+
+    public function actionEdit()
+    {
+        $model = $this->findModel(Yii::$app->request->post('id'));
+
+        $model->minimum_level = Yii::$app->request->post('minimumLvl');
+        $model->critical_level = Yii::$app->request->post('criticalLvl');
+
+        if($model->validate()) {
+           $model->save();
+           return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
 
         } else {
-            return $this->render('update', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => '', 
-                                    'errType' => '', 
-                                    'msg' => ''
-                                ]);
+           return json_encode(['message' => $model->errors, 'status' => 'Error']);
+        
         }
     }
 

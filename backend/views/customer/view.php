@@ -16,7 +16,7 @@ $this->title = 'View Customer';
  <div class="col-md-12 col-sm-12 col-xs-12">
     
  <div class="form-title-container">
-    <span class="form-header"><h4>View Customer Information</h4></span>
+    <span class="form-header"><h4><i class="fa fa-users"></i> View Customer Information</h4></span>
  </div>      
  <hr/>
 
@@ -24,9 +24,9 @@ $this->title = 'View Customer';
     <div style="text-align: right;">
         <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
 
-        <?= Html::a( '<i class="fa fa-pencil-square"></i> Update', '?r=customer/update&id=' . $model->id, ['class' => 'form-btn btn btn-info']); ?>
+        <?= Html::a( '<i class="fa fa-pencil-square"></i> Update', '?r=customer/update&id=' . $model['id'], ['class' => 'form-btn btn btn-info']); ?>
 
-        <?= Html::a( '<i class="fa fa-trash"></i> Delete', '?r=customer/delete-column&id=' . $model->id, ['class' => 'form-btn btn btn-danger', 'onclick' => 'return deleteConfirmation()']); ?>
+        <?= Html::a( '<i class="fa fa-trash"></i> Delete', '?r=customer/delete-column&id=' . $model['id'], ['class' => 'form-btn btn btn-danger', 'onclick' => 'return deleteConfirmation()']); ?>
     </div>
  </div>    
  <br/>
@@ -34,36 +34,127 @@ $this->title = 'View Customer';
  <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="tbl-container viewDesign">
-        <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'fullname',
-            'race',
-            'carplate',
-            'address:ntext',
-            'hanphone_no',
-            'office_no',
-            'email:email',
-            'remarks',
-            'make',
-            'model',
-            [
-                'label' => 'Is Blacklist',
-                'value' => $model->is_blacklist ? 'Yes' : 'No',
-            ],
-            [
-                'label' => 'Is Member',
-                'value' => $model->is_member ? 'Yes' : 'No',
-            ], 
-            'points',
-            'member_expiry'
-        ],
-        ]) ?>
-        <br/>
+        
+        <?php if( $model['type'] == '1' ): ?>
+            <label><i class="fa fa-bank"></i> Company Information</label>
+        <?php else: ?>
+            <label><i class="fa fa-user-circle-o"></i> Personal Information</label>
+        <?php endif; ?>
+
+        <table class="table table-striped table-hover">
+        <?php if(count($model) > 0 ): ?>
+            <?php if( $model['type'] == '1' ): ?>
+            <tr>
+                <td><b>COMPANY NAME</b></td>
+                <td><?= $model['company_name']; ?></td>
+            </tr>
+            <tr>
+                <td><b>UEN NO.</b></td>
+                <td><?= $model['uen_no']; ?></td>
+            </tr>
+            <tr>
+                <td><b>CONTACT PERSON</b></td>
+                <td><?= $model['fullname']; ?></td>
+            </tr>
+            <?php endif; ?>
+            
+            <?php if( $model['type'] == '2' ): ?>
+            <tr>
+                <td><b>FULLNAME</b></td>
+                <td><?= $model['fullname']; ?></td>
+            </tr>
+            <tr>
+                <td><b>NRIC</b></td>
+                <td><?= $model['nric']; ?></td>
+            </tr>
+            <tr>
+                <td><b>RACE</b></td>
+                <td><?= $model['name']; ?></td>
+            </tr>
+            <?php endif; ?>
+
+            <tr>
+                <td><b>ADDRESS</b></td>
+                <td><?= $model['address']; ?></td>
+            </tr>
+            <tr>
+                <td><b>PHONE NUMBER</b></td>
+                <td><?= $model['hanphone_no']; ?></td>
+            </tr>
+            <tr>
+                <td><b>OFFICE NUMBER</b></td>
+                <td><?= $model['office_no']; ?></td>
+            </tr>    
+            <tr>
+                <td><b>EMAIL</b></td>
+                <td><?= $model['email']; ?></td>
+            </tr>
+            <tr>
+                <td><b>MEMBER-JOIN DATE</b></td>
+                <td><?= date('d-M-Y', strtotime($model['join_date'])); ?></td>
+            </tr>    
+            <tr>
+                <td><b>MEMBER-EXPIRY DATE</b></td>
+                <td><?= date('d-M-Y', strtotime($model['member_expiry'])); ?></td>
+            </tr>    
+            <tr>
+                <td><b>MEMBER</b></td>
+                <td><?= ($model['is_member'] == 1)? 'Yes' : 'No'; ?></td>
+            </tr>   
+             <tr>
+                <td><b>REMARKS</b></td>
+                <td><?= $model['remarks']; ?></td>
+            </tr>
+            <tr>
+                <td><b>BLACKLISTED</b></td>
+                <td><?= ($model['is_blacklist'] == 1)? 'Yes' : 'No'; ?></td>
+            </tr>   
+            <tr>
+                <td><b>STATUS</b></td>
+                <td><?= ($model['status'] == 1)? 'Active' : 'Inactive'; ?></td>
+            </tr>  
+            <?php else: ?> 
+                <tr>
+                    <td><b>NO RECORD FOUND</b></td>
+                </tr>  
+            <?php endif; ?>
+        </table>
+
+        <label><i class="fa fa-cab"></i> Vehicle Information</label>
+        <table class="table table-striped table-hover">
+            <tr>
+                <td><b>VEHICLE NUMBER</b></td>
+                <td><b>CAR MAKE</b></td>
+                <td><b>CAR MODEL</b></td>
+                <td><b>ENGINE NUMBER</b></td>
+                <td><b>YEAR MFG</b></td>
+                <td><b>CHASIS</b></td>
+                <td><b>REWARD POINTS</b></td>
+            </tr>
+            <?php if(count($carModel) > 0 ): ?>
+                <?php foreach($carModel as $carRow): ?>
+                <tr>
+                    <td><?= $carRow['carplate']; ?></td>
+                    <td><?= $carRow['make']; ?></td>
+                    <td><?= $carRow['model']; ?></td>
+                    <td><?= $carRow['engine_no']; ?></td>
+                    <td><?= $carRow['year_mfg']; ?></td>
+                    <td><?= $carRow['chasis']; ?></td>
+                    <td><?= $carRow['points']; ?></td>
+                </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td><b>NO RECORD FOUND</b></td>
+                <?php for($x = 1; $x <= 6; $x++ ){ ?>
+                    <td></td>
+                <?php } ?>
+                </tr>
+            <?php endif; ?>
+        </table>
     </div>   
- 
+    <br/>
+
  </div>
 
 </div>
-<br/>

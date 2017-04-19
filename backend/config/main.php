@@ -23,7 +23,9 @@ return [
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend
-            'name' => 'advanced-backend',
+            // 'name' => 'advanced-backend',
+            'name' => 'PHPBACKSESSID',
+            'savePath' => __DIR__ . '/../tmp',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -37,14 +39,20 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-            ],
+        'homeUrl' => '/arh/system',
+        'request' => [
+                'baseUrl' => '/arh/system', 
         ],
-        */
+        // 'request' => [
+            // 'baseUrl' => '',
+            // 'baseUrl' => 'site',
+        // ],
+        // 'urlManager' => [
+        //     'enablePrettyUrl' => true,
+        //     'showScriptName' => false,
+        //     'rules' => [
+        //     ],
+        // ],
     ],
     'timeZone' => 'Asia/Singapore',
     'params' => $params,

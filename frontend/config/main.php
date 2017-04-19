@@ -22,7 +22,9 @@ return [
         ],
         'session' => [
             // this is the name of the session cookie used for login on the frontend
-            'name' => 'advanced-frontend',
+            // 'name' => 'advanced-frontend',
+            'name' => 'PHPFRONTSESSID',
+            'savePath' => __DIR__ . '/../tmp',
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -36,14 +38,21 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-            ],
+        'homeUrl' => '/arh/member',
+        'request' => [
+                'baseUrl' => '/arh/member', 
         ],
-        */
+        // 'request' => [
+        //     'baseUrl' => $baseUrl,
+        //     // 'baseUrl' => 'site',
+        // ],
+        // 'urlManager' => [
+        //     'enablePrettyUrl' => true,
+        //     'showScriptName' => false,
+        //     'rules' => [
+        //     ],
+        // ],
     ],
+    'timeZone' => 'Asia/Singapore',
     'params' => $params,
 ];

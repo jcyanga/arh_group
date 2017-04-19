@@ -22,7 +22,7 @@ class m170116_033646_create_rbac_init extends Migration
 
         $staff = $auth->createRole('staff');
         $staff->description = 'Staff';
-        $auth->add($staff);
+        $auth->add($Staff);
         // $auth->addChild($moderator, $manageArticles);
 
         $admin = $auth->createRole('admin');

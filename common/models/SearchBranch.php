@@ -85,6 +85,7 @@ class SearchBranch extends Branch
                     ->from('branch')
                     ->where(['like', 'name', $name])
                     ->andWhere('id > 1')
+                    ->andWhere('status = 1')
                     ->all();
 
         return $result;  
@@ -98,6 +99,7 @@ class SearchBranch extends Branch
        $result = $rows->select(['name'])
         ->from('branch')
         ->where(['name' => $name])
+        ->andWhere(['status' => 1])
         ->all();
         
         if( count($result) > 0 ) {

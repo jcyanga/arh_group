@@ -19,6 +19,7 @@ use common\models\UserPermission;
  */
 class SupplierController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -96,7 +97,7 @@ class SupplierController extends Controller
                 $getSupplier = $searchModel->searchSupplierName(Yii::$app->request->get('SearchSupplier')['supplier_name']);
 
         }else {
-                $getSupplier = Supplier::find()->all();
+                $getSupplier = Supplier::find()->where(['status' => 1])->all();
 
         }
 
@@ -130,49 +131,37 @@ class SupplierController extends Controller
     public function actionCreate()
     {
         $model = new Supplier();
-        $searchModel = new SearchSupplier();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        
+        return $this->render('create', [
+                            'model' => $model, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
+    }
 
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->getSuppliers(Yii::$app->request->post('Supplier') ['supplier_name']);
+    public function actionNew()
+    {
+        $model = new Supplier();  
 
-            if( $result == 1 ) {
-                return $this->render('create', [
-                                        'model' => $model, 
-                                        'errTypeHeader' => 'Warning!', 
-                                        'errType' => 'alert alert-warning', 
-                                        'msg' => 'You already enter an existing name, Please! Change the supplier name.'
-                                    ]);
+        if ( Yii::$app->request->post() ) {   
+
+            $model->supplier_code = Yii::$app->request->post('supplierCode');
+            $model->supplier_name = Yii::$app->request->post('supplierName');
+            $model->address = Yii::$app->request->post('supplierAddress');
+            $model->contact_number = Yii::$app->request->post('supplierContactNo');
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->status = 1;
+
+            if($model->validate()) {
+                $model->save();
+                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
             }
-
-            if( $model->save() ) {
-                $getSupplier = Supplier::find()->all();
-
-                return $this->render('index', [
-                                    'searchModel' => $searchModel, 
-                                    'getSupplier' => $getSupplier,
-                                    'dataProvider' => $dataProvider, 
-                                    'errTypeHeader' => 'Success!', 
-                                    'errType' => 'alert alert-success', 
-                                    'msg' => 'Your record was successfully added in the database.'
-                                ]);
-
-            }else {
-                return $this->render('create', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => 'Error!', 
-                                    'errType' => 'alert alert-error', 
-                                    'msg' => 'You have an error Check All the required fields.'
-                                ]);
-            }
-
-        } else {
-            return $this->render('create', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => '', 
-                                    'errType' => '', 
-                                    'msg' => ''
-                                ]);
         }
     }
 
@@ -185,27 +174,34 @@ class SupplierController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $searchModel = new SearchSupplier();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
-            $getSupplier = Supplier::find()->all();
-
-            return $this->render('index', [
-                                'searchModel' => $searchModel, 
-                                'getSupplier' => $getSupplier,
-                                'dataProvider' => $dataProvider, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Your record was successfully updated in the database.'
-                            ]);
-        } else {
-            return $this->render('update', [
+        
+        return $this->render('update', [
                                 'model' => $model, 
                                 'errTypeHeader' => '', 
                                 'errType' => '', 
                                 'msg' => ''
                             ]);
+    }
+
+    public function actionEdit()
+    {
+        $model = $this->findModel(Yii::$app->request->post('id'));
+
+        $model->supplier_code = Yii::$app->request->post('supplierCode');
+        $model->supplier_name = Yii::$app->request->post('supplierName');
+        $model->address = Yii::$app->request->post('supplierAddress');
+        $model->contact_number = Yii::$app->request->post('supplierContactNo');
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->created_by = Yii::$app->user->identity->id;
+        $model->status = 1;
+
+        if($model->validate()) {
+           $model->save();
+           return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
+
+        } else {
+           return json_encode(['message' => $model->errors, 'status' => 'Error']);
+        
         }
     }
 
@@ -227,17 +223,12 @@ class SupplierController extends Controller
         $searchModel = new SearchSupplier();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->findModel($id)->delete();
-        $getSupplier = Supplier::find()->all();
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save(); 
 
-        return $this->render('index', [
-                            'searchModel' => $searchModel, 
-                            'getSupplier' => $getSupplier,
-                            'dataProvider' => $dataProvider, 
-                            'errTypeHeader' => 'Success!', 
-                            'errType' => 'alert alert-success', 
-                            'msg' => 'Your record was successfully deleted in the database.'
-                        ]);
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
 
     /**
@@ -258,7 +249,7 @@ class SupplierController extends Controller
 
     public function actionExportExcel() 
     {
-        $result = Supplier::find()->all();
+        $result = Supplier::find()->where(['status' => 1])->all();
 
         $objPHPExcel = new \PHPExcel();
         $styleHeadingArray = array(
@@ -314,7 +305,7 @@ class SupplierController extends Controller
 
     public function actionExportPdf() 
     {
-        $result = Supplier::find()->all();
+        $result = Supplier::find()->where(['status' => 1])->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
         
         $dompdf = new Dompdf();

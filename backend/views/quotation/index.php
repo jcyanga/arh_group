@@ -36,11 +36,15 @@ $this->title = 'Quotation';
 
     <p>
         <a href="?r=quotation/create" id="option-list-link" class="btn btn-app">
-            <i class="fa fa-desktop"></i> <b> New Quotation </b>
+            <i class="fa fa-plus-circle"></i> <b> New Job-Sheet </b>
+        </a>
+
+        <a href="?r=quotation/create-customer" id="option-list-link" class="btn btn-app">
+            <i class="fa fa-users"></i> <b> New Customer </b>
         </a>
 
         <a href="?r=quotation/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-excel-o"></i> <b> Export to Excel </b>
+            <i class="fa fa-file-excel-o"></i> <b> Print to Excel </b>
         </a>
     </p>
 </div>
@@ -48,37 +52,41 @@ $this->title = 'Quotation';
 <div class="row table-container">
 
 <div>
-    <?php if($msg <> ''){ ?>
-        <div class="alert <?php echo $errType; ?> alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
-        <h4 class="alert-heading"><?php echo $errTypeHeader; ?></h4>
-            <?php echo $msg; ?>
+    <?php if(Yii::$app->session->hasFlash('success')): ?>
+        <div class="alert alert alert-success alert-block"> <a class="close" data-dismiss="alert" href="#">×</a>
+            <h5 class="alert-heading"><i class="fa fa-info-circle"></i> <?= Yii::$app->session->getFlash('success'); ?></h5>
         </div>
-    <?php } ?>
+    <?php endif; ?>
 </div>
 
 <div class="col-md-12 col-sm-12 col-xs-12">
 
     <div class="form-title-container">
-        <span class="form-header"><h4><i class="fa fa-desktop"></i> QUOTATION</h4></span>
+        <span class="form-header"><h4><i class="fa fa-qrcode"></i> Job Sheet</h4></span>
     </div>
     <hr/>
 
     <div class="form-search-container">    
-      <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+      <?php echo $this->render('_search', [
+                            'model' => $searchModel, 
+                            'date_start' => $date_start, 
+                            'date_end' => $date_end,
+                            'customerName' => $customerName,
+                            'vehicleNumber' => $vehicleNumber,
+                        ]); ?>
     </div> 
     
 </div>
 
  <div class="col-md-12 col-sm-12 col-xs-12">
- <br/>
 
     <table id="tbldesign" class="table table-striped responsive-utilities jambo_table">
     <thead>
         <tr sclass="headings">
             <th class="tblalign_center" ><b>DATE ISSUE</b></th>
             <th class="tblalign_center" ><b>BRANCH</b></th>
+            <th class="tblalign_center" ><b>JOBSHEET NO.</b></th>
             <th class="tblalign_center" ><b>CUSTOMER NAME</b></th>
-            <th class="tblalign_center" ><b>SALES PERSON</b></th>
             <th class="no-link last tblalign_center"><span class="nobr">RECORD ACTION</span>
             </th>
         </tr>
@@ -91,15 +99,12 @@ $this->title = 'Quotation';
                 <tr class="even_odd pointer">
                     <td class="tblalign_center" ><?php echo date('m-d-Y', strtotime($row['date_issue']) );  ?></td>
                     <td class="tblalign_center" ><?php echo $row['name'];  ?></td>
+                    <td class="tblalign_center" ><?php echo $row['quotation_code'];  ?></td>
                     <td class="tblalign_center" ><?php echo $row['fullname'];  ?></td>
-                    <td class="tblalign_center" ><?php echo $row['salesPerson'];  ?></td>
                     <td class="last tblalign_center">
-                       <?php if( $row['invoice'] == 1 ): ?>
-                        <a href="?r=quotation/preview&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Print Quotation" ><li class="fa fa-print"></li> </a> |
-                       <?php endif; ?>
                        <a href="?r=quotation/view&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="View Record" ><li class="fa fa-eye"></li> </a>
-                       <?php if( $row['invoice'] <> 1 ): ?>
-                        | <a href="?r=quotation/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Update Record" ><li class="fa fa-edit"></li> </a> 
+                       <?php if( $row['invoice'] == 0 ): ?>
+                        | <a href="?r=quotation/update&id=<?php echo $row['id']; ?>" data-toggle="tooltip" data-placement="top" title="Edit Record" ><li class="fa fa-edit"></li> </a> 
                        <?php endif; ?>
                         | <a href="?r=quotation/delete-column&id=<?php echo $row['id']; ?>" onclick="return deleteConfirmation()" data-toggle="tooltip" data-placement="top" title="Delete Record" ><li class="fa fa-trash"></li> </a>
                     </td>

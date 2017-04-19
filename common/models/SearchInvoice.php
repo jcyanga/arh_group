@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use common\models\Invoice;
+use common\models\InvoiceDetail;
 
 use yii\db\Query;
 /**
@@ -105,11 +106,12 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task', 'invoice.status'])
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'car_information.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task', 'invoice.status'])
             ->from('invoice')
-            ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
-            ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
-            ->join('INNER JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+            ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
             ->where('invoice.delete = 0')
             ->all();
 
@@ -121,14 +123,33 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task'])
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'car_information.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task', 'invoice.status'])
             ->from('invoice')
-            ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
-            ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
-            ->join('INNER JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
             ->where("invoice.date_issue >= '$date_start'")
             ->andWhere("invoice.date_issue <= '$date_end'")
             ->andWhere('invoice.delete = 0')
+            ->all();
+
+        return $result;
+    }
+
+    // get getInvoiceByCustomerInformation
+    public function getInvoiceByCustomerInformation($customerName,$vehicleNumber) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'car_information.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task', 'invoice.status'])
+            ->from('invoice')
+            ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+            ->where(['LIKE', 'customer.fullname', $customerName])
+            ->andWhere(['LIKE', 'car_information.carplate', $vehicleNumber])
             ->all();
 
         return $result;
@@ -160,7 +181,7 @@ class SearchInvoice extends Invoice
 
         $result = $rows->select(['user.id', 'role.role', 'user.fullname as userList'])
         ->from('user')
-        ->join('INNER JOIN', 'role', 'user.role_id = role.id')
+        ->join('LEFT JOIN', 'role', 'user.role_id = role.id')
         ->where('user.role_id >= 2')
         ->andWhere('user.role_id <= 3')
         ->all();
@@ -179,8 +200,9 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select(['id', 'carplate', 'fullname as customerList'])
-        ->from('customer')
+        $result = $rows->select(['id', 'carplate as customerList'])
+        ->from('car_information')
+        ->groupBy('car_information.carplate')
         ->all();
 
         if( count($result) > 0 ) {
@@ -216,11 +238,11 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select(['inventory.id', 'inventory.product_id as productId', 'product.product_name', 'category.category', 'supplier.supplier_name'])
-        ->from('inventory')
-        ->join('INNER JOIN', 'product', 'inventory.product_id = product.id')
-        ->join('INNER JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+        $result = $rows->select(['product.id', 'product.product_name', 'product.quantity', 'product.selling_price', 'category.category', 'supplier.supplier_name'])
+        ->from('product')
+        ->join('INNER JOIN', 'supplier', 'product.supplier_id = supplier.id')
         ->join('INNER JOIN', 'category', 'product.category_id = category.id')
+        ->where(['product.status' => 1])
         ->all();
 
         if( count($result) > 0 ) {
@@ -237,11 +259,13 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.race', 'customer.email', 'customer.make', 'customer.model', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'invoice.date_issue', 'invoice.remarks', 'invoice.grand_total', 'invoice.task', 'invoice.status'])
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'car_information.carplate', 'car_information.points', 'customer.race_id', 'race.name as raceName', 'customer.email', 'car_information.make', 'car_information.model', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'invoice.date_issue', 'invoice.remarks', 'invoice.grand_total', 'invoice.gst', 'invoice.net', 'invoice.mileage', 'invoice.task', 'invoice.status', 'invoice.paid_type', 'invoice.time_created', 'invoice.paid', 'invoice.balance_amount', 'invoice.come_in', 'invoice.come_out', 'customer.type', 'customer.company_name', 'customer.uen_no', 'customer.nric', 'car_information.engine_no', 'car_information.chasis', 'car_information.year_mfg', 'invoice.discount_amount', 'invoice.discount_remarks', 'invoice.branch_id', 'invoice.user_id', 'invoice.customer_id', 'invoice.quotation_code' ])
             ->from('invoice')
-            ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
-            ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
-            ->join('INNER JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+            ->join('LEFT JOIN', 'race', 'customer.race_id = race.id')
             ->where(['invoice.id' => $invoiceId])
             ->one();
 
@@ -253,12 +277,7 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $service = $rows->select(['invoice_detail.id', 'invoice_detail.invoice_id', 'service.service_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal', 'invoice_detail.task'])
-            ->from('invoice_detail')
-            ->join('INNER JOIN', 'service', 'invoice_detail.service_part_id = service.id')
-            ->where(['invoice_detail.invoice_id' => $id])
-            ->andWhere('invoice_detail.type = 0')
-            ->all();
+        $service = InvoiceDetail::find()->where(['invoice_id' => $id, 'type' => 0])->all();
 
         return $service;
     }
@@ -270,10 +289,8 @@ class SearchInvoice extends Invoice
 
         $part = $rows->select(['invoice_detail.id', 'product.product_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal'])
             ->from('invoice_detail')
-            ->join('LEFT JOIN', 'inventory', 'invoice_detail.service_part_id = inventory.id')
-            ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
-            ->where(['invoice_detail.invoice_id' => $id])
-            ->andWhere('invoice_detail.type = 1')
+            ->join('INNER JOIN', 'product', 'invoice_detail.service_part_id = product.id')
+            ->where(['invoice_detail.invoice_id' => $id, 'invoice_detail.type' => 1])
             ->all();
 
         return $part;
@@ -284,11 +301,13 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select(['invoice.id', 'invoice.quotation_code', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'customer.carplate', 'customer.points', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'invoice.date_issue', 'invoice.remarks', 'invoice.grand_total', 'invoice.branch_id', 'invoice.customer_id', 'invoice.user_id', 'invoice.paid_type' ])
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'car_information.carplate', 'car_information.points', 'customer.race_id', 'race.name as raceName', 'customer.email', 'car_information.make', 'car_information.model', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'invoice.date_issue', 'invoice.remarks', 'invoice.grand_total', 'invoice.gst', 'invoice.net', 'invoice.mileage', 'invoice.task', 'invoice.status', 'invoice.paid_type', 'invoice.time_created', 'invoice.paid', 'invoice.balance_amount', 'invoice.come_in', 'invoice.come_out', 'customer.type', 'customer.company_name', 'customer.uen_no', 'customer.nric', 'car_information.engine_no', 'car_information.chasis', 'car_information.year_mfg', 'invoice.discount_amount', 'invoice.discount_remarks', 'invoice.branch_id', 'invoice.user_id', 'invoice.customer_id', 'invoice.quotation_code' ])
             ->from('invoice')
-            ->join('INNER JOIN', 'user', 'invoice.user_id = user.id')
-            ->join('INNER JOIN', 'customer', 'invoice.customer_id = customer.id')
-            ->join('INNER JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+            ->join('LEFT JOIN', 'race', 'customer.race_id = race.id')
             ->where(['invoice.id' => $invoiceId])
             ->one();
 
@@ -300,12 +319,7 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $service = $rows->select(['invoice_detail.id', 'invoice_detail.invoice_id', 'service.id as serviceId', 'service.service_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal', 'invoice_detail.task'])
-            ->from('invoice_detail')
-            ->join('INNER JOIN', 'service', 'invoice_detail.service_part_id = service.id')
-            ->where(['invoice_detail.invoice_id' => $id])
-            ->andWhere('invoice_detail.type = 0')
-            ->all();
+        $service = InvoiceDetail::find()->where(['invoice_id' => $id, 'type' => 0])->all();
 
         return $service;
     }
@@ -315,12 +329,10 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $part = $rows->select(['invoice_detail.id', 'invoice_detail.invoice_id', 'inventory.id as productId', 'product.product_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal'])
+        $part = $rows->select(['invoice_detail.id', 'invoice_detail.invoice_id', 'product.id as productId', 'product.product_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal'])
             ->from('invoice_detail')
-            ->join('LEFT JOIN', 'inventory', 'invoice_detail.service_part_id = inventory.id')
-            ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
-            ->where(['invoice_detail.invoice_id' => $id])
-            ->andWhere('invoice_detail.type = 1')
+            ->join('LEFT JOIN', 'product', 'invoice_detail.service_part_id = product.id')
+            ->where(['invoice_detail.invoice_id' => $id, 'invoice_detail.type' => 1 ])
             ->all();
 
         return $part;
@@ -344,15 +356,58 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks' ])
+        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'car_information.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'car_information.make', 'car_information.model', 'car_information.points', 'payment.remarks as paymentRemarks', 'invoice.created_at', 'payment_type.name as paymenttypeName', 'invoice.time_created', 'invoice.gst', 'invoice.net', 'invoice.mileage', 'payment.net_with_interest', 'invoice.paid', 'invoice.updated_by', 'invoice.delete', 'invoice.time_created', 'invoice.come_in', 'invoice.come_out', 'customer.type', 'customer.company_name', 'customer.uen_no', 'customer.nric', 'car_information.engine_no', 'car_information.chasis', 'car_information.year_mfg', 'invoice.discount_amount', 'invoice.discount_remarks', 'payment.payment_status' ])
                     ->from('payment')
                     ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
+                    ->join('LEFT JOIN', 'payment_type', 'payment.payment_type = payment_type.id')
                     ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
                     ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
-                    ->join('LEFT JOIN', 'customer', 'payment.customer_id = customer.id')
+                    ->join('LEFT JOIN', 'car_information', 'payment.customer_id = car_information.id')
+                    ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
                     ->where([ 'payment.invoice_id' => $invoiceId ])
                     ->andWhere([ 'payment.invoice_no' => $invoiceNo ])
-                    ->one();
+                    ->orderBy(['payment.id' => SORT_DESC])
+                    ->all();
+        
+        return $result;
+    }
+
+    // getPaidMultipleInvoiceById
+    public function getPaidMultipleInvoiceById($invoiceId,$invoiceNo) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'car_information.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'car_information.make', 'car_information.model', 'car_information.points', 'payment.remarks as paymentRemarks', 'invoice.created_at', 'payment_type.name as paymenttypeName', 'invoice.time_created', 'invoice.gst', 'invoice.net', 'invoice.mileage', 'payment.net_with_interest', 'invoice.paid', 'invoice.updated_by', 'invoice.delete', 'invoice.time_created', 'invoice.come_in', 'invoice.come_out', 'customer.type', 'customer.company_name', 'customer.uen_no', 'customer.nric', 'car_information.engine_no', 'car_information.chasis', 'car_information.year_mfg', 'invoice.discount_amount', 'invoice.discount_remarks', 'payment.payment_status' ])
+                ->from('payment')
+                ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
+                ->join('LEFT JOIN', 'payment_type', 'payment.payment_type = payment_type.id')
+                ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+                ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+                ->join('LEFT JOIN', 'car_information', 'payment.customer_id = car_information.id')
+                ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+                ->where([ 'payment.invoice_id' => $invoiceId ])
+                ->andWhere([ 'invoice.invoice_no' => $invoiceNo ])
+                ->orderBy(['payment.id' => SORT_DESC])
+                ->all();
+        
+        return $result;
+    }
+
+    // getNotPaidInvoiceById
+    public function getNotPaidInvoiceById($invoiceId,$invoiceNo) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['invoice.id', 'invoice.quotation_code', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'car_information.carplate', 'customer.race_id', 'race.name as raceName', 'customer.email', 'car_information.make', 'car_information.model', 'car_information.points', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'invoice.customer_id', 'invoice.user_id', 'invoice.branch_id', 'invoice.date_issue', 'invoice.remarks', 'invoice.grand_total', 'invoice.gst', 'invoice.net', 'invoice.mileage', 'invoice.task', 'invoice.paid', 'invoice.paid_type', 'invoice.created_at', 'invoice.created_by', 'invoice.updated_at', 'invoice.updated_by', 'invoice.delete', 'invoice.time_created', 'invoice.come_in', 'invoice.come_out', 'customer.type', 'customer.company_name', 'customer.uen_no', 'customer.nric', 'car_information.engine_no', 'car_information.chasis', 'car_information.year_mfg', 'invoice.discount_amount', 'invoice.discount_remarks'])
+                ->from('invoice')
+                ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+                ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+                ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+                ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+                ->join('LEFT JOIN', 'race', 'customer.race_id = race.id')
+                ->where(['invoice.id' => $invoiceId])
+                ->andWhere(['invoice.invoice_no' => $invoiceNo])
+                ->all();
         
         return $result;
     }
@@ -362,12 +417,7 @@ class SearchInvoice extends Invoice
     {
         $rows = new Query();
 
-        $service = $rows->select(['invoice_detail.id', 'invoice_detail.invoice_id', 'service.id as serviceId', 'service.service_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal', 'invoice_detail.task'])
-            ->from('invoice_detail')
-            ->join('INNER JOIN', 'service', 'invoice_detail.service_part_id = service.id')
-            ->where(['invoice_detail.invoice_id' => $invoiceId])
-            ->andWhere('invoice_detail.type = 0')
-            ->all();
+        $service = InvoiceDetail::find()->where(['invoice_id' => $invoiceId, 'type' => 0])->all();
 
         return $service;
     }
@@ -379,31 +429,11 @@ class SearchInvoice extends Invoice
 
         $part = $rows->select(['invoice_detail.id', 'invoice_detail.invoice_id', 'product.id as productId', 'product.product_name', 'invoice_detail.quantity', 'invoice_detail.selling_price', 'invoice_detail.subTotal'])
             ->from('invoice_detail')
-            ->join('LEFT JOIN', 'inventory', 'invoice_detail.service_part_id = inventory.id')
             ->join('LEFT JOIN', 'product', 'invoice_detail.service_part_id = product.id')
-            ->where(['invoice_detail.invoice_id' => $invoiceId])
-            ->andWhere('invoice_detail.type = 1')
+            ->where(['invoice_detail.invoice_id' => $invoiceId, 'invoice_detail.type' => 1])
             ->all();
 
         return $part;
-    }
-
-    // getPaidMultipleInvoiceById
-    public function getPaidMultipleInvoiceById($invoiceId,$invoiceNo) 
-    {
-        $rows = new Query();
-
-        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks', 'invoice.invoice_no as multipleInvoiceNo' ])
-                ->from('payment')
-                ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
-                ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
-                ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
-                ->join('LEFT JOIN', 'customer', 'payment.customer_id = customer.id')
-                ->where([ 'payment.invoice_id' => $invoiceId ])
-                ->andWhere([ 'invoice.invoice_no' => $invoiceNo ])
-                ->all();
-        
-        return $result;
     }
 
     // checkInvoiceIfExist
@@ -421,20 +451,22 @@ class SearchInvoice extends Invoice
     }
 
     // getPaidInvoice
-    public function getPaidInvoice($lastId,$invoiceId,$invoiceNo,$customerId) 
+    public function getPaidInvoice($invoiceId,$invoiceNo,$customerId) 
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks' ])
+        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'car_information.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'car_information.make', 'car_information.model', 'car_information.points', 'payment.remarks as paymentRemarks', 'invoice.created_at', 'payment_type.name as paymenttypeName', 'invoice.time_created', 'invoice.gst', 'invoice.net', 'invoice.mileage', 'payment.net_with_interest', 'customer.type', 'invoice.updated_by', 'invoice.delete', 'invoice.come_in', 'invoice.come_out', 'customer.email', 'customer.company_name', 'customer.uen_no', 'customer.nric', 'car_information.engine_no', 'car_information.chasis', 'car_information.year_mfg', 'invoice.discount_amount', 'invoice.discount_remarks', 'payment.payment_status' ])
                     ->from('payment')
                     ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
+                    ->join('LEFT JOIN', 'payment_type', 'payment.payment_type = payment_type.id')
                     ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
                     ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
-                    ->join('LEFT JOIN', 'customer', 'payment.customer_id = customer.id')
-                    ->where([ 'payment.id' => $lastId ])
-                    ->andWhere([ 'payment.invoice_id' => $invoiceId ])
+                    ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+                    ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+                    ->where([ 'payment.invoice_id' => $invoiceId ])
                     ->andWhere([ 'payment.invoice_no' => $invoiceNo ])
                     ->andWhere([ 'payment.customer_id' => $customerId ])
+                    ->orderBy(['payment.id' => SORT_DESC])
                     ->one();
         
         return $result;
@@ -456,21 +488,167 @@ class SearchInvoice extends Invoice
     }
 
     // getPaidMultipleInvoice
-    public function getPaidMultipleInvoice($getId,$invoiceId,$invoiceNo,$customerId) 
+    public function getPaidMultipleInvoice($invoiceId,$invoiceNo,$customerId) 
     {
         $rows = new Query();
 
-        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.discount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'customer.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'payment.remarks as paymentRemarks', 'invoice.invoice_no as multipleInvoiceNo' ])
+        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'car_information.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'car_information.make', 'car_information.model', 'car_information.points', 'payment.remarks as paymentRemarks', 'invoice.created_at', 'payment_type.name as paymenttypeName', 'invoice.time_created', 'invoice.gst', 'invoice.net', 'invoice.mileage', 'payment.net_with_interest', 'customer.type', 'invoice.updated_by', 'invoice.delete', 'invoice.come_in', 'invoice.come_out', 'customer.email', 'customer.company_name', 'customer.uen_no', 'customer.nric', 'car_information.engine_no', 'car_information.chasis', 'car_information.year_mfg', 'invoice.discount_amount', 'invoice.discount_remarks', 'payment.payment_status' ])
                 ->from('payment')
                 ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
+                ->join('LEFT JOIN', 'payment_type', 'payment.payment_type = payment_type.id')
                 ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
                 ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
-                ->join('LEFT JOIN', 'customer', 'payment.customer_id = customer.id')
-                ->where([ 'payment.id' => $getId ])
-                ->andWhere([ 'payment.invoice_id' => $invoiceId ])
+                ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+                ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+                ->where([ 'payment.invoice_id' => $invoiceId ])
+                ->andWhere([ 'payment.invoice_no' => $invoiceNo ])
                 ->andWhere([ 'payment.customer_id' => $customerId ])
+                ->orderBy(['payment.id' => SORT_DESC])
                 ->all();
         
+        return $result;
+    }
+
+    // get Invoice for Customer
+    public function getInvoiceForCustomer($id) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'car_information.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task', 'invoice.status'])
+            ->from('invoice')
+            ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+            ->where(['invoice.customer_id' => $id])
+            ->andWhere('invoice.delete = 0')
+            ->all();
+
+        return $result;
+    }
+
+    // getInvoiceByDateRange for Customer
+    public function getInvoiceByDateRangeForCustomer($id,$date_start,$date_end) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'car_information.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task'])
+            ->from('invoice')
+            ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+            ->where(['invoice.customer_id' => $id])
+            ->andWhere("invoice.date_issue >= '$date_start'")
+            ->andWhere("invoice.date_issue <= '$date_end'")
+            ->andWhere('invoice.delete = 0')
+            ->all();
+
+        return $result;
+    }
+
+    // get Invoice for Notification
+    public function getInvoiceForNotification($id) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'car_information.carplate', 'branch.code', 'branch.name', 'invoice.paid', 'invoice.date_issue', 'invoice.task', 'invoice.status', 'user.photo'])
+            ->from('invoice')
+            ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+            ->where(['invoice.customer_id' => $id])
+            ->andWhere('invoice.paid = 0')
+            ->andWhere('invoice.status = 0')
+            ->all();
+
+        return $result;
+    }
+
+    // get product by category
+    public function getPartsByCategory($id)
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['inventory.id', 'supplier.supplier_name', 'product.product_name', 'inventory.quantity', 'inventory.selling_price'])
+            ->from('inventory')
+            ->join('LEFT JOIN', 'product', 'inventory.product_id = product.id')
+            ->join('LEFT JOIN', 'category', 'product.category_id = category.id')
+            ->join('LEFT JOIN', 'supplier', 'inventory.supplier_id = supplier.id')
+            ->where(['product.category_id' => $id])
+            ->all();
+
+        return $result;
+    }
+
+    // get service by category
+    public function getServicesByCategory($id)
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['service.id', 'service_category.name', 'service.service_name', 'service.default_price'])
+            ->from('service')
+            ->join('LEFT JOIN', 'service_category', 'service.service_category_id = service_category.id')
+            ->where(['service.service_category_id' => $id])
+            ->all();
+
+        return $result;
+    }
+
+    // get invoice payment information 
+    public function getInvoicePaymentInformation($id)
+    {
+        $rows = new Query();
+
+        $result = $rows->select([ 'payment.id', 'payment.invoice_id', 'payment.invoice_no', 'payment.customer_id', 'payment.amount', 'payment.payment_method', 'payment.payment_type', 'payment.points_earned', 'payment.points_redeem', 'payment.remarks', 'payment.payment_date', 'payment.payment_time', 'invoice.grand_total', 'invoice.date_issue', 'invoice.remarks', 'invoice.user_id', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'user.fullname as salesPerson', 'invoice.branch_id', 'customer.fullname', 'car_information.carplate', 'customer.hanphone_no', 'customer.office_no', 'customer.address as customerAddress', 'car_information.make', 'car_information.model', 'car_information.points', 'payment.remarks as paymentRemarks','payment.interest', 'invoice.invoice_no as multipleInvoiceNo', 'invoice.created_at', 'payment_type.name as paymenttypeName', 'invoice.time_created', 'invoice.gst', 'invoice.net', 'invoice.mileage', 'payment_type.name as paymentTypeName', 'payment.net_with_interest', 'invoice.payment_status' ])
+                ->from('payment')
+                ->join('LEFT JOIN', 'invoice', 'payment.invoice_id = invoice.id')
+                ->join('LEFT JOIN', 'payment_type', 'payment.payment_type = payment_type.id')
+                ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+                ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+                ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+                ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+                ->where([ 'payment.invoice_id' => $id ])
+                ->all();
+        
+        return $result;
+    }
+
+    // get invoice with outstading payments
+    public function getInvoiceWithOutstandingPayments()
+    {
+        $rows = new Query();
+
+        $result = $rows->select([ 'invoice.*', 'customer.fullname', 'user.fullname as salesPerson', 'branch.name as branchName', 'customer.type', 'customer.company_name' ])
+                ->from('invoice')
+                ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+                ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+                ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+                ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+                ->where('invoice.paid <> 1')
+                ->orderBy(['invoice.id' => SORT_DESC])
+                ->all();
+        
+        return $result;
+    }
+
+    // get Not Paid Invoice
+    public function getOutstandingPaymentInvoice($invoiceId) 
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['invoice.id', 'invoice.invoice_no', 'user.fullname as salesPerson', 'customer.fullname', 'customer.address as customerAddress', 'customer.hanphone_no', 'customer.office_no', 'car_information.carplate', 'car_information.points', 'customer.race_id', 'race.name as raceName', 'customer.email', 'car_information.make', 'car_information.model', 'branch.id as BranchId', 'branch.code', 'branch.name', 'branch.address', 'branch.contact_no as branchNumber', 'invoice.date_issue', 'invoice.remarks', 'invoice.grand_total', 'invoice.gst', 'invoice.net', 'invoice.mileage', 'invoice.task', 'invoice.status', 'invoice.paid_type', 'invoice.time_created', 'invoice.paid', 'invoice.balance_amount', 'invoice.come_in', 'invoice.come_out', 'customer.type', 'customer.company_name', 'customer.uen_no', 'customer.nric', 'car_information.engine_no', 'car_information.chasis', 'car_information.year_mfg', 'invoice.discount_amount', 'invoice.discount_remarks', 'invoice.branch_id', 'invoice.user_id', 'invoice.customer_id', 'invoice.quotation_code' ])
+            ->from('invoice')
+            ->join('LEFT JOIN', 'user', 'invoice.user_id = user.id')
+            ->join('LEFT JOIN', 'branch', 'invoice.branch_id = branch.id')
+            ->join('LEFT JOIN', 'car_information', 'invoice.customer_id = car_information.id')
+            ->join('LEFT JOIN', 'customer', 'car_information.customer_id = customer.id')
+            ->join('LEFT JOIN', 'race', 'customer.race_id = race.id')
+            ->where(['invoice.id' => $invoiceId])
+            ->andWhere('invoice.paid <> 1')
+            ->one();
+
         return $result;
     }
 

@@ -15,11 +15,15 @@ use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use common\models\Role;
 use common\models\UserPermission;
+
+use common\models\Inventory;
+
 /**
  * ProductController implements the CRUD actions for Product model.
  */
 class ProductController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -136,58 +140,77 @@ class ProductController extends Controller
         $model = new Product();
         $searchModel = new SearchProduct();
         $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
+        $getProduct = $searchModel->getProducts();
 
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->getProductName(Yii::$app->request->post('Product') ['product_name']);
+        if ($model->load(Yii::$app->request->post()) ) {
+        
+                $uploadedFile = UploadedFile::getInstance($model,'product_image');
+                $fileName = "{$uploadedFile}";  // random number + file name
 
-            if( $result == 1 ) {
-                return $this->render('create', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => 'Warning!',
-                                     'errType' => 'alert alert-warning', 
-                                     'msg' => 'You already enter an existing name, Please! Change product name.'
-                                ]);
-            }
-                if( !empty(UploadedFile::getInstances($model, 'product_image')[0]->name) ) {
-                    $model->product_image = UploadedFile::getInstances($model, 'product_image')[0]->name;
-                    $tempName = UploadedFile::getInstances($model, 'product_image')[0]->tempName;
+                $model->supplier_id = Yii::$app->request->post('Product')['supplier_id'];
+                $model->category_id = Yii::$app->request->post('Product')['category_id'];
+                $model->product_code = Yii::$app->request->post('Product')['product_code'];
+                $model->product_name = Yii::$app->request->post('Product')['product_name'];
+                $model->unit_of_measure = Yii::$app->request->post('Product')['unit_of_measure'];
+                $model->quantity = Yii::$app->request->post('Product')['quantity'];
+                $model->cost_price = Yii::$app->request->post('Product')['cost_price'];
+                $model->gst_price = Yii::$app->request->post('Product')['gst_price'];
+                $model->selling_price = Yii::$app->request->post('Product')['selling_price'];
+                $model->reorder_level = Yii::$app->request->post('Product')['reorder_level'];
+                $model->status = 1;
+                $model->created_at = date('Y-m-d');
+                $model->created_by = Yii::$app->user->identity->id;
+                
+                if( isset($uploadedFile) ){
+                    $model->product_image = $fileName;
+                    if( $model->save() ){
+
+                        $uploadedFile->saveAs('assets/products/'.$fileName);
+
+                        $inventoryModel = new Inventory();
+
+                        $inventoryModel->product_id = $model->id;
+                        $inventoryModel->old_quantity = Yii::$app->request->post('Product')['quantity'];
+                        $inventoryModel->new_quantity = Yii::$app->request->post('Product')['quantity'];
+                        $inventoryModel->type = 1;
+                        $inventoryModel->datetime_imported = date('Y-m-d H:i:s');
+                        $inventoryModel->created_at = date('Y-m-d H:i:s');
+                        $inventoryModel->created_by = Yii::$app->user->identity->id;
+                        $inventoryModel->status = 1;
+                        $inventoryModel->save();
+
+                        Yii::$app->getSession()->setFlash('success', 'Your record was successfully added in the database.');
+                        return $this->redirect(['index']);
+                    }
+
+                }else{
+                    if( $model->save() ){
+
+                        $inventoryModel = new Inventory();
+
+                        $inventoryModel->product_id = $model->id;
+                        $inventoryModel->old_quantity = Yii::$app->request->post('Product')['quantity'];
+                        $inventoryModel->new_quantity = Yii::$app->request->post('Product')['quantity'];
+                        $inventoryModel->type = 1;
+                        $inventoryModel->datetime_imported = date('Y-m-d H:i:s');
+                        $inventoryModel->created_at = date('Y-m-d H:i:s');
+                        $inventoryModel->created_by = Yii::$app->user->identity->id;
+                        $inventoryModel->status = 1;
+                        $inventoryModel->save();
+
+                        Yii::$app->getSession()->setFlash('success', 'Your record was successfully added in the database.');
+                        return $this->redirect(['index']);
+                    }
                 }
 
-            if( $model->save() ) {
-                
-                if( !empty(UploadedFile::getInstances($model, 'product_image')[0]->name) ) {
-                    move_uploaded_file($tempName, Yii::$app->basePath . '/web/assets/products/' . $model->product_image);
-                 }
-
-                $getProduct = $searchModel->getProducts();
-
-                return $this->render('index', [
-                                'searchModel' => $searchModel,
-                                'dataProvider' => $dataProvider, 
-                                'getProduct' => $getProduct, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Your record was successfully added in the database.'
-                            ]);
-
-            }else {
-                return $this->render('create', [
-                                    'model' => $model, 
-                                    'errTypeHeader' => 'Error!', 
-                                    'errType' => 'alert alert-error', 
-                                    'msg' => 'You have an error Check All the required fields.'
-                                ]);
             }
-
-        } else {
           
             return $this->render('create', [
-                                'model' => $model, 
-                                'errTypeHeader' => '', 
-                                'errType' => '', 
-                                'msg' => ''
-                            ]);
-        }
+                            'model' => $model, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
     }
 
     /**
@@ -201,59 +224,59 @@ class ProductController extends Controller
         $model = $this->findModel($id);
         $searchModel = new SearchProduct();
         $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
-
+        $getProduct = $searchModel->getProducts();
+        
         if ( $model->load(Yii::$app->request->post()) ) {
             
-            if( !empty(UploadedFile::getInstances($model, 'product_image')[0]->name) ) {
-                $model->product_image = UploadedFile::getInstances($model, 'product_image')[0]->name;
-                $tempName = UploadedFile::getInstances($model, 'product_image')[0]->tempName;
-                
-                if( $model->save() ) {
-                    move_uploaded_file($tempName, Yii::$app->basePath . '/web/assets/products/' . $model->product_image);
+                $product = Product::findOne($id);
 
-                    $getProduct = $searchModel->getProducts();
-                
-                    return $this->render('index', [
-                                    'searchModel' => $searchModel,
-                                    'dataProvider' => $dataProvider, 
-                                    'getProduct' => $getProduct, 
-                                    'errTypeHeader' => 'Success!', 
-                                    'errType' => 'alert alert-success', 
-                                    'msg' => 'Your record was successfully updated in the database.'
-                                ]);
-                }   
+                $uploadedFile = UploadedFile::getInstance($product,'product_image');
+                $fileName = "{$uploadedFile}";  // random number + file name
 
-            }else{
-                $model->product_image = Yii::$app->request->post('before_productImg');
+                $product->supplier_id = Yii::$app->request->post('Product')['supplier_id'];
+                $product->category_id = Yii::$app->request->post('Product')['category_id'];
+                $product->product_code = Yii::$app->request->post('Product')['product_code'];
+                $product->product_name = Yii::$app->request->post('Product')['product_name'];
+                $product->unit_of_measure = Yii::$app->request->post('Product')['unit_of_measure'];
+                $product->quantity = Yii::$app->request->post('Product')['quantity'];
+                $product->cost_price = Yii::$app->request->post('Product')['cost_price'];
+                $product->gst_price = Yii::$app->request->post('Product')['gst_price'];
+                $product->selling_price = Yii::$app->request->post('Product')['selling_price'];
+                $product->reorder_level = Yii::$app->request->post('Product')['reorder_level'];
+                $product->status = 1;
+                $product->created_at = date('Y-m-d');
+                $product->created_by = Yii::$app->user->identity->id;
 
-                if( $model->save() ) {
-                    $getProduct = $searchModel->getProducts();;
-                
-                    return $this->render('index', [
-                                    'searchModel' => $searchModel,
-                                    'dataProvider' => $dataProvider, 
-                                    'getProduct' => $getProduct, 
-                                    'errTypeHeader' => 'Success!', 
-                                    'errType' => 'alert alert-success', 
-                                    'msg' => 'Your record was successfully updated in the database.'
-                                ]);
+                if( isset($uploadedFile) ){
+                    
+                    $product->product_image = $fileName;
+                    if( $product->save() ){
+                        $uploadedFile->saveAs('assets/products/'.$fileName);
+
+                        Yii::$app->getSession()->setFlash('success', 'Your record was successfully updated in the database.');
+                        return $this->redirect(['index']);
+                    }
+
+                }else{
+                    if( $product->save() ){
+                     
+                        Yii::$app->getSession()->setFlash('success', 'Your record was successfully updated in the database.');
+                        return $this->redirect(['index']);
+                    }
+
                 }
 
-            }
-            
+            } 
 
-        } else {
             $getProducts = $searchModel->getProductById($id);
 
             return $this->render('update', [
-                                'model' => $model, 
-                                'getProducts' => $getProducts, 
-                                'errTypeHeader' => '', 
-                                'errType' => '', 
-                                'msg' => ''
-                            ]);
-        
-        }
+                            'model' => $model, 
+                            'getProducts' => $getProducts, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
     }
 
     /**
@@ -274,17 +297,12 @@ class ProductController extends Controller
         $searchModel = new SearchProduct();
         $dataProvider = $searchModel->searchForIndex(Yii::$app->request->queryParams);
         
-        $this->findModel($id)->delete();
-        $getProduct = $searchModel->getProducts();;
-        
-        return $this->render('index', [
-                                'searchModel' => $searchModel,
-                                'dataProvider' => $dataProvider, 
-                                'getProduct' => $getProduct, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Your record was successfully deleted in the database.'
-                            ]);
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save();
+           
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
 
     /**
@@ -377,5 +395,106 @@ class ProductController extends Controller
         $dompdf->stream('PartsList-' . date('m-d-Y'));  
     }
 
+     public function actionEditQty()
+    {  
+        if( Yii::$app->request->post('partsChkbox') <> "" ) {
+
+            foreach( Yii::$app->request->post('partsChkbox') as $key => $value) {
+                 $result = explode('|', $value);
+
+                 $array = array(
+                            'itemId' => $result[0], 
+                            'itemName' => $result[1], 
+                            'itemQty' => $result[2],  
+                            'SupplierId' => $result[3], 
+                            'costPrice' => $result[4], 
+                            'sellingPrice' => $result[5]
+                        );
+                 
+                 $data[] = $array;    
+            }
+
+            return $this->render('_form-update-qty', ['data' => $data]);
+
+        }else {
+
+            Yii::$app->getSession()->setFlash('success', 'No record selected.');
+            return $this->redirect(['index']);
+        }
+    }
+
+    public function actionUpdateStocksQuantity() 
+    {
+        if( Yii::$app->request->post() ){
+
+            foreach( Yii::$app->request->post('partsNewQty') as $key => $value ) {
+
+                $partsInfo = Product::find()->where(['id' => Yii::$app->request->post('partsId')[$key] ])->andWhere(['supplier_id' => Yii::$app->request->post('supplierId')[$key] ])->one();
+                $partsInfo->quantity = Yii::$app->request->post('partsNewQty')[$key];
+                $partsInfo->save();
+                
+                $inventory = new Inventory();
+                $inventory->product_id = Yii::$app->request->post('partsId')[$key];
+                $inventory->old_quantity = Yii::$app->request->post('partsOldQty')[$key];
+                $inventory->new_quantity = Yii::$app->request->post('partsNewQty')[$key];
+                $inventory->type = 3;
+                $inventory->datetime_imported = date('Y-m-d H:i:s');
+                $inventory->created_at = date("Y-m-d H:i:s");
+                $inventory->created_by = Yii::$app->user->identity->id;
+                $inventory->status = 1;
+                
+                $inventory->save();
+            }
+
+            Yii::$app->getSession()->setFlash('success', 'Your record was successfully updated in the database.');
+            return $this->redirect(['index']);
+
+        }
+    }
+
+    public function actionGetProductInformation()
+    {
+        $searchModel = new SearchProduct();
+        $getProduct = $searchModel->getProductInformation(Yii::$app->request->get('productId'));
+
+        $data = array();
+        $data['id'] = $getProduct['id'];
+        $data['supplier_name'] = $getProduct['supplier_name'];
+        $data['product_code'] = $getProduct['product_code'];
+        $data['product_name'] = $getProduct['product_name'];
+        $data['quantity'] = $getProduct['quantity'];
+
+        return json_encode($data);
+    }
+
+    public function actionUpdateStockQuantity()
+    {
+        $inventoryModel = new Inventory();
+        $inventoryModel->product_id = Yii::$app->request->post('productId');
+        $inventoryModel->old_quantity = Yii::$app->request->post('oldQty');
+        $inventoryModel->new_quantity = Yii::$app->request->post('newQty');
+        $inventoryModel->type = 3;
+        $inventoryModel->datetime_imported = date('Y-m-d H:i:s');
+        $inventoryModel->created_at = date("Y-m-d H:i:s");
+        $inventoryModel->created_by = Yii::$app->user->identity->id;
+        $inventoryModel->status = 1;
+        
+        $inventoryModel->save();
+
+        $productModel = Product::findOne(Yii::$app->request->post('productId'));
+        $productModel->quantity = Yii::$app->request->post('newQty');
+        $productModel->save();
+
+        return json_encode(['result' => 'success']);
+    }
 
 }
+
+
+
+
+
+
+
+
+

@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use common\models\Customer;
+use common\models\CarInformation;
 use common\models\SearchCustomer;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -19,6 +20,7 @@ use common\models\UserPermission;
  */
 class CustomerController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -95,14 +97,17 @@ class CustomerController extends Controller
         if( !empty(Yii::$app->request->get('SearchCustomer')['fullname'])) {
                 $getCustomer = $searchModel->searchCustomerFullname(Yii::$app->request->get('SearchCustomer')['fullname']);
 
-        }else {
-                $getCustomer = Customer::find()->all();
+        }else{
+                $getCustomer = $searchModel->getCustomerList();
         }
         
+        $getBlacklistCustomer = $searchModel->getBlacklistCustomerList();
+
         return $this->render('index', [
                     'searchModel' => $searchModel, 
                     'dataProvider' => $dataProvider, 
-                    'getCustomer' => $getCustomer, 
+                    'getCustomer' => $getCustomer,
+                    'getBlacklistCustomer' => $getBlacklistCustomer, 
                     'errTypeHeader' => '', 
                     'errType' => '', 
                     'msg' => ''
@@ -116,8 +121,13 @@ class CustomerController extends Controller
      */
     public function actionView($id)
     {
+        $model = new SearchCustomer();
+        $result = $model->getCustomerById($id);
+        $carResult = CarInformation::find()->where(['customer_id' => $id])->all();
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $result,
+            'carModel' => $carResult,
         ]);
     }
 
@@ -129,53 +139,203 @@ class CustomerController extends Controller
     public function actionCreate()
     {
         $model = new Customer();
-        $searchModel = new SearchCustomer();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $getCustomer = Customer::find()->all();
-        
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->getNameAndEmail(Yii::$app->request->post('Customer') ['fullname'], Yii::$app->request->post('Customer') ['email']);
+        $carModel = new CarInformation();
 
-            if( $result == 1 ) {        
-                return $this->render('create', [
-                                'model' => $model, 
-                                'getCustomer' => $getCustomer, 
-                                'errTypeHeader' => 'Warning!', 
-                                'errType' => 'alert alert-warning', 
-                                'msg' => 'You already enter an existing customer account, Please! Change customer fullname or e-mail.'
-                            ]);
-            }
-        
-            if( $model->save() ) {
-                return $this->render('index', [
-                            'searchModel' => $searchModel, 
-                            'getCustomer' => $getCustomer,
-                            'dataProvider' => $dataProvider, 
-                            'errTypeHeader' => 'Success!', 
-                            'errType' => 'alert alert-success', 
-                            'msg' => 'Your record was successfully added in the database.'
-                        ]);
-
-            }else {
-
-                return $this->render('create', [
-                                'model' => $model, 
-                                'getCustomer' => $getCustomer, 
-                                'errTypeHeader' => 'Error!', 
-                                'errType' => 'alert alert-error', 
-                                'msg' => 'You have an error Check All the required fields.'
-                            ]);
-            }
-
-        } else {
-
-            return $this->render('create', [
+         return $this->render('create', [
                             'model' => $model, 
+                            'carModel' => $carModel,
                             'errTypeHeader' => '', 
                             'errType' => '', 
                             'msg' => ''
                         ]);
-        }
+    }
+
+    public function actionNewCompany()
+    {
+        if ( Yii::$app->request->post() ) {
+
+            $model = new Customer();
+
+            $contactPerson = (Yii::$app->request->post('contactPerson'))? Yii::$app->request->post('contactPerson') : '';
+            $companyName = (Yii::$app->request->post('companyName'))? Yii::$app->request->post('companyName') : '';
+            $uen_no = (Yii::$app->request->post('uenno'))? Yii::$app->request->post('uenno') : '';
+            $companyAddress = (Yii::$app->request->post('address'))? Yii::$app->request->post('address') : '';
+            $companyHanphoneNo = (Yii::$app->request->post('phoneNumber'))? Yii::$app->request->post('phoneNumber') : '';
+            $companyOfficeNo = (Yii::$app->request->post('officeNumber'))? Yii::$app->request->post('officeNumber') : '';
+            $companyEmail = (Yii::$app->request->post('email'))? Yii::$app->request->post('email') : '';
+            $remarks = (Yii::$app->request->post('message'))? Yii::$app->request->post('message') : '';
+            $joinDate = (date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate')) ) : '0000-00-00';
+            $memberExpiry = (date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate')) ) : '0000-00-00';
+            $isMember = (Yii::$app->request->post('isMember') )? Yii::$app->request->post('isMember') : '';
+
+            $model->password = Yii::$app->request->post('password');
+
+            if ( !empty( $model->password ) ) {
+                $model->password_hash = Yii::$app->security->generatePasswordHash($model->password); 
+                $model->generateAuthKey();
+                $model->role = 10;
+            }
+
+            $model->fullname = $contactPerson;
+            $model->company_name = $companyName;
+            $model->uen_no = $uen_no;
+            $model->address = $companyAddress;
+            $model->hanphone_no = $companyHanphoneNo;
+            $model->office_no = $companyOfficeNo;
+            $model->email = $companyEmail;
+            $model->remarks = $remarks;
+            $model->join_date = $joinDate;
+            $model->member_expiry = $memberExpiry;
+            $model->is_member = $isMember;
+            $model->is_blacklist = 0;
+            $model->type = 1;
+            $model->status = 1;
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->deleted = 0;
+
+            if($model->validate()) {
+               $model->save();
+
+                $customerId = $model->id;
+
+                $company_vehicleNumber = Yii::$app->request->post('vehicleNumber');
+                $company_carModel = Yii::$app->request->post('carModel');
+                $company_carMake = Yii::$app->request->post('carMake');
+                $company_chasis = Yii::$app->request->post('chasis');
+                $company_engineNo = Yii::$app->request->post('engineNo');
+                $company_yearMfg = Yii::$app->request->post('yearMfg');
+                $company_rewardPoints = Yii::$app->request->post('rewardPoints');
+
+                foreach($company_vehicleNumber as $key => $companyCarRow){
+                    $commpanyCarInfo = new CarInformation();
+
+                    $commpanyCarInfo->customer_id = $customerId;
+                    $commpanyCarInfo->carplate = $company_vehicleNumber[$key]['value'];
+                    $commpanyCarInfo->make = $company_carMake[$key]['value'];
+                    $commpanyCarInfo->model = $company_carModel[$key]['value'];
+                    $commpanyCarInfo->engine_no = $company_engineNo[$key]['value'];
+                    $commpanyCarInfo->year_mfg = $company_yearMfg[$key]['value'];
+                    $commpanyCarInfo->chasis = $company_chasis[$key]['value'];
+                    $commpanyCarInfo->points = $company_rewardPoints[$key]['value'];
+                    $commpanyCarInfo->type = 1;
+                    $commpanyCarInfo->status = 1;
+
+                    $commpanyCarInfo->save();
+                }
+
+                if($isMember == 1){
+                    Yii::$app->mailer->compose('layouts/member', ['customerName' => $companyName, 'memberPassword' => Yii::$app->request->post('password')])
+                        ->setFrom('jcyanga412060@gmail.com')
+                        ->setTo($companyEmail)
+                        ->setSubject('ARH Group Pte Ltd. - Membership Confirmation')
+                        ->send();
+                }
+
+               return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
+            }
+
+        } 
+    }
+
+    public function actionNewCustomer()
+    {
+        if ( Yii::$app->request->post() ) {
+            
+            $model = new Customer();
+
+            $fullname = (Yii::$app->request->post('customerName') )? Yii::$app->request->post('customerName') : '';
+            $nric = (Yii::$app->request->post('nric') )? Yii::$app->request->post('nric') : '';
+            $personAddress = (Yii::$app->request->post('address'))? Yii::$app->request->post('address') : '';
+            $raceId = (Yii::$app->request->post('race') )? Yii::$app->request->post('race') : '';
+            $personHanphone = (Yii::$app->request->post('phoneNumber') )? Yii::$app->request->post('phoneNumber') : '';
+            $personOfficeNo = (Yii::$app->request->post('phoneNumber') )? Yii::$app->request->post('phoneNumber') : '';
+            $personEmail = (Yii::$app->request->post('email'))? Yii::$app->request->post('email') : '';
+            $remarks = (Yii::$app->request->post('message'))? Yii::$app->request->post('message') : '';
+            $joinDate = (date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate')) ) : '0000-00-00';
+            $memberExpiry = (date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate')) ) : '0000-00-00';
+            $isMember = (Yii::$app->request->post('isMember') )? Yii::$app->request->post('isMember') : '';
+
+            $model->password = Yii::$app->request->post('password');
+
+            if ( !empty( $model->password ) ) {
+                $model->password_hash = Yii::$app->security->generatePasswordHash($model->password); 
+                $model->generateAuthKey();
+                $model->role = 10;
+            }
+
+            $model->fullname = $fullname; 
+            $model->nric = $nric;
+            $model->address = $personAddress;
+            $model->race_id = $raceId;
+            $model->hanphone_no = $personHanphone;
+            $model->office_no = $personOfficeNo;
+            $model->email = $personEmail;
+            $model->remarks = $remarks;
+            $model->join_date =  $joinDate;
+            $model->member_expiry = $memberExpiry;
+            $model->is_member = $isMember;
+            $model->is_blacklist = 0;
+            $model->type = 2;
+            $model->status = 1;
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->deleted = 0;
+            
+            if($model->validate()) {
+               $model->save();
+
+                $customerId = $model->id;
+
+                $company_vehicleNumber = Yii::$app->request->post('vehicleNumber');
+                $company_carModel = Yii::$app->request->post('carModel');
+                $company_carMake = Yii::$app->request->post('carMake');
+                $company_chasis = Yii::$app->request->post('chasis');
+                $company_engineNo = Yii::$app->request->post('engineNo');
+                $company_yearMfg = Yii::$app->request->post('yearMfg');
+                $company_rewardPoints = Yii::$app->request->post('rewardPoints');
+
+                foreach($company_vehicleNumber as $key => $companyCarRow){
+                    $commpanyCarInfo = new CarInformation();
+
+                    $commpanyCarInfo->customer_id = $customerId;
+                    $commpanyCarInfo->carplate = $company_vehicleNumber[$key]['value'];
+                    $commpanyCarInfo->make = $company_carMake[$key]['value'];
+                    $commpanyCarInfo->model = $company_carModel[$key]['value'];
+                    $commpanyCarInfo->engine_no = $company_engineNo[$key]['value'];
+                    $commpanyCarInfo->year_mfg = $company_yearMfg[$key]['value'];
+                    $commpanyCarInfo->chasis = $company_chasis[$key]['value'];
+                    $commpanyCarInfo->points = $company_rewardPoints[$key]['value'];
+                    $commpanyCarInfo->type = 1;
+                    $commpanyCarInfo->status = 1;
+
+                    $commpanyCarInfo->save();
+                }
+
+                if($isMember == 1){
+                    Yii::$app->mailer->compose('layouts/member', ['customerName' => $fullname, 'memberPassword' => Yii::$app->request->post('password')])
+                        ->setFrom('jcyanga412060@gmail.com')
+                        ->setTo($personEmail)
+                        ->setSubject('ARH Group Pte Ltd. - Membership Confirmation')
+                        ->send();
+                }
+
+               return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
+            }
+
+        } 
     }
 
     /**
@@ -186,30 +346,204 @@ class CustomerController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model = new Customer();
+        $carModel = new CarInformation();
         $searchModel = new SearchCustomer();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $getCustomer = Customer::find()->all();
-
-            return $this->render('index', [
-                            'searchModel' => $searchModel, 
-                            'getCustomer' => $getCustomer,
-                            'dataProvider' => $dataProvider, 
-                            'errTypeHeader' => 'Success!', 
-                            'errType' => 'alert alert-success', 
-                            'msg' => 'Your record was successfully updated in the database.'
-                        ]);
-
-        } else {
-            return $this->render('update', [
+        $result = $searchModel->getCustomerById($id);
+        $carResult = CarInformation::find()->where(['customer_id' => $id])->all();
+        $getCarLastId = $searchModel->getCarLastId($id);
+        
+        return $this->render('update', [
                                 'model' => $model, 
+                                'carModel' => $carModel,
+                                'result' => $result,
+                                'carResult' => $carResult,
+                                'lastId' => $getCarLastId['lastId'],
                                 'errTypeHeader' => '', 
                                 'errType' => '', 
                                 'msg' => ''
                             ]);
-        }
+    }
+
+    public function actionEditCompany()
+    {
+        if ( Yii::$app->request->post() ) {
+
+            $companyInfo = Customer::findOne(Yii::$app->request->post('id'));
+
+            $contactPerson = (Yii::$app->request->post('contactPerson'))? Yii::$app->request->post('contactPerson') : '';
+            $companyName = (Yii::$app->request->post('companyName'))? Yii::$app->request->post('companyName') : '';
+            $uen_no = (Yii::$app->request->post('uenno'))? Yii::$app->request->post('uenno') : '';
+            $companyAddress = (Yii::$app->request->post('address'))? Yii::$app->request->post('address') : '';
+            $companyHanphoneNo = (Yii::$app->request->post('phoneNumber'))? Yii::$app->request->post('phoneNumber') : '';
+            $companyOfficeNo = (Yii::$app->request->post('officeNumber'))? Yii::$app->request->post('officeNumber') : '';
+            $companyEmail = (Yii::$app->request->post('email'))? Yii::$app->request->post('email') : '';
+            $remarks = (Yii::$app->request->post('message'))? Yii::$app->request->post('message') : '';
+            $joinDate = (date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate')) ) : '0000-00-00';
+            $memberExpiry = (date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate')) ) : '0000-00-00';
+            $isMember = (Yii::$app->request->post('isMember') )? Yii::$app->request->post('isMember') : '';
+
+            $companyInfo->password = Yii::$app->request->post('password');
+
+            if ( !empty( $companyInfo->password ) ) {
+                $companyInfo->password_hash = Yii::$app->security->generatePasswordHash($companyInfo->password); 
+                $companyInfo->generateAuthKey();
+                $companyInfo->role = 10;
+            }
+
+            $companyInfo->fullname = $contactPerson;
+            $companyInfo->company_name = $companyName;
+            $companyInfo->uen_no = $uen_no;
+            $companyInfo->address = $companyAddress;
+            $companyInfo->hanphone_no = $companyHanphoneNo;
+            $companyInfo->office_no = $companyOfficeNo;
+            $companyInfo->email = $companyEmail;
+            $companyInfo->remarks = $remarks;
+            $companyInfo->join_date = $joinDate;
+            $companyInfo->member_expiry = $memberExpiry;
+            $companyInfo->is_member = $isMember;
+            $companyInfo->is_blacklist = 0;
+            $companyInfo->type = 1;
+            $companyInfo->status = 1;
+            $companyInfo->created_at = date('Y-m-d H:i:s');
+            $companyInfo->created_by = Yii::$app->user->identity->id;
+            $companyInfo->updated_at = date('Y-m-d H:i:s');
+            $companyInfo->updated_by = Yii::$app->user->identity->id;
+            $companyInfo->deleted = 0;
+
+            if($companyInfo->validate()) {
+               $companyInfo->save();
+
+                $id = Yii::$app->request->post('id');
+
+                Yii::$app->db->createCommand()
+                    ->delete('car_information', "customer_id = $id" )
+                    ->execute();
+
+                $company_vehicleNumber = Yii::$app->request->post('vehicleNumber');
+                $company_carModel = Yii::$app->request->post('carModel');
+                $company_carMake = Yii::$app->request->post('carMake');
+                $company_chasis = Yii::$app->request->post('chasis');
+                $company_engineNo = Yii::$app->request->post('engineNo');
+                $company_yearMfg = Yii::$app->request->post('yearMfg');
+                $company_rewardPoints = Yii::$app->request->post('rewardPoints');
+
+                foreach($company_vehicleNumber as $key => $companyCarRow){
+                    $commpanyCarInfo = new CarInformation();
+
+                    $commpanyCarInfo->customer_id = $id;
+                    $commpanyCarInfo->carplate = $company_vehicleNumber[$key]['value'];
+                    $commpanyCarInfo->make = $company_carMake[$key]['value'];
+                    $commpanyCarInfo->model = $company_carModel[$key]['value'];
+                    $commpanyCarInfo->engine_no = $company_engineNo[$key]['value'];
+                    $commpanyCarInfo->year_mfg = $company_yearMfg[$key]['value'];
+                    $commpanyCarInfo->chasis = $company_chasis[$key]['value'];
+                    $commpanyCarInfo->points = $company_rewardPoints[$key]['value'];
+                    $commpanyCarInfo->type = 1;
+                    $commpanyCarInfo->status = 1;
+
+                    $commpanyCarInfo->save();
+                }
+
+               return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
+
+            } else {
+               return json_encode(['message' => $companyInfo->errors, 'status' => 'Error']);
+            
+            }
+
+        } 
+    }
+
+    public function actionEditCustomer()
+    {
+        if ( Yii::$app->request->post() ) {
+            
+            $customerInfo = Customer::findOne(Yii::$app->request->post('id'));
+
+            $fullname = (Yii::$app->request->post('customerName') )? Yii::$app->request->post('customerName') : '';
+            $nric = (Yii::$app->request->post('nric') )? Yii::$app->request->post('nric') : '';
+            $personAddress = (Yii::$app->request->post('address'))? Yii::$app->request->post('address') : '';
+            $raceId = (Yii::$app->request->post('race') )? Yii::$app->request->post('race') : '';
+            $personHanphone = (Yii::$app->request->post('phoneNumber') )? Yii::$app->request->post('phoneNumber') : '';
+            $personOfficeNo = (Yii::$app->request->post('phoneNumber') )? Yii::$app->request->post('phoneNumber') : '';
+            $personEmail = (Yii::$app->request->post('email'))? Yii::$app->request->post('email') : '';
+            $remarks = (Yii::$app->request->post('message'))? Yii::$app->request->post('message') : '';
+            $joinDate = (date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate')) ) : '0000-00-00';
+            $memberExpiry = (date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate')) ) : '0000-00-00';
+            $isMember = (Yii::$app->request->post('isMember') )? Yii::$app->request->post('isMember') : '';
+
+            $customerInfo->password = Yii::$app->request->post('password');
+
+            if ( !empty( $customerInfo->password ) ) {
+                $customerInfo->password_hash = Yii::$app->security->generatePasswordHash($customerInfo->password); 
+                $customerInfo->generateAuthKey();
+                $customerInfo->role = 10;
+            }
+
+            $customerInfo->fullname = $fullname; 
+            $customerInfo->nric = $nric;
+            $customerInfo->address = $personAddress;
+            $customerInfo->race_id = $raceId;
+            $customerInfo->hanphone_no = $personHanphone;
+            $customerInfo->office_no = $personOfficeNo;
+            $customerInfo->email = $personEmail;
+            $customerInfo->remarks = $remarks;
+            $customerInfo->join_date =  $joinDate;
+            $customerInfo->member_expiry = $memberExpiry;
+            $customerInfo->is_member = $isMember;
+            $customerInfo->is_blacklist = 0;
+            $customerInfo->type = 2;
+            $customerInfo->status = 1;
+            $customerInfo->created_at = date('Y-m-d H:i:s');
+            $customerInfo->created_by = Yii::$app->user->identity->id;
+            $customerInfo->updated_at = date('Y-m-d H:i:s');
+            $customerInfo->updated_by = Yii::$app->user->identity->id;
+            $customerInfo->deleted = 0;
+            
+            if($customerInfo->validate()) {
+               $customerInfo->save();
+
+                $id = Yii::$app->request->post('id');
+
+                Yii::$app->db->createCommand()
+                    ->delete('car_information', "customer_id = $id" )
+                    ->execute();
+
+                $company_vehicleNumber = Yii::$app->request->post('vehicleNumber');
+                $company_carModel = Yii::$app->request->post('carModel');
+                $company_carMake = Yii::$app->request->post('carMake');
+                $company_chasis = Yii::$app->request->post('chasis');
+                $company_engineNo = Yii::$app->request->post('engineNo');
+                $company_yearMfg = Yii::$app->request->post('yearMfg');
+                $company_rewardPoints = Yii::$app->request->post('rewardPoints');
+
+                foreach($company_vehicleNumber as $key => $companyCarRow){
+                    $commpanyCarInfo = new CarInformation();
+
+                    $commpanyCarInfo->customer_id = $id;
+                    $commpanyCarInfo->carplate = $company_vehicleNumber[$key]['value'];
+                    $commpanyCarInfo->make = $company_carMake[$key]['value'];
+                    $commpanyCarInfo->model = $company_carModel[$key]['value'];
+                    $commpanyCarInfo->engine_no = $company_engineNo[$key]['value'];
+                    $commpanyCarInfo->year_mfg = $company_yearMfg[$key]['value'];
+                    $commpanyCarInfo->chasis = $company_chasis[$key]['value'];
+                    $commpanyCarInfo->points = $company_rewardPoints[$key]['value'];
+                    $commpanyCarInfo->type = 1;
+                    $commpanyCarInfo->status = 1;
+
+                    $commpanyCarInfo->save();
+                }
+
+               return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
+
+            } else {
+               return json_encode(['message' => $customerInfo->errors, 'status' => 'Error']);
+            
+            }
+
+        } 
     }
 
     /**
@@ -230,17 +564,56 @@ class CustomerController extends Controller
         $searchModel = new SearchCustomer();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->findModel($id)->delete();
-        $getCustomer = Customer::find()->all();
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save();
 
-        return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getCustomer' => $getCustomer,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully deleted in the database.'
-                    ]);
+        Yii::$app->db->createCommand()
+                ->update('car_information', ['status' => 0],  "id = $id" )
+                ->execute();
+
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
+    }
+
+    public function actionBlockCustomer($id)
+    {
+        $searchModel = new SearchCustomer();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $getCustomer = $searchModel->getCustomerList();
+        $getBlacklistCustomer = $searchModel->getBlacklistCustomerList();
+
+        Yii::$app->db->createCommand()
+                    ->update('customer', ['is_blacklist' => 1],  "id = $id" )
+                    ->execute();
+
+        Yii::$app->db->createCommand()
+                    ->update('car_information', ['status' => 0],  "customer_id = $id" )
+                    ->execute();
+
+        Yii::$app->getSession()->setFlash('success', 'Customer record was successfully blocked in the list.');
+        return $this->redirect(['index']);
+    }
+
+    public function actionUnblockCustomer($id)
+    {
+        $searchModel = new SearchCustomer();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        $getCustomer = $searchModel->getCustomerList();
+        $getBlacklistCustomer = $searchModel->getBlacklistCustomerList();
+
+        Yii::$app->db->createCommand()
+                    ->update('customer', ['is_blacklist' => 0],  "id = $id" )
+                    ->execute();
+
+        Yii::$app->db->createCommand()
+                    ->update('car_information', ['status' => 1],  "customer_id = $id" )
+                    ->execute();
+
+        Yii::$app->getSession()->setFlash('success', 'Customer record was successfully unblocked in the list.');
+        return $this->redirect(['index']);
     }
 
     /**
@@ -263,21 +636,45 @@ class CustomerController extends Controller
     {   
         $searchModel = new SearchCustomer();
 
-        $getPoints = Customer::findOne($id);
-        $customerPoints = $getPoints->points;
-        
+        $getCarPoints = CarInformation::find()->where(['customer_id' => $id])->all();
         $getRedeemPoints = $searchModel->getRedeemPoints($id);
         
         return $this->render('_points-redeem', [
                                 'model' => $this->findModel($id),
-                                'customerPoints' => $customerPoints,
-                                'getRedeemPoints' => $getRedeemPoints,
+                                'getCarPoints' => $getCarPoints
                             ]);
+    }
+
+    public function actionInsertItemInList()
+    {
+        $car_plate = Yii::$app->request->post('car_plate');
+        $car_model = Yii::$app->request->post('car_model');
+        $car_make = Yii::$app->request->post('car_make');
+        $chasis = Yii::$app->request->post('chasis');
+        $engine_no = Yii::$app->request->post('engine_no');
+        $year_mfg = Yii::$app->request->post('year_mfg');
+        $reward_points = Yii::$app->request->post('reward_points');
+        $n = Yii::$app->request->post('n');
+
+        $this->layout = false;
+
+        return $this->render('insert-item-in-list', [
+                            'car_plate' => $car_plate,
+                            'car_model' => $car_model,
+                            'car_make' => $car_make,
+                            'chasis' => $chasis,
+                            'engine_no' => $engine_no,
+                            'year_mfg' => $year_mfg,
+                            'reward_points' => $reward_points,
+                            'n' => $n,
+                        ]);
     }
 
     public function actionExportExcel() 
     {
-        $result = Customer::find()->all();
+        $model = new SearchCustomer();
+
+        $result = $model->getCustomerList();
         
         $objPHPExcel = new \PHPExcel();
         $styleHeadingArray = array(
@@ -302,10 +699,8 @@ class CustomerController extends Controller
              ->setCellValue('D1', 'Hand-Phone Number')
              ->setCellValue('E1', 'Office Number')
              ->setCellValue('F1', 'Race')
-             ->setCellValue('G1', 'Car Model')
-             ->setCellValue('H1', 'Car Plate')
-             ->setCellValue('I1', 'Member Expiry')
-             ->setCellValue('J1', 'Status');
+             ->setCellValue('G1', 'Member Expiry')
+             ->setCellValue('H1', 'Status');
              
              $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($styleHeadingArray);
              $objPHPExcel->getActiveSheet()->getStyle('B1')->applyFromArray($styleHeadingArray);
@@ -315,8 +710,6 @@ class CustomerController extends Controller
              $objPHPExcel->getActiveSheet()->getStyle('F1')->applyFromArray($styleHeadingArray);
              $objPHPExcel->getActiveSheet()->getStyle('G1')->applyFromArray($styleHeadingArray);
              $objPHPExcel->getActiveSheet()->getStyle('H1')->applyFromArray($styleHeadingArray);
-             $objPHPExcel->getActiveSheet()->getStyle('I1')->applyFromArray($styleHeadingArray);
-             $objPHPExcel->getActiveSheet()->getStyle('J1')->applyFromArray($styleHeadingArray);
 
          $row=2;
                                 
@@ -330,11 +723,9 @@ class CustomerController extends Controller
                     $objPHPExcel->getActiveSheet()->setCellValue('C'.$row,$result_row['email']);
                     $objPHPExcel->getActiveSheet()->setCellValue('D'.$row,$result_row['hanphone_no']);
                     $objPHPExcel->getActiveSheet()->setCellValue('E'.$row,$result_row['office_no']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$row,$result_row['race']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$row,$result_row['model']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$row,$result_row['carplate']);
-                    $objPHPExcel->getActiveSheet()->setCellValue('I'.$row,$expiryDate);
-                    $objPHPExcel->getActiveSheet()->setCellValue('J'.$row,$status);
+                    $objPHPExcel->getActiveSheet()->setCellValue('F'.$row,$result_row['name']);
+                    $objPHPExcel->getActiveSheet()->setCellValue('G'.$row,$expiryDate);
+                    $objPHPExcel->getActiveSheet()->setCellValue('H'.$row,$status);
                     
                     $objPHPExcel->getActiveSheet()->getStyle('A')->applyFromArray($styleHeadingArray);
                     $row++ ;
@@ -351,7 +742,9 @@ class CustomerController extends Controller
 
     public function actionExportPdf() 
     {
-        $result = Customer::find()->all();
+        $model = new SearchCustomer();
+
+        $result = $model->getCustomerList();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
         
         $dompdf = new Dompdf();
@@ -360,7 +753,7 @@ class CustomerController extends Controller
         $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
 
-        $dompdf->stream();
+        $dompdf->stream('CustomerList-' . date('m-d-Y'));
     }
 
 }

@@ -4,62 +4,41 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Customer */
+/* @var $model common\models\Inventory */
 
-$this->title = 'View Supplier';
-
+$this->title = $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Inventories', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
+<div class="inventory-view">
 
-<div class="row form-container">
-<br/>
+    <h1><?= Html::encode($this->title) ?></h1>
 
- <div class="col-md-12 col-sm-12 col-xs-12">
-    
- <div class="form-title-container">
-    <span class="form-header"><h4>View Supplier Information</h4></span>
- </div>      
- <hr/>
+    <p>
+        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this item?',
+                'method' => 'post',
+            ],
+        ]) ?>
+    </p>
 
- <div class="col-md-12">
-    <div style="text-align: right;">
-        <?= Html::a( '<i class="fa fa-backward"></i> Back to previous page', Yii::$app->request->referrer, ['class' => 'form-btn btn btn-default']); ?>
-
-        <?= Html::a( '<i class="fa fa-trash"></i> Delete', '?r=inventory/delete-column&id=' . $model['id'], ['class' => 'form-btn btn btn-danger', 'onclick' => 'return deleteConfirmation()']); ?>
-    </div>
- </div>    
- <br/>
-
-    <div class="tbl-container viewDesign">
-        <?= DetailView::widget([
+    <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
-            'supplier_code',
-            'supplier_name',
-            'product_code',
-            'product_name',
-            'quantity',
-            'cost_price',
-            'selling_price',
-            'date_imported',
-            [
-                'label' => 'Status',
-                'value' => $model['status'] ? 'Yes' : 'No',
-            ], 
-            [
-                'label' => 'Created At',
-                'value' => date('m-d-Y', strtotime($model['created_at'])),
-            ], 
+            'product_id',
+            'old_quantity',
+            'new_quantity',
+            'type',
+            'datetime_imported',
+            'datetime_purchased',
+            'created_at',
+            'created_by',
+            'status',
         ],
-        ]) ?>
-        <br/>
-    </div>   
- 
- </div>
+    ]) ?>
 
 </div>
-<br/>
-
-
-
-

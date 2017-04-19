@@ -47,7 +47,6 @@ $this->title = 'View Category';
  </div>
 
 </div>
-<br/>
 
 
 

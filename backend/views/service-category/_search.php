@@ -11,13 +11,14 @@ use yii\helpers\Url;
 
 
  <div class="row">
-
+ <br/>
+ 
     <div class="col-md-12">
         <div class="search-label-container">
             <span class="search-label"><li class="fa fa-edit"></li> Enter Keyword here</span>
         </div> 
     </div>
-    <br/><br/>
+    <br/>
     
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
@@ -25,15 +26,16 @@ use yii\helpers\Url;
         <?= $form->field($model, 'name')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Write Service Category Name here...'])->label(false) ?>
     </div>
 
-    <div class="col-md-3">
-        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
-        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
+    <div class="col-md-4">
+        <div style="margin-left: -10px;">
+            <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
+        </div>
     </div>
 
     <div class="col-md-3"></div>
     
     <?php ActiveForm::end(); ?>
-    <br/><br/>
+    <br/>
 
  </div>
 

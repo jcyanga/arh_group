@@ -27,7 +27,9 @@ class Category extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['category'], 'required'],
+            [['category'], 'required', 'message' => 'Fill-up required fields.'],
+            [['category'], 'unique', 'message' => 'Parts category name already exist.'],
+            [['status', 'created_at', 'created_by'], 'safe'],
             [['category'], 'string', 'max' => 50],
         ];
     }

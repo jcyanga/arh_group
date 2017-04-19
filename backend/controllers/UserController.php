@@ -20,6 +20,7 @@ use common\models\UserPermission;
  */
 class UserController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -133,79 +134,69 @@ class UserController extends Controller
     public function actionCreate()
     {
         $model = new User();
-        $searchModel = new SearchUser();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);    
 
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->getUsernameAndEmail(Yii::$app->request->post('User') ['username'], Yii::$app->request->post('User') ['email']);
+        return $this->render('create', [
+                            'model' => $model, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
+    }
 
-            if( $result == 1 ) {
-                return $this->render('create', [
-                                'model' => $model, 
-                                'errTypeHeader' => 'Warning!', 
-                                'errType' => 'alert alert-warning', 
-                                'msg' => 'You already enter an existing user account, Please! Change username or email.'
-                            ]);
-            }    
-                $model->created_by = Yii::$app->user->identity->id;
-                $currentDateTime = new \yii\db\Expression('NOW()');
-                $model->created_at = $currentDateTime;
+    public function actionNew()
+    {
+        $model = new User();  
 
+        if ( Yii::$app->request->post() ) {   
+
+            $model->role_id = Yii::$app->request->post('role');
+            $model->role = 20;
+            $model->branch_id = Yii::$app->request->post('branch');
+            $model->fullname = Yii::$app->request->post('fullname');
+            $model->email = Yii::$app->request->post('email');
+            $model->username = Yii::$app->request->post('username');
+            $model->password = Yii::$app->request->post('password');
+            $model->photo = 'user.png';
+            $model->status = 1;
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->deleted = 0;
+
+            if($model->validate()) {
                 if ( !empty( $model->password ) ) {
                     $model->password_hash = Yii::$app->security->generatePasswordHash($model->password); 
                     $model->generateAuthKey();
-                    unset($model->password);
                 }
 
-            if( $model->save() ) {
+                if( $model->save() ) {
             
-               $auth = Yii::$app->authManager;
-               $userRoleId = $model->role_id;
+                   $auth = Yii::$app->authManager;
+                   $userRoleId = $model->role_id;
 
-                if ( $userRoleId == 1) {
-                    $userRole = $auth->getRole('developer');
-                    $auth->assign($userRole, $model->id);
-                }
-                if ( $userRoleId == 2) {
-                    $userRole = $auth->getRole('admin');
-                    $auth->assign($userRole, $model->id);
-                }
-                if ( $userRoleId == 3) {
-                    $userRole = $auth->getRole('staff');
-                    $auth->assign($userRole, $model->id);
-                }
-                if ( $userRoleId == 4) {
-                    $userRole = $auth->getRole('customer');
-                    $auth->assign($userRole, $model->id);
+                        if ( $userRoleId == 1) {
+                             $userRole = $auth->getRole('developer');
+                             $auth->assign($userRole, $model->id);
+                        }
+                        if ( $userRoleId == 2) {
+                             $userRole = $auth->getRole('admin');
+                             $auth->assign($userRole, $model->id);
+                        }
+                        if ( $userRoleId == 3) {
+                             $userRole = $auth->getRole('staff');
+                             $auth->assign($userRole, $model->id);
+                        }
+                        if ( $userRoleId == 4) {
+                             $userRole = $auth->getRole('customer');
+                             $auth->assign($userRole, $model->id);
+                        }
+
+                    return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
                 }
 
-                $getUser = $searchModel->getUser();
-
-                return $this->render('index', [
-                                'searchModel' => $searchModel,
-                                'dataProvider' => $dataProvider, 
-                                'getUser' => $getUser, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Your record was successfully added in the database.'
-                            ]);
-
-            }else {
-                return $this->render('create', [
-                                'model' => $model, 
-                                'errTypeHeader' => 'Error!', 
-                                'errType' => 'alert alert-error', 
-                                'msg' => 'You have an error Check All the required fields.'
-                            ]);
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
             }
-
-        } else {
-            return $this->render('create', [
-                                'model' => $model, 
-                                'errTypeHeader' => '', 
-                                'errType' => '', 
-                                'msg' => ''
-                            ]);
         }
     }
 
@@ -218,28 +209,43 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $searchModel = new SearchUser();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
-            $getUser = $searchModel->getUser();
-
-            return $this->render('index', [
-                            'searchModel' => $searchModel, 
-                            'getUser' => $getUser,
-                            'dataProvider' => $dataProvider, 
-                            'errTypeHeader' => 'Success!', 
-                            'errType' => 'alert alert-success', 
-                            'msg' => 'Your record was successfully updated in the database.'
-                        ]);
-
-        } else {
-            return $this->render('update', [
+        return $this->render('update', [
                             'model' => $model, 
                             'errTypeHeader' => '', 
                             'errType' => '', 
                             'msg' => ''
                         ]);
+    }
+
+    public function actionEdit()
+    {
+        $model = $this->findModel(Yii::$app->request->post('id'));
+
+        $model->role_id = Yii::$app->request->post('role');
+        $model->role = 20;
+        $model->fullname = Yii::$app->request->post('fullname');
+        $model->email = Yii::$app->request->post('email');
+        $model->username = Yii::$app->request->post('username');
+        $model->password = Yii::$app->request->post('password');
+        $model->photo = 'user.png';
+        $model->status = 1;
+        $model->updated_at = date('Y-m-d H:i:s');
+        $model->updated_by = Yii::$app->user->identity->id;
+        $model->deleted = 0;
+
+        if ( !empty( $model->password ) ) {
+            $model->password_hash = Yii::$app->security->generatePasswordHash($model->password); 
+            $model->generateAuthKey();
+        }
+
+        if($model->validate()) {
+           $model->save();
+           return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
+
+        } else {
+           return json_encode(['message' => $model->errors, 'status' => 'Error']);
+        
         }
     }
 
@@ -260,18 +266,13 @@ class UserController extends Controller
     {
         $searchModel = new SearchUser();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+      
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save();
 
-        $getUser = $searchModel->getUser();
-        $this->findModel($id)->delete();
-
-        return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getUser' => $getUser,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully deleted in the database.'
-                    ]);
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
 
     /**

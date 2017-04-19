@@ -34,10 +34,12 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_code', 'product_name', 'unit_of_measure', 'status', 'category_id', 'created_at', 'created_by'], 'required'],
+            [['product_code', 'product_name', 'unit_of_measure', 'unit_of_measure', 'quantity', 'reorder_level', 'cost_price', 'gst_price', 'selling_price' ], 'required', 'message' => 'Fill up required fields.' ],
+            [['supplier_id', 'category_id'], 'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number', 'message' => 'Invalid option selected'],
             [['status', 'category_id', 'created_by'], 'integer'],
-            [['created_at'], 'safe'],
-            [['product_code', 'product_name', 'product_image', 'unit_of_measure'], 'string', 'max' => 50],
+            [['created_at', 'status', 'created_by'], 'safe'],
+            [['product_image'], 'file', 'extensions' => 'jpg, gif, png'],
+            [['product_code', 'product_image', 'unit_of_measure'], 'string', 'max' => 50],
         ];
     }
 

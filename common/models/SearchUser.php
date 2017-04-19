@@ -90,7 +90,8 @@ class SearchUser extends User
                     ->join('INNER JOIN', 'role', 'user.role_id = role.id')
                     ->join('INNER JOIN', 'branch', 'user.branch_id = branch.id')
                     ->where(['like', 'user.fullname', $fullname])
-                    ->andWhere('user.role_id > 1')                    
+                    ->andWhere('user.role_id > 1')
+                    ->andWhere(['user.status' => 1])                    
                     ->all();
 
         return $result;            
@@ -104,6 +105,7 @@ class SearchUser extends User
             ->from('user')
             ->where(['username' => $username])
             ->andWhere(['email' => $email])
+            ->andWhere(['status' => 1])  
             ->all();
             
             if( count($result) > 0 ) {
@@ -121,6 +123,7 @@ class SearchUser extends User
                     ->join('INNER JOIN', 'role', 'user.role_id = role.id')
                     ->join('INNER JOIN', 'branch', 'user.branch_id = branch.id')
                     ->where('user.role_id > 1')
+                    ->andWhere(['user.status' => 1])  
                     ->all();
 
         return $result;   
@@ -135,6 +138,7 @@ class SearchUser extends User
                     ->join('INNER JOIN', 'branch', 'user.branch_id = branch.id')
                     ->where('user.role_id > 1')
                     ->andWhere(['user.id' => $id])
+                    ->andWhere(['user.status' => 1])  
                     ->one();
 
         return $result;   

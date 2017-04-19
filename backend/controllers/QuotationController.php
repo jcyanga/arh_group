@@ -19,11 +19,18 @@ use common\models\Invoice;
 use common\models\InvoiceDetail;
 use common\models\ProductLevel;
 use common\models\SearchInvoice;
+use common\models\Customer;
+use common\models\SearchCustomer;
+use common\models\SearchInventory;
+use common\models\SearchService;
+use common\models\SearchGst;
+use common\models\SearchProduct;
 
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use common\models\Role;
 use common\models\UserPermission;
+use common\models\CarInformation;
 
 /**
  * QuotationController implements the CRUD actions for Quotation model.
@@ -106,16 +113,35 @@ class QuotationController extends Controller
 
         if( Yii::$app->request->get('date_start') <> "" && Yii::$app->request->get('date_end') <> "" ) {
             $getQuotation = $searchModel->getQuotationByDateRange(Yii::$app->request->get('date_start'), Yii::$app->request->get('date_end'));
+            $date_start = Yii::$app->request->get('date_start');
+            $date_end = Yii::$app->request->get('date_end');
+            $customerName = '';
+            $vehicleNumber = '';
 
+        } elseif ( Yii::$app->request->get('customer_name') <> "" || Yii::$app->request->get('carplate') <> "" ) {
+            $getQuotation = $searchModel->getQuotationByCustomerInformation(Yii::$app->request->get('customer_name'), Yii::$app->request->get('carplate'));
+            $date_start = '';
+            $date_end = '';
+            $customerName = Yii::$app->request->get('customer_name');
+            $vehicleNumber = Yii::$app->request->get('carplate');
+        
         } else {
             $getQuotation = $searchModel->getQuotation();
+            $date_start = '';
+            $date_end = '';
+            $customerName = '';
+            $vehicleNumber = '';
 
         }
 
         return $this->render('index', [
                             'searchModel' => $searchModel,
                             'dataProvider' => $dataProvider,
-                            'getQuotation' => $getQuotation, 
+                            'getQuotation' => $getQuotation,
+                            'date_start' => $date_start,
+                            'date_end' => $date_end, 
+                            'customerName' => $customerName,
+                            'vehicleNumber' => $vehicleNumber,
                             'errTypeHeader' => '', 
                             'errType' => '', 
                             'msg' => ''
@@ -140,7 +166,10 @@ class QuotationController extends Controller
                         'model' => $this->findModel($id),
                         'customerInfo' => $getQuotation,
                         'services' => $getProcessedServices,
-                        'parts' => $getProcessedParts
+                        'parts' => $getProcessedParts, 
+                        'errTypeHeader' => '', 
+                        'errType' => '', 
+                        'msg' => ''
                     ]);
     }
 
@@ -152,124 +181,105 @@ class QuotationController extends Controller
     public function actionCreate()
     {
         $model = new Quotation();
-        $details = new QuotationDetail();
+        $modelQD = new QuotationDetail();
         $searchModel = new SearchQuotation();
 
-        $quotationId = $this->_getQuotationId();
+        $quotationLastId = $this->_getQuotationId();
         $getBranchList = $searchModel->getBranch();
         $getUserList = $searchModel->getUser();
         $getCustomerList = $searchModel->getCustomer();
         $getServicesList = $searchModel->getServicesList();
         $getPartsList = $searchModel->getPartsList();
 
-        if ( $model->load(Yii::$app->request->post()) ) {
-            $getGst = Gst::find()->where(['branch_id' => Yii::$app->request->post('Quotation')['selectedBranch'] ])->one();
-
-            if( isset($getGst) ) {
-                $totalWithGst = ( Yii::$app->request->post('Quotation')['grand_total'] * $getGst->gst);
-            } else {
-                $totalWithGst = Yii::$app->request->post('Quotation')['grand_total'];
-            }
-
-                if( Yii::$app->request->post('Quotation')['dateIssue'] == "" || Yii::$app->request->post('Quotation')['selectedBranch'] == 0 || Yii::$app->request->post('Quotation')['selectedCustomer'] == 0 || Yii::$app->request->post('Quotation')['selectedUser'] == 0 || Yii::$app->request->post('Quotation')['remarks'] == "" ) {
-                        
-                        return $this->render('_form', [
-                                            'model' => $model,
-                                            'quotationId' => $quotationId,
-                                            'getBranchList' => $getBranchList,
-                                            'getUserList' => $getUserList,
-                                            'getCustomerList' => $getCustomerList,
-                                            'getServicesList' => $getServicesList,
-                                            'getPartsList' => $getPartsList, 
-                                            'errTypeHeader' => 'Error!', 
-                                            'errType' => 'alert alert-error', 
-                                            'msg' => 'Fill-up all the fields in the form.'
-                                        ]);
-                }
-
-                $model->quotation_code = Yii::$app->request->post('Quotation')['quotationCode'];
-                $model->user_id = Yii::$app->request->post('Quotation')['selectedUser'];
-                $model->customer_id = Yii::$app->request->post('Quotation')['selectedCustomer'];
-                $model->branch_id = Yii::$app->request->post('Quotation')['selectedBranch'];
-                $model->date_issue = Yii::$app->request->post('Quotation')['dateIssue'];
-                $model->grand_total = $totalWithGst;
-                $model->remarks = Yii::$app->request->post('Quotation')['remarks'];
-                $model->created_by = Yii::$app->user->identity->id;
-                $model->created_at = date("Y-m-d");
-                $model->updated_by = Yii::$app->user->identity->id;
-                $model->updated_at = date("Y-m-d");
-                $model->delete = 0;
-                $model->task = 0;
-                $model->invoice = 0;
-
-            if ( $model->save() ) {  
-                $quotationId = $model->id;
-
-                if( $details->load(Yii::$app->request->post()) ) {
-                    
-                    if( empty(Yii::$app->request->post('QuotationDetail')['task']) ) {
-                        $task = 0;
-                    } else {
-                        $task = Yii::$app->request->post('QuotationDetail')['task'];
-                    }
-
-                    foreach ( Yii::$app->request->post('QuotationDetail')['quantity'] as $key => $value ) {
-                        $quoD = new QuotationDetail();
-
-                        $getServicePart = explode('-', Yii::$app->request->post('QuotationDetail')['service_part_id'][$key]);
-                        $getType = $getServicePart[0];
-                        $getServicePartId = $getServicePart[1];
-
-                        if( $getType == 1 ) {
-                            $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
-                            $totalQty = $getPart->quantity - $value;
-                            
-                            $invQty = Inventory::findOne($getServicePartId);
-                            $invQty->quantity = $totalQty;
-                            $invQty->save();        
-                        }
-
-                        $quoD->quotation_id = $quotationId;
-                        $quoD->service_part_id = $getServicePartId;
-                        $quoD->quantity = $value;
-                        $quoD->selling_price = Yii::$app->request->post('QuotationDetail')['selling_price'][$key];
-                        $quoD->subTotal = Yii::$app->request->post('QuotationDetail')['subTotal'][$key];
-                        $quoD->created_at = date("Y-m-d");
-                        $quoD->created_by = Yii::$app->user->identity->id;
-                        $quoD->type = $getType; 
-                        $quoD->task = 0;
-                        $quoD->invoice = 0;
-
-                        $quoD->save();
-                    }
-
-                    if( !empty(Yii::$app->request->post('QuotationDetail')['task']) ) {
-                        foreach( Yii::$app->request->post('QuotationDetail')['task'] as $key => $tValue ) {
-                            $qdTask = QuotationDetail::find()->where(['quotation_id' => $quotationId])->andWhere(['service_part_id' => $tValue])->andWhere('type = 0')->one();
-                            $qdTask->task = 1;
-                            $qdTask->save();
-                        }
-                    }
-                 
-                 return $this->redirect(['view', 'id' => $model->id]);
-                }
-            }
+        if ( Yii::$app->request->post() ) {
             
-        } else {
+            $grandTotal = (Yii::$app->request->post('grandTotal')) ? Yii::$app->request->post('grandTotal') : 0;
 
-            return $this->render('_form', [
-                                'model' => $model,
-                                'quotationId' => $quotationId,
-                                'getBranchList' => $getBranchList,
-                                'getUserList' => $getUserList,
-                                'getCustomerList' => $getCustomerList,
-                                'getServicesList' => $getServicesList,
-                                'getPartsList' => $getPartsList, 
-                                'errTypeHeader' => '', 
-                                'errType' => '', 
-                                'msg' => ''
-                            ]);
+            $gstResult = (Yii::$app->request->post('gstResult')) ? Yii::$app->request->post('gstResult') : 0;
+            $netTotal = (Yii::$app->request->post('netTotal')) ? Yii::$app->request->post('netTotal') : 0;
+
+            $remarks = (Yii::$app->request->post('remarks')) ? Yii::$app->request->post('remarks') : 'No remarks.';
+            $discount_amount = (Yii::$app->request->post('discountAmount')) ? Yii::$app->request->post('discountAmount') : '0.00';
+            $discount_remarks = (Yii::$app->request->post('discountRemarks')) ? Yii::$app->request->post('discountRemarks') : 'No discount remarks.';
+
+            $model->quotation_code = Yii::$app->request->post('quotationCode');
+            $model->user_id = Yii::$app->request->post('salesPerson');
+            $model->customer_id = Yii::$app->request->post('customerId');
+            $model->branch_id = Yii::$app->request->post('quoBranch');
+            $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('dateIssue')));
+            $model->grand_total = $grandTotal;
+            $model->gst = $gstResult;
+            $model->net = $netTotal;
+            $model->remarks = $remarks;
+            $model->mileage = Yii::$app->request->post('mileage');
+            $model->come_in = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('comein')));
+            $model->come_out = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('comeout')));
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->discount_amount = $discount_amount;
+            $model->discount_remarks = $discount_remarks;
+            $model->created_at = date("Y-m-d");
+            $model->time_created = date("H:i:s");
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->updated_at = date("Y-m-d");
+            $model->delete = 0;
+            $model->task = 0;
+            $model->invoice = 0;
+
+            if ($model->validate()) {  
+                $model->save();
+
+                $quotationId = $model->id;
+                
+                foreach ( Yii::$app->request->post('itemQty') as $key => $value ) {
+                    $quoD = new QuotationDetail();
+
+                    $getServicePart = explode('-', Yii::$app->request->post('servicePartId')[$key]['value']);
+                    $getType = $getServicePart[0];
+                    $getServicePartId = $getServicePart[1];
+
+                    $quoD->quotation_id = $quotationId;
+                    $quoD->service_part_id = $getServicePartId;
+                    $quoD->quantity = Yii::$app->request->post('itemQty')[$key]['value'];
+                    $quoD->selling_price = Yii::$app->request->post('itemPriceValue')[$key]['value'];
+                    $quoD->subTotal = Yii::$app->request->post('itemSubTotal')[$key]['value'];
+                    $quoD->created_at = date("Y-m-d");
+                    $quoD->created_by = Yii::$app->user->identity->id;
+                    $quoD->type = $getType; 
+                    $quoD->task = 0;
+                    $quoD->invoice = 0;
+
+                    $quoD->save();
+                }
+
+                if( (Yii::$app->request->post('task')) ) {
+                    foreach( Yii::$app->request->post('task') as $key => $tValue ) {
+                        $qdTask = QuotationDetail::find()->where(['quotation_id' => $quotationId])->andWhere(['service_part_id' => Yii::$app->request->post('task')[$key]['value'] ])->andWhere('type = 0')->one();
+                        $qdTask->task = 1;
+                        $qdTask->save();
+                    }
+                }
+                 
+                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success', 'id' => $quotationId ]);
+
+            }else{
+                return json_encode(['message' => $model->errors, 'status' => 'Error']);
+
+            }
+
         }
+
+        return $this->render('_form', [
+                    'model' => $model,
+                    'quotationId' => $quotationLastId,
+                    'getBranchList' => $getBranchList,
+                    'getUserList' => $getUserList,
+                    'getCustomerList' => $getCustomerList,
+                    'getServicesList' => $getServicesList,
+                    'getPartsList' => $getPartsList, 
+                    'errTypeHeader' => '', 
+                    'errType' => '', 
+                    'msg' => ''
+                ]);
     }
 
     public function actionPreview($id) {
@@ -311,10 +321,11 @@ class QuotationController extends Controller
         $details = new QuotationDetail();
         $searchModel = new SearchQuotation();
 
-        $getProcessedQuotationbyId = $searchModel->getProcessedQuotationbyId($id);
+        $getQuotation = $searchModel->getProcessedQuotationbyId($id);
         $getProcessedServicesById = $searchModel->getProcessedServicesById($id);
         $getProcessedPartsById = $searchModel->getProcessedPartsById($id);
         $getLastId = $searchModel->getLastId($id);
+        $getGst = Gst::find()->where(['branch_id' => $getQuotation['branch_id'] ])->one();
 
         $quotation_id = $this->_getQuotationId();
         $getBranchList = $searchModel->getBranch();
@@ -323,125 +334,90 @@ class QuotationController extends Controller
         $getServicesList = $searchModel->getServicesList();
         $getPartsList = $searchModel->getPartsList();
 
-        if ( $model->load(Yii::$app->request->post()) ) {
-            $getGst = Gst::find()->where(['branch_id' => Yii::$app->request->post('Quotation')['selectedBranch'] ])->one();
+        if ( Yii::$app->request->post() ) {
+            
+                $grandTotal = (Yii::$app->request->post('grandTotal')) ? Yii::$app->request->post('grandTotal') : 0;
 
-            if( isset($getGst) ) {
-                $totalWithGst = ( Yii::$app->request->post('Quotation')['grand_total'] * $getGst->gst );
-            }else {
-                $totalWithGst = Yii::$app->request->post('Quotation')['grand_total'];
-            }
+                $gstResult = (Yii::$app->request->post('gstResult')) ? Yii::$app->request->post('gstResult') : 0;
+                $netTotal = (Yii::$app->request->post('netTotal')) ? Yii::$app->request->post('netTotal') : 0;
 
-            if( Yii::$app->request->post('Quotation')['dateIssue'] == "" || Yii::$app->request->post('Quotation')['selectedBranch'] == 0 || Yii::$app->request->post('Quotation')['selectedCustomer'] == 0 || Yii::$app->request->post('Quotation')['selectedUser'] == 0 || Yii::$app->request->post('Quotation')['remarks'] == "" ) {
-                    
-                    return $this->render('_update-form', [
-                                                'model' => $model,
-                                                'quotationId' => $id,
-                                                'getBranchList' => $getBranchList,
-                                                'getUserList' => $getUserList,
-                                                'getCustomerList' => $getCustomerList,
-                                                'getServicesList' => $getServicesList,
-                                                'getPartsList' => $getPartsList, 
-                                                'errTypeHeader' => 'Error!', 
-                                                'errType' => 'alert alert-error', 
-                                                'msg' => 'Fill-up all the fields in the form.'
-                                            ]);
+                $remarks = (Yii::$app->request->post('remarks')) ? Yii::$app->request->post('remarks') : 'No remarks.';
+                $discount_amount = (Yii::$app->request->post('discountAmount')) ? Yii::$app->request->post('discountAmount') : '0.00';
+                $discount_remarks = (Yii::$app->request->post('discountRemarks')) ? Yii::$app->request->post('discountRemarks') : 'No discount remarks.';
 
-            }
+                $findModel = Quotation::findOne($id);
 
-            $findModel = Quotation::findOne($id);
+                $findModel->quotation_code = Yii::$app->request->post('quotationCode');
+                $findModel->user_id = Yii::$app->request->post('salesPerson');
+                $findModel->customer_id = Yii::$app->request->post('customerId');
+                $findModel->branch_id = Yii::$app->request->post('quoBranch');
+                $findModel->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('dateIssue')));
+                $findModel->grand_total = $grandTotal;
+                $findModel->gst = $gstResult;
+                $findModel->net = $netTotal;
+                $findModel->remarks = $remarks;
+                $findModel->mileage = Yii::$app->request->post('mileage');
+                $findModel->come_in = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('comein')));
+                $findModel->come_out = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('comeout')));
+                $findModel->created_by = Yii::$app->user->identity->id;
+                $findModel->discount_amount = $discount_amount;
+                $findModel->discount_remarks = $discount_remarks;
+                $findModel->created_at = date("Y-m-d");
+                $findModel->time_created = date("H:i:s");
+                $findModel->updated_by = Yii::$app->user->identity->id;
+                $findModel->updated_at = date("Y-m-d");
+                $findModel->delete = 0;
+                $findModel->task = 0;
+                $findModel->invoice = 0;
 
-            $findModel->quotation_code = Yii::$app->request->post('Quotation')['quotationCode'];
-            $findModel->user_id = Yii::$app->request->post('Quotation')['selectedUser'];
-            $findModel->customer_id = Yii::$app->request->post('Quotation')['selectedCustomer'];
-            $findModel->branch_id = Yii::$app->request->post('Quotation')['selectedBranch'];
-            $findModel->date_issue = Yii::$app->request->post('Quotation')['dateIssue'];
-            $findModel->grand_total = $totalWithGst;
-            $findModel->remarks = Yii::$app->request->post('Quotation')['remarks'];
-            $findModel->updated_at = date("Y-m-d");
-            $findModel->updated_by = Yii::$app->user->identity->id;
-            $findModel->delete = 0;
-            $findModel->task = 0;
-            $findModel->invoice = 0;
-
-            if ( $findModel->save() ) {
-                
-                if( $details->load(Yii::$app->request->post()) ) {            
-                    $getQty = QuotationDetail::find()->where(['quotation_id' => $id])->andWhere('type = 1')->all();
-         
-                    foreach( $getQty as $qdInfo ) {
-                        $getPartInventoryQty = Inventory::find()->where(['id' => $qdInfo['service_part_id'] ])->all();
-                        
-                        foreach( $getPartInventoryQty as $pInfo ) {
-                            $totalPartQty = $pInfo['quantity'] + $qdInfo['quantity'];
-                            
-                            $findPartModel = Inventory::findOne($qdInfo['service_part_id']);
-                            $findPartModel->quantity = $totalPartQty;
-                            $findPartModel->save();
-                        }
-                    }
-                    
+                if ($findModel->validate()) {  
+                    $findModel->save();
+                                         
                     Yii::$app->db->createCommand()
                     ->delete('quotation_detail', "quotation_id = $id" )
                     ->execute();
 
-                    $service_part_id = Yii::$app->request->post('QuotationDetail')['service_part_id'];
-                    $quantity = Yii::$app->request->post('QuotationDetail')['quantity'];
-                    $selling_price = Yii::$app->request->post('QuotationDetail')['selling_price'];
-                    $subTotal = Yii::$app->request->post('QuotationDetail')['subTotal'];
-                    
-                    if( empty(Yii::$app->request->post('QuotationDetail')['task']) ) {
-                        $task = 0;
-                    } else {
-                        $task = Yii::$app->request->post('QuotationDetail')['task'];
-                    }
-
-                    foreach ( Yii::$app->request->post('QuotationDetail')['quantity'] as $key => $value ) {
+                    foreach ( Yii::$app->request->post('itemQty') as $key => $value ) {
                         $quoD = new QuotationDetail();
 
-                        $getServicePart = explode('-', Yii::$app->request->post('QuotationDetail')['service_part_id'][$key]);
+                        $getServicePart = explode('-', Yii::$app->request->post('servicePartId')[$key]['value']);
                         $getType = $getServicePart[0];
                         $getServicePartId = $getServicePart[1];
 
-                        if( $getType == 1 ) {
-                            $getPart = Inventory::find()->where(['id' => $getServicePartId])->one();                           
-                            $totalQty = $getPart->quantity - $value;
-
-                            $invQty = Inventory::findOne($getServicePartId);
-                            $invQty->quantity = $totalQty;
-                            $invQty->save();
-                        }
-
                         $quoD->quotation_id = $id;
                         $quoD->service_part_id = $getServicePartId;
-                        $quoD->quantity = $value;
-                        $quoD->selling_price = Yii::$app->request->post('QuotationDetail')['selling_price'][$key];
-                        $quoD->subTotal = Yii::$app->request->post('QuotationDetail')['subTotal'][$key];
+                        $quoD->quantity = Yii::$app->request->post('itemQty')[$key]['value'];
+                        $quoD->selling_price = Yii::$app->request->post('itemPriceValue')[$key]['value'];
+                        $quoD->subTotal = Yii::$app->request->post('itemSubTotal')[$key]['value'];
                         $quoD->created_at = date("Y-m-d");
                         $quoD->created_by = Yii::$app->user->identity->id;
-                        $quoD->type = $getType;
-                        $quoD->task = 0;   
+                        $quoD->type = $getType; 
+                        $quoD->task = 0;
                         $quoD->invoice = 0;
 
                         $quoD->save();
                     }
 
-                    if( !empty(Yii::$app->request->post('QuotationDetail')['task']) ) {
-                        foreach( Yii::$app->request->post('QuotationDetail')['task'] as $key => $tValue ) {
-                            $qdTask = QuotationDetail::find()->where(['quotation_id' => $id])->andWhere(['service_part_id' => $tValue])->andWhere('type = 0')->one();
-                            $qdTask->task = 1;
-                            $qdTask->save();
-                        }
+                if( (Yii::$app->request->post('task')) ) {
+                    foreach( Yii::$app->request->post('task') as $key => $tValue ) {
+                        $qdTask = QuotationDetail::find()->where(['quotation_id' => $id])->andWhere(['service_part_id' => Yii::$app->request->post('task')[$key]['value'] ])->andWhere('type = 0')->one();
+                        $qdTask->task = 1;
+                        $qdTask->save();
                     }
-                 
-                 return $this->redirect(['view', 'id' => $id]);
                 }
+                 
+                return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success', 'id' => $id ]);
+
+            }else{
+                return json_encode(['message' => $findModel->errors, 'status' => 'Error']);
+
             }
 
-        } else {
+        }
             
-            return $this->render('_update-form', [
-                                    'model' => $getProcessedQuotationbyId, 
+        return $this->render('_update-form', [
+                                    'model' => $model, 
+                                    'quotation' => $getQuotation, 
                                     'getService' => $getProcessedServicesById,
                                     'getPart' => $getProcessedPartsById,
                                     'getLastId' => $getLastId,
@@ -451,12 +427,11 @@ class QuotationController extends Controller
                                     'getCustomerList' => $getCustomerList,
                                     'getServicesList' => $getServicesList,
                                     'getPartsList' => $getPartsList, 
+                                    'gst' => $getGst['gst'],
                                     'errTypeHeader' => '', 
                                     'errType' => '', 
                                     'msg' => ''
                                  ]);   
-        }
-
     }
 
     /**
@@ -489,6 +464,10 @@ class QuotationController extends Controller
                         'searchModel' => $searchModel, 
                         'getQuotation' => $getQuotation,
                         'dataProvider' => $dataProvider, 
+                        'date_start' => '',
+                        'date_end' => '',
+                        'customerName' => '',
+                        'vehicleNumber' => '',
                         'errTypeHeader' => 'Success!', 
                         'errType' => 'alert alert-success', 
                         'msg' => 'Your record was successfully deleted in the database.'
@@ -512,58 +491,60 @@ class QuotationController extends Controller
         }
     }
 
-    public function actionPrice() {
+    // public function actionPrice() 
+    // {
 
-        $this->layout = false;
+    //     $this->layout = false;
 
-        if( Yii::$app->request->post() ) {
-            $getItemType = explode('-', Yii::$app->request->post()['services_parts']);
-            $ItemType = $getItemType[0];
-            $ItemId = $getItemType[1];
+    //     if( Yii::$app->request->post() ) {
+    //         $getItemType = explode('-', Yii::$app->request->post()['services_parts']);
+    //         $ItemType = $getItemType[0];
+    //         $ItemId = $getItemType[1];
 
-            $itemSellingPrice = false;
+    //         $itemSellingPrice = false;
 
-            if( $ItemType == '0' ) {
-                $service = Service::find()->where(['id' => $ItemId])->one();
-                $itemSellingPrice = $service->default_price;
-                $status = '';
+    //         if( $ItemType == '0' ) {
+    //             $service = Service::find()->where(['id' => $ItemId])->one();
+    //             $itemSellingPrice = $service->default_price;
+    //             $status = '';
 
-            }else{
-                $part = Inventory::find()->where(['id' => $ItemId])->one();
-                $itemQty = $part->quantity;
+    //         }else{
+    //             $part = Inventory::find()->where(['id' => $ItemId])->one();
+    //             $itemQty = $part->quantity;
                 
-                $getPartLevel = ProductLevel::find()->one();
-                $criticalLvl = $getPartLevel->critical_level;
-                $minimumLvl = $getPartLevel->minimum_level;
+    //             $getPartLevel = ProductLevel::find()->one();
+    //             $criticalLvl = $getPartLevel->critical_level;
+    //             $minimumLvl = $getPartLevel->minimum_level;
 
-                switch($itemQty) {
-                    case $minimumLvl:
-                        $itemSellingPrice = $part->selling_price;
-                        $status = 'minimum_level';
-                     break;
+    //             switch($itemQty) {
+    //                 case $minimumLvl:
+    //                     $itemSellingPrice = $part->selling_price;
+    //                     $status = 'minimum_level';
+    //                  break;
                     
-                    case $criticalLvl:
-                        $itemSellingPrice = $part->selling_price;
-                        $status = 'critical_level';
-                     break;
+    //                 case $criticalLvl:
+    //                     $itemSellingPrice = $part->selling_price;
+    //                     $status = 'critical_level';
+    //                  break;
                     
-                    case 0:
-                        $itemSellingPrice = '0';
-                        $status = '0';
-                     break;
+    //                 case 0:
+    //                     $itemSellingPrice = '0';
+    //                     $status = '0';
+    //                  break;
 
-                    default:
-                        $itemSellingPrice = $part->selling_price;
-                        $status = '';      
-                } 
+    //                 default:
+    //                     $itemSellingPrice = $part->selling_price;
+    //                     $status = '';      
+    //             } 
 
-            }
-            return json_encode(['price' => $itemSellingPrice, 'status' => $status]);
+    //         }
+    //         return json_encode(['price' => $itemSellingPrice, 'status' => $status]);
 
-        }
-    }
+    //     }
+    // }
 
-    public function actionInsertInList() {
+    public function actionInsertInList() 
+    {
         $detail = new QuotationDetail();
         $this->layout = false;
 
@@ -612,13 +593,15 @@ class QuotationController extends Controller
         $details = new QuotationDetail();
         $searchInvoice = new SearchInvoice();
         $searchModel = new SearchQuotation();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         $getQuotation = $searchModel->getProcessedQuotationbyId($id);
+        
+        $yrNow = date('Y');
+        $monthNow = date('m');
         $getInvoiceId = $searchInvoice->getInvoiceId();
 
-        $invoiceNo = 'INVOICE' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5) . '-' . $getInvoiceId;
-
+        $invoiceNo ='INV' . $yrNow  . $monthNow . sprintf('%003d', $getInvoiceId);
+        
         $getService = $searchModel->getProcessedServicesById($id);
         $getPart = $searchModel->getProcessedPartsById($id);
         $getLastId = $searchModel->getLastId($id);
@@ -630,13 +613,21 @@ class QuotationController extends Controller
         
             $invoice->quotation_code = $getQuotation['quotation_code'];
             $invoice->invoice_no = $invoiceNo;
-            $invoice->user_id = $getQuotation['user_id'];
+            $invoice->user_id = Yii::$app->user->identity->id;
             $invoice->customer_id = $getQuotation['customer_id'];
             $invoice->branch_id = $getQuotation['branch_id'];
             $invoice->date_issue = $getQuotation['date_issue'];
             $invoice->grand_total = $getQuotation['grand_total'];
+            $invoice->gst = $getQuotation['gst'];
+            $invoice->net = $getQuotation['net'];
             $invoice->remarks = $getQuotation['remarks'];
+            $invoice->mileage = $getQuotation['mileage'];
+            $invoice->come_in = $getQuotation['come_in'];
+            $invoice->come_out = $getQuotation['come_out'];
             $invoice->created_at = $getQuotation['created_at'];
+            $invoice->time_created = $getQuotation['time_created'];
+            $invoice->discount_amount = $getQuotation['discount_amount'];
+            $invoice->discount_remarks = $getQuotation['discount_remarks'];
             $invoice->created_by = $getQuotation['created_by'];
             $invoice->updated_at = $getQuotation['updated_at'];
             $invoice->updated_by = $getQuotation['updated_by'];
@@ -645,6 +636,8 @@ class QuotationController extends Controller
             $invoice->paid = 0;
             $invoice->paid_type = 0;
             $invoice->status = 0;
+            $invoice->payment_status = 'Unpaid';
+            $invoice->balance_amount = $getQuotation['net'];
 
             $invoice->save();
             $invoiceId = $invoice->id;
@@ -654,7 +647,7 @@ class QuotationController extends Controller
                 $sDetails = new InvoiceDetail();
 
                 $sDetails->invoice_id = $invoiceId;
-                $sDetails->service_part_id = $sRow['serviceId'];
+                $sDetails->service_part_id = $sRow['service_part_id'];
                 $sDetails->quantity = $sRow['quantity'];
                 $sDetails->selling_price = $sRow['selling_price'];
                 $sDetails->subTotal = $sRow['subTotal'];
@@ -683,6 +676,29 @@ class QuotationController extends Controller
                 $pDetails->status = 0;
 
                 $pDetails->save();
+
+                $getPart = Product::find()->where(['id' => $pRow['productId'] ])->one();
+                $old_qty = $getPart->quantity;
+                $new_qty = $getPart->quantity - $pRow['quantity'];
+
+                $inventoryModel = new Inventory();
+                            
+                $inventoryModel->product_id = $pRow['productId'];
+                $inventoryModel->old_quantity = $old_qty;
+                $inventoryModel->new_quantity = $new_qty;
+                $inventoryModel->qty_purchased = $pRow['quantity'];
+                $inventoryModel->type = 2;
+                $inventoryModel->invoice_no = $invoiceNo;
+                $inventoryModel->datetime_purchased = date('Y-m-d H:i:s', strtotime($getQuotation['date_issue']));
+                $inventoryModel->created_at = date('Y-m-d H:i:s');
+                $inventoryModel->created_by = Yii::$app->user->identity->id;
+                $inventoryModel->status = 1;
+                
+                $inventoryModel->save();
+
+                $getPart = Product::find()->where(['id' => $pRow['productId'] ])->one();
+                $getPart->quantity -= $pRow['quantity'];
+                $getPart->save();
             }
 
             Yii::$app->db->createCommand()
@@ -692,32 +708,321 @@ class QuotationController extends Controller
             Yii::$app->db->createCommand()
                 ->update('quotation_detail', ['invoice' => 1], "quotation_id = $id")
                 ->execute();
-
-            $getQuotation = $searchModel->getQuotation();
-
-            return $this->render('index', [
-                                'searchModel' => $searchModel, 
-                                'getQuotation' => $getQuotation,
-                                'dataProvider' => $dataProvider, 
-                                'errTypeHeader' => 'Success!', 
-                                'errType' => 'alert alert-success', 
-                                'msg' => 'Invoice for the Quotation was successfully generated.'
-                            ]);
+                
+            return $this->redirect(['invoice/payment-method', 'id' => $invoiceId ]);
 
         }else{
 
-            $getQuotation = $searchModel->getQuotation();
-
-            return $this->render('index', [
-                            'searchModel' => $searchModel, 
-                            'getQuotation' => $getQuotation,
-                            'dataProvider' => $dataProvider, 
-                            'errTypeHeader' => 'Error!', 
-                            'errType' => 'alert alert-error', 
-                            'msg' => 'Invoice for the Quotation was already generated.'
-                        ]);
+            return $this->redirect(['invoice/payment-method', 'id' => $getInvoice->id ]);
         }  
 
+    }
+
+    public function actionCreateCustomer() 
+    {
+        $model = new Customer();
+        $carModel = new CarInformation();
+         
+        return $this->render('_create-customer', [
+                                    'model' => $model, 
+                                    'carModel' => $carModel,
+                                    'errTypeHeader' => '', 
+                                    'errType' => '', 
+                                    'msg' => ''
+                                ]);
+    }
+
+    public function actionNewCompany()
+    {
+        if ( Yii::$app->request->post() ) {
+
+            $model = new Customer();
+
+            $contactPerson = (Yii::$app->request->post('contactPerson'))? Yii::$app->request->post('contactPerson') : '';
+            $companyName = (Yii::$app->request->post('companyName'))? Yii::$app->request->post('companyName') : '';
+            $uen_no = (Yii::$app->request->post('uenno'))? Yii::$app->request->post('uenno') : '';
+            $companyAddress = (Yii::$app->request->post('address'))? Yii::$app->request->post('address') : '';
+            $companyHanphoneNo = (Yii::$app->request->post('phoneNumber'))? Yii::$app->request->post('phoneNumber') : '';
+            $companyOfficeNo = (Yii::$app->request->post('officeNumber'))? Yii::$app->request->post('officeNumber') : '';
+            $companyEmail = (Yii::$app->request->post('email'))? Yii::$app->request->post('email') : '';
+            $remarks = (Yii::$app->request->post('message'))? Yii::$app->request->post('message') : '';
+            $joinDate = (date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate')) ) : '0000-00-00';
+            $memberExpiry = (date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate')) ) : '0000-00-00';
+            $isMember = (Yii::$app->request->post('isMember') )? Yii::$app->request->post('isMember') : '';
+
+            $model->password = Yii::$app->request->post('password');
+
+            if ( !empty( $model->password ) ) {
+                $model->password_hash = Yii::$app->security->generatePasswordHash($model->password); 
+                $model->generateAuthKey();
+                $model->role = 10;
+            }
+
+            $model->fullname = $contactPerson;
+            $model->company_name = $companyName;
+            $model->uen_no = $uen_no;
+            $model->address = $companyAddress;
+            $model->hanphone_no = $companyHanphoneNo;
+            $model->office_no = $companyOfficeNo;
+            $model->email = $companyEmail;
+            $model->remarks = $remarks;
+            $model->join_date = $joinDate;
+            $model->member_expiry = $memberExpiry;
+            $model->is_member = $isMember;
+            $model->is_blacklist = 0;
+            $model->type = 1;
+            $model->status = 1;
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->deleted = 0;
+
+            if($model->validate()) {
+               $model->save();
+
+                $customerId = $model->id;
+
+                $company_vehicleNumber = Yii::$app->request->post('vehicleNumber');
+                $company_carModel = Yii::$app->request->post('carModel');
+                $company_carMake = Yii::$app->request->post('carMake');
+                $company_chasis = Yii::$app->request->post('chasis');
+                $company_engineNo = Yii::$app->request->post('engineNo');
+                $company_yearMfg = Yii::$app->request->post('yearMfg');
+                $company_rewardPoints = Yii::$app->request->post('rewardPoints');
+
+                foreach($company_vehicleNumber as $key => $companyCarRow){
+                    $commpanyCarInfo = new CarInformation();
+
+                    $commpanyCarInfo->customer_id = $customerId;
+                    $commpanyCarInfo->carplate = $company_vehicleNumber[$key]['value'];
+                    $commpanyCarInfo->make = $company_carMake[$key]['value'];
+                    $commpanyCarInfo->model = $company_carModel[$key]['value'];
+                    $commpanyCarInfo->engine_no = $company_engineNo[$key]['value'];
+                    $commpanyCarInfo->year_mfg = $company_yearMfg[$key]['value'];
+                    $commpanyCarInfo->chasis = $company_chasis[$key]['value'];
+                    $commpanyCarInfo->points = $company_rewardPoints[$key]['value'];
+                    $commpanyCarInfo->type = 1;
+                    $commpanyCarInfo->status = 1;
+
+                    $commpanyCarInfo->save();
+                }
+
+            // Yii::$app->mailer->compose()
+            // ->setFrom('jcyanga28@yahoo.com')
+            // ->setTo('jcyanga28@yahoo.com')
+            // ->setSubject('Message subject')
+            // ->setTextBody('content body here')
+            // ->setHtmlBody('<b>CONTENT HEADER HERE</b>')
+            // ->send();
+
+               return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success', 'id' => $model->id ]);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
+            }
+
+        } 
+    }
+
+    public function actionNewCustomer()
+    {
+        if ( Yii::$app->request->post() ) {
+            
+            $model = new Customer();
+
+            $fullname = (Yii::$app->request->post('customerName') )? Yii::$app->request->post('customerName') : '';
+            $nric = (Yii::$app->request->post('nric') )? Yii::$app->request->post('nric') : '';
+            $personAddress = (Yii::$app->request->post('address'))? Yii::$app->request->post('address') : '';
+            $raceId = (Yii::$app->request->post('race') )? Yii::$app->request->post('race') : '';
+            $personHanphone = (Yii::$app->request->post('phoneNumber') )? Yii::$app->request->post('phoneNumber') : '';
+            $personOfficeNo = (Yii::$app->request->post('phoneNumber') )? Yii::$app->request->post('phoneNumber') : '';
+            $personEmail = (Yii::$app->request->post('email'))? Yii::$app->request->post('email') : '';
+            $remarks = (Yii::$app->request->post('message'))? Yii::$app->request->post('message') : '';
+            $joinDate = (date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberJoinDate')) ) : '0000-00-00';
+            $memberExpiry = (date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate'))) )? date('Y-m-d', strtotime(Yii::$app->request->post('memberExpiryDate')) ) : '0000-00-00';
+            $isMember = (Yii::$app->request->post('isMember') )? Yii::$app->request->post('isMember') : '';
+
+            $model->password = Yii::$app->request->post('password');
+
+            if ( !empty( $model->password ) ) {
+                $model->password_hash = Yii::$app->security->generatePasswordHash($model->password); 
+                $model->generateAuthKey();
+                $model->role = 10;
+            }
+
+            $model->fullname = $fullname; 
+            $model->nric = $nric;
+            $model->address = $personAddress;
+            $model->race_id = $raceId;
+            $model->hanphone_no = $personHanphone;
+            $model->office_no = $personOfficeNo;
+            $model->email = $personEmail;
+            $model->remarks = $remarks;
+            $model->join_date =  $joinDate;
+            $model->member_expiry = $memberExpiry;
+            $model->is_member = $isMember;
+            $model->is_blacklist = 0;
+            $model->type = 2;
+            $model->status = 1;
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->deleted = 0;
+            
+            if($model->validate()) {
+               $model->save();
+
+                $customerId = $model->id;
+
+                $company_vehicleNumber = Yii::$app->request->post('vehicleNumber');
+                $company_carModel = Yii::$app->request->post('carModel');
+                $company_carMake = Yii::$app->request->post('carMake');
+                $company_chasis = Yii::$app->request->post('chasis');
+                $company_engineNo = Yii::$app->request->post('engineNo');
+                $company_yearMfg = Yii::$app->request->post('yearMfg');
+                $company_rewardPoints = Yii::$app->request->post('rewardPoints');
+
+                foreach($company_vehicleNumber as $key => $companyCarRow){
+                    $commpanyCarInfo = new CarInformation();
+
+                    $commpanyCarInfo->customer_id = $customerId;
+                    $commpanyCarInfo->carplate = $company_vehicleNumber[$key]['value'];
+                    $commpanyCarInfo->make = $company_carMake[$key]['value'];
+                    $commpanyCarInfo->model = $company_carModel[$key]['value'];
+                    $commpanyCarInfo->engine_no = $company_engineNo[$key]['value'];
+                    $commpanyCarInfo->year_mfg = $company_yearMfg[$key]['value'];
+                    $commpanyCarInfo->chasis = $company_chasis[$key]['value'];
+                    $commpanyCarInfo->points = $company_rewardPoints[$key]['value'];
+                    $commpanyCarInfo->type = 1;
+                    $commpanyCarInfo->status = 1;
+
+                    $commpanyCarInfo->save();
+                }
+
+            // Yii::$app->mailer->compose()
+            // ->setFrom('jcyanga28@yahoo.com')
+            // ->setTo('jcyanga28@yahoo.com')
+            // ->setSubject('Message subject')
+            // ->setTextBody('content body here')
+            // ->setHtmlBody('<b>CONTENT HEADER HERE</b>')
+            // ->send();
+
+               return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success', 'id' => $model->id ]);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
+            }
+
+        } 
+    }
+
+    public function actionCreateQuotation($id) 
+    {
+        $model = new Quotation();
+        $modelQD = new QuotationDetail();
+        $searchModel = new SearchQuotation();
+
+        $quotationLastId = $this->_getQuotationId();
+        $getBranchList = $searchModel->getBranch();
+        $getUserList = $searchModel->getUser();
+        $getCustomerList = $searchModel->getCustomer();
+        $getServicesList = $searchModel->getServicesList();
+        $getPartsList = $searchModel->getPartsList();
+
+        if ( Yii::$app->request->post() ) {
+            
+            $grandTotal = (Yii::$app->request->post('grandTotal')) ? Yii::$app->request->post('grandTotal') : 0;
+
+            $gstResult = (Yii::$app->request->post('gstResult')) ? Yii::$app->request->post('gstResult') : 0;
+            $netTotal = (Yii::$app->request->post('netTotal')) ? Yii::$app->request->post('netTotal') : 0;
+
+            $remarks = (Yii::$app->request->post('remarks')) ? Yii::$app->request->post('remarks') : 'No remarks.';
+            $discount_amount = (Yii::$app->request->post('discountAmount')) ? Yii::$app->request->post('discountAmount') : '0.00';
+            $discount_remarks = (Yii::$app->request->post('discountRemarks')) ? Yii::$app->request->post('discountRemarks') : 'No discount remarks.';
+
+            $model->quotation_code = Yii::$app->request->post('quotationCode');
+            $model->user_id = Yii::$app->request->post('salesPerson');
+            $model->customer_id = Yii::$app->request->post('customerId');
+            $model->branch_id = Yii::$app->request->post('quoBranch');
+            $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('dateIssue')));
+            $model->grand_total = $grandTotal;
+            $model->gst = $gstResult;
+            $model->net = $netTotal;
+            $model->remarks = $remarks;
+            $model->mileage = Yii::$app->request->post('mileage');
+            $model->come_in = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('comein')));
+            $model->come_out = date('Y-m-d H:i:s', strtotime(Yii::$app->request->post('comeout')));
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->discount_amount = $discount_amount;
+            $model->discount_remarks = $discount_remarks;
+            $model->created_at = date("Y-m-d");
+            $model->time_created = date("H:i:s");
+            $model->updated_by = Yii::$app->user->identity->id;
+            $model->updated_at = date("Y-m-d");
+            $model->delete = 0;
+            $model->task = 0;
+            $model->invoice = 0;
+
+            if ($model->validate()) {  
+                $model->save();
+
+                $quotationId = $model->id;
+                
+                foreach ( Yii::$app->request->post('itemQty') as $key => $value ) {
+                    $quoD = new QuotationDetail();
+
+                    $getServicePart = explode('-', Yii::$app->request->post('servicePartId')[$key]['value']);
+                    $getType = $getServicePart[0];
+                    $getServicePartId = $getServicePart[1];
+
+                    $quoD->quotation_id = $quotationId;
+                    $quoD->service_part_id = $getServicePartId;
+                    $quoD->quantity = Yii::$app->request->post('itemQty')[$key]['value'];
+                    $quoD->selling_price = Yii::$app->request->post('itemPriceValue')[$key]['value'];
+                    $quoD->subTotal = Yii::$app->request->post('itemSubTotal')[$key]['value'];
+                    $quoD->created_at = date("Y-m-d");
+                    $quoD->created_by = Yii::$app->user->identity->id;
+                    $quoD->type = $getType; 
+                    $quoD->task = 0;
+                    $quoD->invoice = 0;
+
+                    $quoD->save();
+                }
+
+                if( (Yii::$app->request->post('task')) ) {
+                    foreach( Yii::$app->request->post('task') as $key => $tValue ) {
+                        $qdTask = QuotationDetail::find()->where(['quotation_id' => $quotationId])->andWhere(['service_part_id' => Yii::$app->request->post('task')[$key]['value'] ])->andWhere('type = 0')->one();
+                        $qdTask->task = 1;
+                        $qdTask->save();
+                    }
+                }
+                 
+                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success', 'id' => $quotationId ]);
+
+            }else{
+                return json_encode(['message' => $model->errors, 'status' => 'Error']);
+
+            }
+
+        }
+
+        return $this->render('_quotation-form', [
+                            'model' => $model,
+                            'customer_id' => $id,
+                            'quotationId' => $quotationLastId,
+                            'getBranchList' => $getBranchList,
+                            'getUserList' => $getUserList,
+                            'getCustomerList' => $getCustomerList,
+                            'getServicesList' => $getServicesList,
+                            'getPartsList' => $getPartsList, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
     }
 
     public function actionExportExcel() 
@@ -744,7 +1049,7 @@ class QuotationController extends Controller
             $objPHPExcel->getActiveSheet()->setTitle('xxx')                     
              ->setCellValue('A1', '#')
              ->setCellValue('B1', 'Date Issue')
-             ->setCellValue('C1', 'Quotation Code')
+             ->setCellValue('C1', 'Jobsheet No.')
              ->setCellValue('D1', 'Branch Name')
              ->setCellValue('E1', 'Customer Name')
              ->setCellValue('F1', 'Car Plate')
@@ -775,7 +1080,7 @@ class QuotationController extends Controller
                 }
                         
         header('Content-Type: application/vnd.ms-excel');
-        $filename = "QuotationList-".date("m-d-Y").".xls";
+        $filename = "JobSheetList-".date("m-d-Y").".xls";
         header('Content-Disposition: attachment;filename='.$filename);
         header('Cache-Control: max-age=0');
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
@@ -783,28 +1088,261 @@ class QuotationController extends Controller
 
     }
 
-    public function actionExportPdf($id) 
+// ------- SELECT PARTS ------ //
+
+    public function actionPartsList()
     {
-        $model = new SearchQuotation();
+        $searchModel = new SearchQuotation();
+        $result = $searchModel->getPartsList();
 
-        $getProcessedQuotation = $model->getProcessedQuotation($id); 
-        $getProcessedServices = $model->getProcessedServices($id); 
-        $getProcessedParts = $model->getProcessedParts($id);
+        $data = array();
+        foreach($result as $rowP)
+        {
+           $products = array(
+                    'id' => $rowP['id'],
+                    'supplier_name' => $rowP['supplier_name'],
+                    'product_name' => $rowP['product_name'],   
+                );
+            
+            $data[] = $products;    
+        }
+         
+        return json_encode($data);
+    }
 
-        $content = $this->renderPartial('_print-pdf', [
-                'model' => $this->findModel($id),
-                'customerInfo' => $getProcessedQuotation,
-                'services' => $getProcessedServices,
-                'parts' => $getProcessedParts
-        ]);
+    public function actionPartsByCategory()
+    {
+        $searchModel = new SearchQuotation();
+        $result = $searchModel->getPartsByCategory(Yii::$app->request->get('partsCategory'));
 
-        $dompdf = new Dompdf();
+        $data = array();
+        foreach($result as $rowP)
+        {
+           $products = array(
+                    'id' => $rowP['id'],
+                    'supplier_name' => $rowP['supplier_name'],
+                    'product_name' => $rowP['product_name'],   
+                );
+            
+            $data[] = $products;    
+        }
+        
 
-        $dompdf->loadHtml($content);  
-        $dompdf->setPaper('A4', 'landscape');
-        $dompdf->render();
+        return json_encode($data);
+    }
 
-        $dompdf->stream('Quotation-' . date('m-d-Y'));
+    public function actionInsertOtherPart() 
+    {
+        $this->layout = false;
+
+        if( Yii::$app->request->post() ) {
+
+            return $this->render('item-list', [
+                    'n' => Yii::$app->request->post('n'),
+                    'itemQty' => 1,
+                    'itemPriceValue' => Yii::$app->request->post()['partsPrice'],
+                    'itemSubTotal' => Yii::$app->request->post()['partsPrice'],
+                    'partId' => 1,
+                    'partName' => Yii::$app->request->post()['partsDescription'],
+                    'serviceId' => false,
+                    'serviceName' => false,
+                    'itemType' => 2,
+                ]);
+        }  
+
+    }
+
+    public function actionInsertPartsInItemList() 
+    {
+        $searchModel = new SearchProduct();
+        $getParts = $searchModel->getProductListById(Yii::$app->request->post('services_parts'));
+
+        $this->layout = false;
+
+        if( Yii::$app->request->post() ) {
+
+            return $this->render('parts-in-item-list', [
+                                'getParts' => $getParts,
+                                'partsCtr' => Yii::$app->request->post('partsCtr')
+                            ]);
+
+        }
+    }
+
+    public function actionInsertPartsInList() 
+    {
+        $detail = new QuotationDetail();
+        $this->layout = false;
+
+        if( Yii::$app->request->post() ) {
+        
+            return $this->render('item-list', [
+                    'n' => Yii::$app->request->post('n'),
+                    'itemQty' => Yii::$app->request->post('itemQty'),
+                    'itemPriceValue' => Yii::$app->request->post('itemUnitPrice'),
+                    'itemSubTotal' => Yii::$app->request->post('itemSubTotal'),
+                    'partId' => Yii::$app->request->post('itemProductId'),
+                    'partName' => Yii::$app->request->post('itemProductName'),
+                    'serviceId' => false,
+                    'serviceName' => false,
+                    'itemType' => 1,
+                    'detail' => $detail,
+                ]);
+        }  
+
+    }
+
+// -------- SELECT SERVICE ---------- //
+
+    public function actionServiceList()
+    {
+        $searchModel = new SearchQuotation();
+        $result = $searchModel->getServicesList();
+
+        $data = array();
+        foreach($result as $rowS)
+        {
+           $services = array(
+                    'id' => $rowS['id'],
+                    'service_category' => $rowS['name'],
+                    'service_name' => $rowS['service_name'],   
+                );
+            
+            $data[] = $services;    
+        }
+         
+        return json_encode($data);
+    }
+
+    public function actionServiceByCategory()
+    {
+        $searchModel = new SearchQuotation();
+        $result = $searchModel->getServicesByCategory(Yii::$app->request->get('serviceCategory'));
+
+        $data = array();
+        foreach($result as $rowS)
+        {
+           $products = array(
+                    'id' => $rowS['id'],
+                    'service_category' => $rowS['name'],
+                    'service_name' => $rowS['service_name'],   
+                );
+            
+            $data[] = $products;    
+        }
+        
+
+        return json_encode($data);
+    }
+
+    public function actionInsertOtherService() 
+    {
+        $this->layout = false;
+
+        if( Yii::$app->request->post() ) {
+            
+            return $this->render('item-list', [
+                    'n' => Yii::$app->request->post('n'),
+                    'itemQty' => 1,
+                    'itemPriceValue' => Yii::$app->request->post()['servicePrice'],
+                    'itemSubTotal' => Yii::$app->request->post()['servicePrice'],
+                    'serviceId' => 1,
+                    'serviceName' => Yii::$app->request->post()['serviceDescription'],
+                    'partId' => false,
+                    'partName' => false,
+                    'itemType' => 3,
+                ]);
+        }  
+    }
+
+    public function actionInsertServiceInItemList() 
+    {
+        $searchModel = new SearchService();
+        $getServices = $searchModel->getServiceListById(Yii::$app->request->post('parts_services'));
+
+        $this->layout = false;
+
+        if( Yii::$app->request->post() ) {
+
+            return $this->render('service-in-item-list', [
+                                'getServices' => $getServices,
+                                'serviceCtr' => Yii::$app->request->post('serviceCtr')
+                            ]);
+
+        }
+    }
+
+    public function actionInsertServiceInList() 
+    {
+        $detail = new QuotationDetail();
+        $this->layout = false;
+
+        if( Yii::$app->request->post() ) {
+        
+            return $this->render('item-list', [
+                    'n' => Yii::$app->request->post('n'),
+                    'itemQty' => Yii::$app->request->post('itemQty'),
+                    'itemPriceValue' => Yii::$app->request->post('itemUnitPrice'),
+                    'itemSubTotal' => Yii::$app->request->post('itemSubTotal'),
+                    'partId' => false,
+                    'partName' => false,
+                    'serviceId' => Yii::$app->request->post('itemServiceId'),
+                    'serviceName' => Yii::$app->request->post('itemServiceName'),
+                    'itemType' => 0,
+                    'detail' => $detail,
+                ]);
+        }  
+
+    }
+
+    // ---------------------------------------- //
+    public function actionGetBranchGstById()
+    {
+        $searchModel = new SearchGst();
+        $getBranchGst = $searchModel->getBranchGst(Yii::$app->request->get('branchId'));
+        
+        if( $getBranchGst == 0 ) {
+            return 0;
+
+        }else{
+            return $getBranchGst;
+
+        }
+
+    }
+
+    public function actionGetCustomerInformation()
+    {
+        $searchModel = new SearchCustomer();
+
+        $getCustId = CarInformation::findOne(Yii::$app->request->get('car_id'));
+        $getCustInfo = $searchModel->getCustomerListById($getCustId['customer_id']);
+
+        $data = array();
+        $data['fullname'] = $getCustInfo['fullname'];
+        $data['nric'] = $getCustInfo['nric'];
+        $data['company_name'] = $getCustInfo['company_name'];
+        $data['uen_no'] = $getCustInfo['uen_no'];
+        $data['address'] = $getCustInfo['address'];
+        $data['hanphone_no'] = $getCustInfo['hanphone_no'];
+        $data['office_no'] = $getCustInfo['office_no'];
+        $data['email'] = $getCustInfo['email'];
+        $data['remarks'] = $getCustInfo['remarks'];
+        $data['type'] = $getCustInfo['type'];
+        $data['name'] = $getCustInfo['name'];
+
+        $getCarInfo = CarInformation::find()->where(['id' => Yii::$app->request->get('car_id') ])->one();
+        
+        $carInfo = array();
+        $carInfo['carplate'] = $getCarInfo['carplate'];
+        $carInfo['make'] = $getCarInfo['make'];
+        $carInfo['model'] = $getCarInfo['model'];
+        $carInfo['engine_no'] = $getCarInfo['engine_no'];
+        $carInfo['year_mfg'] = $getCarInfo['year_mfg'];
+        $carInfo['chasis'] = $getCarInfo['chasis'];
+        $carInfo['points'] = $getCarInfo['points'];
+
+        return json_encode(['customer_information' => $data, 'car_information' => $carInfo ]);
     }
 
 }

@@ -7,17 +7,20 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
-use common\models\LoginForm;
+use frontend\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 
+use common\models\SearchService;
+use common\models\SearchInvoice;
+
 /**
  * Site controller
  */
 class SiteController extends Controller
-{
+{ 
     /**
      * @inheritdoc
      */
@@ -72,7 +75,22 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $searchModel = new SearchService();
+        $invoiceModel = new SearchInvoice();
+
+        $session = Yii::$app->session;
+
+        $getPendingInvoiceServices = $searchModel->getPendingInvoiceServicesByCustomer($session->get('id'));
+        $getPendingQuotationServices = $searchModel->getPendingQuotationServicesByCustomer($session->get('id'));
+
+        $getInvoiceNotification = $invoiceModel->getInvoiceForNotification($session->get('id'));
+
+        $session->set('getInvoiceNotification', $getInvoiceNotification); 
+
+        return $this->render('index', [
+                        'getPendingInvoiceServices' => $getPendingInvoiceServices,
+                        'getPendingQuotationServices' => $getPendingQuotationServices,
+                    ]);
     }
 
     /**
@@ -82,12 +100,23 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
+        $this->layout=false;
         $model = new LoginForm();
+
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            $getCustomerInfo = $model->getCustomerInfo(Yii::$app->request->post('LoginForm')['ic'], Yii::$app->request->post('LoginForm')['password']);
+            $session = Yii::$app->session;
+
+            if( $session->isActive ) {
+                $session->open();
+
+                    $session->set('id', $getCustomerInfo['id']);
+                    $session->set('fullname', $getCustomerInfo['fullname']);
+                    // $session->set('carplate', $getCustomerInfo['carplate']);
+
+                $session->close();
+            }
+            
             return $this->goBack();
         } else {
             return $this->render('login', [
@@ -103,9 +132,15 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
+        $session = Yii::$app->session;
+        if($session->isActive){
+            $session->destroy();
+            Yii::$app->cache->flush();
+            
+            Yii::$app->user->logout();
 
-        return $this->goHome();
+            return $this->goHome();
+        }
     }
 
     /**

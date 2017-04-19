@@ -52,11 +52,11 @@ $this->title = 'Service Categories';
         </a>
 
         <a href="?r=service-category/export-excel" id="option-list-link" onclick="return excelPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-excel-o"></i> <b> Export to Excel </b>
+            <i class="fa fa-file-excel-o"></i> <b> Print to Excel </b>
         </a>
 
         <a href="?r=service-category/export-pdf" id="option-list-link" onclick="return pdfPrintConfirmation()" class="btn btn-app">
-            <i class="fa fa-file-pdf-o"></i> <b> Export to PDF </b>
+            <i class="fa fa-file-pdf-o"></i> <b> Print to PDF </b>
         </a>
     </p>
 </div>
@@ -110,9 +110,6 @@ $this->title = 'Service Categories';
 <div style="color:#fff">|<br/>|<br/>|<br/></div>
 
 </div>
-
-<br/>
-
 
 
 

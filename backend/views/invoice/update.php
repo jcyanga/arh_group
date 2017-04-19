@@ -24,10 +24,9 @@ $this->title = 'Create Quotation';
     <?php } ?>
 </div>
 
- <div class="col-md-12 col-sm-12 col-xs-12">
- 
+<div class="col-md-12 col-sm-12 col-xs-12">
     <div class="form-title-container">
-        <span style="color: #666;" class="form-header"><h4><i class="fa fa-pencil"></i> Create Invoice</h4></span>
+        <span style="color: #666;" class="form-header"><h4><i class="fa fa-pencil"></i> Edit Invoice</h4></span>
     </div>
     <hr/>
 
@@ -37,8 +36,7 @@ $this->title = 'Create Quotation';
     <div class="form-crud-container">
         <?= $this->render('_update-form', ['model' => $model, 'invoiceId' => $invoiceId, 'getBranchList' => $getBranchList, 'getUserList' => $getUserList, 'getCustomerList' => $getCustomerList, 'getServicesList' => $getServicesList, 'getPartsList' => $getPartsList, 'errTypeHeader' => $errTypeHeader, 'errType' => $errType, 'msg' => $msg, 'getService' => $getService, 'getPart' => $getPart, 'getLastId' => $getLastId]) ?>
     </div>   
- 
- </div>
+</div>
 
 </div>
 <br/>

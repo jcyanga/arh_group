@@ -27,7 +27,9 @@ class Role extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['role'], 'required'],
+            [['role'], 'required', 'message' => 'Fill-up required fields.'],
+            [['role'], 'unique', 'message' => 'Role name already exist.'],
+            [['created_at','created_by','status'], 'safe'],
             [['role'], 'string', 'max' => 50],
         ];
     }

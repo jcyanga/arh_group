@@ -20,6 +20,7 @@ use common\models\UserPermission;
  */
 class ModulesController extends Controller
 {
+    public $enableCsrfValidation = false;
     /**
      * @inheritdoc
      */
@@ -98,7 +99,7 @@ class ModulesController extends Controller
                 $getModule = $searchModel->searchModuleName(Yii::$app->request->get('SearchModules')['modules']);
 
         }else {
-                $getModule = Modules::find()->all();
+                $getModule = Modules::find()->where(['status' => 1])->all();
         }
 
         return $this->render('index', [
@@ -131,49 +132,34 @@ class ModulesController extends Controller
     public function actionCreate()
     {
         $model = new Modules();
-        $searchModel = new SearchModules();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        
+        return $this->render('create', [
+                            'model' => $model, 
+                            'errTypeHeader' => '', 
+                            'errType' => '', 
+                            'msg' => ''
+                        ]);
+    }
 
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $searchModel->getModules(Yii::$app->request->post('Modules') ['modules']);
+    public function actionNew()
+    {
+        $model = new Modules();  
 
-            if( $result == 1 ) {
-                return $this->render('create', [
-                                'model' => $model, 
-                                'errTypeHeader' => 'Warning!', 
-                                'errType' => 'alert alert-warning', 
-                                'msg' => 'You already enter an existing name, Please! Change the module name.'
-                            ]);
+        if ( Yii::$app->request->post() ) {   
+
+            $model->modules = Yii::$app->request->post('name');
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+            $model->status = 1;
+
+            if($model->validate()) {
+                $model->save();
+                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
             }
-
-            if( $model->save() ) {
-                $getModule = Modules::find()->all();
-
-                return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getModule' => $getModule,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully added in the database.'
-                    ]);                
-
-            }else {
-                return $this->render('create', [
-                        'model' => $model, 
-                        'errTypeHeader' => 'Error!', 
-                        'errType' => 'alert alert-error', 
-                        'msg' => 'You have an error Check All the required fields.'
-                    ]);
-            }
-
-        } else {
-            return $this->render('create', [
-                        'model' => $model, 
-                        'errTypeHeader' => '', 
-                        'errType' => '', 
-                        'msg' => ''
-                    ]);
         }
     }
 
@@ -186,28 +172,31 @@ class ModulesController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $searchModel = new SearchModules();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
-            $getModule = Modules::find()->all();
-
-            return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getModule' => $getModule,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully updated in the database.'
-                    ]);
-
-        } else {
-            return $this->render('update', [
+        
+        return $this->render('update', [
                         'model' => $model, 
                         'errTypeHeader' => '', 
                         'errType' => '', 
                         'msg' => ''
                     ]);
+    }
+
+    public function actionEdit()
+    {
+        $model = $this->findModel(Yii::$app->request->post('id'));
+
+        $model->modules = Yii::$app->request->post('name');
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->created_by = Yii::$app->user->identity->id;
+        $model->status = 1;
+
+        if($model->validate()) {
+           $model->save();
+           return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
+
+        } else {
+           return json_encode(['message' => $model->errors, 'status' => 'Error']);
+        
         }
     }
 
@@ -229,17 +218,12 @@ class ModulesController extends Controller
         $searchModel = new SearchModules();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        $this->findModel($id)->delete();
-        $getModule = Modules::find()->all();
+        $model = $this->findModel($id);
+        $model->status = 0;
+        $model->save();
 
-        return $this->render('index', [
-                        'searchModel' => $searchModel, 
-                        'getModule' => $getModule,
-                        'dataProvider' => $dataProvider, 
-                        'errTypeHeader' => 'Success!', 
-                        'errType' => 'alert alert-success', 
-                        'msg' => 'Your record was successfully deleted in the database.'
-                    ]);
+        Yii::$app->getSession()->setFlash('success', 'Your record was successfully deleted in the database.');
+        return $this->redirect(['index']);
     }
     
     /**
@@ -260,7 +244,7 @@ class ModulesController extends Controller
 
     public function actionExportExcel() 
     {
-        $result = Modules::find()->all();
+        $result = Modules::find()->where(['status' => 1])->all();
 
         $objPHPExcel = new \PHPExcel();
         $styleHeadingArray = array(
@@ -307,7 +291,7 @@ class ModulesController extends Controller
 
     public function actionExportPdf() 
     {
-        $result = Modules::find()->all();
+        $result = Modules::find()->where(['status' => 1])->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
         
         $dompdf = new Dompdf();

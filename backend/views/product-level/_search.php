@@ -20,20 +20,19 @@ use yii\helpers\Url;
     
     <?php $form = ActiveForm::begin(['action' => ['index'],'method' => 'get', 'class' => 'form-inline']); ?>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         <?= $form->field($model, 'critical_level')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Enter Critical Level here.'])->label(false) ?>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         <?= $form->field($model, 'minimum_level')->textInput(['class' => 'form_input form-control', 'placeholder' => 'Enter Critical Level here.'])->label(false) ?>
     </div>
 
-    <div class="col-md-3">
-        <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
-        <?= Html::resetButton('<li class=\'fa fa-undo\'></li> Reset All Record', ['class' => 'form-btn btn btn-default']) ?>
+    <div class="col-md-4">
+        <div style="margin-left: -10px;">
+            <?= Html::Button('<li class=\'fa fa-search\'></li> Search', ['type' => 'submit', 'class' => 'form-btn btn btn-primary']) ?>
+        </div>
     </div>
-
-    <div class="col-md-3"></div>
 
     <?php ActiveForm::end(); ?>
     <br/><br/>
